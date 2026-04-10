@@ -3,940 +3,2152 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>نظام إدارة المشاريع - فارس الشرقية</title>
+  <title>نظام أنس - النسخة المطورة</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
   <style>
-    :root {
-      --main: #b39361;
-      --main-dark: #8d6f43;
-      --bg: #f6f6f6;
-      --card: #ffffff;
-      --text: #1f1f1f;
-      --muted: #666;
-      --border: #e5e5e5;
-      --danger: #c0392b;
-      --success: #1f8b4c;
-      --shadow: 0 10px 25px rgba(0,0,0,0.08);
-    }
-
-    * {
-      box-sizing: border-box;
-      font-family: Tahoma, Arial, sans-serif;
-    }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .logo-img {
-      display: block;
-      max-width: 100%;
-      height: auto;
-      object-fit: contain;
-    }
-
-    .login-screen {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      background: linear-gradient(135deg, #f8f5ef 0%, #f0ebe1 100%);
-    }
-
-    .login-card {
-      width: 100%;
-      max-width: 430px;
-      background: var(--card);
-      border-radius: 24px;
-      box-shadow: var(--shadow);
-      padding: 28px;
-      border: 1px solid #eee;
-    }
-
-    .login-logo-wrap {
-      text-align: center;
-      margin-bottom: 16px;
-    }
-
-    .login-logo {
-      width: 180px;
-      margin: 0 auto 10px;
-      display: block;
-      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1));
-    }
-
-    .brand-title {
-      margin: 8px 0 0;
-      font-size: 24px;
-      color: var(--main-dark);
-    }
-
-    .brand-subtitle {
-      margin: 8px 0 20px;
-      color: var(--muted);
-      font-size: 14px;
-      text-align: center;
-    }
-
-    .field {
-      margin-bottom: 14px;
-    }
-
-    .field label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    .field input,
-    .field select,
-    .field textarea {
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      outline: none;
-      background: #fff;
-      font-size: 15px;
-    }
-
-    .field input:focus,
-    .field select:focus,
-    .field textarea:focus {
-      border-color: var(--main);
-      box-shadow: 0 0 0 3px rgba(179, 147, 97, 0.12);
-    }
-
-    .btn {
-      border: 0;
-      border-radius: 12px;
-      padding: 12px 18px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 14px;
-      transition: 0.2s ease;
-    }
-
-    .btn-primary {
-      background: var(--main);
-      color: #fff;
-    }
-
-    .btn-primary:hover {
-      background: var(--main-dark);
-    }
-
-    .btn-secondary {
-      background: #efefef;
-      color: #222;
-    }
-
-    .btn-danger {
-      background: var(--danger);
-      color: #fff;
-    }
-
-    .btn-success {
-      background: var(--success);
-      color: #fff;
-    }
-
-    .full {
-      width: 100%;
-    }
-
-    .login-note,
-    .error-text,
-    .success-text {
-      font-size: 13px;
-      margin-top: 10px;
-      text-align: center;
-    }
-
-    .login-note {
-      color: var(--muted);
-    }
-
-    .error-text {
-      color: var(--danger);
-    }
-
-    .success-text {
-      color: var(--success);
-    }
-
-    .app-shell {
-      min-height: 100vh;
-    }
-
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: rgba(255,255,255,0.95);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--border);
-      padding: 12px 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    .topbar-right {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .topbar-logo {
-      width: 64px;
-      height: 64px;
-      border-radius: 16px;
-      background: #111;
-      padding: 8px;
-      box-shadow: var(--shadow);
-      flex-shrink: 0;
-    }
-
-    .topbar-title h1 {
-      margin: 0;
-      font-size: 22px;
-      color: var(--main-dark);
-    }
-
-    .topbar-title p {
-      margin: 4px 0 0;
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    .topbar-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 260px 1fr;
-      min-height: calc(100vh - 89px);
-    }
-
-    .sidebar {
-      background: #fff;
-      border-left: 1px solid var(--border);
-      padding: 18px;
-    }
-
-    .menu-title {
-      color: var(--muted);
-      font-size: 13px;
-      margin: 0 0 12px;
-    }
-
-    .menu {
-      display: grid;
-      gap: 10px;
-    }
-
-    .menu button {
-      text-align: right;
-      background: #f7f7f7;
-      border: 1px solid #ececec;
-      padding: 12px 14px;
-      border-radius: 14px;
-      cursor: pointer;
-      font-weight: bold;
-      color: #333;
-    }
-
-    .menu button.active {
-      background: rgba(179,147,97,0.12);
-      border-color: rgba(179,147,97,0.4);
-      color: var(--main-dark);
-    }
-
-    .content {
-      padding: 22px;
-    }
-
-    .page {
-      display: none;
-    }
-
-    .page.active {
-      display: block;
-    }
-
-    .hero-card,
-    .card,
-    .report-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      box-shadow: var(--shadow);
-    }
-
-    .hero-card {
-      padding: 22px;
-      margin-bottom: 18px;
-    }
-
-    .hero-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .hero-head h2 {
-      margin: 0;
-      color: var(--main-dark);
-    }
-
-    .hero-head p {
-      margin: 6px 0 0;
-      color: var(--muted);
-    }
-
-    .hero-mini-logo {
-      width: 88px;
-      background: #111;
-      border-radius: 18px;
-      padding: 10px;
-      flex-shrink: 0;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
-      margin-bottom: 18px;
-    }
-
-    .stat-box {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: var(--shadow);
-    }
-
-    .stat-box .label {
-      color: var(--muted);
-      font-size: 13px;
-      margin-bottom: 8px;
-    }
-
-    .stat-box .value {
-      font-size: 24px;
-      font-weight: bold;
-      color: var(--main-dark);
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
-    }
-
-    .card {
-      padding: 18px;
-      margin-bottom: 18px;
-    }
-
-    .card h3,
-    .report-card h3 {
-      margin-top: 0;
-      margin-bottom: 14px;
-      color: var(--main-dark);
-    }
-
-    .table-wrap {
-      overflow: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 760px;
-    }
-
-    th,
-    td {
-      padding: 12px 10px;
-      border-bottom: 1px solid #eee;
-      text-align: right;
-      font-size: 14px;
-      white-space: nowrap;
-    }
-
-    th {
-      background: #faf8f4;
-      color: var(--main-dark);
-      position: sticky;
-      top: 0;
-    }
-
-    .report-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
-    }
-
-    .report-brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .report-logo {
-      width: 72px;
-      background: #111;
-      padding: 8px;
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-    }
-
-    .report-card {
-      padding: 18px;
-      margin-bottom: 18px;
-    }
-
-    .report-print {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .muted {
-      color: var(--muted);
-    }
-
-    .footer-note {
-      margin-top: 16px;
-      font-size: 12px;
-      color: var(--muted);
-      text-align: center;
-    }
-
-    @media (max-width: 980px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-
-      .sidebar {
-        border-left: 0;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .grid-2 {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media print {
-      body {
-        background: #fff;
-      }
-
-      .sidebar,
-      .topbar-actions,
-      .report-print,
-      #page-home .hero-card,
-      #page-home .stats,
-      #page-home .card:not(.report-card) {
-        display: none !important;
-      }
-
-      .topbar {
-        position: static;
-        border: none;
-        box-shadow: none;
-      }
-
-      .content {
-        padding: 0;
-      }
-
-      .page {
-        display: none !important;
-      }
-
-      #page-reports {
-        display: block !important;
-      }
-
-      .report-card {
-        box-shadow: none;
-        border: 1px solid #ddd;
-        break-inside: avoid;
-      }
+    :root{
+      --bg:#f5f6fa;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --primary:#1f3b57;
+      --blue:#2563eb;
+      --green:#16a34a;
+      --red:#dc2626;
+      --orange:#ea580c;
+      --gray:#6b7280;
+      --purple:#7c3aed;
+      --teal:#0f766e;
+      --yellow:#f59e0b;
+      --border:#e5e7eb;
+      --shadow:0 2px 10px rgba(0,0,0,.08);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Tahoma, Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .header{
+      background:var(--primary);
+      color:#fff;
+      padding:16px 20px;
+      font-size:22px;
+      font-weight:bold;
+    }
+    .container{padding:18px}
+    .card{
+      background:#fff;
+      border-radius:12px;
+      padding:16px;
+      box-shadow:var(--shadow);
+      margin-bottom:16px;
+    }
+    h2,h3,h4{margin-top:0}
+    input,select,button,textarea{
+      font-family:inherit;
+      font-size:14px;
+      padding:10px;
+      border-radius:8px;
+      border:1px solid #d0d7de;
+      width:100%;
+    }
+    textarea{min-height:110px;resize:vertical}
+    button{
+      border:none;
+      cursor:pointer;
+      width:auto;
+      min-width:110px;
+    }
+    .btn{background:var(--blue);color:#fff}
+    .btn-green{background:var(--green);color:#fff}
+    .btn-red{background:var(--red);color:#fff}
+    .btn-orange{background:var(--orange);color:#fff}
+    .btn-gray{background:var(--gray);color:#fff}
+    .btn-purple{background:var(--purple);color:#fff}
+    .btn-teal{background:var(--teal);color:#fff}
+    .btn-link{
+      background:#eef2ff;
+      color:#1d4ed8;
+      min-width:auto;
+      padding:6px 10px;
+      border:1px solid #c7d2fe;
+      text-decoration:none;
+      display:inline-block;
+    }
+    .btn-wa{
+      background:#dcfce7;
+      color:#166534;
+      min-width:auto;
+      padding:6px 10px;
+      border:1px solid #86efac;
+      text-decoration:none;
+      display:inline-block;
+    }
+    .grid{display:grid;gap:12px}
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+    @media (max-width:900px){
+      .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+    }
+    .hidden{display:none !important}
+    .small{font-size:12px;color:var(--muted)}
+    .login-wrap{max-width:430px;margin:60px auto}
+    .section-title{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .project-item{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      padding:12px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      margin-top:10px;
+      flex-wrap:wrap;
+    }
+    .kpis{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:12px;
+      margin-bottom:16px;
+    }
+    .kpi{
+      background:#fff;
+      padding:14px;
+      border-radius:12px;
+      box-shadow:var(--shadow);
+    }
+    .kpi-title{
+      color:#555;
+      font-size:13px;
+      margin-bottom:6px;
+    }
+    .kpi-value{
+      font-size:21px;
+      font-weight:bold;
+    }
+    .tabs{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+    .tab{
+      background:#e5e7eb;
+      color:#111;
+      padding:10px 12px;
+      border-radius:8px;
+      min-width:auto;
+    }
+    .tab.active{
+      background:var(--primary);
+      color:#fff;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      background:#fff;
+      font-size:13px;
+      margin-top:12px;
+    }
+    th,td{
+      border:1px solid var(--border);
+      padding:8px;
+      text-align:center;
+      vertical-align:middle;
+    }
+    th{background:#f8fafc}
+    .badge{
+      padding:4px 8px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:bold;
+      display:inline-block;
+    }
+    .available{background:#dcfce7;color:#166534}
+    .booked{background:#fef3c7;color:#92400e}
+    .sold{background:#dbeafe;color:#1d4ed8}
+    .warn-row{background:#fffbeb}
+    .danger{
+      background:#fff7ed;
+      border:1px solid #fdba74;
+      border-radius:8px;
+      padding:10px;
+      margin:10px 0;
+      line-height:1.9;
+    }
+    .success{
+      background:#ecfdf5;
+      border:1px solid #86efac;
+      border-radius:8px;
+      padding:10px;
+      margin:10px 0;
+      line-height:1.9;
+    }
+    .note{
+      background:#eef8ff;
+      border:1px solid #cfe9ff;
+      border-radius:8px;
+      padding:10px;
+      margin:10px 0;
+      line-height:1.9;
+    }
+    .auto-row{
+      background:#f8fafc;
+      font-weight:bold;
+    }
+    .editable{background:#fffbeb}
+    .phone-box{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      align-items:center;
+    }
+    .phone-text{
+      direction:ltr;
+      unicode-bidi:plaintext;
+      font-size:12px;
+    }
+    .mini-actions{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+    .modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.45);
+      padding:20px;
+      overflow:auto;
+      z-index:1000;
+    }
+    .modal-content{
+      max-width:1200px;
+      margin:20px auto;
+      background:#fff;
+      border-radius:12px;
+      padding:18px;
+      box-shadow:var(--shadow);
+    }
+    .report-box{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:14px;
+      line-height:2;
+    }
+    .pdf-sheet{
+      width:900px;
+      background:#fff;
+      color:#111;
+      padding:24px;
+      direction:rtl;
+      font-family:Tahoma, Arial, sans-serif;
+      border:1px solid #ddd;
+    }
+    .pdf-sheet h2,.pdf-sheet h3{
+      margin:0 0 12px 0;
+    }
+    .pdf-sheet .line{
+      margin:6px 0;
+      line-height:1.9;
+    }
+    .pdf-sheet table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:12px;
+      font-size:12px;
+    }
+    .pdf-sheet th,.pdf-sheet td{
+      border:1px solid #999;
+      padding:6px;
+      text-align:center;
+    }
+    #pdfRenderArea{
+      position:absolute;
+      right:-99999px;
+      top:0;
+      width:920px;
+      background:#fff;
+      padding:0;
+    }
+    @media print{
+      .header,.tabs,.no-print,.modal{display:none !important}
+      .card,.kpi{box-shadow:none}
+      body{background:#fff}
     }
   </style>
 </head>
 <body>
-  <section id="loginScreen" class="login-screen">
-    <div class="login-card">
-      <div class="login-logo-wrap">
-        <img src="data:image/png;base64,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ोMAFDDkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAACxv27Ztrl69mnrMAFDDkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKc+fOTT0GAKhhSU4AANBIkhMAALSS5AQAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWkn+P0N+UPlc3+SvAAAAAElFTkSuQmCC" alt="شعار فارس الشرقية" class="logo-img login-logo" onerror="this.style.display='none'; document.getElementById('logoMissingHint').classList.remove('hidden');" />
-        <div id="logoMissingHint" class="login-note hidden">الصورة غير موجودة. لازم ملف الشعار يكون اسمه <bdi>logo.png</bdi> وفي نفس مجلد <bdi>index.html</bdi>.</div>
-        <h1 class="brand-title">فارس الشرقية</h1>
-        <div class="brand-subtitle">نظام إدارة المشاريع والتقارير العقارية</div>
-      </div>
+  <div class="header">نظام أنس - النسخة المطورة</div>
 
-      <div class="field">
-        <label for="passwordInput">كلمة المرور</label>
-        <input id="passwordInput" type="password" placeholder="اكتب كلمة المرور" onkeydown="if(event.key==='Enter'){login()}" />
+  <div class="container">
+    <div id="loginView" class="login-wrap">
+      <div class="card">
+        <h2>تسجيل الدخول</h2>
+        <div class="grid">
+          <input id="loginUser" placeholder="اسم المستخدم" />
+          <input id="loginPass" type="password" placeholder="كلمة المرور" />
+          <button class="btn" onclick="login()">دخول</button>
+        </div>
       </div>
-
-      <button class="btn btn-primary full" onclick="login()">دخول</button>
-      <div class="login-note">غيّر كلمة المرور الافتراضية من داخل الكود قبل التشغيل الفعلي</div>
-      <div id="loginMessage" class="error-text"></div>
     </div>
-  </section>
 
-  <section id="appShell" class="app-shell hidden">
-    <header class="topbar">
-      <div class="topbar-right">
-        <div class="topbar-logo">
-          <img src="data:image/png;base64,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ोMAFDDkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAACxv27Ztrl69mnrMAFDDkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKc+fOTT0GAKhhSU4AANBIkhMAALSS5AQAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWkn+P0N+UPlc3+SvAAAAAElFTkSuQmCC" alt="شعار فارس الشرقية" class="logo-img" onerror="this.style.display='none';" />
+    <div id="appView" class="hidden">
+      <div id="projectsView" class="card">
+        <div class="section-title">
+          <h2>المشاريع</h2>
+          <div class="actions">
+            <button class="btn-purple" onclick="downloadBackup()">نسخة احتياطية</button>
+            <button class="btn-orange" onclick="document.getElementById('restoreFile').click()">استرجاع</button>
+            <input id="restoreFile" type="file" accept=".json" class="hidden" onchange="restoreBackup(event)" />
+            <button class="btn-gray" onclick="logout()">خروج</button>
+          </div>
         </div>
-        <div class="topbar-title">
-          <h1>نظام إدارة المشاريع</h1>
-          <p>فارس الشرقية للتطوير العقاري</p>
+
+        <div class="card" style="box-shadow:none;border:1px solid #e5e7eb">
+          <h3>إنشاء مشروع جديد</h3>
+          <div class="grid grid-3">
+            <input id="newProjectName" placeholder="اسم المشروع" />
+            <input id="newProjectCost" type="number" placeholder="التكلفة الأساسية" />
+            <input id="newProjectNotes" placeholder="ملاحظات" />
+          </div>
+          <div style="margin-top:12px">
+            <button class="btn-green" onclick="createProject()">إنشاء المشروع</button>
+          </div>
         </div>
+
+        <div id="projectsList"></div>
       </div>
 
-      <div class="topbar-actions">
-        <button class="btn btn-secondary" onclick="showPage('home')">الرئيسية</button>
-        <button class="btn btn-secondary" onclick="showPage('reports')">التقارير</button>
-        <button class="btn btn-danger" onclick="logout()">تسجيل الخروج</button>
-      </div>
-    </header>
-
-    <div class="layout">
-      <aside class="sidebar">
-        <p class="menu-title">القائمة الرئيسية</p>
-        <div class="menu">
-          <button id="menu-home" class="active" onclick="showPage('home')">الرئيسية</button>
-          <button id="menu-projects" onclick="showPage('projects')">المشاريع</button>
-          <button id="menu-units" onclick="showPage('units')">الوحدات</button>
-          <button id="menu-marketers" onclick="showPage('marketers')">المسوقين</button>
-          <button id="menu-investors" onclick="showPage('investors')">المساهمين</button>
-          <button id="menu-reports" onclick="showPage('reports')">التقارير</button>
+      <div id="workspaceView" class="hidden">
+        <div class="card">
+          <div class="section-title">
+            <div>
+              <h2 id="projectTitle">اسم المشروع</h2>
+              <div id="projectMeta" class="small"></div>
+            </div>
+            <div class="actions no-print">
+              <button class="btn-gray" onclick="backToProjects()">رجوع للمشاريع</button>
+              <button class="btn-teal" onclick="exportProjectExcel()">Excel</button>
+              <button class="btn-teal" onclick="exportProjectPDF()">PDF</button>
+              <button class="btn-teal" onclick="window.print()">طباعة</button>
+            </div>
+          </div>
         </div>
-      </aside>
 
-      <main class="content">
-        <section id="page-home" class="page active">
-          <div class="hero-card">
-            <div class="hero-head">
-              <div>
-                <h2>لوحة التحكم الرئيسية</h2>
-                <p>من هنا تتابع المشاريع والوحدات والأرباح والتقارير بشكل سريع.</p>
-              </div>
-              <div class="hero-mini-logo">
-                <img src="data:image/png;base64,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ोMAFDDkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAACxv27Ztrl69mnrMAFDDkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKc+fOTT0GAKhhSU4AANBIkhMAALSS5AQAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWkn+P0N+UPlc3+SvAAAAAElFTkSuQmCC" alt="شعار فارس الشرقية" class="logo-img" onerror="this.style.display='none';" />
-              </div>
-            </div>
-          </div>
+        <div class="kpis">
+          <div class="kpi"><div class="kpi-title">إجمالي المبيعات</div><div class="kpi-value" id="kpiSales">0</div></div>
+          <div class="kpi"><div class="kpi-title">التكلفة الأساسية</div><div class="kpi-value" id="kpiCost">0</div></div>
+          <div class="kpi"><div class="kpi-title">إجمالي المصروفات</div><div class="kpi-value" id="kpiExpenses">0</div></div>
+          <div class="kpi"><div class="kpi-title">إجمالي السعي المستحق</div><div class="kpi-value" id="kpiCommissionDue">0</div></div>
+          <div class="kpi"><div class="kpi-title">السعي المصروف فعليًا</div><div class="kpi-value" id="kpiCommissionPaid">0</div></div>
+          <div class="kpi"><div class="kpi-title">متبقي السعي</div><div class="kpi-value" id="kpiCommissionRemain">0</div></div>
+          <div class="kpi"><div class="kpi-title">الربح الكلي</div><div class="kpi-value" id="kpiProfit">0</div></div>
+          <div class="kpi"><div class="kpi-title">نصيب الشركة من الشركاء</div><div class="kpi-value" id="kpiCompanyFromPartners">0</div></div>
+          <div class="kpi"><div class="kpi-title">إدارة المساهمين</div><div class="kpi-value" id="kpiInvestorAdmin">0</div></div>
+          <div class="kpi"><div class="kpi-title">ربح الشركة النهائي</div><div class="kpi-value" id="kpiCompanyFinal">0</div></div>
+          <div class="kpi"><div class="kpi-title">الوحدات المباعة</div><div class="kpi-value" id="kpiSold">0</div></div>
+          <div class="kpi"><div class="kpi-title">الوحدات المحجوزة</div><div class="kpi-value" id="kpiBooked">0</div></div>
+          <div class="kpi"><div class="kpi-title">الوحدات المتاحة</div><div class="kpi-value" id="kpiAvailable">0</div></div>
+        </div>
 
-          <div class="stats">
-            <div class="stat-box">
-              <div class="label">عدد المشاريع</div>
-              <div class="value" id="statProjects">3</div>
-            </div>
-            <div class="stat-box">
-              <div class="label">عدد الوحدات</div>
-              <div class="value" id="statUnits">128</div>
-            </div>
-            <div class="stat-box">
-              <div class="label">إجمالي الأرباح</div>
-              <div class="value" id="statProfit">2,450,000 ر.س</div>
-            </div>
-            <div class="stat-box">
-              <div class="label">دفعات تحت الحساب</div>
-              <div class="value" id="statAdvances">420,000 ر.س</div>
-            </div>
-          </div>
+        <div id="alertsBox"></div>
+        <div id="issuesBox"></div>
 
-          <div class="grid-2">
-            <div class="card">
-              <h3>ملخص المشاريع</h3>
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>اسم المشروع</th>
-                      <th>عدد الوحدات</th>
-                      <th>المبيعات</th>
-                      <th>المصروفات</th>
-                      <th>الربح</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>مشروع النخبة</td>
-                      <td>42</td>
-                      <td>5,200,000</td>
-                      <td>3,900,000</td>
-                      <td>1,300,000</td>
-                    </tr>
-                    <tr>
-                      <td>مشروع الواجهة</td>
-                      <td>36</td>
-                      <td>3,650,000</td>
-                      <td>2,980,000</td>
-                      <td>670,000</td>
-                    </tr>
-                    <tr>
-                      <td>مشروع الفرسان</td>
-                      <td>50</td>
-                      <td>4,800,000</td>
-                      <td>4,320,000</td>
-                      <td>480,000</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+        <div class="tabs no-print">
+          <button class="tab active" onclick="showTab('unitsTab', this)">الوحدات</button>
+          <button class="tab" onclick="showTab('marketersTab', this)">المسوقون</button>
+          <button class="tab" onclick="showTab('expensesTab', this)">المصروفات</button>
+          <button class="tab" onclick="showTab('partnersTab', this)">الشركاء</button>
+          <button class="tab" onclick="showTab('investorsTab', this)">المساهمون</button>
+          <button class="tab" onclick="showTab('advancesTab', this)">الدفعات تحت الحساب</button>
+          <button class="tab" onclick="showTab('movementsTab', this)">دفتر الحركة</button>
+          <button class="tab" onclick="showTab('reportTab', this)">ملخص المشروع</button>
+        </div>
 
-            <div class="card">
-              <h3>آخر الملاحظات</h3>
-              <div class="field">
-                <label for="notesBox">ملاحظات داخلية</label>
-                <textarea id="notesBox" rows="10" placeholder="اكتب ملاحظاتك هنا..."></textarea>
-              </div>
-              <button class="btn btn-primary" onclick="saveNotes()">حفظ الملاحظات</button>
-              <div id="notesMessage" class="success-text"></div>
-            </div>
-          </div>
-        </section>
-
-        <section id="page-projects" class="page">
-          <div class="card">
-            <h3>المشاريع</h3>
-            <p class="muted">هنا تربط كل مشروع بوحداته ومبيعاته ومصاريفه.</p>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>اسم المشروع</th>
-                    <th>المدينة</th>
-                    <th>عدد الوحدات</th>
-                    <th>الحالة</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>مشروع النخبة</td>
-                    <td>الدمام</td>
-                    <td>42</td>
-                    <td>نشط</td>
-                  </tr>
-                  <tr>
-                    <td>مشروع الواجهة</td>
-                    <td>الخبر</td>
-                    <td>36</td>
-                    <td>نشط</td>
-                  </tr>
-                  <tr>
-                    <td>مشروع الفرسان</td>
-                    <td>الظهران</td>
-                    <td>50</td>
-                    <td>تحت المتابعة</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        <section id="page-units" class="page">
-          <div class="card">
+        <div id="unitsTab" class="card tab-panel">
+          <div class="section-title">
             <h3>الوحدات</h3>
-            <p class="muted">حقول الوحدات حسب طلبك: رقم الشقة، النموذج، الدور، المبنى، الإطلالة، المساحة، المكونات، وسعر العرض.</p>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>رقم الشقة</th>
-                    <th>نموذج الشقة</th>
-                    <th>الدور</th>
-                    <th>المبنى</th>
-                    <th>الإطلالة</th>
-                    <th>المساحة</th>
-                    <th>مكونات الوحدة</th>
-                    <th>سعر العرض</th>
-                    <th>المشروع</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>101</td>
-                    <td>A1</td>
-                    <td>الأول</td>
-                    <td>B1</td>
-                    <td>شارع</td>
-                    <td>145 م²</td>
-                    <td>3 غرف + صالة + 3 حمام</td>
-                    <td>780,000</td>
-                    <td>مشروع النخبة</td>
-                  </tr>
-                  <tr>
-                    <td>204</td>
-                    <td>A2</td>
-                    <td>الثاني</td>
-                    <td>B1</td>
-                    <td>حديقة</td>
-                    <td>152 م²</td>
-                    <td>4 غرف + صالة + 3 حمام</td>
-                    <td>845,000</td>
-                    <td>مشروع الواجهة</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="actions no-print">
+              <select id="unitMarketerFilter" onchange="renderUnits()" style="min-width:220px">
+                <option value="">كل المسوقين</option>
+              </select>
             </div>
           </div>
-        </section>
 
-        <section id="page-marketers" class="page">
-          <div class="card">
-            <h3>المسوقين</h3>
-            <p class="muted">يشمل السعي، المستحق، والمدفوعات تحت الحساب بتاريخ.</p>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>الاسم</th>
-                    <th>المشروع</th>
-                    <th>إجمالي السعي</th>
-                    <th>المدفوع تحت الحساب</th>
-                    <th>المتبقي</th>
-                    <th>آخر دفعة</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>أحمد</td>
-                    <td>مشروع النخبة</td>
-                    <td>150,000</td>
-                    <td>60,000</td>
-                    <td>90,000</td>
-                    <td>2026-04-05</td>
-                  </tr>
-                  <tr>
-                    <td>سالم</td>
-                    <td>مشروع الواجهة</td>
-                    <td>95,000</td>
-                    <td>30,000</td>
-                    <td>65,000</td>
-                    <td>2026-04-08</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+          <div class="grid grid-4 no-print">
+            <input id="unitNumber" placeholder="رقم الشقة" />
+            <input id="unitModel" placeholder="نموذج الشقة" />
+            <input id="unitFloor" placeholder="الدور" />
+            <input id="unitBuilding" placeholder="المبنى" />
+            <input id="unitView" placeholder="الإطلالة" />
+            <input id="unitArea" placeholder="المساحة" />
+            <input id="unitComponents" placeholder="مكونات الوحدة" />
+            <input id="unitPrice" type="number" placeholder="سعر العرض" />
           </div>
-        </section>
-
-        <section id="page-investors" class="page">
-          <div class="card">
-            <h3>المساهمين</h3>
-            <p class="muted">يشمل قيمة المساهمة، نسبة المساهمة، الربح، والدفعات تحت الحساب.</p>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>الاسم</th>
-                    <th>المشروع</th>
-                    <th>قيمة المساهمة</th>
-                    <th>نسبة المساهمة</th>
-                    <th>الربح المستحق</th>
-                    <th>المدفوع تحت الحساب</th>
-                    <th>المتبقي</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>أبو منصور</td>
-                    <td>مشروع النخبة</td>
-                    <td>1,000,000</td>
-                    <td>20%</td>
-                    <td>260,000</td>
-                    <td>100,000</td>
-                    <td>160,000</td>
-                  </tr>
-                  <tr>
-                    <td>فيصل</td>
-                    <td>مشروع الواجهة</td>
-                    <td>750,000</td>
-                    <td>15%</td>
-                    <td>100,500</td>
-                    <td>25,000</td>
-                    <td>75,500</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+          <div class="no-print" style="margin-top:12px">
+            <button class="btn-green" onclick="addUnit()">إضافة وحدة</button>
           </div>
-        </section>
 
-        <section id="page-reports" class="page">
-          <div class="report-header">
-            <div class="report-brand">
-              <div class="report-logo">
-                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAB9AAAARACAYAAAA7lFPCAAAACXBIWXMAAAsSAAALEgHS3X78AAAgAElEQVR4nOzdeZBcVb3//9f3qruru6q7Z3dnNrubQAJkJJB9AUEQJMOiKAqKM4B66ByPMzLidUfc9TqPiiMqImBAXFBGFATx7DGMM4IAg4SQQMgmCQmB7PbM3rM7u7urq6q7q7q/P74n1fTq7u7upQqU6vM8zxMnV9W1dVXXvvd1vd8n4mZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZvZ/2pR6AABQw9KcAACgkSQnAABoJMkJAABaSXICAIBGkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gF4rY6ODvfu3Zt6DMBylpaWam9vTz0GAKhhSU4AANBIkhMAADSS5AQAAI0kOQEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIBGkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gH4qjVr1rj33ntTjwEsl5WV5ZVXXkk9BgCoYUlOAADQSJITAIAWLr300q5du9b09PTU4wCWk5KScs0116QeAwDUsCQnAABoJMkJAABayVtvvdW5c+eqrq6uehzAclJSUtLT01OPAQBqWJITAID/5Morr3Ts2LFqamqqHgcA1LjkBAAAjSQ5AQBAI0lOAADQSJITAAD8r23btjV06NDq6+vT4wCWk5KS0rFjx1KPAQBqWJITAID/5Morr2zs2LGqq6urxwEANSzJCQAAWsmqVas6deqUegwAUONSVw8AAI0kOQEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWLr744pqamqq6urrqcQDL2b17t23btk09BgCoYUlOAADQSJITAADUs7u7u7NmzUo9BgCoYUlOAADQSJITAADUs7Ky0j333Jd6DABQw5KcAACgkSQnAABoJMkJAABaSVLqAfhaZmZm3HfffaOurg7Lly93/Pjx1OMAlpOSklJ/f3/qMQBADUtyAgCARpKcAACgkSQnAABoJMkJAABaSXICAIBGkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gH4GmZmZjZu3DgNDQ3V4wCWk5KS0sKFC1OPAQCqWJITAABoJMkJAABaSVLqAQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCVJqQcAAPjP2traNjQ0VB0dHfU4gOWkpaW1Y8eO1GMAgBqW5AQAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCVJqQcAALB1ycnJ9u7dq54DANSwJCcAAGgkyQkAALrI5OTkdu/eXXV1ddXjAJazfft2e/fuTT0GAKhhSU4AANBIkhMAALSSAQCgkSQnAABoJMkJAABaSXICAIBGkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCVJqQcAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJUkpR4AANSw5AQAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJUkpR4AANSwJCcAAGgkyQkAALSSAQCgkSQnAABoJMkJAABaSXICAIBGkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCVJqQcAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJUkpR4AANSwJCcAAGgkyQkAAFqpw4cP+9rXvpZ6DABQw5KcAACgkSQnAABoJMkJAABaSXICAIBGkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJUkpR4AANSwJCcAAGgkyQkAAFqpbdu2+cY3vpF6DABQw5KcAACgkSQnAABoJMkJAABaSXICAIBGkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJUkpR4AANSwJCcAAGgkyQkAAFqpsbHRmTNnUo8BAGpYkhMAADSS5AQAAK0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJUkpR4AANSwJCcAAGgkyQkAAFqppKTEe++9l3oMAFDDkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspK165dm3oMAFDDkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKzz//fOoxAEANS3ICAIBGkpwAAKCVJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCVJqQcAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKf/7zn1OPAQBqWJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCVJqQcAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKn376aeoxAEANS3ICAIBGkpwAAKCVJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCVJqQcAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKzZs3Tz0GAKhhSU4AANBIkhMAALSS5AQAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKhw4dSj0GAKhhSU4AANBIkhMAALSS5AQAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKf/nLX1KPAQBqWJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCVJqQcAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKX/7yl1OPAQBqWJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCVJqQcAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspK999/f+oxAEANS3ICAIBGkpwAAKCVJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCVJqQcAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKly5dSj0GAKhhSU4AANBIkhMAALSS5AQAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKhw8fTj0GAKhhSU4AANBIkhMAALSS5AQAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKJ06cSD0GAKhhSU4AANBIkhMAALSS5AQAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKf/zjH1OPAQBqWJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCVJqQcAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKjz/+eOoxAEANS3ICAIBGkpwAAKCVJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCVJqQcAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKc+bMST0GAKhhSU4AANBIkhMAALSS5AQAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKX//616nHAAB1LMkJAABaSXICAIBGkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAIAt27Fjh1u3bqUeAwDUsCQnAABoJMkJAABaSXICAIBGkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAIAt27Jli927d6ceAwDUsCQnAABoJMkJAABaSXICAIBGkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAIAt27x5s927d6ceAwDUsCQnAABoJMkJAABaSXICAIBGkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAIAtW7lypb/85S+pxwAANSzJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJUkpR4AANSwJCcAAGgkyQkAAFqpbdu2+fGPf5x6DABQw5KcAACgkSQnAABoJMkJAABaSXICAIBGkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspK3/72t6nHAAB1LMkJAABaSXICAIBGkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAIAt27VrVwsXLkw9BgCoYUlOAADQSJITAADUs7Ky0nPPPZd6DABQw5KcAACgkSQnAABoJMkJAABaSXICAIBGkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCVJqQcAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspK77//fuoxAEANS3ICAIBGkpwAAKCVJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCVJqQcAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKixcvTj0GAKhhSU4AANBIkhMAALSS5AQAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKjz/+eOoxAEANS3ICAIBGkpwAAKCVJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCVJqQcAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKf/nLX1KPAQBqWJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCVJqQcAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKx44dSz0GAKhhSU4AANBIkhMAALSS5AQAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspK586dSz0GAKhhSU4AANBIkhMAALSS5AQAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKly9fTj0GAKhhSU4AANBIkhMAALSS5AQAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKf/rTn1KPAQBqWJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgEaSnAAAoJEkJwAAaCVJqQcAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspK165dm3oMAFDDkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAACxv9+7drl27lnoMAFDDkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAACxv7969rl69mnोMAFDDkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAACxv27Ztrl69mnrMAFDDkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWklS6gEAQCNJTgAA0EiSEwAANJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGilyspKc+fOTT0GAKhhSU4AANBIkhMAALSS5AQAAI0kOQEAQCNJTgAA0EiSEwAAtJLkBAAAjSQ5AQBAI0lOAADQSJITAIAWkpwAAKCRJCcAAGgkyQkAABpJcgIAgFaSlHoAAFDLkpwAAKCRJCcAAGglyQkAABpJcgIAgEaSnAAAoJEkJwAAaCTJCQAAWkn+P0N+UPlc3+SvAAAAAElFTkSuQmCC" alt="شعار فارس الشرقية" class="logo-img" onerror="this.style.display='none';" />
+          <div class="card no-print" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:14px">
+            <h4>استيراد جماعي للوحدات</h4>
+            <div class="grid grid-2">
+              <div>
+                <input type="file" id="unitExcelFile" accept=".xlsx,.xls" />
+                <div style="margin-top:10px">
+                  <button class="btn" onclick="importUnitsExcel()">استيراد من إكسل</button>
+                </div>
               </div>
               <div>
-                <h2 style="margin:0; color: var(--main-dark);">التقارير</h2>
-                <div class="muted">تقارير مالية وتشغيلية قابلة للطباعة</div>
+                <textarea id="unitPasteData" placeholder="الصق البيانات هنا من إكسل بنفس الترتيب: رقم الشقة - نموذج الشقة - الدور - المبنى - الإطلالة - المساحة - مكونات الوحدة - سعر العرض"></textarea>
+                <div style="margin-top:10px">
+                  <button class="btn-teal" onclick="importUnitsPaste()">استيراد من لصق مباشر</button>
+                </div>
               </div>
             </div>
+          </div>
 
-            <div class="report-print">
-              <button class="btn btn-success" onclick="window.print()">طباعة التقرير</button>
-              <button class="btn btn-secondary" onclick="showPage('home')">رجوع للرئيسية</button>
+          <table>
+            <thead>
+              <tr>
+                <th>رقم الشقة</th>
+                <th>النموذج</th>
+                <th>الدور</th>
+                <th>المبنى</th>
+                <th>الإطلالة</th>
+                <th>المساحة</th>
+                <th>المكونات</th>
+                <th>سعر العرض</th>
+                <th>الحالة</th>
+                <th>العميل</th>
+                <th>جوال العميل</th>
+                <th>المسوق</th>
+                <th>جوال المسوق</th>
+                <th>المدفوع</th>
+                <th>المتبقي</th>
+                <th class="no-print">إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="unitsBody"></tbody>
+          </table>
+        </div>
+
+        <div id="marketersTab" class="card tab-panel hidden">
+          <h3>المسوقون والسعي</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>المسوق</th>
+                <th>عدد الوحدات</th>
+                <th>إجمالي السعي</th>
+                <th>تم صرفه</th>
+                <th>المتبقي</th>
+                <th>الجوال</th>
+                <th class="no-print">تقرير</th>
+              </tr>
+            </thead>
+            <tbody id="marketersBody"></tbody>
+          </table>
+        </div>
+
+        <div id="expensesTab" class="card tab-panel hidden">
+          <h3>المصروفات</h3>
+          <div class="grid grid-4 no-print">
+            <input id="expenseDate" type="date" />
+            <input id="expenseCategory" placeholder="التصنيف" />
+            <input id="expenseDesc" placeholder="البيان" />
+            <input id="expenseAmount" type="number" placeholder="المبلغ" />
+          </div>
+          <div style="margin-top:12px" class="no-print">
+            <button class="btn-orange" onclick="addExpense()">إضافة مصروف</button>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>التاريخ</th>
+                <th>التصنيف</th>
+                <th>البيان</th>
+                <th>المبلغ</th>
+                <th class="no-print">إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="expensesBody"></tbody>
+          </table>
+        </div>
+
+        <div id="partnersTab" class="card tab-panel hidden">
+          <h3>الشركاء</h3>
+          <div class="danger">
+            الشركة تبدأ تلقائيًا 100%، وأي شريك تضيفه ينقص منها.
+          </div>
+
+          <div class="grid grid-4 no-print">
+            <input id="partnerName" placeholder="اسم الشريك" />
+            <input id="partnerPercent" type="number" placeholder="النسبة %" />
+            <input id="partnerDate" type="date" />
+            <button class="btn-green" onclick="addPartner()">إضافة شريك</button>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>الاسم</th>
+                <th>النسبة</th>
+                <th>نصيبه من الربح</th>
+                <th>تم صرفه تحت الحساب</th>
+                <th>المتبقي</th>
+                <th>التاريخ</th>
+                <th class="no-print">تقرير</th>
+                <th class="no-print">إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="partnersBody"></tbody>
+          </table>
+        </div>
+
+        <div id="investorsTab" class="card tab-panel hidden">
+          <h3>المساهمون داخل الشركة</h3>
+          <div class="danger">
+            المساهم بالمبلغ، والنسبة تظهر تلقائيًا من نصيب الشركة.
+          </div>
+
+          <div class="grid grid-4 no-print">
+            <input id="investorName" placeholder="اسم المساهم" />
+            <input id="investorAmount" type="number" placeholder="مبلغ المساهمة" />
+            <input id="investorAdminRate" type="number" placeholder="نسبة الإدارة %" />
+            <input id="investorDate" type="date" />
+          </div>
+          <div style="margin-top:12px" class="no-print">
+            <button class="btn-green" onclick="addInvestor()">إضافة مساهم</button>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>الاسم</th>
+                <th>المبلغ</th>
+                <th>النسبة</th>
+                <th>قبل الإدارة</th>
+                <th>الإدارة</th>
+                <th>الصافي</th>
+                <th>تم صرفه تحت الحساب</th>
+                <th>المتبقي</th>
+                <th>التاريخ</th>
+                <th class="no-print">تقرير</th>
+                <th class="no-print">إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="investorsBody"></tbody>
+          </table>
+        </div>
+
+        <div id="advancesTab" class="card tab-panel hidden">
+          <h3>الدفعات تحت الحساب</h3>
+
+          <div class="grid grid-4 no-print">
+            <select id="advanceType" onchange="refreshAdvanceNames()">
+              <option value="partner">شريك</option>
+              <option value="investor">مساهم</option>
+              <option value="marketer">مسوق</option>
+            </select>
+            <select id="advanceName"></select>
+            <input id="advanceAmount" type="number" placeholder="المبلغ المصروف" />
+            <input id="advanceDate" type="date" />
+          </div>
+          <div class="grid grid-2 no-print">
+            <input id="advanceNote" placeholder="ملاحظة" />
+            <div style="display:flex;align-items:end">
+              <button class="btn-purple" onclick="addAdvance()" style="width:100%">تسجيل دفعة تحت الحساب</button>
             </div>
           </div>
 
-          <div class="report-card">
-            <h3>ملخص مالي عام</h3>
-            <div class="table-wrap">
-              <table>
-                <tbody>
-                  <tr>
-                    <th>إجمالي المبيعات</th>
-                    <td>13,650,000 ر.س</td>
-                  </tr>
-                  <tr>
-                    <th>إجمالي المصروفات</th>
-                    <td>11,200,000 ر.س</td>
-                  </tr>
-                  <tr>
-                    <th>إجمالي الأرباح</th>
-                    <td>2,450,000 ر.س</td>
-                  </tr>
-                  <tr>
-                    <th>إجمالي المدفوع تحت الحساب</th>
-                    <td>420,000 ر.س</td>
-                  </tr>
-                </tbody>
-              </table>
+          <table>
+            <thead>
+              <tr>
+                <th>التاريخ</th>
+                <th>النوع</th>
+                <th>الاسم</th>
+                <th>المبلغ</th>
+                <th>ملاحظة</th>
+              </tr>
+            </thead>
+            <tbody id="advancesBody"></tbody>
+          </table>
+        </div>
+
+        <div id="movementsTab" class="card tab-panel hidden">
+          <h3>دفتر الحركة</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>التاريخ</th>
+                <th>نوع الحركة</th>
+                <th>الاسم / البيان</th>
+                <th>المبلغ</th>
+                <th>ملاحظة</th>
+              </tr>
+            </thead>
+            <tbody id="movementsBody"></tbody>
+          </table>
+        </div>
+
+        <div id="reportTab" class="card tab-panel hidden">
+          <div class="section-title">
+            <h3>ملخص المشروع</h3>
+            <div class="actions no-print">
+              <button class="btn-teal" onclick="exportProjectPDF()">تقرير PDF</button>
             </div>
           </div>
-
-          <div class="report-card">
-            <h3>تقرير الأرباح حسب المشروع</h3>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>المشروع</th>
-                    <th>المبيعات</th>
-                    <th>المصروفات</th>
-                    <th>الربح</th>
-                    <th>نسبة الربح</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>مشروع النخبة</td>
-                    <td>5,200,000</td>
-                    <td>3,900,000</td>
-                    <td>1,300,000</td>
-                    <td>33.33%</td>
-                  </tr>
-                  <tr>
-                    <td>مشروع الواجهة</td>
-                    <td>3,650,000</td>
-                    <td>2,980,000</td>
-                    <td>670,000</td>
-                    <td>22.48%</td>
-                  </tr>
-                  <tr>
-                    <td>مشروع الفرسان</td>
-                    <td>4,800,000</td>
-                    <td>4,320,000</td>
-                    <td>480,000</td>
-                    <td>11.11%</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div class="report-card">
-            <h3>تذييل التقرير</h3>
-            <p>تم إصدار هذا التقرير من نظام فارس الشرقية لإدارة المشاريع العقارية.</p>
-            <div class="footer-note">وجود الشعار هنا مناسب جدًا لأنه يظهر بشكل رسمي في الطباعة والتقارير.</div>
-          </div>
-        </section>
-      </main>
+          <div id="reportBox" class="report-box"></div>
+        </div>
+      </div>
     </div>
-  </section>
+  </div>
+
+  <div id="bookingModal" class="modal hidden">
+    <div class="modal-content">
+      <h3>بيانات الحجز والدفعات</h3>
+
+      <div class="grid grid-4">
+        <input id="bkClient" placeholder="اسم العميل" />
+        <input id="bkClientPhone" placeholder="رقم جوال العميل" />
+        <input id="bkMarketer" placeholder="اسم المسوق" />
+        <input id="bkMarketerPhone" placeholder="رقم جوال المسوق" />
+      </div>
+
+      <div class="grid grid-2" style="margin-top:10px">
+        <input id="bkPrice" type="number" placeholder="سعر البيع" oninput="updateCommissionPreview()" />
+        <input id="bkCommission" readonly placeholder="السعي المستحق" />
+      </div>
+
+      <div class="grid grid-2" style="margin-top:10px">
+        <select id="bkStatus">
+          <option value="محجوزة">محجوزة</option>
+          <option value="مباعة">مباعة</option>
+        </select>
+        <div class="note" style="margin:0">السعي ثابت ٢.٥٪ من سعر البيع</div>
+      </div>
+
+      <h4 style="margin-top:18px">الدفعات الخمس</h4>
+      <div class="grid grid-4">
+        <input id="pay1" type="number" placeholder="الدفعة ١ - عربون" />
+        <input id="pay1Date" type="date" />
+        <input id="pay2" type="number" placeholder="الدفعة ٢" />
+        <input id="pay2Date" type="date" />
+      </div>
+      <div class="grid grid-4">
+        <input id="pay3" type="number" placeholder="الدفعة ٣" />
+        <input id="pay3Date" type="date" />
+        <input id="pay4" type="number" placeholder="الدفعة ٤" />
+        <input id="pay4Date" type="date" />
+      </div>
+      <div class="grid grid-2">
+        <input id="pay5" type="number" placeholder="الدفعة ٥" />
+        <input id="pay5Date" type="date" />
+      </div>
+
+      <div class="actions" style="margin-top:16px">
+        <button class="btn-green" onclick="saveBooking()">حفظ</button>
+        <button class="btn-gray" onclick="closeBooking()">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="pdfRenderArea"></div>
 
   <script>
-    const APP_PASSWORD = "1234"; // غيّرها لأي كلمة مرور تريدها
+    const AUTH_USER = "ANAS";
+    const AUTH_PASS = "Anas8844";
+    const COMMISSION_RATE = 2.5;
+    const STORAGE_KEY = "anas_projects_excel_pdf_v2";
 
-    function login() {
-      const input = document.getElementById("passwordInput").value;
-      const msg = document.getElementById("loginMessage");
+    let appData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"projects":[]}');
+    let currentProjectId = null;
+    let bookingUnitIndex = null;
 
-      if (input.trim() === APP_PASSWORD) {
-        document.getElementById("loginScreen").classList.add("hidden");
-        document.getElementById("appShell").classList.remove("hidden");
-        msg.textContent = "";
+    function saveApp(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+    }
+
+    function num(v){ return Number(v || 0); }
+    function money(v){ return Number(v || 0).toLocaleString('en-US', {maximumFractionDigits: 2}) + " ر.س"; }
+
+    function calcCommission(price){ return num(price) * COMMISSION_RATE / 100; }
+
+    function todayText(){ return new Date().toLocaleDateString('en-CA'); }
+
+    function normalizePhone(phone){
+      let p = String(phone || "").replace(/[^\d+]/g, "");
+      if(!p) return "";
+      if(p.startsWith("00")) p = "+" + p.slice(2);
+      if(p.startsWith("+")) return p;
+      if(p.startsWith("0")) return "+966" + p.slice(1);
+      if(p.startsWith("966")) return "+" + p;
+      return "+966" + p;
+    }
+
+    function telPhone(phone){
+      const p = normalizePhone(phone);
+      return p ? `tel:${p}` : "#";
+    }
+
+    function waPhone(phone){
+      const p = normalizePhone(phone).replace("+", "");
+      return p ? `https://wa.me/${p}` : "#";
+    }
+
+    function phoneCell(phone, label="اتصال"){
+      if(!phone || phone === "-") return "-";
+      const display = String(phone);
+      return `
+        <div class="phone-box">
+          <div class="phone-text">${display}</div>
+          <div class="mini-actions">
+            <a class="btn-link" href="${telPhone(phone)}">${label} 📞</a>
+            <a class="btn-wa" href="${waPhone(phone)}" target="_blank" rel="noopener noreferrer">واتساب</a>
+          </div>
+        </div>
+      `;
+    }
+
+    function getProject(){
+      return appData.projects.find(p => p.id === currentProjectId);
+    }
+
+    function ensureArrays(project){
+      if(!project.units) project.units = [];
+      if(!project.expenses) project.expenses = [];
+      if(!project.partners) project.partners = [];
+      if(!project.investors) project.investors = [];
+      if(!project.advances) project.advances = [];
+      if(!project.movements) project.movements = [];
+    }
+
+    function addMovement(type, name, amount, note, dateValue){
+      const p = getProject();
+      ensureArrays(p);
+      p.movements.unshift({
+        date: dateValue || todayText(),
+        type: type || "",
+        name: name || "",
+        amount: num(amount),
+        note: note || ""
+      });
+    }
+
+    function login(){
+      const u = document.getElementById("loginUser").value.trim();
+      const p = document.getElementById("loginPass").value;
+      if(u === AUTH_USER && p === AUTH_PASS){
+        sessionStorage.setItem("anasLoggedExcelPdf", "1");
+        document.getElementById("loginView").classList.add("hidden");
+        document.getElementById("appView").classList.remove("hidden");
+        renderProjects();
+      }else{
+        alert("اسم المستخدم أو كلمة المرور غير صحيح");
+      }
+    }
+
+    function logout(){
+      sessionStorage.removeItem("anasLoggedExcelPdf");
+      location.reload();
+    }
+
+    (function init(){
+      if(sessionStorage.getItem("anasLoggedExcelPdf") === "1"){
+        document.getElementById("loginView").classList.add("hidden");
+        document.getElementById("appView").classList.remove("hidden");
+        renderProjects();
+      }
+    })();
+
+    function createProject(){
+      const name = document.getElementById("newProjectName").value.trim();
+      const cost = num(document.getElementById("newProjectCost").value);
+      const notes = document.getElementById("newProjectNotes").value.trim();
+
+      if(!name){
+        alert("اكتب اسم المشروع");
+        return;
+      }
+
+      appData.projects.push({
+        id: Date.now().toString(),
+        name,
+        cost,
+        notes,
+        units: [],
+        expenses: [],
+        partners: [],
+        investors: [],
+        advances: [],
+        movements: []
+      });
+
+      saveApp();
+      document.getElementById("newProjectName").value = "";
+      document.getElementById("newProjectCost").value = "";
+      document.getElementById("newProjectNotes").value = "";
+      renderProjects();
+    }
+
+    function renderProjects(){
+      const box = document.getElementById("projectsList");
+      box.innerHTML = "";
+
+      if(!appData.projects.length){
+        box.innerHTML = '<div class="small">لا يوجد مشاريع بعد</div>';
+        return;
+      }
+
+      appData.projects.forEach(p => {
+        ensureArrays(p);
+        box.innerHTML += `
+          <div class="project-item">
+            <div>
+              <strong>${p.name}</strong><br>
+              <span class="small">التكلفة الأساسية: ${money(p.cost)} ${p.notes ? " | " + p.notes : ""}</span>
+            </div>
+            <div class="actions">
+              <button class="btn" onclick="openProject('${p.id}')">فتح المشروع</button>
+              <button class="btn-red" onclick="deleteProject('${p.id}')">حذف</button>
+            </div>
+          </div>
+        `;
+      });
+      saveApp();
+    }
+
+    function deleteProject(id){
+      if(!confirm("هل تريد حذف المشروع؟")) return;
+      appData.projects = appData.projects.filter(p => p.id !== id);
+      saveApp();
+      renderProjects();
+    }
+
+    function openProject(id){
+      currentProjectId = id;
+      document.getElementById("projectsView").classList.add("hidden");
+      document.getElementById("workspaceView").classList.remove("hidden");
+      renderProject();
+    }
+
+    function backToProjects(){
+      currentProjectId = null;
+      document.getElementById("workspaceView").classList.add("hidden");
+      document.getElementById("projectsView").classList.remove("hidden");
+      renderProjects();
+    }
+
+    function showTab(id, btn){
+      document.querySelectorAll(".tab-panel").forEach(x => x.classList.add("hidden"));
+      document.getElementById(id).classList.remove("hidden");
+      document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+      btn.classList.add("active");
+      if(id === "advancesTab") refreshAdvanceNames();
+    }
+
+    function partnerRowsWithCompany(project){
+      const manualPartners = project.partners || [];
+      const sumPartners = manualPartners.reduce((s,x) => s + num(x.percent), 0);
+      const companyPercent = Math.max(0, 100 - sumPartners);
+
+      return [
+        {name:"الشركة", percent:companyPercent, date:"-", auto:true},
+        ...manualPartners.map(x => ({
+          name:x.name,
+          percent:num(x.percent),
+          date:x.date || "-",
+          auto:false
+        }))
+      ];
+    }
+
+    function investorRowsWithCompany(project, companyShareProfit){
+      const manualInvestors = project.investors || [];
+      const baseAmount = num(companyShareProfit);
+      const totalInvestorAmount = manualInvestors.reduce((s,x) => s + num(x.amount), 0);
+
+      const rows = manualInvestors.map(x => {
+        const ratio = baseAmount > 0 ? (num(x.amount) / baseAmount) * 100 : 0;
+        const grossShare = num(x.amount);
+        const adminRate = num(x.adminRate);
+        const adminValue = grossShare * adminRate / 100;
+        const netShare = grossShare - adminValue;
+        return {
+          name: x.name,
+          amount: num(x.amount),
+          ratio: ratio,
+          grossShare: grossShare,
+          adminRate: adminRate,
+          adminValue: adminValue,
+          netShare: netShare,
+          date: x.date || "-",
+          auto: false
+        };
+      });
+
+      const companyRemainingAmount = Math.max(0, baseAmount - totalInvestorAmount);
+      const companyRatio = baseAmount > 0 ? (companyRemainingAmount / baseAmount) * 100 : 0;
+
+      rows.unshift({
+        name: "الشركة",
+        amount: companyRemainingAmount,
+        ratio: companyRatio,
+        grossShare: companyRemainingAmount,
+        adminRate: 0,
+        adminValue: 0,
+        netShare: companyRemainingAmount,
+        date: "-",
+        auto: true
+      });
+
+      return rows;
+    }
+
+    function marketerSummaryForProject(project){
+      const map = {};
+      (project.units || []).forEach((u) => {
+        const name = (u.marketer && u.marketer !== "-") ? u.marketer : "";
+        if(!name) return;
+
+        if(!map[name]){
+          map[name] = {
+            units: 0,
+            commissionDue: 0,
+            commissionPaid: 0,
+            commissionRemain: 0,
+            phone: u.marketerPhone || "-"
+          };
+        }
+
+        if(!map[name].phone || map[name].phone === "-"){
+          map[name].phone = u.marketerPhone || "-";
+        }
+
+        map[name].units += 1;
+        map[name].commissionDue += num(u.commissionDue);
+        map[name].commissionPaid += num(u.commissionPaid);
+        map[name].commissionRemain += num(u.commissionDue) - num(u.commissionPaid);
+      });
+      return map;
+    }
+
+    function marketerSummary(){
+      return marketerSummaryForProject(getProject());
+    }
+
+    function calcAdvanceTotals(project){
+      const adv = project.advances || [];
+      const result = {
+        partner:{},
+        investor:{},
+        marketer:{}
+      };
+      adv.forEach(a => {
+        if(!result[a.entityType][a.entityName]) result[a.entityType][a.entityName] = 0;
+        result[a.entityType][a.entityName] += num(a.amount);
+      });
+      return result;
+    }
+
+    function calcProjectFinancials(project){
+      const units = project.units || [];
+      const expenses = project.expenses || [];
+      const advanceTotals = calcAdvanceTotals(project);
+
+      const totalSales = units.filter(u => u.status === "مباعة").reduce((s,u) => s + num(u.price), 0);
+      const totalExpenses = expenses.reduce((s,e) => s + num(e.amount), 0);
+      const totalCommissionDue = units.reduce((s,u) => s + num(u.commissionDue), 0);
+      const totalCommissionPaid = units.reduce((s,u) => s + num(u.commissionPaid), 0);
+      const totalCommissionRemain = totalCommissionDue - totalCommissionPaid;
+      const soldUnits = units.filter(u => u.status === "مباعة").length;
+      const bookedUnits = units.filter(u => u.status === "محجوزة").length;
+      const availableUnits = units.filter(u => u.status === "متاحة").length;
+
+      const profit = totalSales - num(project.cost) - totalExpenses - totalCommissionPaid;
+
+      const partnersFull = partnerRowsWithCompany(project).map(x => {
+        const share = (num(x.percent) / 100) * profit;
+        const paidAdvance = num(advanceTotals.partner[x.name] || 0);
+        return {...x, share, paidAdvance, remain: share - paidAdvance};
+      });
+
+      const companyRow = partnersFull.find(x => x.name === "الشركة");
+      const companyShareProfit = companyRow ? num(companyRow.share) : 0;
+
+      const investorsFull = investorRowsWithCompany(project, companyShareProfit).map(x => {
+        const paidAdvance = num(advanceTotals.investor[x.name] || 0);
+        return {...x, paidAdvance, remain: x.netShare - paidAdvance};
+      });
+
+      const totalInvestorAdmin = investorsFull
+        .filter(x => !x.auto)
+        .reduce((s,x) => s + num(x.adminValue), 0);
+
+      const companyFinalProfit = companyShareProfit + totalInvestorAdmin;
+
+      const marketers = marketerSummaryForProject(project);
+      const marketerRows = Object.keys(marketers).map(name => {
+        const paidAdvance = num(advanceTotals.marketer[name] || 0);
+        return {
+          name,
+          ...marketers[name],
+          paidAdvance,
+          remainAfterAdvance: marketers[name].commissionRemain - paidAdvance
+        };
+      });
+
+      return {
+        totalSales,
+        totalExpenses,
+        totalCommissionDue,
+        totalCommissionPaid,
+        totalCommissionRemain,
+        soldUnits,
+        bookedUnits,
+        availableUnits,
+        profit,
+        companyShareProfit,
+        partnersFull,
+        investorsFull,
+        totalInvestorAdmin,
+        companyFinalProfit,
+        marketerRows
+      };
+    }
+
+    function projectFinancials(){
+      return calcProjectFinancials(getProject());
+    }
+
+    function uniqueMarketers(project){
+      const names = [];
+      const seen = new Set();
+      (project.units || []).forEach(u => {
+        const n = (u.marketer || "").trim();
+        if(n && n !== "-" && !seen.has(n)){
+          seen.add(n);
+          names.push(n);
+        }
+      });
+      return names.sort();
+    }
+
+    function renderMarketerFilter(){
+      const p = getProject();
+      const names = uniqueMarketers(p);
+      const filter = document.getElementById("unitMarketerFilter");
+      const currentValue = filter ? filter.value : "";
+      filter.innerHTML = `<option value="">كل المسوقين</option>` + names.map(n => `<option value="${n}">${n}</option>`).join("");
+      filter.value = names.includes(currentValue) ? currentValue : "";
+    }
+
+    function buildAlerts(project){
+      const alerts = [];
+      calcProjectFinancials(project).marketerRows.forEach(m => {
+        if(num(m.remainAfterAdvance) > 0){
+          alerts.push(`المسوق ${m.name} له متبقي ${money(m.remainAfterAdvance)}`);
+        }
+      });
+
+      calcProjectFinancials(project).partnersFull.filter(x => !x.auto).forEach(x => {
+        if(num(x.remain) > 0){
+          alerts.push(`الشريك ${x.name} له متبقي ${money(x.remain)}`);
+        }
+      });
+
+      calcProjectFinancials(project).investorsFull.filter(x => !x.auto).forEach(x => {
+        if(num(x.remain) > 0){
+          alerts.push(`المساهم ${x.name} له متبقي ${money(x.remain)}`);
+        }
+      });
+
+      (project.units || []).forEach(u => {
+        if(num(u.remaining) > 0 && (u.status === "محجوزة" || u.status === "مباعة")){
+          alerts.push(`الوحدة ${u.number} في مبنى ${u.building} عليها متبقي ${money(u.remaining)}`);
+        }
+      });
+
+      return alerts;
+    }
+
+    function buildIssues(project){
+      const issues = [];
+      const seen = new Set();
+
+      (project.units || []).forEach(u => {
+        const key = `${u.number}||${u.building}`;
+        if(seen.has(key)){
+          issues.push(`تكرار وحدة: رقم ${u.number} - مبنى ${u.building}`);
+        } else {
+          seen.add(key);
+        }
+
+        if(!u.number || !u.building){
+          issues.push(`بيانات ناقصة في إحدى الوحدات`);
+        }
+
+        if(num(u.paid) > num(u.price)){
+          issues.push(`الوحدة ${u.number} المدفوع فيها أكبر من سعرها`);
+        }
+
+        if(num(u.commissionPaid) > num(u.commissionDue)){
+          issues.push(`الوحدة ${u.number} السعي المصروف فيها أكبر من المستحق`);
+        }
+      });
+
+      return issues;
+    }
+
+    function renderAlertsAndIssues(){
+      const p = getProject();
+      const alerts = buildAlerts(p);
+      const issues = buildIssues(p);
+
+      const alertsBox = document.getElementById("alertsBox");
+      const issuesBox = document.getElementById("issuesBox");
+
+      alertsBox.innerHTML = alerts.length
+        ? `<div class="danger"><strong>تنبيهات:</strong><br>${alerts.join("<br>")}</div>`
+        : `<div class="success"><strong>التنبيهات:</strong> لا توجد متأخرات حالياً.</div>`;
+
+      issuesBox.innerHTML = issues.length
+        ? `<div class="danger"><strong>مراجعة الأخطاء:</strong><br>${issues.join("<br>")}</div>`
+        : `<div class="success"><strong>مراجعة الأخطاء:</strong> لا توجد أخطاء أو تكرارات.</div>`;
+    }
+
+    function renderProject(){
+      const p = getProject();
+      ensureArrays(p);
+      const f = projectFinancials();
+
+      document.getElementById("projectTitle").innerText = p.name;
+      document.getElementById("projectMeta").innerText = `التكلفة الأساسية: ${money(p.cost)}${p.notes ? " | " + p.notes : ""}`;
+
+      document.getElementById("kpiSales").innerText = money(f.totalSales);
+      document.getElementById("kpiCost").innerText = money(p.cost);
+      document.getElementById("kpiExpenses").innerText = money(f.totalExpenses);
+      document.getElementById("kpiCommissionDue").innerText = money(f.totalCommissionDue);
+      document.getElementById("kpiCommissionPaid").innerText = money(f.totalCommissionPaid);
+      document.getElementById("kpiCommissionRemain").innerText = money(f.totalCommissionRemain);
+      document.getElementById("kpiProfit").innerText = money(f.profit);
+      document.getElementById("kpiCompanyFromPartners").innerText = money(f.companyShareProfit);
+      document.getElementById("kpiInvestorAdmin").innerText = money(f.totalInvestorAdmin);
+      document.getElementById("kpiCompanyFinal").innerText = money(f.companyFinalProfit);
+      document.getElementById("kpiSold").innerText = f.soldUnits;
+      document.getElementById("kpiBooked").innerText = f.bookedUnits;
+      document.getElementById("kpiAvailable").innerText = f.availableUnits;
+
+      renderAlertsAndIssues();
+      renderMarketerFilter();
+      renderUnits();
+      renderMarketers();
+      renderExpenses();
+      renderPartners();
+      renderInvestors();
+      renderAdvances();
+      renderMovements();
+      renderReport();
+      refreshAdvanceNames();
+
+      saveApp();
+    }
+
+    function addUnit(){
+      const p = getProject();
+
+      const unit = {
+        number: document.getElementById("unitNumber").value.trim(),
+        model: document.getElementById("unitModel").value.trim(),
+        floor: document.getElementById("unitFloor").value.trim(),
+        building: document.getElementById("unitBuilding").value.trim(),
+        view: document.getElementById("unitView").value.trim(),
+        area: document.getElementById("unitArea").value.trim(),
+        components: document.getElementById("unitComponents").value.trim(),
+        price: num(document.getElementById("unitPrice").value),
+        status: "متاحة",
+        client: "-",
+        clientPhone: "-",
+        marketer: "-",
+        marketerPhone: "-",
+        commissionDue: 0,
+        commissionPaid: 0,
+        payments: [0,0,0,0,0],
+        paymentDates: ["","","","",""],
+        paid: 0,
+        remaining: num(document.getElementById("unitPrice").value)
+      };
+
+      if(!unit.number || !unit.building){
+        alert("رقم الشقة والمبنى مطلوبان");
+        return;
+      }
+
+      const exists = p.units.find(u => u.number === unit.number && u.building === unit.building);
+      if(exists){
+        alert("الوحدة مكررة داخل هذا المشروع");
+        return;
+      }
+
+      p.units.push(unit);
+      addMovement("إضافة وحدة", `${unit.number} - ${unit.building}`, unit.price, "إضافة وحدة يدويًا", todayText());
+
+      document.getElementById("unitNumber").value = "";
+      document.getElementById("unitModel").value = "";
+      document.getElementById("unitFloor").value = "";
+      document.getElementById("unitBuilding").value = "";
+      document.getElementById("unitView").value = "";
+      document.getElementById("unitArea").value = "";
+      document.getElementById("unitComponents").value = "";
+      document.getElementById("unitPrice").value = "";
+
+      renderProject();
+    }
+
+    function importUnitsExcel(){
+      const file = document.getElementById("unitExcelFile").files[0];
+      if(!file){
+        alert("اختر ملف إكسل أولًا");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e){
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, {type:"array"});
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, {header:1});
+        processImportedUnits(rows);
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function importUnitsPaste(){
+      const text = document.getElementById("unitPasteData").value.trim();
+      if(!text){
+        alert("الصق البيانات أولًا");
+        return;
+      }
+      const rows = text.split("\n").map(r => r.split("\t"));
+      processImportedUnits(rows);
+    }
+
+    function processImportedUnits(rows){
+      const p = getProject();
+      let added = 0, duplicated = 0, errors = 0;
+
+      rows.forEach((row, index) => {
+        if(index === 0) return;
+
+        try{
+          const [number, model, floor, building, view, area, components, price] = row;
+
+          if(!number || !building){
+            errors++;
+            return;
+          }
+
+          const exists = p.units.find(u => String(u.number) === String(number) && String(u.building) === String(building));
+          if(exists){
+            duplicated++;
+            return;
+          }
+
+          p.units.push({
+            number: String(number).trim(),
+            model: String(model || "").trim(),
+            floor: String(floor || "").trim(),
+            building: String(building || "").trim(),
+            view: String(view || "").trim(),
+            area: String(area || "").trim(),
+            components: String(components || "").trim(),
+            price: num(price),
+            status: "متاحة",
+            client: "-",
+            clientPhone: "-",
+            marketer: "-",
+            marketerPhone: "-",
+            commissionDue: 0,
+            commissionPaid: 0,
+            payments: [0,0,0,0,0],
+            paymentDates: ["","","","",""],
+            paid: 0,
+            remaining: num(price)
+          });
+          added++;
+        }catch(err){
+          errors++;
+        }
+      });
+
+      addMovement("استيراد وحدات", p.name, added, `تمت إضافة ${added} | مكرر ${duplicated} | أخطاء ${errors}`, todayText());
+      renderProject();
+      alert(`تم الاستيراد\nالمضاف: ${added}\nالمكرر: ${duplicated}\nالأخطاء: ${errors}`);
+    }
+
+    function statusBadge(status){
+      if(status === "متاحة") return '<span class="badge available">متاحة</span>';
+      if(status === "محجوزة") return '<span class="badge booked">محجوزة</span>';
+      return '<span class="badge sold">مباعة</span>';
+    }
+
+    function renderUnits(){
+      const p = getProject();
+      const marketerFilter = document.getElementById("unitMarketerFilter")?.value || "";
+      const body = document.getElementById("unitsBody");
+      body.innerHTML = "";
+
+      let units = p.units || [];
+      if(marketerFilter){
+        units = units.filter(u => (u.marketer || "") === marketerFilter);
+      }
+
+      if(!units.length){
+        body.innerHTML = '<tr><td colspan="16">لا توجد وحدات</td></tr>';
+        return;
+      }
+
+      units.forEach(u => {
+        const i = p.units.indexOf(u);
+        const rowClass = num(u.remaining) > 0 && (u.status === "محجوزة" || u.status === "مباعة") ? "warn-row" : "";
+        body.innerHTML += `
+          <tr class="${rowClass}">
+            <td class="editable" contenteditable="true" onblur="editUnitField(${i},'number',this.innerText)">${u.number}</td>
+            <td class="editable" contenteditable="true" onblur="editUnitField(${i},'model',this.innerText)">${u.model || ""}</td>
+            <td class="editable" contenteditable="true" onblur="editUnitField(${i},'floor',this.innerText)">${u.floor || ""}</td>
+            <td class="editable" contenteditable="true" onblur="editUnitField(${i},'building',this.innerText)">${u.building || ""}</td>
+            <td class="editable" contenteditable="true" onblur="editUnitField(${i},'view',this.innerText)">${u.view || ""}</td>
+            <td class="editable" contenteditable="true" onblur="editUnitField(${i},'area',this.innerText)">${u.area || ""}</td>
+            <td class="editable" contenteditable="true" onblur="editUnitField(${i},'components',this.innerText)">${u.components || ""}</td>
+            <td class="editable" contenteditable="true" onblur="editUnitField(${i},'price',this.innerText,true)">${num(u.price)}</td>
+            <td>${statusBadge(u.status)}</td>
+            <td>${u.client}</td>
+            <td>${phoneCell(u.clientPhone, "اتصال")}</td>
+            <td>${u.marketer}</td>
+            <td>${phoneCell(u.marketerPhone, "اتصال")}</td>
+            <td>${money(u.paid)}</td>
+            <td>${money(u.remaining)}</td>
+            <td class="no-print">
+              <div class="actions">
+                <button class="btn" onclick="openBooking(${i})">حجز/دفعات</button>
+                <button class="btn-purple" onclick="forceSold(${i})">بيع</button>
+                <button class="btn-red" onclick="deleteUnit(${i})">حذف</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function editUnitField(index, field, value, isNumber=false){
+      const p = getProject();
+      const u = p.units[index];
+      if(!u) return;
+
+      const oldValue = u[field];
+      u[field] = isNumber ? num(value) : String(value).trim();
+
+      if(field === "price"){
+        u.remaining = num(u.price) - num(u.paid);
+        u.commissionDue = calcCommission(u.price);
+        if(num(u.commissionPaid) > num(u.commissionDue)){
+          u.commissionPaid = u.commissionDue;
+        }
+      }
+
+      addMovement("تعديل وحدة", `${u.number} - ${u.building}`, 0, `تعديل الحقل ${field} من ${oldValue} إلى ${u[field]}`, todayText());
+      renderProject();
+    }
+
+    function openBooking(i){
+      const u = getProject().units[i];
+      bookingUnitIndex = i;
+
+      document.getElementById("bkClient").value = u.client === "-" ? "" : u.client;
+      document.getElementById("bkClientPhone").value = u.clientPhone === "-" ? "" : u.clientPhone;
+      document.getElementById("bkMarketer").value = u.marketer === "-" ? "" : u.marketer;
+      document.getElementById("bkMarketerPhone").value = u.marketerPhone === "-" ? "" : u.marketerPhone;
+      document.getElementById("bkPrice").value = u.price;
+      document.getElementById("bkCommission").value = calcCommission(u.price).toFixed(2);
+      document.getElementById("bkStatus").value = u.status === "مباعة" ? "مباعة" : "محجوزة";
+
+      const pays = u.payments || [0,0,0,0,0];
+      const dates = u.paymentDates || ["","","","",""];
+
+      document.getElementById("pay1").value = pays[0] || 0;
+      document.getElementById("pay2").value = pays[1] || 0;
+      document.getElementById("pay3").value = pays[2] || 0;
+      document.getElementById("pay4").value = pays[3] || 0;
+      document.getElementById("pay5").value = pays[4] || 0;
+
+      document.getElementById("pay1Date").value = dates[0] || "";
+      document.getElementById("pay2Date").value = dates[1] || "";
+      document.getElementById("pay3Date").value = dates[2] || "";
+      document.getElementById("pay4Date").value = dates[3] || "";
+      document.getElementById("pay5Date").value = dates[4] || "";
+
+      document.getElementById("bookingModal").classList.remove("hidden");
+    }
+
+    function updateCommissionPreview(){
+      const price = num(document.getElementById("bkPrice").value);
+      document.getElementById("bkCommission").value = calcCommission(price).toFixed(2);
+    }
+
+    function saveBooking(){
+      const p = getProject();
+      const u = p.units[bookingUnitIndex];
+
+      const client = document.getElementById("bkClient").value.trim();
+      const clientPhone = document.getElementById("bkClientPhone").value.trim();
+      const marketer = document.getElementById("bkMarketer").value.trim();
+      const marketerPhone = document.getElementById("bkMarketerPhone").value.trim();
+      const price = num(document.getElementById("bkPrice").value);
+      const status = document.getElementById("bkStatus").value;
+
+      const payments = [
+        num(document.getElementById("pay1").value),
+        num(document.getElementById("pay2").value),
+        num(document.getElementById("pay3").value),
+        num(document.getElementById("pay4").value),
+        num(document.getElementById("pay5").value)
+      ];
+
+      const paymentDates = [
+        document.getElementById("pay1Date").value,
+        document.getElementById("pay2Date").value,
+        document.getElementById("pay3Date").value,
+        document.getElementById("pay4Date").value,
+        document.getElementById("pay5Date").value
+      ];
+
+      if(!client){
+        alert("اكتب اسم العميل");
+        return;
+      }
+      if(price <= 0){
+        alert("اكتب سعر البيع");
+        return;
+      }
+      if(payments[0] <= 0){
+        alert("لازم عربون الحجز أكبر من صفر");
+        return;
+      }
+
+      const oldPaid = num(u.commissionPaid);
+      const oldPayments = u.payments || [0,0,0,0,0];
+
+      u.client = client;
+      u.clientPhone = clientPhone || "-";
+      u.marketer = marketer || "-";
+      u.marketerPhone = marketerPhone || "-";
+      u.price = price;
+      u.commissionDue = calcCommission(price);
+      u.commissionPaid = Math.min(oldPaid, u.commissionDue);
+      u.payments = payments;
+      u.paymentDates = paymentDates;
+      u.paid = payments.reduce((a,b) => a + num(b), 0);
+      u.remaining = price - u.paid;
+      u.status = status;
+
+      for(let i=0;i<5;i++){
+        if(num(payments[i]) > 0 && num(oldPayments[i]) !== num(payments[i])){
+          addMovement(
+            "تحصيل دفعة",
+            `${u.number} - ${client} - دفعة ${i+1}`,
+            payments[i],
+            i===0 ? "عربون حجز" : `دفعة رقم ${i+1}`,
+            paymentDates[i] || todayText()
+          );
+        }
+      }
+
+      addMovement(
+        "تحديث حجز",
+        `${u.number} - ${client}`,
+        price,
+        `الحالة: ${status} | المسوق: ${marketer || "-"} | جوال المسوق: ${marketerPhone || "-"} | جوال العميل: ${clientPhone || "-"}`,
+        todayText()
+      );
+
+      closeBooking();
+      renderProject();
+    }
+
+    function closeBooking(){
+      document.getElementById("bookingModal").classList.add("hidden");
+      bookingUnitIndex = null;
+    }
+
+    function forceSold(i){
+      const u = getProject().units[i];
+      if(u.client === "-"){
+        alert("أدخل بيانات الحجز أولًا");
+        return;
+      }
+      u.status = "مباعة";
+      addMovement("بيع وحدة", `${u.number} - ${u.client}`, u.price, "تم تحويل الوحدة إلى مباعة", todayText());
+      renderProject();
+    }
+
+    function deleteUnit(i){
+      if(!confirm("هل تريد حذف الوحدة؟")) return;
+      const u = getProject().units[i];
+      addMovement("حذف وحدة", `${u.number} - ${u.building}`, u.price, "تم حذف الوحدة", todayText());
+      getProject().units.splice(i,1);
+      renderProject();
+    }
+
+    function renderMarketers(){
+      const body = document.getElementById("marketersBody");
+      const rows = projectFinancials().marketerRows;
+      body.innerHTML = "";
+
+      if(!rows.length){
+        body.innerHTML = '<tr><td colspan="7">لا يوجد مسوقون</td></tr>';
+        return;
+      }
+
+      rows.forEach(m => {
+        const cls = num(m.remainAfterAdvance) > 0 ? "warn-row" : "";
+        body.innerHTML += `
+          <tr class="${cls}">
+            <td>${m.name}</td>
+            <td>${m.units}</td>
+            <td>${money(m.commissionDue)}</td>
+            <td>${money(m.paidAdvance)}</td>
+            <td>${money(m.remainAfterAdvance)}</td>
+            <td>${phoneCell(m.phone, "اتصال")}</td>
+            <td class="no-print"><button class="btn-teal" onclick="exportMarketerPDF('${escapeQuotes(m.name)}')">PDF</button></td>
+          </tr>
+        `;
+      });
+    }
+
+    function addExpense(){
+      const p = getProject();
+
+      const date = document.getElementById("expenseDate").value || todayText();
+      const category = document.getElementById("expenseCategory").value.trim();
+      const description = document.getElementById("expenseDesc").value.trim();
+      const amount = num(document.getElementById("expenseAmount").value);
+
+      if(!category || !description || !amount){
+        alert("اكمل بيانات المصروف");
+        return;
+      }
+
+      p.expenses.push({date, category, description, amount});
+      addMovement("مصروف", `${category} - ${description}`, amount, "إضافة مصروف", date);
+
+      document.getElementById("expenseDate").value = "";
+      document.getElementById("expenseCategory").value = "";
+      document.getElementById("expenseDesc").value = "";
+      document.getElementById("expenseAmount").value = "";
+
+      renderProject();
+    }
+
+    function renderExpenses(){
+      const p = getProject();
+      const body = document.getElementById("expensesBody");
+      body.innerHTML = "";
+
+      if(!p.expenses.length){
+        body.innerHTML = '<tr><td colspan="5">لا توجد مصروفات</td></tr>';
+        return;
+      }
+
+      p.expenses.forEach((e,i) => {
+        body.innerHTML += `
+          <tr>
+            <td>${e.date}</td>
+            <td>${e.category}</td>
+            <td>${e.description}</td>
+            <td>${money(e.amount)}</td>
+            <td class="no-print"><button class="btn-red" onclick="deleteExpense(${i})">حذف</button></td>
+          </tr>
+        `;
+      });
+    }
+
+    function deleteExpense(i){
+      if(!confirm("هل تريد حذف المصروف؟")) return;
+      const e = getProject().expenses[i];
+      addMovement("حذف مصروف", `${e.category} - ${e.description}`, e.amount, "تم حذف المصروف", todayText());
+      getProject().expenses.splice(i,1);
+      renderProject();
+    }
+
+    function addPartner(){
+      const p = getProject();
+      const name = document.getElementById("partnerName").value.trim();
+      const percent = num(document.getElementById("partnerPercent").value);
+      const date = document.getElementById("partnerDate").value || todayText();
+
+      if(!name){
+        alert("اكتب اسم الشريك");
+        return;
+      }
+      if(percent <= 0){
+        alert("اكتب نسبة صحيحة");
+        return;
+      }
+
+      const currentSum = p.partners.reduce((s,x) => s + num(x.percent), 0);
+      if(currentSum + percent > 100){
+        alert("مجموع نسب الشركاء لا يمكن أن يزيد عن 100%");
+        return;
+      }
+
+      p.partners.push({name, percent, date});
+      addMovement("إضافة شريك", name, percent, `نسبة الشريك ${percent}%`, date);
+
+      document.getElementById("partnerName").value = "";
+      document.getElementById("partnerPercent").value = "";
+      document.getElementById("partnerDate").value = "";
+
+      renderProject();
+    }
+
+    function renderPartners(){
+      const body = document.getElementById("partnersBody");
+      const rows = projectFinancials().partnersFull;
+      body.innerHTML = "";
+
+      rows.forEach((x,i) => {
+        const cls = !x.auto && num(x.remain) > 0 ? "warn-row" : "";
+        body.innerHTML += `
+          <tr class="${x.auto ? 'auto-row' : cls}">
+            <td>${x.name}${x.auto ? ' (تلقائي)' : ''}</td>
+            <td>${num(x.percent).toFixed(2)}%</td>
+            <td>${money(x.share)}</td>
+            <td>${money(x.paidAdvance || 0)}</td>
+            <td>${money(x.remain || x.share)}</td>
+            <td>${x.date || "-"}</td>
+            <td class="no-print">${x.auto ? '-' : `<button class="btn-teal" onclick="exportPartnerPDF('${escapeQuotes(x.name)}')">PDF</button>`}</td>
+            <td class="no-print">
+              ${x.auto ? '-' : `<button class="btn-red" onclick="deletePartner(${i-1})">حذف</button>`}
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function deletePartner(i){
+      if(!confirm("هل تريد حذف الشريك؟")) return;
+      const x = getProject().partners[i];
+      addMovement("حذف شريك", x.name, x.percent, `تم حذف شريك بنسبة ${x.percent}%`, todayText());
+      getProject().partners.splice(i,1);
+      renderProject();
+    }
+
+    function addInvestor(){
+      const p = getProject();
+      const f = projectFinancials();
+
+      const name = document.getElementById("investorName").value.trim();
+      const amount = num(document.getElementById("investorAmount").value);
+      const adminRate = num(document.getElementById("investorAdminRate").value);
+      const date = document.getElementById("investorDate").value || todayText();
+
+      if(!name){
+        alert("اكتب اسم المساهم");
+        return;
+      }
+      if(amount <= 0){
+        alert("اكتب مبلغ صحيح");
+        return;
+      }
+
+      const companyBase = num(f.companyShareProfit);
+      const currentTotal = (p.investors || []).reduce((s, x) => s + num(x.amount), 0);
+
+      if(companyBase <= 0){
+        alert("لا يمكن إضافة مساهمين قبل وجود نصيب للشركة من الشركاء.");
+        return;
+      }
+
+      if(currentTotal + amount > companyBase){
+        alert("مجموع مبالغ المساهمين لا يمكن أن يزيد عن نصيب الشركة من الشركاء.");
+        return;
+      }
+
+      p.investors.push({ name, amount, adminRate, date });
+      addMovement("إضافة مساهم", name, amount, `إدارة ${adminRate}%`, date);
+
+      document.getElementById("investorName").value = "";
+      document.getElementById("investorAmount").value = "";
+      document.getElementById("investorAdminRate").value = "";
+      document.getElementById("investorDate").value = "";
+
+      renderProject();
+    }
+
+    function renderInvestors(){
+      const body = document.getElementById("investorsBody");
+      const rows = projectFinancials().investorsFull;
+      body.innerHTML = "";
+
+      rows.forEach((x,i) => {
+        const cls = !x.auto && num(x.remain) > 0 ? "warn-row" : "";
+        body.innerHTML += `
+          <tr class="${x.auto ? 'auto-row' : cls}">
+            <td>${x.name}${x.auto ? ' (تلقائي)' : ''}</td>
+            <td>${money(x.amount)}</td>
+            <td>${num(x.ratio).toFixed(2)}%</td>
+            <td>${money(x.grossShare)}</td>
+            <td>${num(x.adminRate).toFixed(2)}%</td>
+            <td>${money(x.adminValue)}</td>
+            <td>${money(x.netShare)}</td>
+            <td>${money(x.paidAdvance || 0)}</td>
+            <td>${money(x.remain || x.netShare)}</td>
+            <td>${x.date || "-"}</td>
+            <td class="no-print">${x.auto ? '-' : `<button class="btn-teal" onclick="exportInvestorPDF('${escapeQuotes(x.name)}')">PDF</button>`}</td>
+            <td class="no-print">
+              ${x.auto ? '-' : `<button class="btn-red" onclick="deleteInvestor(${i-1})">حذف</button>`}
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function deleteInvestor(i){
+      if(!confirm("هل تريد حذف المساهم؟")) return;
+      const x = getProject().investors[i];
+      addMovement("حذف مساهم", x.name, x.amount, `تم حذف مساهم | إدارة ${x.adminRate || 0}%`, todayText());
+      getProject().investors.splice(i,1);
+      renderProject();
+    }
+
+    function refreshAdvanceNames(){
+      const p = getProject();
+      if(!p) return;
+
+      const type = document.getElementById("advanceType");
+      const nameSel = document.getElementById("advanceName");
+      if(!type || !nameSel) return;
+
+      let names = [];
+      if(type.value === "partner"){
+        names = projectFinancials().partnersFull.filter(x => !x.auto).map(x => x.name);
+      } else if(type.value === "investor"){
+        names = projectFinancials().investorsFull.filter(x => !x.auto).map(x => x.name);
       } else {
-        msg.textContent = "كلمة المرور غير صحيحة";
+        names = projectFinancials().marketerRows.map(x => x.name);
       }
+
+      nameSel.innerHTML = names.length
+        ? names.map(n => `<option value="${n}">${n}</option>`).join("")
+        : `<option value="">لا يوجد</option>`;
     }
 
-    function logout() {
-      document.getElementById("appShell").classList.add("hidden");
-      document.getElementById("loginScreen").classList.remove("hidden");
-      document.getElementById("passwordInput").value = "";
-      document.getElementById("loginMessage").textContent = "";
-    }
+    function addAdvance(){
+      const p = getProject();
+      const entityType = document.getElementById("advanceType").value;
+      const entityName = document.getElementById("advanceName").value;
+      const amount = num(document.getElementById("advanceAmount").value);
+      const date = document.getElementById("advanceDate").value || todayText();
+      const note = document.getElementById("advanceNote").value.trim();
 
-    function showPage(name) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.menu button').forEach(b => b.classList.remove('active'));
-
-      const page = document.getElementById(`page-${name}`);
-      const menu = document.getElementById(`menu-${name}`);
-
-      if (page) page.classList.add('active');
-      if (menu) menu.classList.add('active');
-    }
-
-    function saveNotes() {
-      const notes = document.getElementById('notesBox').value;
-      localStorage.setItem('faris_notes', notes);
-      document.getElementById('notesMessage').textContent = 'تم حفظ الملاحظات بنجاح';
-      setTimeout(() => {
-        document.getElementById('notesMessage').textContent = '';
-      }, 2000);
-    }
-
-    window.addEventListener('load', () => {
-      const savedNotes = localStorage.getItem('faris_notes');
-      if (savedNotes) {
-        document.getElementById('notesBox').value = savedNotes;
+      if(!entityName){
+        alert("اختر اسمًا");
+        return;
       }
-    });
+      if(amount <= 0){
+        alert("اكتب مبلغًا صحيحًا");
+        return;
+      }
+
+      p.advances.unshift({entityType, entityName, amount, date, note});
+
+      const typeLabel = entityType === "partner" ? "دفعة شريك" : entityType === "investor" ? "دفعة مساهم" : "دفعة مسوق";
+      addMovement(typeLabel, entityName, amount, note || "دفعة تحت الحساب", date);
+
+      document.getElementById("advanceAmount").value = "";
+      document.getElementById("advanceDate").value = "";
+      document.getElementById("advanceNote").value = "";
+
+      renderProject();
+    }
+
+    function renderAdvances(){
+      const p = getProject();
+      const body = document.getElementById("advancesBody");
+      body.innerHTML = "";
+
+      if(!p.advances.length){
+        body.innerHTML = '<tr><td colspan="5">لا توجد دفعات تحت الحساب</td></tr>';
+        return;
+      }
+
+      p.advances.forEach(a => {
+        const typeLabel = a.entityType === "partner" ? "شريك" : a.entityType === "investor" ? "مساهم" : "مسوق";
+        body.innerHTML += `
+          <tr>
+            <td>${a.date}</td>
+            <td>${typeLabel}</td>
+            <td>${a.entityName}</td>
+            <td>${money(a.amount)}</td>
+            <td>${a.note || "-"}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function renderMovements(){
+      const p = getProject();
+      const body = document.getElementById("movementsBody");
+      body.innerHTML = "";
+
+      if(!p.movements.length){
+        body.innerHTML = '<tr><td colspan="5">لا توجد حركات</td></tr>';
+        return;
+      }
+
+      p.movements.forEach(m => {
+        body.innerHTML += `
+          <tr>
+            <td>${m.date || "-"}</td>
+            <td>${m.type || "-"}</td>
+            <td>${m.name || "-"}</td>
+            <td>${money(m.amount)}</td>
+            <td>${m.note || "-"}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function renderReport(){
+      const p = getProject();
+      const f = projectFinancials();
+
+      const partnerLines = f.partnersFull.map(x => {
+        return `${x.name}: نسبة ${num(x.percent).toFixed(2)}% | نصيب ${money(x.share)} | صرف تحت الحساب ${money(x.paidAdvance || 0)} | متبقي ${money(x.remain || x.share)}`;
+      }).join("<br>");
+
+      const investorLines = f.investorsFull.map(x => {
+        return `${x.name}: مبلغ ${money(x.amount)} | نسبة ${num(x.ratio).toFixed(2)}% | صافي ${money(x.netShare)} | صرف تحت الحساب ${money(x.paidAdvance || 0)} | متبقي ${money(x.remain || x.netShare)}`;
+      }).join("<br>");
+
+      const marketerLines = f.marketerRows.length
+        ? f.marketerRows.map(x => `${x.name}: مستحق ${money(x.commissionDue)} | صرف ${money(x.paidAdvance)} | متبقي ${money(x.remainAfterAdvance)}`).join("<br>")
+        : "لا يوجد مسوقون";
+
+      document.getElementById("reportBox").innerHTML = `
+        <strong>اسم المشروع:</strong> ${p.name}<br>
+        <strong>إجمالي المبيعات:</strong> ${money(f.totalSales)}<br>
+        <strong>التكلفة الأساسية:</strong> ${money(p.cost)}<br>
+        <strong>إجمالي المصروفات:</strong> ${money(f.totalExpenses)}<br>
+        <strong>إجمالي السعي المستحق:</strong> ${money(f.totalCommissionDue)}<br>
+        <strong>السعي المصروف فعليًا:</strong> ${money(f.totalCommissionPaid)}<br>
+        <strong>متبقي السعي:</strong> ${money(f.totalCommissionRemain)}<br>
+        <strong>الربح الكلي:</strong> ${money(f.profit)}<br>
+        <strong>نصيب الشركة من الشركاء:</strong> ${money(f.companyShareProfit)}<br>
+        <strong>إجمالي إدارة المساهمين:</strong> ${money(f.totalInvestorAdmin)}<br>
+        <strong>ربح الشركة النهائي:</strong> ${money(f.companyFinalProfit)}<hr>
+        <strong>الشركاء:</strong><br>${partnerLines}<hr>
+        <strong>المساهمون:</strong><br>${investorLines}<hr>
+        <strong>المسوقون:</strong><br>${marketerLines}
+      `;
+    }
+
+    function exportProjectExcel(){
+      const p = getProject();
+      const f = projectFinancials();
+      const wb = XLSX.utils.book_new();
+
+      const summaryRows = [
+        ["البند","القيمة"],
+        ["اسم المشروع", p.name],
+        ["إجمالي المبيعات", f.totalSales],
+        ["التكلفة الأساسية", p.cost],
+        ["إجمالي المصروفات", f.totalExpenses],
+        ["إجمالي السعي المستحق", f.totalCommissionDue],
+        ["السعي المصروف", f.totalCommissionPaid],
+        ["متبقي السعي", f.totalCommissionRemain],
+        ["الربح الكلي", f.profit],
+        ["نصيب الشركة من الشركاء", f.companyShareProfit],
+        ["إدارة المساهمين", f.totalInvestorAdmin],
+        ["ربح الشركة النهائي", f.companyFinalProfit],
+        ["الوحدات المباعة", f.soldUnits],
+        ["الوحدات المحجوزة", f.bookedUnits],
+        ["الوحدات المتاحة", f.availableUnits]
+      ];
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(summaryRows), "ملخص");
+
+      const unitsRows = [["رقم الشقة","النموذج","الدور","المبنى","الإطلالة","المساحة","المكونات","سعر العرض","الحالة","العميل","جوال العميل","المسوق","جوال المسوق","السعي المستحق","السعي المصروف","المدفوع","المتبقي"]];
+      (p.units || []).forEach(u => {
+        unitsRows.push([u.number,u.model,u.floor,u.building,u.view,u.area,u.components,u.price,u.status,u.client,u.clientPhone,u.marketer,u.marketerPhone,u.commissionDue,u.commissionPaid,u.paid,u.remaining]);
+      });
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(unitsRows), "الوحدات");
+
+      const partnersRows = [["الاسم","النسبة","النصيب","المصروف","المتبقي","التاريخ"]];
+      f.partnersFull.forEach(x => partnersRows.push([x.name,x.percent,x.share,x.paidAdvance || 0,x.remain || x.share,x.date]));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(partnersRows), "الشركاء");
+
+      const investorsRows = [["الاسم","المبلغ","النسبة","قبل الإدارة","الإدارة","الصافي","المصروف","المتبقي","التاريخ"]];
+      f.investorsFull.forEach(x => investorsRows.push([x.name,x.amount,x.ratio,x.grossShare,x.adminValue,x.netShare,x.paidAdvance || 0,x.remain || x.netShare,x.date]));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(investorsRows), "المساهمون");
+
+      const marketersRows = [["الاسم","عدد الوحدات","إجمالي السعي","المصروف","المتبقي","الجوال"]];
+      f.marketerRows.forEach(x => marketersRows.push([x.name,x.units,x.commissionDue,x.paidAdvance,x.remainAfterAdvance,x.phone]));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(marketersRows), "المسوقون");
+
+      const expensesRows = [["التاريخ","التصنيف","البيان","المبلغ"]];
+      (p.expenses || []).forEach(e => expensesRows.push([e.date,e.category,e.description,e.amount]));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(expensesRows), "المصروفات");
+
+      const advancesRows = [["التاريخ","النوع","الاسم","المبلغ","ملاحظة"]];
+      (p.advances || []).forEach(a => advancesRows.push([a.date,a.entityType,a.entityName,a.amount,a.note]));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(advancesRows), "تحت الحساب");
+
+      const movementsRows = [["التاريخ","نوع الحركة","الاسم / البيان","المبلغ","ملاحظة"]];
+      (p.movements || []).forEach(m => movementsRows.push([m.date,m.type,m.name,m.amount,m.note]));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(movementsRows), "دفتر الحركة");
+
+      XLSX.writeFile(wb, `${p.name}.xlsx`);
+    }
+
+    async function createPdfFromHtml(html, filename){
+      const area = document.getElementById("pdfRenderArea");
+      area.innerHTML = `<div class="pdf-sheet">${html}</div>`;
+      const target = area.firstElementChild;
+
+      const canvas = await html2canvas(target, {
+        scale: 2,
+        backgroundColor: "#ffffff",
+        useCORS: true
+      });
+
+      const imgData = canvas.toDataURL("image/png");
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF("p", "pt", "a4");
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+
+      const imgWidth = pageWidth - 40;
+      const imgHeight = canvas.height * imgWidth / canvas.width;
+
+      let heightLeft = imgHeight;
+      let position = 20;
+
+      pdf.addImage(imgData, "PNG", 20, position, imgWidth, imgHeight);
+      heightLeft -= (pageHeight - 40);
+
+      while(heightLeft > 0){
+        pdf.addPage();
+        position = 20 - (imgHeight - heightLeft);
+        pdf.addImage(imgData, "PNG", 20, position, imgWidth, imgHeight);
+        heightLeft -= (pageHeight - 40);
+      }
+
+      pdf.save(filename);
+      area.innerHTML = "";
+    }
+
+    function escapeHtml(text){
+      return String(text ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;");
+    }
+
+    function escapeQuotes(text){
+      return String(text ?? "").replaceAll("\\","\\\\").replaceAll("'","\\'");
+    }
+
+    async function exportProjectPDF(){
+      const p = getProject();
+      const f = projectFinancials();
+
+      const unitsRows = (p.units || []).map(u => `
+        <tr>
+          <td>${escapeHtml(u.number)}</td>
+          <td>${escapeHtml(u.model)}</td>
+          <td>${escapeHtml(u.floor)}</td>
+          <td>${escapeHtml(u.building)}</td>
+          <td>${escapeHtml(u.status)}</td>
+          <td>${escapeHtml(u.client)}</td>
+          <td>${money(u.price)}</td>
+          <td>${money(u.paid)}</td>
+          <td>${money(u.remaining)}</td>
+        </tr>
+      `).join("");
+
+      const html = `
+        <h2>تقرير المشروع</h2>
+        <div class="line"><strong>اسم المشروع:</strong> ${escapeHtml(p.name)}</div>
+        <div class="line"><strong>التكلفة الأساسية:</strong> ${money(p.cost)}</div>
+        <div class="line"><strong>إجمالي المبيعات:</strong> ${money(f.totalSales)}</div>
+        <div class="line"><strong>إجمالي المصروفات:</strong> ${money(f.totalExpenses)}</div>
+        <div class="line"><strong>إجمالي السعي المستحق:</strong> ${money(f.totalCommissionDue)}</div>
+        <div class="line"><strong>السعي المصروف:</strong> ${money(f.totalCommissionPaid)}</div>
+        <div class="line"><strong>متبقي السعي:</strong> ${money(f.totalCommissionRemain)}</div>
+        <div class="line"><strong>الربح الكلي:</strong> ${money(f.profit)}</div>
+        <div class="line"><strong>نصيب الشركة من الشركاء:</strong> ${money(f.companyShareProfit)}</div>
+        <div class="line"><strong>إدارة المساهمين:</strong> ${money(f.totalInvestorAdmin)}</div>
+        <div class="line"><strong>ربح الشركة النهائي:</strong> ${money(f.companyFinalProfit)}</div>
+
+        <h3>الوحدات</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>رقم الشقة</th>
+              <th>النموذج</th>
+              <th>الدور</th>
+              <th>المبنى</th>
+              <th>الحالة</th>
+              <th>العميل</th>
+              <th>السعر</th>
+              <th>المدفوع</th>
+              <th>المتبقي</th>
+            </tr>
+          </thead>
+          <tbody>${unitsRows || '<tr><td colspan="9">لا توجد وحدات</td></tr>'}</tbody>
+        </table>
+      `;
+
+      await createPdfFromHtml(html, `${p.name}.pdf`);
+    }
+
+    async function exportPartnerPDF(name){
+      const p = getProject();
+      const row = projectFinancials().partnersFull.find(x => x.name === name);
+      if(!row) return;
+
+      const html = `
+        <h2>تقرير شريك</h2>
+        <div class="line"><strong>المشروع:</strong> ${escapeHtml(p.name)}</div>
+        <div class="line"><strong>اسم الشريك:</strong> ${escapeHtml(row.name)}</div>
+        <div class="line"><strong>النسبة:</strong> ${num(row.percent).toFixed(2)}%</div>
+        <div class="line"><strong>نصيبه من الربح:</strong> ${money(row.share)}</div>
+        <div class="line"><strong>المصروف تحت الحساب:</strong> ${money(row.paidAdvance || 0)}</div>
+        <div class="line"><strong>المتبقي:</strong> ${money(row.remain || row.share)}</div>
+        <div class="line"><strong>التاريخ:</strong> ${escapeHtml(row.date || "-")}</div>
+      `;
+
+      await createPdfFromHtml(html, `partner_${name}.pdf`);
+    }
+
+    async function exportInvestorPDF(name){
+      const p = getProject();
+      const row = projectFinancials().investorsFull.find(x => x.name === name);
+      if(!row) return;
+
+      const html = `
+        <h2>تقرير مساهم</h2>
+        <div class="line"><strong>المشروع:</strong> ${escapeHtml(p.name)}</div>
+        <div class="line"><strong>اسم المساهم:</strong> ${escapeHtml(row.name)}</div>
+        <div class="line"><strong>المبلغ:</strong> ${money(row.amount)}</div>
+        <div class="line"><strong>النسبة:</strong> ${num(row.ratio).toFixed(2)}%</div>
+        <div class="line"><strong>قبل الإدارة:</strong> ${money(row.grossShare)}</div>
+        <div class="line"><strong>الإدارة:</strong> ${money(row.adminValue)}</div>
+        <div class="line"><strong>الصافي:</strong> ${money(row.netShare)}</div>
+        <div class="line"><strong>المصروف تحت الحساب:</strong> ${money(row.paidAdvance || 0)}</div>
+        <div class="line"><strong>المتبقي:</strong> ${money(row.remain || row.netShare)}</div>
+        <div class="line"><strong>التاريخ:</strong> ${escapeHtml(row.date || "-")}</div>
+      `;
+
+      await createPdfFromHtml(html, `investor_${name}.pdf`);
+    }
+
+    async function exportMarketerPDF(name){
+      const p = getProject();
+      const row = projectFinancials().marketerRows.find(x => x.name === name);
+      if(!row) return;
+
+      const units = (p.units || []).filter(u => u.marketer === name).map(u => `
+        <tr>
+          <td>${escapeHtml(u.number)}</td>
+          <td>${escapeHtml(u.building)}</td>
+          <td>${escapeHtml(u.client)}</td>
+          <td>${money(u.price)}</td>
+          <td>${money(u.commissionDue)}</td>
+        </tr>
+      `).join("");
+
+      const html = `
+        <h2>تقرير مسوق</h2>
+        <div class="line"><strong>المشروع:</strong> ${escapeHtml(p.name)}</div>
+        <div class="line"><strong>اسم المسوق:</strong> ${escapeHtml(row.name)}</div>
+        <div class="line"><strong>الجوال:</strong> ${escapeHtml(row.phone || "-")}</div>
+        <div class="line"><strong>عدد الوحدات:</strong> ${row.units}</div>
+        <div class="line"><strong>إجمالي السعي:</strong> ${money(row.commissionDue)}</div>
+        <div class="line"><strong>المصروف تحت الحساب:</strong> ${money(row.paidAdvance)}</div>
+        <div class="line"><strong>المتبقي:</strong> ${money(row.remainAfterAdvance)}</div>
+
+        <h3>الوحدات التابعة له</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>رقم الشقة</th>
+              <th>المبنى</th>
+              <th>العميل</th>
+              <th>السعر</th>
+              <th>السعي</th>
+            </tr>
+          </thead>
+          <tbody>${units || '<tr><td colspan="5">لا توجد وحدات</td></tr>'}</tbody>
+        </table>
+      `;
+
+      await createPdfFromHtml(html, `marketer_${name}.pdf`);
+    }
+
+    function downloadBackup(){
+      const blob = new Blob([JSON.stringify(appData, null, 2)], {type:"application/json;charset=utf-8"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "anas_backup.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function restoreBackup(event){
+      const file = event.target.files[0];
+      if(!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e){
+        try{
+          const data = JSON.parse(e.target.result);
+          if(!data || !Array.isArray(data.projects)){
+            alert("ملف غير صالح");
+            return;
+          }
+          appData = data;
+          saveApp();
+          renderProjects();
+          alert("تم الاسترجاع بنجاح");
+        }catch(err){
+          alert("فشل قراءة الملف");
+        } finally {
+          event.target.value = "";
+        }
+      };
+      reader.readAsText(file, "utf-8");
+    }
   </script>
 </body>
 </html>
