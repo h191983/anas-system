@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>نظام أنس - النسخة الكاملة + شاشة الأرصدة</title>
+  <title>نظام أنس - النسخة الكاملة المطورة</title>
   <style>
     :root{
       --bg:#f5f6fa;
@@ -66,6 +66,20 @@
     .btn-gray{background:var(--gray);color:#fff}
     .btn-purple{background:var(--purple);color:#fff}
     .btn-teal{background:var(--teal);color:#fff}
+    .btn-link{
+      background:#eef2ff;
+      color:#1d4ed8;
+      min-width:auto;
+      padding:6px 10px;
+      border:1px solid #c7d2fe;
+    }
+    .btn-wa{
+      background:#dcfce7;
+      color:#166534;
+      min-width:auto;
+      padding:6px 10px;
+      border:1px solid #86efac;
+    }
     .grid{display:grid;gap:12px}
     .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
     .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -193,7 +207,7 @@
       z-index:1000;
     }
     .modal-content{
-      max-width:1100px;
+      max-width:1150px;
       margin:20px auto;
       background:#fff;
       border-radius:12px;
@@ -220,6 +234,23 @@
     .toolbar > *{
       flex:1 1 180px;
     }
+    .phone-box{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      align-items:center;
+    }
+    .phone-text{
+      direction:ltr;
+      unicode-bidi:plaintext;
+      font-size:12px;
+    }
+    .mini-actions{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
     @media print{
       .header,.tabs,.no-print,.modal{display:none !important}
       .card,.kpi{box-shadow:none}
@@ -228,7 +259,7 @@
   </style>
 </head>
 <body>
-  <div class="header">نظام أنس - النسخة الكاملة + شاشة الأرصدة</div>
+  <div class="header">نظام أنس - النسخة الكاملة المطورة</div>
 
   <div class="container">
     <div id="loginView" class="login-wrap">
@@ -362,7 +393,15 @@
         </div>
 
         <div id="unitsTab" class="card tab-panel">
-          <h3>الوحدات والحجز</h3>
+          <div class="section-title">
+            <h3>الوحدات والحجز</h3>
+            <div class="actions no-print">
+              <select id="unitMarketerFilter" onchange="renderUnits()" style="min-width:220px">
+                <option value="">كل المسوقين</option>
+              </select>
+            </div>
+          </div>
+
           <div class="grid grid-3 no-print">
             <input id="unitNumber" placeholder="رقم الوحدة" />
             <input id="unitPrice" type="number" placeholder="سعر الوحدة" />
@@ -382,7 +421,9 @@
                 <th>السعر</th>
                 <th>الحالة</th>
                 <th>العميل</th>
+                <th>جوال العميل</th>
                 <th>المسوق</th>
+                <th>جوال المسوق</th>
                 <th>سعي مستحق</th>
                 <th>تم صرفه</th>
                 <th>متبقي السعي</th>
@@ -486,6 +527,7 @@
                 <th>تم صرفه</th>
                 <th>المتبقي</th>
                 <th>الحالة</th>
+                <th>الجوال</th>
                 <th class="no-print">إجراء</th>
               </tr>
             </thead>
@@ -622,6 +664,9 @@
               <option value="حذف شريك">حذف شريك</option>
               <option value="حذف مساهم">حذف مساهم</option>
             </select>
+            <select id="movementMarketerFilter" onchange="renderMovements()">
+              <option value="">كل المسوقين</option>
+            </select>
             <input id="movementFrom" type="date" onchange="renderMovements()" />
             <input id="movementTo" type="date" onchange="renderMovements()" />
           </div>
@@ -678,7 +723,12 @@
 
       <div class="grid grid-4">
         <input id="bkClient" placeholder="اسم العميل" />
+        <input id="bkClientPhone" placeholder="رقم جوال العميل" />
         <input id="bkMarketer" placeholder="اسم المسوق" />
+        <input id="bkMarketerPhone" placeholder="رقم جوال المسوق" />
+      </div>
+
+      <div class="grid grid-2" style="margin-top:10px">
         <input id="bkPrice" type="number" placeholder="سعر البيع" oninput="updateCommissionPreview()" />
         <input id="bkCommission" readonly placeholder="السعي المستحق" />
       </div>
@@ -767,6 +817,40 @@
       a.download = filename;
       a.click();
       URL.revokeObjectURL(url);
+    }
+
+    function normalizePhone(phone){
+      let p = String(phone || "").replace(/[^\d+]/g, "");
+      if(!p) return "";
+      if(p.startsWith("00")) p = "+" + p.slice(2);
+      if(p.startsWith("+")) return p;
+      if(p.startsWith("0")) return "+966" + p.slice(1);
+      if(p.startsWith("966")) return "+" + p;
+      return "+966" + p;
+    }
+
+    function telPhone(phone){
+      const p = normalizePhone(phone);
+      return p ? `tel:${p}` : "#";
+    }
+
+    function waPhone(phone){
+      const p = normalizePhone(phone).replace("+", "");
+      return p ? `https://wa.me/${p}` : "#";
+    }
+
+    function phoneCell(phone, label="اتصال"){
+      if(!phone || phone === "-") return "-";
+      const display = String(phone);
+      return `
+        <div class="phone-box">
+          <div class="phone-text">${display}</div>
+          <div class="mini-actions">
+            <a class="btn-link" href="${telPhone(phone)}">${label} 📞</a>
+            <a class="btn-wa" href="${waPhone(phone)}" target="_blank" rel="noopener noreferrer">واتساب</a>
+          </div>
+        </div>
+      `;
     }
 
     function getProject(){
@@ -974,8 +1058,13 @@
             units: 0,
             commissionDue: 0,
             commissionPaid: 0,
-            commissionRemain: 0
+            commissionRemain: 0,
+            phone: u.marketerPhone || "-"
           };
+        }
+
+        if(!map[name].phone || map[name].phone === "-"){
+          map[name].phone = u.marketerPhone || "-";
         }
 
         map[name].units += 1;
@@ -1045,6 +1134,41 @@
 
     function projectFinancials(){
       return calcProjectFinancials(getProject());
+    }
+
+    function uniqueMarketers(project){
+      const names = [];
+      const seen = new Set();
+      (project.units || []).forEach(u => {
+        const n = (u.marketer || "").trim();
+        if(n && n !== "-" && !seen.has(n)){
+          seen.add(n);
+          names.push(n);
+        }
+      });
+      return names.sort();
+    }
+
+    function renderMarketerFilters(){
+      const p = getProject();
+      if(!p) return;
+      const names = uniqueMarketers(p);
+
+      const unitFilter = document.getElementById("unitMarketerFilter");
+      const movementFilter = document.getElementById("movementMarketerFilter");
+
+      const currentUnitValue = unitFilter ? unitFilter.value : "";
+      const currentMovementValue = movementFilter ? movementFilter.value : "";
+
+      if(unitFilter){
+        unitFilter.innerHTML = `<option value="">كل المسوقين</option>` + names.map(n => `<option value="${n}">${n}</option>`).join("");
+        unitFilter.value = names.includes(currentUnitValue) ? currentUnitValue : "";
+      }
+
+      if(movementFilter){
+        movementFilter.innerHTML = `<option value="">كل المسوقين</option>` + names.map(n => `<option value="${n}">${n}</option>`).join("");
+        movementFilter.value = names.includes(currentMovementValue) ? currentMovementValue : "";
+      }
     }
 
     function renderCompanyReport(){
@@ -1167,6 +1291,7 @@
       document.getElementById("kpiBooked").innerText = f.bookedUnits;
       document.getElementById("kpiAvailable").innerText = f.availableUnits;
 
+      renderMarketerFilters();
       renderUnits();
       renderBalances();
       renderMarketers();
@@ -1178,6 +1303,93 @@
       renderSingleReportSelectors();
       renderCompanyReport();
       saveApp();
+    }
+
+    function addUnit(){
+      const p = getProject();
+      const number = document.getElementById("unitNumber").value.trim();
+      const price = num(document.getElementById("unitPrice").value);
+
+      if(!number || !price){
+        alert("اكمل بيانات الوحدة");
+        return;
+      }
+
+      p.units.push({
+        number,
+        price,
+        status: "متاحة",
+        client: "-",
+        clientPhone: "-",
+        marketer: "-",
+        marketerPhone: "-",
+        commissionDue: calcCommission(price),
+        commissionPaid: 0,
+        commissionPayments: [],
+        payments: [0,0,0,0,0],
+        paymentDates: ["","","","",""],
+        paid: 0,
+        remaining: price
+      });
+
+      addMovement("إضافة وحدة", number, price, "تمت إضافة وحدة جديدة", todayText());
+      document.getElementById("unitNumber").value = "";
+      document.getElementById("unitPrice").value = "";
+      renderProject();
+    }
+
+    function statusBadge(status){
+      if(status === "متاحة") return '<span class="badge available">متاحة</span>';
+      if(status === "محجوزة") return '<span class="badge booked">محجوزة</span>';
+      return '<span class="badge sold">مباعة</span>';
+    }
+
+    function renderUnits(){
+      const p = getProject();
+      const marketerFilter = document.getElementById("unitMarketerFilter")?.value || "";
+      const body = document.getElementById("unitsBody");
+      body.innerHTML = "";
+
+      let units = p.units || [];
+      if(marketerFilter){
+        units = units.filter(u => (u.marketer || "") === marketerFilter);
+      }
+
+      if(!units.length){
+        body.innerHTML = '<tr><td colspan="14">لا توجد وحدات</td></tr>';
+        return;
+      }
+
+      units.forEach((u) => {
+        const i = p.units.indexOf(u);
+        const paymentCount = (u.payments || []).filter(x => num(x) > 0).length;
+        const commissionRemain = num(u.commissionDue) - num(u.commissionPaid);
+
+        body.innerHTML += `
+          <tr>
+            <td>${u.number}</td>
+            <td>${money(u.price)}</td>
+            <td>${statusBadge(u.status)}</td>
+            <td>${u.client}</td>
+            <td>${phoneCell(u.clientPhone, "اتصال")}</td>
+            <td>${u.marketer}</td>
+            <td>${phoneCell(u.marketerPhone, "اتصال")}</td>
+            <td>${money(u.commissionDue)}</td>
+            <td>${money(u.commissionPaid)}</td>
+            <td>${money(commissionRemain)}</td>
+            <td>${money(u.paid)}</td>
+            <td>${money(u.remaining)}</td>
+            <td>${paymentCount}/5</td>
+            <td class="no-print">
+              <div class="actions">
+                <button class="btn" onclick="openBooking(${i})">حجز/دفعات</button>
+                <button class="btn-purple" onclick="forceSold(${i})">بيع</button>
+                <button class="btn-red" onclick="deleteUnit(${i})">حذف</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
     }
 
     function renderBalances(){
@@ -1254,88 +1466,14 @@
       });
     }
 
-    function addUnit(){
-      const p = getProject();
-      const number = document.getElementById("unitNumber").value.trim();
-      const price = num(document.getElementById("unitPrice").value);
-
-      if(!number || !price){
-        alert("اكمل بيانات الوحدة");
-        return;
-      }
-
-      p.units.push({
-        number,
-        price,
-        status: "متاحة",
-        client: "-",
-        marketer: "-",
-        commissionDue: calcCommission(price),
-        commissionPaid: 0,
-        commissionPayments: [],
-        payments: [0,0,0,0,0],
-        paymentDates: ["","","","",""],
-        paid: 0,
-        remaining: price
-      });
-
-      addMovement("إضافة وحدة", number, price, "تمت إضافة وحدة جديدة", todayText());
-      document.getElementById("unitNumber").value = "";
-      document.getElementById("unitPrice").value = "";
-      renderProject();
-    }
-
-    function statusBadge(status){
-      if(status === "متاحة") return '<span class="badge available">متاحة</span>';
-      if(status === "محجوزة") return '<span class="badge booked">محجوزة</span>';
-      return '<span class="badge sold">مباعة</span>';
-    }
-
-    function renderUnits(){
-      const p = getProject();
-      const body = document.getElementById("unitsBody");
-      body.innerHTML = "";
-
-      if(!p.units.length){
-        body.innerHTML = '<tr><td colspan="12">لا توجد وحدات</td></tr>';
-        return;
-      }
-
-      p.units.forEach((u,i) => {
-        const paymentCount = (u.payments || []).filter(x => num(x) > 0).length;
-        const commissionRemain = num(u.commissionDue) - num(u.commissionPaid);
-
-        body.innerHTML += `
-          <tr>
-            <td>${u.number}</td>
-            <td>${money(u.price)}</td>
-            <td>${statusBadge(u.status)}</td>
-            <td>${u.client}</td>
-            <td>${u.marketer}</td>
-            <td>${money(u.commissionDue)}</td>
-            <td>${money(u.commissionPaid)}</td>
-            <td>${money(commissionRemain)}</td>
-            <td>${money(u.paid)}</td>
-            <td>${money(u.remaining)}</td>
-            <td>${paymentCount}/5</td>
-            <td class="no-print">
-              <div class="actions">
-                <button class="btn" onclick="openBooking(${i})">حجز/دفعات</button>
-                <button class="btn-purple" onclick="forceSold(${i})">بيع</button>
-                <button class="btn-red" onclick="deleteUnit(${i})">حذف</button>
-              </div>
-            </td>
-          </tr>
-        `;
-      });
-    }
-
     function openBooking(i){
       const u = getProject().units[i];
       bookingUnitIndex = i;
 
       document.getElementById("bkClient").value = u.client === "-" ? "" : u.client;
+      document.getElementById("bkClientPhone").value = u.clientPhone === "-" ? "" : u.clientPhone;
       document.getElementById("bkMarketer").value = u.marketer === "-" ? "" : u.marketer;
+      document.getElementById("bkMarketerPhone").value = u.marketerPhone === "-" ? "" : u.marketerPhone;
       document.getElementById("bkPrice").value = u.price;
       document.getElementById("bkCommission").value = calcCommission(u.price).toFixed(2);
       document.getElementById("bkStatus").value = u.status === "مباعة" ? "مباعة" : "محجوزة";
@@ -1368,7 +1506,9 @@
       const u = p.units[bookingUnitIndex];
 
       const client = document.getElementById("bkClient").value.trim();
+      const clientPhone = document.getElementById("bkClientPhone").value.trim();
       const marketer = document.getElementById("bkMarketer").value.trim();
+      const marketerPhone = document.getElementById("bkMarketerPhone").value.trim();
       const price = num(document.getElementById("bkPrice").value);
       const status = document.getElementById("bkStatus").value;
 
@@ -1406,7 +1546,9 @@
       const oldPayments = u.payments || [0,0,0,0,0];
 
       u.client = client;
+      u.clientPhone = clientPhone || "-";
       u.marketer = marketer || "-";
+      u.marketerPhone = marketerPhone || "-";
       u.price = price;
       u.commissionDue = calcCommission(price);
       u.commissionPaid = Math.min(oldPaid, u.commissionDue);
@@ -1433,7 +1575,7 @@
         "تحديث حجز",
         `${u.number} - ${client}`,
         price,
-        `الحالة: ${status} | المسوق: ${marketer || "-"}`,
+        `الحالة: ${status} | المسوق: ${marketer || "-"} | جوال المسوق: ${marketerPhone || "-"} | جوال العميل: ${clientPhone || "-"}`,
         todayText()
       );
 
@@ -1479,7 +1621,7 @@
 
       const names = Object.keys(map);
       if(!names.length){
-        body.innerHTML = '<tr><td colspan="7">لا يوجد مسوقون</td></tr>';
+        body.innerHTML = '<tr><td colspan="8">لا يوجد مسوقون</td></tr>';
         return;
       }
 
@@ -1493,6 +1635,7 @@
             <td>${money(m.commissionPaid)}</td>
             <td>${money(m.commissionRemain)}</td>
             <td>${marketerStatus(m)}</td>
+            <td>${phoneCell(m.phone, "اتصال")}</td>
             <td class="no-print"><button class="btn-green" onclick="openCommissionModal('${name.replace(/'/g, "\\'")}')">صرف سعي</button></td>
           </tr>
         `;
@@ -1506,6 +1649,7 @@
 
       document.getElementById("commissionInfo").innerHTML = `
         <strong>المسوق:</strong> ${name}<br>
+        <strong>الجوال:</strong> ${m.phone || "-"}<br>
         <strong>إجمالي السعي:</strong> ${money(m.commissionDue)}<br>
         <strong>تم صرفه:</strong> ${money(m.commissionPaid)}<br>
         <strong>المتبقي:</strong> ${money(m.commissionRemain)}
@@ -1571,7 +1715,6 @@
 
     function addExpense(){
       const p = getProject();
-
       const date = document.getElementById("expenseDate").value || todayText();
       const category = document.getElementById("expenseCategory").value;
       const description = document.getElementById("expenseDesc").value.trim();
@@ -1762,15 +1905,17 @@
       const moves = p.movements || [];
       const q = (document.getElementById("movementSearch")?.value || "").trim().toLowerCase();
       const t = document.getElementById("movementTypeFilter")?.value || "";
+      const marketer = document.getElementById("movementMarketerFilter")?.value || "";
       const from = document.getElementById("movementFrom")?.value || "";
       const to = document.getElementById("movementTo")?.value || "";
 
       return moves.filter(m => {
         const matchQ = !q || `${m.name} ${m.note}`.toLowerCase().includes(q);
         const matchT = !t || m.type === t;
+        const matchMarketer = !marketer || `${m.name} ${m.note}`.includes(marketer);
         const matchFrom = !from || (m.date && m.date >= from);
         const matchTo = !to || (m.date && m.date <= to);
-        return matchQ && matchT && matchFrom && matchTo;
+        return matchQ && matchT && matchMarketer && matchFrom && matchTo;
       });
     }
 
@@ -1843,6 +1988,7 @@
         const units = (p.units || []).filter(u => u.marketer === value);
         box.innerHTML = `
           <strong>تقرير مسوق:</strong> ${value}<br>
+          <strong>الجوال:</strong> ${m.phone || "-"}<br>
           <strong>عدد الوحدات:</strong> ${m.units}<br>
           <strong>إجمالي السعي:</strong> ${money(m.commissionDue)}<br>
           <strong>تم صرفه:</strong> ${money(m.commissionPaid)}<br>
@@ -1878,7 +2024,9 @@
           <strong>السعر:</strong> ${money(u.price)}<br>
           <strong>الحالة:</strong> ${u.status}<br>
           <strong>العميل:</strong> ${u.client}<br>
+          <strong>جوال العميل:</strong> ${u.clientPhone || "-"}<br>
           <strong>المسوق:</strong> ${u.marketer}<br>
+          <strong>جوال المسوق:</strong> ${u.marketerPhone || "-"}<br>
           <strong>السعي المستحق:</strong> ${money(u.commissionDue)}<br>
           <strong>السعي المصروف:</strong> ${money(u.commissionPaid)}<br>
           <strong>المدفوع:</strong> ${money(u.paid)}<br>
@@ -2004,7 +2152,7 @@
 
       Object.keys(marketers).forEach(name => {
         const m = marketers[name];
-        rows.push(["مسوق",name,m.commissionDue,m.commissionPaid,m.commissionRemain,""]);
+        rows.push(["مسوق",name,m.commissionDue,m.commissionPaid,m.commissionRemain,m.phone]);
       });
 
       f.partnersFull.forEach(x => {
@@ -2016,7 +2164,7 @@
       });
 
       (p.units || []).filter(u => num(u.remaining) > 0).forEach(u => {
-        rows.push(["وحدة",u.number,u.client,u.paid,u.remaining,""]);
+        rows.push(["وحدة",u.number,u.client,u.paid,u.remaining,u.clientPhone || ""]);
       });
 
       const content = rows.map(row => row.map(csvEscape).join(",")).join("\n");
