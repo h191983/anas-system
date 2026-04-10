@@ -3,8 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>نظام أنس - النسخة الأقوى</title>
+  <title>نظام أنس - النسخة المطورة</title>
+
   <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
   <style>
     :root{
       --bg:#f5f6fa;
@@ -26,7 +30,7 @@
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family:Tahoma,Arial,sans-serif;
+      font-family:Tahoma, Arial, sans-serif;
       background:var(--bg);
       color:var(--text);
     }
@@ -177,19 +181,7 @@
     .available{background:#dcfce7;color:#166534}
     .booked{background:#fef3c7;color:#92400e}
     .sold{background:#dbeafe;color:#1d4ed8}
-    .danger-row{background:#fff1f2}
     .warn-row{background:#fffbeb}
-    .none-status{background:#fee2e2;color:#991b1b}
-    .partial-status{background:#fef3c7;color:#92400e}
-    .full-status{background:#dcfce7;color:#166534}
-    .note{
-      background:#eef8ff;
-      border:1px solid #cfe9ff;
-      border-radius:8px;
-      padding:10px;
-      margin:10px 0;
-      line-height:1.9;
-    }
     .danger{
       background:#fff7ed;
       border:1px solid #fdba74;
@@ -205,6 +197,36 @@
       padding:10px;
       margin:10px 0;
       line-height:1.9;
+    }
+    .note{
+      background:#eef8ff;
+      border:1px solid #cfe9ff;
+      border-radius:8px;
+      padding:10px;
+      margin:10px 0;
+      line-height:1.9;
+    }
+    .auto-row{
+      background:#f8fafc;
+      font-weight:bold;
+    }
+    .editable{background:#fffbeb}
+    .phone-box{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      align-items:center;
+    }
+    .phone-text{
+      direction:ltr;
+      unicode-bidi:plaintext;
+      font-size:12px;
+    }
+    .mini-actions{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+      justify-content:center;
     }
     .modal{
       position:fixed;
@@ -229,38 +251,40 @@
       padding:14px;
       line-height:2;
     }
-    .auto-row{
-      background:#f8fafc;
-      font-weight:bold;
+    .pdf-sheet{
+      width:900px;
+      background:#fff;
+      color:#111;
+      padding:24px;
+      direction:rtl;
+      font-family:Tahoma, Arial, sans-serif;
+      border:1px solid #ddd;
     }
-    .toolbar{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      align-items:center;
+    .pdf-sheet h2,.pdf-sheet h3{
+      margin:0 0 12px 0;
     }
-    .toolbar > *{
-      flex:1 1 180px;
+    .pdf-sheet .line{
+      margin:6px 0;
+      line-height:1.9;
     }
-    .phone-box{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-      align-items:center;
-    }
-    .phone-text{
-      direction:ltr;
-      unicode-bidi:plaintext;
+    .pdf-sheet table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:12px;
       font-size:12px;
     }
-    .mini-actions{
-      display:flex;
-      gap:6px;
-      flex-wrap:wrap;
-      justify-content:center;
+    .pdf-sheet th,.pdf-sheet td{
+      border:1px solid #999;
+      padding:6px;
+      text-align:center;
     }
-    .editable{
-      background:#fffbeb;
+    #pdfRenderArea{
+      position:absolute;
+      right:-99999px;
+      top:0;
+      width:920px;
+      background:#fff;
+      padding:0;
     }
     @media print{
       .header,.tabs,.no-print,.modal{display:none !important}
@@ -270,7 +294,7 @@
   </style>
 </head>
 <body>
-  <div class="header">نظام أنس - النسخة الأقوى</div>
+  <div class="header">نظام أنس - النسخة المطورة</div>
 
   <div class="container">
     <div id="loginView" class="login-wrap">
@@ -320,7 +344,8 @@
             </div>
             <div class="actions no-print">
               <button class="btn-gray" onclick="backToProjects()">رجوع للمشاريع</button>
-              <button class="btn-teal" onclick="exportProjectCSV()">تصدير CSV للمشروع</button>
+              <button class="btn-teal" onclick="exportProjectExcel()">Excel</button>
+              <button class="btn-teal" onclick="exportProjectPDF()">PDF</button>
               <button class="btn-teal" onclick="window.print()">طباعة</button>
             </div>
           </div>
@@ -434,6 +459,7 @@
                 <th>تم صرفه</th>
                 <th>المتبقي</th>
                 <th>الجوال</th>
+                <th class="no-print">تقرير</th>
               </tr>
             </thead>
             <tbody id="marketersBody"></tbody>
@@ -488,6 +514,7 @@
                 <th>تم صرفه تحت الحساب</th>
                 <th>المتبقي</th>
                 <th>التاريخ</th>
+                <th class="no-print">تقرير</th>
                 <th class="no-print">إجراء</th>
               </tr>
             </thead>
@@ -523,6 +550,7 @@
                 <th>تم صرفه تحت الحساب</th>
                 <th>المتبقي</th>
                 <th>التاريخ</th>
+                <th class="no-print">تقرير</th>
                 <th class="no-print">إجراء</th>
               </tr>
             </thead>
@@ -581,7 +609,12 @@
         </div>
 
         <div id="reportTab" class="card tab-panel hidden">
-          <h3>ملخص المشروع</h3>
+          <div class="section-title">
+            <h3>ملخص المشروع</h3>
+            <div class="actions no-print">
+              <button class="btn-teal" onclick="exportProjectPDF()">تقرير PDF</button>
+            </div>
+          </div>
           <div id="reportBox" class="report-box"></div>
         </div>
       </div>
@@ -637,11 +670,13 @@
     </div>
   </div>
 
+  <div id="pdfRenderArea"></div>
+
   <script>
     const AUTH_USER = "ANAS";
     const AUTH_PASS = "Anas8844";
     const COMMISSION_RATE = 2.5;
-    const STORAGE_KEY = "anas_projects_independent_v2";
+    const STORAGE_KEY = "anas_projects_excel_pdf_v2";
 
     let appData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"projects":[]}');
     let currentProjectId = null;
@@ -653,23 +688,10 @@
 
     function num(v){ return Number(v || 0); }
     function money(v){ return Number(v || 0).toLocaleString('en-US', {maximumFractionDigits: 2}) + " ر.س"; }
+
     function calcCommission(price){ return num(price) * COMMISSION_RATE / 100; }
+
     function todayText(){ return new Date().toLocaleDateString('en-CA'); }
-
-    function csvEscape(value){
-      const text = String(value ?? "");
-      return `"${text.replace(/"/g, '""')}"`;
-    }
-
-    function downloadTextFile(filename, content, type="text/plain;charset=utf-8"){
-      const blob = new Blob([content], {type});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      a.click();
-      URL.revokeObjectURL(url);
-    }
 
     function normalizePhone(phone){
       let p = String(phone || "").replace(/[^\d+]/g, "");
@@ -734,7 +756,7 @@
       const u = document.getElementById("loginUser").value.trim();
       const p = document.getElementById("loginPass").value;
       if(u === AUTH_USER && p === AUTH_PASS){
-        sessionStorage.setItem("anasLoggedIndependent", "1");
+        sessionStorage.setItem("anasLoggedExcelPdf", "1");
         document.getElementById("loginView").classList.add("hidden");
         document.getElementById("appView").classList.remove("hidden");
         renderProjects();
@@ -744,12 +766,12 @@
     }
 
     function logout(){
-      sessionStorage.removeItem("anasLoggedIndependent");
+      sessionStorage.removeItem("anasLoggedExcelPdf");
       location.reload();
     }
 
     (function init(){
-      if(sessionStorage.getItem("anasLoggedIndependent") === "1"){
+      if(sessionStorage.getItem("anasLoggedExcelPdf") === "1"){
         document.getElementById("loginView").classList.add("hidden");
         document.getElementById("appView").classList.remove("hidden");
         renderProjects();
@@ -1040,27 +1062,27 @@
 
     function buildAlerts(project){
       const alerts = [];
-      (project.units || []).forEach(u => {
-        if(num(u.remaining) > 0 && (u.status === "محجوزة" || u.status === "مباعة")){
-          alerts.push(`الوحدة ${u.number} في مبنى ${u.building} عليها متبقي ${money(u.remaining)}`);
-        }
-      });
-
-      projectFinancials().marketerRows.forEach(m => {
+      calcProjectFinancials(project).marketerRows.forEach(m => {
         if(num(m.remainAfterAdvance) > 0){
           alerts.push(`المسوق ${m.name} له متبقي ${money(m.remainAfterAdvance)}`);
         }
       });
 
-      projectFinancials().partnersFull.filter(x => !x.auto).forEach(x => {
+      calcProjectFinancials(project).partnersFull.filter(x => !x.auto).forEach(x => {
         if(num(x.remain) > 0){
           alerts.push(`الشريك ${x.name} له متبقي ${money(x.remain)}`);
         }
       });
 
-      projectFinancials().investorsFull.filter(x => !x.auto).forEach(x => {
+      calcProjectFinancials(project).investorsFull.filter(x => !x.auto).forEach(x => {
         if(num(x.remain) > 0){
           alerts.push(`المساهم ${x.name} له متبقي ${money(x.remain)}`);
+        }
+      });
+
+      (project.units || []).forEach(u => {
+        if(num(u.remaining) > 0 && (u.status === "محجوزة" || u.status === "مباعة")){
+          alerts.push(`الوحدة ${u.number} في مبنى ${u.building} عليها متبقي ${money(u.remaining)}`);
         }
       });
 
@@ -1168,7 +1190,6 @@
         marketerPhone: "-",
         commissionDue: 0,
         commissionPaid: 0,
-        commissionPayments: [],
         payments: [0,0,0,0,0],
         paymentDates: ["","","","",""],
         paid: 0,
@@ -1266,7 +1287,6 @@
             marketerPhone: "-",
             commissionDue: 0,
             commissionPaid: 0,
-            commissionPayments: [],
             payments: [0,0,0,0,0],
             paymentDates: ["","","","",""],
             paid: 0,
@@ -1502,7 +1522,7 @@
       body.innerHTML = "";
 
       if(!rows.length){
-        body.innerHTML = '<tr><td colspan="6">لا يوجد مسوقون</td></tr>';
+        body.innerHTML = '<tr><td colspan="7">لا يوجد مسوقون</td></tr>';
         return;
       }
 
@@ -1516,6 +1536,7 @@
             <td>${money(m.paidAdvance)}</td>
             <td>${money(m.remainAfterAdvance)}</td>
             <td>${phoneCell(m.phone, "اتصال")}</td>
+            <td class="no-print"><button class="btn-teal" onclick="exportMarketerPDF('${escapeQuotes(m.name)}')">PDF</button></td>
           </tr>
         `;
       });
@@ -1622,6 +1643,7 @@
             <td>${money(x.paidAdvance || 0)}</td>
             <td>${money(x.remain || x.share)}</td>
             <td>${x.date || "-"}</td>
+            <td class="no-print">${x.auto ? '-' : `<button class="btn-teal" onclick="exportPartnerPDF('${escapeQuotes(x.name)}')">PDF</button>`}</td>
             <td class="no-print">
               ${x.auto ? '-' : `<button class="btn-red" onclick="deletePartner(${i-1})">حذف</button>`}
             </td>
@@ -1699,6 +1721,7 @@
             <td>${money(x.paidAdvance || 0)}</td>
             <td>${money(x.remain || x.netShare)}</td>
             <td>${x.date || "-"}</td>
+            <td class="no-print">${x.auto ? '-' : `<button class="btn-teal" onclick="exportInvestorPDF('${escapeQuotes(x.name)}')">PDF</button>`}</td>
             <td class="no-print">
               ${x.auto ? '-' : `<button class="btn-red" onclick="deleteInvestor(${i-1})">حذف</button>`}
             </td>
@@ -1847,21 +1870,249 @@
       `;
     }
 
-    function exportProjectCSV(){
+    function exportProjectExcel(){
       const p = getProject();
-      const rows = [
-        ["رقم الشقة","النموذج","الدور","المبنى","الإطلالة","المساحة","المكونات","سعر العرض","الحالة","العميل","جوال العميل","المسوق","جوال المسوق","المدفوع","المتبقي"]
-      ];
+      const f = projectFinancials();
+      const wb = XLSX.utils.book_new();
 
+      const summaryRows = [
+        ["البند","القيمة"],
+        ["اسم المشروع", p.name],
+        ["إجمالي المبيعات", f.totalSales],
+        ["التكلفة الأساسية", p.cost],
+        ["إجمالي المصروفات", f.totalExpenses],
+        ["إجمالي السعي المستحق", f.totalCommissionDue],
+        ["السعي المصروف", f.totalCommissionPaid],
+        ["متبقي السعي", f.totalCommissionRemain],
+        ["الربح الكلي", f.profit],
+        ["نصيب الشركة من الشركاء", f.companyShareProfit],
+        ["إدارة المساهمين", f.totalInvestorAdmin],
+        ["ربح الشركة النهائي", f.companyFinalProfit],
+        ["الوحدات المباعة", f.soldUnits],
+        ["الوحدات المحجوزة", f.bookedUnits],
+        ["الوحدات المتاحة", f.availableUnits]
+      ];
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(summaryRows), "ملخص");
+
+      const unitsRows = [["رقم الشقة","النموذج","الدور","المبنى","الإطلالة","المساحة","المكونات","سعر العرض","الحالة","العميل","جوال العميل","المسوق","جوال المسوق","السعي المستحق","السعي المصروف","المدفوع","المتبقي"]];
       (p.units || []).forEach(u => {
-        rows.push([
-          u.number,u.model,u.floor,u.building,u.view,u.area,u.components,
-          u.price,u.status,u.client,u.clientPhone,u.marketer,u.marketerPhone,u.paid,u.remaining
-        ]);
+        unitsRows.push([u.number,u.model,u.floor,u.building,u.view,u.area,u.components,u.price,u.status,u.client,u.clientPhone,u.marketer,u.marketerPhone,u.commissionDue,u.commissionPaid,u.paid,u.remaining]);
+      });
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(unitsRows), "الوحدات");
+
+      const partnersRows = [["الاسم","النسبة","النصيب","المصروف","المتبقي","التاريخ"]];
+      f.partnersFull.forEach(x => partnersRows.push([x.name,x.percent,x.share,x.paidAdvance || 0,x.remain || x.share,x.date]));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(partnersRows), "الشركاء");
+
+      const investorsRows = [["الاسم","المبلغ","النسبة","قبل الإدارة","الإدارة","الصافي","المصروف","المتبقي","التاريخ"]];
+      f.investorsFull.forEach(x => investorsRows.push([x.name,x.amount,x.ratio,x.grossShare,x.adminValue,x.netShare,x.paidAdvance || 0,x.remain || x.netShare,x.date]));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(investorsRows), "المساهمون");
+
+      const marketersRows = [["الاسم","عدد الوحدات","إجمالي السعي","المصروف","المتبقي","الجوال"]];
+      f.marketerRows.forEach(x => marketersRows.push([x.name,x.units,x.commissionDue,x.paidAdvance,x.remainAfterAdvance,x.phone]));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(marketersRows), "المسوقون");
+
+      const expensesRows = [["التاريخ","التصنيف","البيان","المبلغ"]];
+      (p.expenses || []).forEach(e => expensesRows.push([e.date,e.category,e.description,e.amount]));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(expensesRows), "المصروفات");
+
+      const advancesRows = [["التاريخ","النوع","الاسم","المبلغ","ملاحظة"]];
+      (p.advances || []).forEach(a => advancesRows.push([a.date,a.entityType,a.entityName,a.amount,a.note]));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(advancesRows), "تحت الحساب");
+
+      const movementsRows = [["التاريخ","نوع الحركة","الاسم / البيان","المبلغ","ملاحظة"]];
+      (p.movements || []).forEach(m => movementsRows.push([m.date,m.type,m.name,m.amount,m.note]));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(movementsRows), "دفتر الحركة");
+
+      XLSX.writeFile(wb, `${p.name}.xlsx`);
+    }
+
+    async function createPdfFromHtml(html, filename){
+      const area = document.getElementById("pdfRenderArea");
+      area.innerHTML = `<div class="pdf-sheet">${html}</div>`;
+      const target = area.firstElementChild;
+
+      const canvas = await html2canvas(target, {
+        scale: 2,
+        backgroundColor: "#ffffff",
+        useCORS: true
       });
 
-      const content = rows.map(r => r.map(csvEscape).join(",")).join("\n");
-      downloadTextFile(`${p.name}_units.csv`, content, "text/csv;charset=utf-8");
+      const imgData = canvas.toDataURL("image/png");
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF("p", "pt", "a4");
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+
+      const imgWidth = pageWidth - 40;
+      const imgHeight = canvas.height * imgWidth / canvas.width;
+
+      let heightLeft = imgHeight;
+      let position = 20;
+
+      pdf.addImage(imgData, "PNG", 20, position, imgWidth, imgHeight);
+      heightLeft -= (pageHeight - 40);
+
+      while(heightLeft > 0){
+        pdf.addPage();
+        position = 20 - (imgHeight - heightLeft);
+        pdf.addImage(imgData, "PNG", 20, position, imgWidth, imgHeight);
+        heightLeft -= (pageHeight - 40);
+      }
+
+      pdf.save(filename);
+      area.innerHTML = "";
+    }
+
+    function escapeHtml(text){
+      return String(text ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;");
+    }
+
+    function escapeQuotes(text){
+      return String(text ?? "").replaceAll("\\","\\\\").replaceAll("'","\\'");
+    }
+
+    async function exportProjectPDF(){
+      const p = getProject();
+      const f = projectFinancials();
+
+      const unitsRows = (p.units || []).map(u => `
+        <tr>
+          <td>${escapeHtml(u.number)}</td>
+          <td>${escapeHtml(u.model)}</td>
+          <td>${escapeHtml(u.floor)}</td>
+          <td>${escapeHtml(u.building)}</td>
+          <td>${escapeHtml(u.status)}</td>
+          <td>${escapeHtml(u.client)}</td>
+          <td>${money(u.price)}</td>
+          <td>${money(u.paid)}</td>
+          <td>${money(u.remaining)}</td>
+        </tr>
+      `).join("");
+
+      const html = `
+        <h2>تقرير المشروع</h2>
+        <div class="line"><strong>اسم المشروع:</strong> ${escapeHtml(p.name)}</div>
+        <div class="line"><strong>التكلفة الأساسية:</strong> ${money(p.cost)}</div>
+        <div class="line"><strong>إجمالي المبيعات:</strong> ${money(f.totalSales)}</div>
+        <div class="line"><strong>إجمالي المصروفات:</strong> ${money(f.totalExpenses)}</div>
+        <div class="line"><strong>إجمالي السعي المستحق:</strong> ${money(f.totalCommissionDue)}</div>
+        <div class="line"><strong>السعي المصروف:</strong> ${money(f.totalCommissionPaid)}</div>
+        <div class="line"><strong>متبقي السعي:</strong> ${money(f.totalCommissionRemain)}</div>
+        <div class="line"><strong>الربح الكلي:</strong> ${money(f.profit)}</div>
+        <div class="line"><strong>نصيب الشركة من الشركاء:</strong> ${money(f.companyShareProfit)}</div>
+        <div class="line"><strong>إدارة المساهمين:</strong> ${money(f.totalInvestorAdmin)}</div>
+        <div class="line"><strong>ربح الشركة النهائي:</strong> ${money(f.companyFinalProfit)}</div>
+
+        <h3>الوحدات</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>رقم الشقة</th>
+              <th>النموذج</th>
+              <th>الدور</th>
+              <th>المبنى</th>
+              <th>الحالة</th>
+              <th>العميل</th>
+              <th>السعر</th>
+              <th>المدفوع</th>
+              <th>المتبقي</th>
+            </tr>
+          </thead>
+          <tbody>${unitsRows || '<tr><td colspan="9">لا توجد وحدات</td></tr>'}</tbody>
+        </table>
+      `;
+
+      await createPdfFromHtml(html, `${p.name}.pdf`);
+    }
+
+    async function exportPartnerPDF(name){
+      const p = getProject();
+      const row = projectFinancials().partnersFull.find(x => x.name === name);
+      if(!row) return;
+
+      const html = `
+        <h2>تقرير شريك</h2>
+        <div class="line"><strong>المشروع:</strong> ${escapeHtml(p.name)}</div>
+        <div class="line"><strong>اسم الشريك:</strong> ${escapeHtml(row.name)}</div>
+        <div class="line"><strong>النسبة:</strong> ${num(row.percent).toFixed(2)}%</div>
+        <div class="line"><strong>نصيبه من الربح:</strong> ${money(row.share)}</div>
+        <div class="line"><strong>المصروف تحت الحساب:</strong> ${money(row.paidAdvance || 0)}</div>
+        <div class="line"><strong>المتبقي:</strong> ${money(row.remain || row.share)}</div>
+        <div class="line"><strong>التاريخ:</strong> ${escapeHtml(row.date || "-")}</div>
+      `;
+
+      await createPdfFromHtml(html, `partner_${name}.pdf`);
+    }
+
+    async function exportInvestorPDF(name){
+      const p = getProject();
+      const row = projectFinancials().investorsFull.find(x => x.name === name);
+      if(!row) return;
+
+      const html = `
+        <h2>تقرير مساهم</h2>
+        <div class="line"><strong>المشروع:</strong> ${escapeHtml(p.name)}</div>
+        <div class="line"><strong>اسم المساهم:</strong> ${escapeHtml(row.name)}</div>
+        <div class="line"><strong>المبلغ:</strong> ${money(row.amount)}</div>
+        <div class="line"><strong>النسبة:</strong> ${num(row.ratio).toFixed(2)}%</div>
+        <div class="line"><strong>قبل الإدارة:</strong> ${money(row.grossShare)}</div>
+        <div class="line"><strong>الإدارة:</strong> ${money(row.adminValue)}</div>
+        <div class="line"><strong>الصافي:</strong> ${money(row.netShare)}</div>
+        <div class="line"><strong>المصروف تحت الحساب:</strong> ${money(row.paidAdvance || 0)}</div>
+        <div class="line"><strong>المتبقي:</strong> ${money(row.remain || row.netShare)}</div>
+        <div class="line"><strong>التاريخ:</strong> ${escapeHtml(row.date || "-")}</div>
+      `;
+
+      await createPdfFromHtml(html, `investor_${name}.pdf`);
+    }
+
+    async function exportMarketerPDF(name){
+      const p = getProject();
+      const row = projectFinancials().marketerRows.find(x => x.name === name);
+      if(!row) return;
+
+      const units = (p.units || []).filter(u => u.marketer === name).map(u => `
+        <tr>
+          <td>${escapeHtml(u.number)}</td>
+          <td>${escapeHtml(u.building)}</td>
+          <td>${escapeHtml(u.client)}</td>
+          <td>${money(u.price)}</td>
+          <td>${money(u.commissionDue)}</td>
+        </tr>
+      `).join("");
+
+      const html = `
+        <h2>تقرير مسوق</h2>
+        <div class="line"><strong>المشروع:</strong> ${escapeHtml(p.name)}</div>
+        <div class="line"><strong>اسم المسوق:</strong> ${escapeHtml(row.name)}</div>
+        <div class="line"><strong>الجوال:</strong> ${escapeHtml(row.phone || "-")}</div>
+        <div class="line"><strong>عدد الوحدات:</strong> ${row.units}</div>
+        <div class="line"><strong>إجمالي السعي:</strong> ${money(row.commissionDue)}</div>
+        <div class="line"><strong>المصروف تحت الحساب:</strong> ${money(row.paidAdvance)}</div>
+        <div class="line"><strong>المتبقي:</strong> ${money(row.remainAfterAdvance)}</div>
+
+        <h3>الوحدات التابعة له</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>رقم الشقة</th>
+              <th>المبنى</th>
+              <th>العميل</th>
+              <th>السعر</th>
+              <th>السعي</th>
+            </tr>
+          </thead>
+          <tbody>${units || '<tr><td colspan="5">لا توجد وحدات</td></tr>'}</tbody>
+        </table>
+      `;
+
+      await createPdfFromHtml(html, `marketer_${name}.pdf`);
     }
 
     function downloadBackup(){
