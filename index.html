@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>نظام أنس - المرحلة الأولى</title>
+  <title>نظام أنس - المرحلة الثانية</title>
   <style>
     :root{
       --bg:#f5f6fa;
@@ -16,6 +16,7 @@
       --red:#dc2626;
       --orange:#ea580c;
       --gray:#6b7280;
+      --purple:#7c3aed;
       --border:#e5e7eb;
       --shadow:0 2px 10px rgba(0,0,0,.08);
     }
@@ -42,7 +43,7 @@
       margin-bottom:16px;
     }
     h2,h3,h4{margin-top:0}
-    input,select,button{
+    input,select,button,textarea{
       font-family:inherit;
       font-size:14px;
       padding:10px;
@@ -61,6 +62,7 @@
     .btn-red{background:var(--red);color:#fff}
     .btn-orange{background:var(--orange);color:#fff}
     .btn-gray{background:var(--gray);color:#fff}
+    .btn-purple{background:var(--purple);color:#fff}
     .grid{display:grid;gap:12px}
     .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
     .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -152,6 +154,9 @@
     .available{background:#dcfce7;color:#166534}
     .booked{background:#fef3c7;color:#92400e}
     .sold{background:#dbeafe;color:#1d4ed8}
+    .none-status{background:#fee2e2;color:#991b1b}
+    .partial-status{background:#fef3c7;color:#92400e}
+    .full-status{background:#dcfce7;color:#166534}
     .note{
       background:#eef8ff;
       border:1px solid #cfe9ff;
@@ -175,10 +180,17 @@
       padding:18px;
       box-shadow:var(--shadow);
     }
+    .report-box{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:14px;
+      line-height:2;
+    }
   </style>
 </head>
 <body>
-  <div class="header">نظام أنس - المرحلة الأولى</div>
+  <div class="header">نظام أنس - المرحلة الثانية</div>
 
   <div class="container">
     <div id="loginView" class="login-wrap">
@@ -233,7 +245,9 @@
           <div class="kpi"><div class="kpi-title">إجمالي المبيعات</div><div class="kpi-value" id="kpiSales">0</div></div>
           <div class="kpi"><div class="kpi-title">التكلفة الأساسية</div><div class="kpi-value" id="kpiCost">0</div></div>
           <div class="kpi"><div class="kpi-title">إجمالي المصروفات</div><div class="kpi-value" id="kpiExpenses">0</div></div>
-          <div class="kpi"><div class="kpi-title">إجمالي السعي</div><div class="kpi-value" id="kpiCommission">0</div></div>
+          <div class="kpi"><div class="kpi-title">إجمالي السعي المستحق</div><div class="kpi-value" id="kpiCommissionDue">0</div></div>
+          <div class="kpi"><div class="kpi-title">السعي المصروف فعليًا</div><div class="kpi-value" id="kpiCommissionPaid">0</div></div>
+          <div class="kpi"><div class="kpi-title">متبقي السعي</div><div class="kpi-value" id="kpiCommissionRemain">0</div></div>
           <div class="kpi"><div class="kpi-title">الربح الحالي</div><div class="kpi-value" id="kpiProfit">0</div></div>
           <div class="kpi"><div class="kpi-title">الوحدات المباعة</div><div class="kpi-value" id="kpiSold">0</div></div>
           <div class="kpi"><div class="kpi-title">الوحدات المحجوزة</div><div class="kpi-value" id="kpiBooked">0</div></div>
@@ -257,7 +271,8 @@
 
           <div class="note">
             الحجز على 5 دفعات. الدفعة الأولى = عربون الحجز.  
-            سعي المسوق = 2.5% من قيمة الوحدة.
+            سعي المسوق = 2.5% من قيمة الوحدة.  
+            الربح الحالي = المبيعات - التكلفة - المصروفات - السعي المصروف فعليًا.
           </div>
 
           <table>
@@ -268,7 +283,9 @@
                 <th>الحالة</th>
                 <th>العميل</th>
                 <th>المسوق</th>
-                <th>السعي</th>
+                <th>سعي مستحق</th>
+                <th>تم صرفه</th>
+                <th>متبقي السعي</th>
                 <th>المدفوع</th>
                 <th>المتبقي</th>
                 <th>الدفعات</th>
@@ -289,6 +306,8 @@
                 <th>إجمالي السعي</th>
                 <th>تم صرفه</th>
                 <th>المتبقي</th>
+                <th>الحالة</th>
+                <th>إجراء</th>
               </tr>
             </thead>
             <tbody id="marketersBody"></tbody>
@@ -333,7 +352,7 @@
 
         <div id="reportTab" class="card tab-panel hidden">
           <h3>ملخص المشروع</h3>
-          <div id="reportBox" class="note"></div>
+          <div id="reportBox" class="report-box"></div>
         </div>
       </div>
     </div>
@@ -350,7 +369,7 @@
       </div>
 
       <div class="grid grid-2" style="margin-top:10px">
-        <input id="bkCommission" readonly placeholder="السعي" />
+        <input id="bkCommission" readonly placeholder="السعي المستحق" />
         <select id="bkStatus">
           <option value="محجوزة">محجوزة</option>
           <option value="مباعة">مباعة</option>
@@ -373,15 +392,33 @@
     </div>
   </div>
 
+  <div id="commissionModal" class="modal hidden">
+    <div class="modal-content" style="max-width:700px">
+      <h3>صرف سعي المسوق</h3>
+      <div id="commissionInfo" class="note"></div>
+
+      <div class="grid grid-2">
+        <input id="commissionPayAmount" type="number" placeholder="المبلغ المصروف" />
+        <input id="commissionPayNote" placeholder="ملاحظة اختيارية" />
+      </div>
+
+      <div class="actions" style="margin-top:16px">
+        <button class="btn-green" onclick="saveCommissionPayment()">حفظ الصرف</button>
+        <button class="btn-gray" onclick="closeCommission()">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const AUTH_USER = "ANAS";
     const AUTH_PASS = "Anas8844";
     const COMMISSION_RATE = 2.5;
-    const STORAGE_KEY = "anas_system_phase1_v1";
+    const STORAGE_KEY = "anas_system_phase2_v1";
 
     let appData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"projects":[]}');
     let currentProjectId = null;
     let bookingUnitIndex = null;
+    let currentMarketerName = null;
 
     function saveApp(){
       localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
@@ -399,7 +436,7 @@
       const u = document.getElementById("loginUser").value.trim();
       const p = document.getElementById("loginPass").value;
       if(u === AUTH_USER && p === AUTH_PASS){
-        sessionStorage.setItem("anasLoggedInPhase1", "1");
+        sessionStorage.setItem("anasLoggedInPhase2", "1");
         document.getElementById("loginView").classList.add("hidden");
         document.getElementById("appView").classList.remove("hidden");
         renderProjects();
@@ -409,12 +446,12 @@
     }
 
     function logout(){
-      sessionStorage.removeItem("anasLoggedInPhase1");
+      sessionStorage.removeItem("anasLoggedInPhase2");
       location.reload();
     }
 
     (function init(){
-      if(sessionStorage.getItem("anasLoggedInPhase1") === "1"){
+      if(sessionStorage.getItem("anasLoggedInPhase2") === "1"){
         document.getElementById("loginView").classList.add("hidden");
         document.getElementById("appView").classList.remove("hidden");
         renderProjects();
@@ -509,17 +546,21 @@
 
       const totalSales = units.filter(u => u.status === "مباعة").reduce((s,u) => s + num(u.price), 0);
       const totalExpenses = expenses.reduce((s,e) => s + num(e.amount), 0);
-      const totalCommission = units.reduce((s,u) => s + num(u.commission), 0);
+      const totalCommissionDue = units.reduce((s,u) => s + num(u.commissionDue), 0);
+      const totalCommissionPaid = units.reduce((s,u) => s + num(u.commissionPaid), 0);
+      const totalCommissionRemain = totalCommissionDue - totalCommissionPaid;
       const soldUnits = units.filter(u => u.status === "مباعة").length;
       const bookedUnits = units.filter(u => u.status === "محجوزة").length;
       const availableUnits = units.filter(u => u.status === "متاحة").length;
 
-      const profit = totalSales - num(p.cost) - totalExpenses - totalCommission;
+      const profit = totalSales - num(p.cost) - totalExpenses - totalCommissionPaid;
 
       return {
         totalSales,
         totalExpenses,
-        totalCommission,
+        totalCommissionDue,
+        totalCommissionPaid,
+        totalCommissionRemain,
         soldUnits,
         bookedUnits,
         availableUnits,
@@ -537,7 +578,9 @@
       document.getElementById("kpiSales").innerText = money(f.totalSales);
       document.getElementById("kpiCost").innerText = money(p.cost);
       document.getElementById("kpiExpenses").innerText = money(f.totalExpenses);
-      document.getElementById("kpiCommission").innerText = money(f.totalCommission);
+      document.getElementById("kpiCommissionDue").innerText = money(f.totalCommissionDue);
+      document.getElementById("kpiCommissionPaid").innerText = money(f.totalCommissionPaid);
+      document.getElementById("kpiCommissionRemain").innerText = money(f.totalCommissionRemain);
       document.getElementById("kpiProfit").innerText = money(f.profit);
       document.getElementById("kpiSold").innerText = f.soldUnits;
       document.getElementById("kpiBooked").innerText = f.bookedUnits;
@@ -566,7 +609,9 @@
         status: "متاحة",
         client: "-",
         marketer: "-",
-        commission: calcCommission(price),
+        commissionDue: calcCommission(price),
+        commissionPaid: 0,
+        commissionPayments: [],
         payments: [0,0,0,0,0],
         paid: 0,
         remaining: price
@@ -590,12 +635,13 @@
       body.innerHTML = "";
 
       if(!p.units.length){
-        body.innerHTML = '<tr><td colspan="10">لا توجد وحدات</td></tr>';
+        body.innerHTML = '<tr><td colspan="12">لا توجد وحدات</td></tr>';
         return;
       }
 
       p.units.forEach((u,i) => {
         const paymentCount = (u.payments || []).filter(x => num(x) > 0).length;
+        const commissionRemain = num(u.commissionDue) - num(u.commissionPaid);
 
         body.innerHTML += `
           <tr>
@@ -604,7 +650,9 @@
             <td>${statusBadge(u.status)}</td>
             <td>${u.client}</td>
             <td>${u.marketer}</td>
-            <td>${money(u.commission)}</td>
+            <td>${money(u.commissionDue)}</td>
+            <td>${money(u.commissionPaid)}</td>
+            <td>${money(commissionRemain)}</td>
             <td>${money(u.paid)}</td>
             <td>${money(u.remaining)}</td>
             <td>${paymentCount}/5</td>
@@ -677,10 +725,15 @@
         return;
       }
 
+      const oldPaid = num(u.commissionPaid);
+      const oldPaymentsLog = Array.isArray(u.commissionPayments) ? u.commissionPayments : [];
+
       u.client = client;
       u.marketer = marketer || "-";
       u.price = price;
-      u.commission = calcCommission(price);
+      u.commissionDue = calcCommission(price);
+      u.commissionPaid = Math.min(oldPaid, u.commissionDue);
+      u.commissionPayments = oldPaymentsLog;
       u.payments = payments;
       u.paid = payments.reduce((a,b) => a + num(b), 0);
       u.remaining = price - u.paid;
@@ -715,26 +768,35 @@
       const p = getProject();
       const map = {};
 
-      p.units.forEach(u => {
+      p.units.forEach((u, idx) => {
         const name = (u.marketer && u.marketer !== "-") ? u.marketer : "";
         if(!name) return;
 
         if(!map[name]){
           map[name] = {
             units: 0,
-            commission: 0,
-            paid: 0,
-            remaining: 0
+            commissionDue: 0,
+            commissionPaid: 0,
+            commissionRemain: 0,
+            indexes: []
           };
         }
 
         map[name].units += 1;
-        map[name].commission += num(u.commission);
-        map[name].paid += 0;
-        map[name].remaining += num(u.commission);
+        map[name].commissionDue += num(u.commissionDue);
+        map[name].commissionPaid += num(u.commissionPaid);
+        map[name].commissionRemain += num(u.commissionDue) - num(u.commissionPaid);
+        map[name].indexes.push(idx);
       });
 
       return map;
+    }
+
+    function marketerStatus(m){
+      if(m.commissionDue <= 0) return '<span class="badge none-status">لا يوجد</span>';
+      if(m.commissionRemain <= 0) return '<span class="badge full-status">مكتمل</span>';
+      if(m.commissionPaid > 0) return '<span class="badge partial-status">جزئي</span>';
+      return '<span class="badge none-status">لم يصرف</span>';
     }
 
     function renderMarketers(){
@@ -744,7 +806,7 @@
 
       const names = Object.keys(map);
       if(!names.length){
-        body.innerHTML = '<tr><td colspan="5">لا يوجد مسوقون</td></tr>';
+        body.innerHTML = '<tr><td colspan="7">لا يوجد مسوقون</td></tr>';
         return;
       }
 
@@ -754,12 +816,80 @@
           <tr>
             <td>${name}</td>
             <td>${m.units}</td>
-            <td>${money(m.commission)}</td>
-            <td>${money(m.paid)}</td>
-            <td>${money(m.remaining)}</td>
+            <td>${money(m.commissionDue)}</td>
+            <td>${money(m.commissionPaid)}</td>
+            <td>${money(m.commissionRemain)}</td>
+            <td>${marketerStatus(m)}</td>
+            <td><button class="btn-green" onclick="openCommissionModal('${name.replace(/'/g, "\\'")}')">صرف سعي</button></td>
           </tr>
         `;
       });
+    }
+
+    function openCommissionModal(name){
+      currentMarketerName = name;
+      const map = marketerSummary();
+      const m = map[name];
+
+      document.getElementById("commissionInfo").innerHTML = `
+        <strong>المسوق:</strong> ${name}<br>
+        <strong>إجمالي السعي:</strong> ${money(m.commissionDue)}<br>
+        <strong>تم صرفه:</strong> ${money(m.commissionPaid)}<br>
+        <strong>المتبقي:</strong> ${money(m.commissionRemain)}
+      `;
+
+      document.getElementById("commissionPayAmount").value = "";
+      document.getElementById("commissionPayNote").value = "";
+      document.getElementById("commissionModal").classList.remove("hidden");
+    }
+
+    function saveCommissionPayment(){
+      const p = getProject();
+      const amount = num(document.getElementById("commissionPayAmount").value);
+      const note = document.getElementById("commissionPayNote").value.trim();
+
+      if(amount <= 0){
+        alert("اكتب مبلغ صحيح");
+        return;
+      }
+
+      let remain = amount;
+
+      p.units
+        .filter(u => u.marketer === currentMarketerName)
+        .forEach(u => {
+          if(remain <= 0) return;
+
+          const available = num(u.commissionDue) - num(u.commissionPaid);
+          if(available <= 0) return;
+
+          const take = Math.min(available, remain);
+          u.commissionPaid = num(u.commissionPaid) + take;
+
+          if(!Array.isArray(u.commissionPayments)){
+            u.commissionPayments = [];
+          }
+
+          u.commissionPayments.push({
+            amount: take,
+            note: note,
+            date: new Date().toLocaleDateString('en-CA')
+          });
+
+          remain -= take;
+        });
+
+      if(remain > 0){
+        alert("المبلغ أكبر من المتبقي للمسوق، تم تسجيل المتاح فقط.");
+      }
+
+      closeCommission();
+      renderProject();
+    }
+
+    function closeCommission(){
+      document.getElementById("commissionModal").classList.add("hidden");
+      currentMarketerName = null;
     }
 
     function addExpense(){
@@ -817,17 +947,24 @@
     function renderReport(){
       const p = getProject();
       const f = projectFinancials();
+      const map = marketerSummary();
+      const marketerLines = Object.keys(map).length
+        ? Object.keys(map).map(name => `${name}: إجمالي ${money(map[name].commissionDue)} | صرف ${money(map[name].commissionPaid)} | متبقي ${money(map[name].commissionRemain)}`).join("<br>")
+        : "لا يوجد مسوقون";
 
       document.getElementById("reportBox").innerHTML = `
         <strong>اسم المشروع:</strong> ${p.name}<br>
         <strong>إجمالي المبيعات:</strong> ${money(f.totalSales)}<br>
         <strong>التكلفة الأساسية:</strong> ${money(p.cost)}<br>
         <strong>إجمالي المصروفات:</strong> ${money(f.totalExpenses)}<br>
-        <strong>إجمالي السعي:</strong> ${money(f.totalCommission)}<br>
+        <strong>إجمالي السعي المستحق:</strong> ${money(f.totalCommissionDue)}<br>
+        <strong>السعي المصروف فعليًا:</strong> ${money(f.totalCommissionPaid)}<br>
+        <strong>متبقي السعي:</strong> ${money(f.totalCommissionRemain)}<br>
         <strong>الربح الحالي:</strong> ${money(f.profit)}<br>
         <strong>الوحدات المتاحة:</strong> ${f.availableUnits}<br>
         <strong>الوحدات المحجوزة:</strong> ${f.bookedUnits}<br>
-        <strong>الوحدات المباعة:</strong> ${f.soldUnits}
+        <strong>الوحدات المباعة:</strong> ${f.soldUnits}<hr>
+        <strong>ملخص المسوقين:</strong><br>${marketerLines}
       `;
     }
   </script>
