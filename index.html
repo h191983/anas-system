@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>نظام أنس - الوحش الكامل + التقرير المجمع</title>
+  <title>نظام أنس - النسخة الكاملة</title>
   <style>
     :root{
       --bg:#f5f6fa;
@@ -193,7 +193,7 @@
       z-index:1000;
     }
     .modal-content{
-      max-width:1000px;
+      max-width:1100px;
       margin:20px auto;
       background:#fff;
       border-radius:12px;
@@ -211,6 +211,15 @@
       background:#f8fafc;
       font-weight:bold;
     }
+    .toolbar{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .toolbar > *{
+      flex:1 1 180px;
+    }
     @media print{
       .header,.tabs,.no-print,.modal{display:none !important}
       .card,.kpi{box-shadow:none}
@@ -219,7 +228,7 @@
   </style>
 </head>
 <body>
-  <div class="header">نظام أنس - الوحش الكامل + التقرير المجمع</div>
+  <div class="header">نظام أنس - النسخة الكاملة</div>
 
   <div class="container">
     <div id="loginView" class="login-wrap">
@@ -239,15 +248,20 @@
           <h2>المشاريع</h2>
           <div class="actions">
             <button class="btn-teal" onclick="toggleCompanyReport()">تقرير الشركة المجمع</button>
+            <button class="btn-purple" onclick="downloadBackup()">نسخة احتياطية</button>
+            <button class="btn-orange" onclick="document.getElementById('restoreFile').click()">استرجاع</button>
+            <input id="restoreFile" type="file" accept=".json" class="hidden" onchange="restoreBackup(event)" />
             <button class="btn-gray" onclick="logout()">خروج</button>
           </div>
         </div>
 
         <div id="companyReportSection" class="hidden">
           <div class="card" style="box-shadow:none;border:1px solid #e5e7eb">
-            <h3>تقرير الشركة المجمع</h3>
-            <div class="success">
-              هذا التقرير يجمع كل المشاريع معًا تلقائيًا على مستوى الشركة.
+            <div class="section-title">
+              <h3>تقرير الشركة المجمع</h3>
+              <div class="actions no-print">
+                <button class="btn-teal" onclick="exportCompanyCSV()">تصدير CSV</button>
+              </div>
             </div>
 
             <div class="kpis">
@@ -342,6 +356,7 @@
           <button class="tab" onclick="showTab('partnersTab', this)">الشركاء</button>
           <button class="tab" onclick="showTab('investorsTab', this)">المساهمون</button>
           <button class="tab" onclick="showTab('movementsTab', this)">دفتر الحركة</button>
+          <button class="tab" onclick="showTab('reportsTab', this)">التقارير</button>
           <button class="tab" onclick="showTab('reportTab', this)">ملخص المشروع</button>
         </div>
 
@@ -503,10 +518,34 @@
         </div>
 
         <div id="movementsTab" class="card tab-panel hidden">
-          <h3>دفتر الحركة</h3>
-          <div class="success">
-            أي حركة مالية أو إدارية مهمة تتسجل هنا بالتاريخ تلقائيًا أو من الإدخال.
+          <div class="section-title">
+            <h3>دفتر الحركة</h3>
+            <div class="actions no-print">
+              <button class="btn-teal" onclick="exportMovementsCSV()">تصدير CSV</button>
+            </div>
           </div>
+
+          <div class="toolbar no-print">
+            <input id="movementSearch" placeholder="بحث باسم أو بيان" oninput="renderMovements()" />
+            <select id="movementTypeFilter" onchange="renderMovements()">
+              <option value="">كل الأنواع</option>
+              <option value="إضافة وحدة">إضافة وحدة</option>
+              <option value="تحصيل دفعة">تحصيل دفعة</option>
+              <option value="تحديث حجز">تحديث حجز</option>
+              <option value="بيع وحدة">بيع وحدة</option>
+              <option value="صرف سعي">صرف سعي</option>
+              <option value="مصروف">مصروف</option>
+              <option value="إضافة شريك">إضافة شريك</option>
+              <option value="إضافة مساهم">إضافة مساهم</option>
+              <option value="حذف وحدة">حذف وحدة</option>
+              <option value="حذف مصروف">حذف مصروف</option>
+              <option value="حذف شريك">حذف شريك</option>
+              <option value="حذف مساهم">حذف مساهم</option>
+            </select>
+            <input id="movementFrom" type="date" onchange="renderMovements()" />
+            <input id="movementTo" type="date" onchange="renderMovements()" />
+          </div>
+
           <table>
             <thead>
               <tr>
@@ -519,6 +558,30 @@
             </thead>
             <tbody id="movementsBody"></tbody>
           </table>
+        </div>
+
+        <div id="reportsTab" class="card tab-panel hidden">
+          <div class="section-title">
+            <h3>التقارير المنفصلة</h3>
+            <div class="actions no-print">
+              <button class="btn-teal" onclick="window.print()">طباعة</button>
+            </div>
+          </div>
+
+          <div class="toolbar no-print">
+            <select id="singleReportType" onchange="renderSingleReportSelectors()">
+              <option value="marketer">تقرير مسوق</option>
+              <option value="investor">تقرير مساهم</option>
+              <option value="partner">تقرير شريك</option>
+              <option value="unit">تقرير وحدة</option>
+            </select>
+
+            <select id="singleReportItem"></select>
+
+            <button class="btn-purple" onclick="generateSingleReport()">إنشاء التقرير</button>
+          </div>
+
+          <div id="singleReportBox" class="report-box">اختر نوع التقرير ثم أنشئه.</div>
         </div>
 
         <div id="reportTab" class="card tab-panel hidden">
@@ -611,6 +674,21 @@
     function calcCommission(price){ return num(price) * COMMISSION_RATE / 100; }
     function todayText(){ return new Date().toLocaleDateString('en-CA'); }
 
+    function csvEscape(value){
+      const text = String(value ?? "");
+      return `"${text.replace(/"/g, '""')}"`;
+    }
+
+    function downloadTextFile(filename, content, type="text/plain;charset=utf-8"){
+      const blob = new Blob([content], {type});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
     function getProject(){
       return appData.projects.find(p => p.id === currentProjectId);
     }
@@ -676,11 +754,9 @@
       });
 
       saveApp();
-
       document.getElementById("newProjectName").value = "";
       document.getElementById("newProjectCost").value = "";
       document.getElementById("newProjectNotes").value = "";
-
       renderProjects();
       renderCompanyReport();
     }
@@ -745,6 +821,9 @@
       document.getElementById(id).classList.remove("hidden");
       document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
       btn.classList.add("active");
+      if(id === "reportsTab") {
+        renderSingleReportSelectors();
+      }
     }
 
     function partnerRowsWithCompany(project){
@@ -1012,6 +1091,7 @@
       renderInvestors();
       renderMovements();
       renderReport();
+      renderSingleReportSelectors();
       renderCompanyReport();
       saveApp();
     }
@@ -1156,12 +1236,10 @@
         alert("اكتب اسم العميل");
         return;
       }
-
       if(price <= 0){
         alert("اكتب سعر البيع");
         return;
       }
-
       if(payments[0] <= 0){
         alert("لازم عربون الحجز أكبر من صفر");
         return;
@@ -1349,7 +1427,6 @@
       }
 
       p.expenses.push({date, category, description, amount});
-
       addMovement("مصروف", `${category} - ${description}`, amount, "إضافة مصروف", date);
 
       document.getElementById("expenseDate").value = "";
@@ -1401,7 +1478,6 @@
         alert("اكتب اسم الشريك");
         return;
       }
-
       if(percent <= 0){
         alert("اكتب نسبة صحيحة");
         return;
@@ -1414,7 +1490,6 @@
       }
 
       p.partners.push({name, percent, date});
-
       addMovement("إضافة شريك", name, percent, `نسبة الشريك ${percent}%`, date);
 
       document.getElementById("partnerName").value = "";
@@ -1465,7 +1540,6 @@
         alert("اكتب اسم المساهم");
         return;
       }
-
       if(amount <= 0){
         alert("اكتب مبلغ صحيح");
         return;
@@ -1485,7 +1559,6 @@
       }
 
       p.investors.push({ name, amount, adminRate, date });
-
       addMovement("إضافة مساهم", name, amount, `إدارة ${adminRate}%`, date);
 
       document.getElementById("investorName").value = "";
@@ -1528,14 +1601,30 @@
       renderProject();
     }
 
-    function renderMovements(){
+    function filteredMovements(){
       const p = getProject();
+      const moves = p.movements || [];
+      const q = (document.getElementById("movementSearch")?.value || "").trim().toLowerCase();
+      const t = document.getElementById("movementTypeFilter")?.value || "";
+      const from = document.getElementById("movementFrom")?.value || "";
+      const to = document.getElementById("movementTo")?.value || "";
+
+      return moves.filter(m => {
+        const matchQ = !q || `${m.name} ${m.note}`.toLowerCase().includes(q);
+        const matchT = !t || m.type === t;
+        const matchFrom = !from || (m.date && m.date >= from);
+        const matchTo = !to || (m.date && m.date <= to);
+        return matchQ && matchT && matchFrom && matchTo;
+      });
+    }
+
+    function renderMovements(){
       const body = document.getElementById("movementsBody");
       body.innerHTML = "";
 
-      const moves = p.movements || [];
+      const moves = filteredMovements();
       if(!moves.length){
-        body.innerHTML = '<tr><td colspan="5">لا توجد حركات بعد</td></tr>';
+        body.innerHTML = '<tr><td colspan="5">لا توجد حركات مطابقة</td></tr>';
         return;
       }
 
@@ -1550,6 +1639,98 @@
           </tr>
         `;
       });
+    }
+
+    function renderSingleReportSelectors(){
+      const type = document.getElementById("singleReportType");
+      const item = document.getElementById("singleReportItem");
+      if(!type || !item || !currentProjectId) return;
+
+      const p = getProject();
+      const f = projectFinancials();
+      item.innerHTML = "";
+
+      if(type.value === "marketer"){
+        const names = Object.keys(marketerSummary());
+        if(!names.length){ item.innerHTML = '<option value="">لا يوجد</option>'; return; }
+        names.forEach(n => item.innerHTML += `<option value="${n}">${n}</option>`);
+      } else if(type.value === "investor"){
+        const rows = f.investorsFull.filter(x => !x.auto);
+        if(!rows.length){ item.innerHTML = '<option value="">لا يوجد</option>'; return; }
+        rows.forEach(x => item.innerHTML += `<option value="${x.name}">${x.name}</option>`);
+      } else if(type.value === "partner"){
+        const rows = f.partnersFull.filter(x => !x.auto);
+        if(!rows.length){ item.innerHTML = '<option value="">لا يوجد</option>'; return; }
+        rows.forEach(x => item.innerHTML += `<option value="${x.name}">${x.name}</option>`);
+      } else if(type.value === "unit"){
+        const rows = p.units || [];
+        if(!rows.length){ item.innerHTML = '<option value="">لا يوجد</option>'; return; }
+        rows.forEach(x => item.innerHTML += `<option value="${x.number}">${x.number}</option>`);
+      }
+    }
+
+    function generateSingleReport(){
+      const type = document.getElementById("singleReportType").value;
+      const value = document.getElementById("singleReportItem").value;
+      const box = document.getElementById("singleReportBox");
+      const p = getProject();
+      const f = projectFinancials();
+
+      if(!value){
+        box.innerHTML = "لا يوجد بيانات لهذا النوع.";
+        return;
+      }
+
+      if(type === "marketer"){
+        const map = marketerSummary();
+        const m = map[value];
+        const units = (p.units || []).filter(u => u.marketer === value);
+        box.innerHTML = `
+          <strong>تقرير مسوق:</strong> ${value}<br>
+          <strong>عدد الوحدات:</strong> ${m.units}<br>
+          <strong>إجمالي السعي:</strong> ${money(m.commissionDue)}<br>
+          <strong>تم صرفه:</strong> ${money(m.commissionPaid)}<br>
+          <strong>المتبقي:</strong> ${money(m.commissionRemain)}<hr>
+          <strong>الوحدات:</strong><br>
+          ${units.map(u => `${u.number} | ${money(u.price)} | ${u.client}`).join("<br>")}
+        `;
+      } else if(type === "investor"){
+        const inv = f.investorsFull.find(x => x.name === value);
+        box.innerHTML = `
+          <strong>تقرير مساهم:</strong> ${inv.name}<br>
+          <strong>المبلغ:</strong> ${money(inv.amount)}<br>
+          <strong>النسبة:</strong> ${num(inv.ratio).toFixed(2)}%<br>
+          <strong>قبل الإدارة:</strong> ${money(inv.grossShare)}<br>
+          <strong>نسبة الإدارة:</strong> ${num(inv.adminRate).toFixed(2)}%<br>
+          <strong>قيمة الإدارة:</strong> ${money(inv.adminValue)}<br>
+          <strong>الصافي:</strong> ${money(inv.netShare)}<br>
+          <strong>التاريخ:</strong> ${inv.date}
+        `;
+      } else if(type === "partner"){
+        const part = f.partnersFull.find(x => x.name === value);
+        box.innerHTML = `
+          <strong>تقرير شريك:</strong> ${part.name}<br>
+          <strong>النسبة:</strong> ${num(part.percent).toFixed(2)}%<br>
+          <strong>نصيبه من الربح:</strong> ${money(part.share)}<br>
+          <strong>التاريخ:</strong> ${part.date}
+        `;
+      } else if(type === "unit"){
+        const u = (p.units || []).find(x => x.number === value);
+        const rows = (u.payments || []).map((amt, idx) => amt > 0 ? `دفعة ${idx+1}: ${money(amt)} | ${u.paymentDates?.[idx] || "-"}` : "").filter(Boolean);
+        box.innerHTML = `
+          <strong>تقرير وحدة:</strong> ${u.number}<br>
+          <strong>السعر:</strong> ${money(u.price)}<br>
+          <strong>الحالة:</strong> ${u.status}<br>
+          <strong>العميل:</strong> ${u.client}<br>
+          <strong>المسوق:</strong> ${u.marketer}<br>
+          <strong>السعي المستحق:</strong> ${money(u.commissionDue)}<br>
+          <strong>السعي المصروف:</strong> ${money(u.commissionPaid)}<br>
+          <strong>المدفوع:</strong> ${money(u.paid)}<br>
+          <strong>المتبقي:</strong> ${money(u.remaining)}<hr>
+          <strong>الدفعات:</strong><br>
+          ${rows.length ? rows.join("<br>") : "لا توجد دفعات"}
+        `;
+      }
     }
 
     function renderReport(){
@@ -1588,6 +1769,74 @@
         <strong>توزيع المساهمين داخل الشركة:</strong><br>${investorsLines}<hr>
         <strong>ملخص المسوقين:</strong><br>${marketerLines}
       `;
+    }
+
+    function downloadBackup(){
+      downloadTextFile("anas_backup.json", JSON.stringify(appData, null, 2), "application/json;charset=utf-8");
+    }
+
+    function restoreBackup(event){
+      const file = event.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e){
+        try{
+          const data = JSON.parse(e.target.result);
+          if(!data || !Array.isArray(data.projects)){
+            alert("ملف النسخة الاحتياطية غير صالح");
+            return;
+          }
+          appData = data;
+          saveApp();
+          renderProjects();
+          alert("تم استرجاع النسخة الاحتياطية بنجاح");
+        }catch(err){
+          alert("حدث خطأ في قراءة الملف");
+        } finally {
+          event.target.value = "";
+        }
+      };
+      reader.readAsText(file, "utf-8");
+    }
+
+    function exportCompanyCSV(){
+      const projects = appData.projects || [];
+      let csv = [
+        ["المشروع","المبيعات","التكلفة","المصروفات","السعي المصروف","الربح الكلي","نصيب الشركة","إدارة المساهمين","ربح الشركة النهائي","مباعة","محجوزة","متاحة"]
+      ];
+
+      projects.forEach(project => {
+        const f = calcProjectFinancials(project);
+        csv.push([
+          project.name,
+          f.totalSales,
+          project.cost,
+          f.totalExpenses,
+          f.totalCommissionPaid,
+          f.profit,
+          f.companyShareProfit,
+          f.totalInvestorAdmin,
+          f.companyFinalProfit,
+          f.soldUnits,
+          f.bookedUnits,
+          f.availableUnits
+        ]);
+      });
+
+      const content = csv.map(row => row.map(csvEscape).join(",")).join("\n");
+      downloadTextFile("company_report.csv", content, "text/csv;charset=utf-8");
+    }
+
+    function exportMovementsCSV(){
+      const moves = filteredMovements();
+      let csv = [
+        ["التاريخ","نوع الحركة","الاسم / البيان","المبلغ","ملاحظة"]
+      ];
+      moves.forEach(m => {
+        csv.push([m.date, m.type, m.name, m.amount, m.note]);
+      });
+      const content = csv.map(row => row.map(csvEscape).join(",")).join("\n");
+      downloadTextFile("movements_report.csv", content, "text/csv;charset=utf-8");
     }
   </script>
 </body>
