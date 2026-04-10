@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>نظام أنس - الوحش الكامل</title>
+  <title>نظام أنس - الوحش الكامل + التقرير المجمع</title>
   <style>
     :root{
       --bg:#f5f6fa;
@@ -219,7 +219,7 @@
   </style>
 </head>
 <body>
-  <div class="header">نظام أنس - الوحش الكامل</div>
+  <div class="header">نظام أنس - الوحش الكامل + التقرير المجمع</div>
 
   <div class="container">
     <div id="loginView" class="login-wrap">
@@ -238,7 +238,55 @@
         <div class="section-title">
           <h2>المشاريع</h2>
           <div class="actions">
+            <button class="btn-teal" onclick="toggleCompanyReport()">تقرير الشركة المجمع</button>
             <button class="btn-gray" onclick="logout()">خروج</button>
+          </div>
+        </div>
+
+        <div id="companyReportSection" class="hidden">
+          <div class="card" style="box-shadow:none;border:1px solid #e5e7eb">
+            <h3>تقرير الشركة المجمع</h3>
+            <div class="success">
+              هذا التقرير يجمع كل المشاريع معًا تلقائيًا على مستوى الشركة.
+            </div>
+
+            <div class="kpis">
+              <div class="kpi"><div class="kpi-title">عدد المشاريع</div><div class="kpi-value" id="crProjectsCount">0</div></div>
+              <div class="kpi"><div class="kpi-title">إجمالي المبيعات</div><div class="kpi-value" id="crSales">0</div></div>
+              <div class="kpi"><div class="kpi-title">إجمالي التكلفة</div><div class="kpi-value" id="crCost">0</div></div>
+              <div class="kpi"><div class="kpi-title">إجمالي المصروفات</div><div class="kpi-value" id="crExpenses">0</div></div>
+              <div class="kpi"><div class="kpi-title">إجمالي السعي المستحق</div><div class="kpi-value" id="crCommissionDue">0</div></div>
+              <div class="kpi"><div class="kpi-title">إجمالي السعي المصروف</div><div class="kpi-value" id="crCommissionPaid">0</div></div>
+              <div class="kpi"><div class="kpi-title">الربح الكلي المجمع</div><div class="kpi-value" id="crProfit">0</div></div>
+              <div class="kpi"><div class="kpi-title">نصيب الشركة من الشركاء</div><div class="kpi-value" id="crCompanyPartners">0</div></div>
+              <div class="kpi"><div class="kpi-title">إجمالي إدارة المساهمين</div><div class="kpi-value" id="crInvestorAdmin">0</div></div>
+              <div class="kpi"><div class="kpi-title">ربح الشركة النهائي</div><div class="kpi-value" id="crCompanyFinal">0</div></div>
+              <div class="kpi"><div class="kpi-title">الوحدات المباعة</div><div class="kpi-value" id="crSold">0</div></div>
+              <div class="kpi"><div class="kpi-title">الوحدات المحجوزة</div><div class="kpi-value" id="crBooked">0</div></div>
+              <div class="kpi"><div class="kpi-title">الوحدات المتاحة</div><div class="kpi-value" id="crAvailable">0</div></div>
+            </div>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>المشروع</th>
+                  <th>المبيعات</th>
+                  <th>التكلفة</th>
+                  <th>المصروفات</th>
+                  <th>السعي المصروف</th>
+                  <th>الربح الكلي</th>
+                  <th>نصيب الشركة</th>
+                  <th>إدارة المساهمين</th>
+                  <th>ربح الشركة النهائي</th>
+                  <th>مباعة</th>
+                  <th>محجوزة</th>
+                  <th>متاحة</th>
+                </tr>
+              </thead>
+              <tbody id="companyProjectsBody"></tbody>
+            </table>
+
+            <div id="companyReportText" class="report-box" style="margin-top:14px"></div>
           </div>
         </div>
 
@@ -501,7 +549,6 @@
       </div>
 
       <h4 style="margin-top:18px">الدفعات الخمس</h4>
-      <div class="grid grid-5"></div>
       <div class="grid grid-4">
         <input id="pay1" type="number" placeholder="الدفعة ١ - عربون" />
         <input id="pay1Date" type="date" />
@@ -635,6 +682,7 @@
       document.getElementById("newProjectNotes").value = "";
 
       renderProjects();
+      renderCompanyReport();
     }
 
     function renderProjects(){
@@ -643,6 +691,7 @@
 
       if(!appData.projects.length){
         box.innerHTML = '<div class="small">لا يوجد مشاريع بعد</div>';
+        renderCompanyReport();
         return;
       }
 
@@ -660,6 +709,8 @@
           </div>
         `;
       });
+
+      renderCompanyReport();
     }
 
     function deleteProject(id){
@@ -683,6 +734,12 @@
       renderProjects();
     }
 
+    function toggleCompanyReport(){
+      const el = document.getElementById("companyReportSection");
+      el.classList.toggle("hidden");
+      renderCompanyReport();
+    }
+
     function showTab(id, btn){
       document.querySelectorAll(".tab-panel").forEach(x => x.classList.add("hidden"));
       document.getElementById(id).classList.remove("hidden");
@@ -690,9 +747,8 @@
       btn.classList.add("active");
     }
 
-    function partnerRowsWithCompany(){
-      const p = getProject();
-      const manualPartners = p.partners || [];
+    function partnerRowsWithCompany(project){
+      const manualPartners = project.partners || [];
       const sumPartners = manualPartners.reduce((s,x) => s + num(x.percent), 0);
       const companyPercent = Math.max(0, 100 - sumPartners);
 
@@ -707,9 +763,8 @@
       ];
     }
 
-    function investorRowsWithCompany(companyShareProfit){
-      const p = getProject();
-      const manualInvestors = p.investors || [];
+    function investorRowsWithCompany(project, companyShareProfit){
+      const manualInvestors = project.investors || [];
       const baseAmount = num(companyShareProfit);
       const totalInvestorAmount = manualInvestors.reduce((s,x) => s + num(x.amount), 0);
 
@@ -750,11 +805,9 @@
       return rows;
     }
 
-    function marketerSummary(){
-      const p = getProject();
+    function marketerSummaryForProject(project){
       const map = {};
-
-      p.units.forEach((u) => {
+      (project.units || []).forEach((u) => {
         const name = (u.marketer && u.marketer !== "-") ? u.marketer : "";
         if(!name) return;
 
@@ -772,14 +825,16 @@
         map[name].commissionPaid += num(u.commissionPaid);
         map[name].commissionRemain += num(u.commissionDue) - num(u.commissionPaid);
       });
-
       return map;
     }
 
-    function projectFinancials(){
-      const p = getProject();
-      const units = p.units || [];
-      const expenses = p.expenses || [];
+    function marketerSummary(){
+      return marketerSummaryForProject(getProject());
+    }
+
+    function calcProjectFinancials(project){
+      const units = project.units || [];
+      const expenses = project.expenses || [];
 
       const totalSales = units.filter(u => u.status === "مباعة").reduce((s,u) => s + num(u.price), 0);
       const totalExpenses = expenses.reduce((s,e) => s + num(e.amount), 0);
@@ -790,9 +845,9 @@
       const bookedUnits = units.filter(u => u.status === "محجوزة").length;
       const availableUnits = units.filter(u => u.status === "متاحة").length;
 
-      const profit = totalSales - num(p.cost) - totalExpenses - totalCommissionPaid;
+      const profit = totalSales - num(project.cost) - totalExpenses - totalCommissionPaid;
 
-      const partnersFull = partnerRowsWithCompany();
+      const partnersFull = partnerRowsWithCompany(project);
       partnersFull.forEach(x => {
         x.share = (num(x.percent) / 100) * profit;
       });
@@ -800,7 +855,7 @@
       const companyRow = partnersFull.find(x => x.name === "الشركة");
       const companyShareProfit = companyRow ? num(companyRow.share) : 0;
 
-      const investorsFull = investorRowsWithCompany(companyShareProfit);
+      const investorsFull = investorRowsWithCompany(project, companyShareProfit);
 
       const totalInvestorAdmin = investorsFull
         .filter(x => !x.auto)
@@ -824,6 +879,109 @@
         totalInvestorAdmin,
         companyFinalProfit
       };
+    }
+
+    function projectFinancials(){
+      return calcProjectFinancials(getProject());
+    }
+
+    function renderCompanyReport(){
+      const projects = appData.projects || [];
+
+      let sumSales = 0;
+      let sumCost = 0;
+      let sumExpenses = 0;
+      let sumCommissionDue = 0;
+      let sumCommissionPaid = 0;
+      let sumProfit = 0;
+      let sumCompanyPartners = 0;
+      let sumInvestorAdmin = 0;
+      let sumCompanyFinal = 0;
+      let sumSold = 0;
+      let sumBooked = 0;
+      let sumAvailable = 0;
+
+      const body = document.getElementById("companyProjectsBody");
+      body.innerHTML = "";
+
+      if(!projects.length){
+        document.getElementById("crProjectsCount").innerText = 0;
+        document.getElementById("crSales").innerText = money(0);
+        document.getElementById("crCost").innerText = money(0);
+        document.getElementById("crExpenses").innerText = money(0);
+        document.getElementById("crCommissionDue").innerText = money(0);
+        document.getElementById("crCommissionPaid").innerText = money(0);
+        document.getElementById("crProfit").innerText = money(0);
+        document.getElementById("crCompanyPartners").innerText = money(0);
+        document.getElementById("crInvestorAdmin").innerText = money(0);
+        document.getElementById("crCompanyFinal").innerText = money(0);
+        document.getElementById("crSold").innerText = 0;
+        document.getElementById("crBooked").innerText = 0;
+        document.getElementById("crAvailable").innerText = 0;
+        document.getElementById("companyReportText").innerHTML = "لا يوجد مشاريع بعد.";
+        body.innerHTML = '<tr><td colspan="12">لا يوجد مشاريع</td></tr>';
+        return;
+      }
+
+      projects.forEach(project => {
+        const f = calcProjectFinancials(project);
+
+        sumSales += f.totalSales;
+        sumCost += num(project.cost);
+        sumExpenses += f.totalExpenses;
+        sumCommissionDue += f.totalCommissionDue;
+        sumCommissionPaid += f.totalCommissionPaid;
+        sumProfit += f.profit;
+        sumCompanyPartners += f.companyShareProfit;
+        sumInvestorAdmin += f.totalInvestorAdmin;
+        sumCompanyFinal += f.companyFinalProfit;
+        sumSold += f.soldUnits;
+        sumBooked += f.bookedUnits;
+        sumAvailable += f.availableUnits;
+
+        body.innerHTML += `
+          <tr>
+            <td>${project.name}</td>
+            <td>${money(f.totalSales)}</td>
+            <td>${money(project.cost)}</td>
+            <td>${money(f.totalExpenses)}</td>
+            <td>${money(f.totalCommissionPaid)}</td>
+            <td>${money(f.profit)}</td>
+            <td>${money(f.companyShareProfit)}</td>
+            <td>${money(f.totalInvestorAdmin)}</td>
+            <td>${money(f.companyFinalProfit)}</td>
+            <td>${f.soldUnits}</td>
+            <td>${f.bookedUnits}</td>
+            <td>${f.availableUnits}</td>
+          </tr>
+        `;
+      });
+
+      document.getElementById("crProjectsCount").innerText = projects.length;
+      document.getElementById("crSales").innerText = money(sumSales);
+      document.getElementById("crCost").innerText = money(sumCost);
+      document.getElementById("crExpenses").innerText = money(sumExpenses);
+      document.getElementById("crCommissionDue").innerText = money(sumCommissionDue);
+      document.getElementById("crCommissionPaid").innerText = money(sumCommissionPaid);
+      document.getElementById("crProfit").innerText = money(sumProfit);
+      document.getElementById("crCompanyPartners").innerText = money(sumCompanyPartners);
+      document.getElementById("crInvestorAdmin").innerText = money(sumInvestorAdmin);
+      document.getElementById("crCompanyFinal").innerText = money(sumCompanyFinal);
+      document.getElementById("crSold").innerText = sumSold;
+      document.getElementById("crBooked").innerText = sumBooked;
+      document.getElementById("crAvailable").innerText = sumAvailable;
+
+      document.getElementById("companyReportText").innerHTML = `
+        <strong>عدد المشاريع:</strong> ${projects.length}<br>
+        <strong>إجمالي المبيعات:</strong> ${money(sumSales)}<br>
+        <strong>إجمالي التكلفة الأساسية:</strong> ${money(sumCost)}<br>
+        <strong>إجمالي المصروفات:</strong> ${money(sumExpenses)}<br>
+        <strong>إجمالي السعي المصروف:</strong> ${money(sumCommissionPaid)}<br>
+        <strong>الربح الكلي المجمع:</strong> ${money(sumProfit)}<br>
+        <strong>نصيب الشركة من الشركاء:</strong> ${money(sumCompanyPartners)}<br>
+        <strong>إجمالي إدارة المساهمين:</strong> ${money(sumInvestorAdmin)}<br>
+        <strong>ربح الشركة النهائي المجمع:</strong> ${money(sumCompanyFinal)}
+      `;
     }
 
     function renderProject(){
@@ -854,6 +1012,7 @@
       renderInvestors();
       renderMovements();
       renderReport();
+      renderCompanyReport();
       saveApp();
     }
 
