@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>نظام أنس - النسخة الكاملة المطورة</title>
+  <title>نظام أنس - النسخة الأقوى</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
   <style>
     :root{
       --bg:#f5f6fa;
@@ -18,6 +19,7 @@
       --gray:#6b7280;
       --purple:#7c3aed;
       --teal:#0f766e;
+      --yellow:#f59e0b;
       --border:#e5e7eb;
       --shadow:0 2px 10px rgba(0,0,0,.08);
     }
@@ -52,7 +54,7 @@
       border:1px solid #d0d7de;
       width:100%;
     }
-    textarea{min-height:90px;resize:vertical}
+    textarea{min-height:110px;resize:vertical}
     button{
       border:none;
       cursor:pointer;
@@ -72,6 +74,8 @@
       min-width:auto;
       padding:6px 10px;
       border:1px solid #c7d2fe;
+      text-decoration:none;
+      display:inline-block;
     }
     .btn-wa{
       background:#dcfce7;
@@ -79,6 +83,8 @@
       min-width:auto;
       padding:6px 10px;
       border:1px solid #86efac;
+      text-decoration:none;
+      display:inline-block;
     }
     .grid{display:grid;gap:12px}
     .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -171,6 +177,8 @@
     .available{background:#dcfce7;color:#166534}
     .booked{background:#fef3c7;color:#92400e}
     .sold{background:#dbeafe;color:#1d4ed8}
+    .danger-row{background:#fff1f2}
+    .warn-row{background:#fffbeb}
     .none-status{background:#fee2e2;color:#991b1b}
     .partial-status{background:#fef3c7;color:#92400e}
     .full-status{background:#dcfce7;color:#166534}
@@ -207,7 +215,7 @@
       z-index:1000;
     }
     .modal-content{
-      max-width:1150px;
+      max-width:1200px;
       margin:20px auto;
       background:#fff;
       border-radius:12px;
@@ -251,6 +259,9 @@
       flex-wrap:wrap;
       justify-content:center;
     }
+    .editable{
+      background:#fffbeb;
+    }
     @media print{
       .header,.tabs,.no-print,.modal{display:none !important}
       .card,.kpi{box-shadow:none}
@@ -259,7 +270,7 @@
   </style>
 </head>
 <body>
-  <div class="header">نظام أنس - النسخة الكاملة المطورة</div>
+  <div class="header">نظام أنس - النسخة الأقوى</div>
 
   <div class="container">
     <div id="loginView" class="login-wrap">
@@ -278,60 +289,10 @@
         <div class="section-title">
           <h2>المشاريع</h2>
           <div class="actions">
-            <button class="btn-teal" onclick="toggleCompanyReport()">تقرير الشركة المجمع</button>
             <button class="btn-purple" onclick="downloadBackup()">نسخة احتياطية</button>
             <button class="btn-orange" onclick="document.getElementById('restoreFile').click()">استرجاع</button>
             <input id="restoreFile" type="file" accept=".json" class="hidden" onchange="restoreBackup(event)" />
             <button class="btn-gray" onclick="logout()">خروج</button>
-          </div>
-        </div>
-
-        <div id="companyReportSection" class="hidden">
-          <div class="card" style="box-shadow:none;border:1px solid #e5e7eb">
-            <div class="section-title">
-              <h3>تقرير الشركة المجمع</h3>
-              <div class="actions no-print">
-                <button class="btn-teal" onclick="exportCompanyCSV()">تصدير CSV</button>
-              </div>
-            </div>
-
-            <div class="kpis">
-              <div class="kpi"><div class="kpi-title">عدد المشاريع</div><div class="kpi-value" id="crProjectsCount">0</div></div>
-              <div class="kpi"><div class="kpi-title">إجمالي المبيعات</div><div class="kpi-value" id="crSales">0</div></div>
-              <div class="kpi"><div class="kpi-title">إجمالي التكلفة</div><div class="kpi-value" id="crCost">0</div></div>
-              <div class="kpi"><div class="kpi-title">إجمالي المصروفات</div><div class="kpi-value" id="crExpenses">0</div></div>
-              <div class="kpi"><div class="kpi-title">إجمالي السعي المستحق</div><div class="kpi-value" id="crCommissionDue">0</div></div>
-              <div class="kpi"><div class="kpi-title">إجمالي السعي المصروف</div><div class="kpi-value" id="crCommissionPaid">0</div></div>
-              <div class="kpi"><div class="kpi-title">الربح الكلي المجمع</div><div class="kpi-value" id="crProfit">0</div></div>
-              <div class="kpi"><div class="kpi-title">نصيب الشركة من الشركاء</div><div class="kpi-value" id="crCompanyPartners">0</div></div>
-              <div class="kpi"><div class="kpi-title">إجمالي إدارة المساهمين</div><div class="kpi-value" id="crInvestorAdmin">0</div></div>
-              <div class="kpi"><div class="kpi-title">ربح الشركة النهائي</div><div class="kpi-value" id="crCompanyFinal">0</div></div>
-              <div class="kpi"><div class="kpi-title">الوحدات المباعة</div><div class="kpi-value" id="crSold">0</div></div>
-              <div class="kpi"><div class="kpi-title">الوحدات المحجوزة</div><div class="kpi-value" id="crBooked">0</div></div>
-              <div class="kpi"><div class="kpi-title">الوحدات المتاحة</div><div class="kpi-value" id="crAvailable">0</div></div>
-            </div>
-
-            <table>
-              <thead>
-                <tr>
-                  <th>المشروع</th>
-                  <th>المبيعات</th>
-                  <th>التكلفة</th>
-                  <th>المصروفات</th>
-                  <th>السعي المصروف</th>
-                  <th>الربح الكلي</th>
-                  <th>نصيب الشركة</th>
-                  <th>إدارة المساهمين</th>
-                  <th>ربح الشركة النهائي</th>
-                  <th>مباعة</th>
-                  <th>محجوزة</th>
-                  <th>متاحة</th>
-                </tr>
-              </thead>
-              <tbody id="companyProjectsBody"></tbody>
-            </table>
-
-            <div id="companyReportText" class="report-box" style="margin-top:14px"></div>
           </div>
         </div>
 
@@ -359,6 +320,7 @@
             </div>
             <div class="actions no-print">
               <button class="btn-gray" onclick="backToProjects()">رجوع للمشاريع</button>
+              <button class="btn-teal" onclick="exportProjectCSV()">تصدير CSV للمشروع</button>
               <button class="btn-teal" onclick="window.print()">طباعة</button>
             </div>
           </div>
@@ -380,21 +342,23 @@
           <div class="kpi"><div class="kpi-title">الوحدات المتاحة</div><div class="kpi-value" id="kpiAvailable">0</div></div>
         </div>
 
+        <div id="alertsBox"></div>
+        <div id="issuesBox"></div>
+
         <div class="tabs no-print">
-          <button class="tab active" onclick="showTab('unitsTab', this)">الوحدات والحجز</button>
-          <button class="tab" onclick="showTab('balancesTab', this)">الأرصدة المختصرة</button>
-          <button class="tab" onclick="showTab('marketersTab', this)">المسوقون والسعي</button>
+          <button class="tab active" onclick="showTab('unitsTab', this)">الوحدات</button>
+          <button class="tab" onclick="showTab('marketersTab', this)">المسوقون</button>
           <button class="tab" onclick="showTab('expensesTab', this)">المصروفات</button>
           <button class="tab" onclick="showTab('partnersTab', this)">الشركاء</button>
           <button class="tab" onclick="showTab('investorsTab', this)">المساهمون</button>
+          <button class="tab" onclick="showTab('advancesTab', this)">الدفعات تحت الحساب</button>
           <button class="tab" onclick="showTab('movementsTab', this)">دفتر الحركة</button>
-          <button class="tab" onclick="showTab('reportsTab', this)">التقارير</button>
           <button class="tab" onclick="showTab('reportTab', this)">ملخص المشروع</button>
         </div>
 
         <div id="unitsTab" class="card tab-panel">
           <div class="section-title">
-            <h3>الوحدات والحجز</h3>
+            <h3>الوحدات</h3>
             <div class="actions no-print">
               <select id="unitMarketerFilter" onchange="renderUnits()" style="min-width:220px">
                 <option value="">كل المسوقين</option>
@@ -402,118 +366,61 @@
             </div>
           </div>
 
-          <div class="grid grid-3 no-print">
-            <input id="unitNumber" placeholder="رقم الوحدة" />
-            <input id="unitPrice" type="number" placeholder="سعر الوحدة" />
+          <div class="grid grid-4 no-print">
+            <input id="unitNumber" placeholder="رقم الشقة" />
+            <input id="unitModel" placeholder="نموذج الشقة" />
+            <input id="unitFloor" placeholder="الدور" />
+            <input id="unitBuilding" placeholder="المبنى" />
+            <input id="unitView" placeholder="الإطلالة" />
+            <input id="unitArea" placeholder="المساحة" />
+            <input id="unitComponents" placeholder="مكونات الوحدة" />
+            <input id="unitPrice" type="number" placeholder="سعر العرض" />
+          </div>
+          <div class="no-print" style="margin-top:12px">
             <button class="btn-green" onclick="addUnit()">إضافة وحدة</button>
           </div>
 
-          <div class="note">
-            الحجز على ٥ دفعات. الدفعة الأولى = عربون الحجز.<br>
-            سعي المسوق = ٢.٥٪ من قيمة الوحدة.<br>
-            الربح الكلي = المبيعات - التكلفة - المصروفات - السعي المصروف فعليًا.
+          <div class="card no-print" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:14px">
+            <h4>استيراد جماعي للوحدات</h4>
+            <div class="grid grid-2">
+              <div>
+                <input type="file" id="unitExcelFile" accept=".xlsx,.xls" />
+                <div style="margin-top:10px">
+                  <button class="btn" onclick="importUnitsExcel()">استيراد من إكسل</button>
+                </div>
+              </div>
+              <div>
+                <textarea id="unitPasteData" placeholder="الصق البيانات هنا من إكسل بنفس الترتيب: رقم الشقة - نموذج الشقة - الدور - المبنى - الإطلالة - المساحة - مكونات الوحدة - سعر العرض"></textarea>
+                <div style="margin-top:10px">
+                  <button class="btn-teal" onclick="importUnitsPaste()">استيراد من لصق مباشر</button>
+                </div>
+              </div>
+            </div>
           </div>
 
           <table>
             <thead>
               <tr>
-                <th>الوحدة</th>
-                <th>السعر</th>
+                <th>رقم الشقة</th>
+                <th>النموذج</th>
+                <th>الدور</th>
+                <th>المبنى</th>
+                <th>الإطلالة</th>
+                <th>المساحة</th>
+                <th>المكونات</th>
+                <th>سعر العرض</th>
                 <th>الحالة</th>
                 <th>العميل</th>
                 <th>جوال العميل</th>
                 <th>المسوق</th>
                 <th>جوال المسوق</th>
-                <th>سعي مستحق</th>
-                <th>تم صرفه</th>
-                <th>متبقي السعي</th>
                 <th>المدفوع</th>
                 <th>المتبقي</th>
-                <th>الدفعات</th>
                 <th class="no-print">إجراء</th>
               </tr>
             </thead>
             <tbody id="unitsBody"></tbody>
           </table>
-        </div>
-
-        <div id="balancesTab" class="card tab-panel hidden">
-          <div class="section-title">
-            <h3>شاشة الأرصدة المختصرة</h3>
-            <div class="actions no-print">
-              <button class="btn-teal" onclick="exportBalancesCSV()">تصدير CSV</button>
-            </div>
-          </div>
-
-          <div class="kpis">
-            <div class="kpi"><div class="kpi-title">إجمالي المتحصل من الوحدات</div><div class="kpi-value" id="balCollected">0</div></div>
-            <div class="kpi"><div class="kpi-title">إجمالي المتبقي على الوحدات</div><div class="kpi-value" id="balUnitsRemain">0</div></div>
-            <div class="kpi"><div class="kpi-title">إجمالي متبقي السعي</div><div class="kpi-value" id="balCommissionRemain">0</div></div>
-            <div class="kpi"><div class="kpi-title">ربح الشركة النهائي</div><div class="kpi-value" id="balCompanyFinal">0</div></div>
-          </div>
-
-          <div class="grid grid-2">
-            <div class="card" style="box-shadow:none;border:1px solid #e5e7eb">
-              <h4>أرصدة المسوقين</h4>
-              <table>
-                <thead>
-                  <tr>
-                    <th>المسوق</th>
-                    <th>إجمالي السعي</th>
-                    <th>تم صرفه</th>
-                    <th>المتبقي</th>
-                  </tr>
-                </thead>
-                <tbody id="balancesMarketersBody"></tbody>
-              </table>
-            </div>
-
-            <div class="card" style="box-shadow:none;border:1px solid #e5e7eb">
-              <h4>الوحدات التي عليها متبقي</h4>
-              <table>
-                <thead>
-                  <tr>
-                    <th>الوحدة</th>
-                    <th>العميل</th>
-                    <th>المدفوع</th>
-                    <th>المتبقي</th>
-                  </tr>
-                </thead>
-                <tbody id="balancesUnitsBody"></tbody>
-              </table>
-            </div>
-          </div>
-
-          <div class="grid grid-2">
-            <div class="card" style="box-shadow:none;border:1px solid #e5e7eb">
-              <h4>أرصدة الشركاء</h4>
-              <table>
-                <thead>
-                  <tr>
-                    <th>الاسم</th>
-                    <th>النسبة</th>
-                    <th>النصيب</th>
-                  </tr>
-                </thead>
-                <tbody id="balancesPartnersBody"></tbody>
-              </table>
-            </div>
-
-            <div class="card" style="box-shadow:none;border:1px solid #e5e7eb">
-              <h4>أرصدة المساهمين</h4>
-              <table>
-                <thead>
-                  <tr>
-                    <th>الاسم</th>
-                    <th>قبل الإدارة</th>
-                    <th>الإدارة</th>
-                    <th>الصافي</th>
-                  </tr>
-                </thead>
-                <tbody id="balancesInvestorsBody"></tbody>
-              </table>
-            </div>
-          </div>
         </div>
 
         <div id="marketersTab" class="card tab-panel hidden">
@@ -526,9 +433,7 @@
                 <th>إجمالي السعي</th>
                 <th>تم صرفه</th>
                 <th>المتبقي</th>
-                <th>الحالة</th>
                 <th>الجوال</th>
-                <th class="no-print">إجراء</th>
               </tr>
             </thead>
             <tbody id="marketersBody"></tbody>
@@ -539,17 +444,7 @@
           <h3>المصروفات</h3>
           <div class="grid grid-4 no-print">
             <input id="expenseDate" type="date" />
-            <select id="expenseCategory">
-              <option value="">التصنيف</option>
-              <option>أرض</option>
-              <option>بناء</option>
-              <option>تشطيب</option>
-              <option>تسويق</option>
-              <option>إدارة</option>
-              <option>خدمات</option>
-              <option>ضريبة</option>
-              <option>أخرى</option>
-            </select>
+            <input id="expenseCategory" placeholder="التصنيف" />
             <input id="expenseDesc" placeholder="البيان" />
             <input id="expenseAmount" type="number" placeholder="المبلغ" />
           </div>
@@ -573,16 +468,13 @@
 
         <div id="partnersTab" class="card tab-panel hidden">
           <h3>الشركاء</h3>
-
           <div class="danger">
-            الشركة موجودة تلقائيًا دائمًا بنسبة ١٠٠٪ في البداية.<br>
-            كل شريك تضيفه ينقص من نسبة الشركة تلقائيًا.<br>
-            لا يمكن أن يزيد مجموع نسب الشركاء عن ١٠٠٪.
+            الشركة تبدأ تلقائيًا 100%، وأي شريك تضيفه ينقص منها.
           </div>
 
           <div class="grid grid-4 no-print">
             <input id="partnerName" placeholder="اسم الشريك" />
-            <input id="partnerPercent" type="number" placeholder="نسبة الشريك %" />
+            <input id="partnerPercent" type="number" placeholder="النسبة %" />
             <input id="partnerDate" type="date" />
             <button class="btn-green" onclick="addPartner()">إضافة شريك</button>
           </div>
@@ -591,8 +483,10 @@
             <thead>
               <tr>
                 <th>الاسم</th>
-                <th>النسبة %</th>
+                <th>النسبة</th>
                 <th>نصيبه من الربح</th>
+                <th>تم صرفه تحت الحساب</th>
+                <th>المتبقي</th>
                 <th>التاريخ</th>
                 <th class="no-print">إجراء</th>
               </tr>
@@ -603,12 +497,8 @@
 
         <div id="investorsTab" class="card tab-panel hidden">
           <h3>المساهمون داخل الشركة</h3>
-
           <div class="danger">
-            المساهمون هنا بالمبلغ فقط، وليس بالنسبة.<br>
-            نسبة كل مساهم تظهر تلقائيًا من نصيب الشركة من الشركاء.<br>
-            الشركة موجودة تلقائيًا داخل هذه الشاشة، وأي مبلغ مساهم ينقص من الشركة تلقائيًا.<br>
-            الإدارة تخصم من المساهم وتعود إلى ربح الشركة.
+            المساهم بالمبلغ، والنسبة تظهر تلقائيًا من نصيب الشركة.
           </div>
 
           <div class="grid grid-4 no-print">
@@ -617,7 +507,7 @@
             <input id="investorAdminRate" type="number" placeholder="نسبة الإدارة %" />
             <input id="investorDate" type="date" />
           </div>
-          <div class="no-print" style="margin-top:12px">
+          <div style="margin-top:12px" class="no-print">
             <button class="btn-green" onclick="addInvestor()">إضافة مساهم</button>
           </div>
 
@@ -626,11 +516,12 @@
               <tr>
                 <th>الاسم</th>
                 <th>المبلغ</th>
-                <th>النسبة %</th>
-                <th>نصيبه من نصيب الشركة</th>
-                <th>نسبة الإدارة</th>
-                <th>قيمة الإدارة</th>
+                <th>النسبة</th>
+                <th>قبل الإدارة</th>
+                <th>الإدارة</th>
                 <th>الصافي</th>
+                <th>تم صرفه تحت الحساب</th>
+                <th>المتبقي</th>
                 <th>التاريخ</th>
                 <th class="no-print">إجراء</th>
               </tr>
@@ -639,38 +530,42 @@
           </table>
         </div>
 
-        <div id="movementsTab" class="card tab-panel hidden">
-          <div class="section-title">
-            <h3>دفتر الحركة</h3>
-            <div class="actions no-print">
-              <button class="btn-teal" onclick="exportMovementsCSV()">تصدير CSV</button>
+        <div id="advancesTab" class="card tab-panel hidden">
+          <h3>الدفعات تحت الحساب</h3>
+
+          <div class="grid grid-4 no-print">
+            <select id="advanceType" onchange="refreshAdvanceNames()">
+              <option value="partner">شريك</option>
+              <option value="investor">مساهم</option>
+              <option value="marketer">مسوق</option>
+            </select>
+            <select id="advanceName"></select>
+            <input id="advanceAmount" type="number" placeholder="المبلغ المصروف" />
+            <input id="advanceDate" type="date" />
+          </div>
+          <div class="grid grid-2 no-print">
+            <input id="advanceNote" placeholder="ملاحظة" />
+            <div style="display:flex;align-items:end">
+              <button class="btn-purple" onclick="addAdvance()" style="width:100%">تسجيل دفعة تحت الحساب</button>
             </div>
           </div>
 
-          <div class="toolbar no-print">
-            <input id="movementSearch" placeholder="بحث باسم أو بيان" oninput="renderMovements()" />
-            <select id="movementTypeFilter" onchange="renderMovements()">
-              <option value="">كل الأنواع</option>
-              <option value="إضافة وحدة">إضافة وحدة</option>
-              <option value="تحصيل دفعة">تحصيل دفعة</option>
-              <option value="تحديث حجز">تحديث حجز</option>
-              <option value="بيع وحدة">بيع وحدة</option>
-              <option value="صرف سعي">صرف سعي</option>
-              <option value="مصروف">مصروف</option>
-              <option value="إضافة شريك">إضافة شريك</option>
-              <option value="إضافة مساهم">إضافة مساهم</option>
-              <option value="حذف وحدة">حذف وحدة</option>
-              <option value="حذف مصروف">حذف مصروف</option>
-              <option value="حذف شريك">حذف شريك</option>
-              <option value="حذف مساهم">حذف مساهم</option>
-            </select>
-            <select id="movementMarketerFilter" onchange="renderMovements()">
-              <option value="">كل المسوقين</option>
-            </select>
-            <input id="movementFrom" type="date" onchange="renderMovements()" />
-            <input id="movementTo" type="date" onchange="renderMovements()" />
-          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>التاريخ</th>
+                <th>النوع</th>
+                <th>الاسم</th>
+                <th>المبلغ</th>
+                <th>ملاحظة</th>
+              </tr>
+            </thead>
+            <tbody id="advancesBody"></tbody>
+          </table>
+        </div>
 
+        <div id="movementsTab" class="card tab-panel hidden">
+          <h3>دفتر الحركة</h3>
           <table>
             <thead>
               <tr>
@@ -683,30 +578,6 @@
             </thead>
             <tbody id="movementsBody"></tbody>
           </table>
-        </div>
-
-        <div id="reportsTab" class="card tab-panel hidden">
-          <div class="section-title">
-            <h3>التقارير المنفصلة</h3>
-            <div class="actions no-print">
-              <button class="btn-teal" onclick="window.print()">طباعة</button>
-            </div>
-          </div>
-
-          <div class="toolbar no-print">
-            <select id="singleReportType" onchange="renderSingleReportSelectors()">
-              <option value="marketer">تقرير مسوق</option>
-              <option value="investor">تقرير مساهم</option>
-              <option value="partner">تقرير شريك</option>
-              <option value="unit">تقرير وحدة</option>
-            </select>
-
-            <select id="singleReportItem"></select>
-
-            <button class="btn-purple" onclick="generateSingleReport()">إنشاء التقرير</button>
-          </div>
-
-          <div id="singleReportBox" class="report-box">اختر نوع التقرير ثم أنشئه.</div>
         </div>
 
         <div id="reportTab" class="card tab-panel hidden">
@@ -766,34 +637,15 @@
     </div>
   </div>
 
-  <div id="commissionModal" class="modal hidden">
-    <div class="modal-content" style="max-width:700px">
-      <h3>صرف سعي المسوق</h3>
-      <div id="commissionInfo" class="note"></div>
-
-      <div class="grid grid-3">
-        <input id="commissionPayAmount" type="number" placeholder="المبلغ المصروف" />
-        <input id="commissionPayDate" type="date" />
-        <input id="commissionPayNote" placeholder="ملاحظة اختيارية" />
-      </div>
-
-      <div class="actions" style="margin-top:16px">
-        <button class="btn-green" onclick="saveCommissionPayment()">حفظ الصرف</button>
-        <button class="btn-gray" onclick="closeCommission()">إلغاء</button>
-      </div>
-    </div>
-  </div>
-
   <script>
     const AUTH_USER = "ANAS";
     const AUTH_PASS = "Anas8844";
     const COMMISSION_RATE = 2.5;
-    const STORAGE_KEY = "anas_monster_system_v1";
+    const STORAGE_KEY = "anas_projects_independent_v2";
 
     let appData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"projects":[]}');
     let currentProjectId = null;
     let bookingUnitIndex = null;
-    let currentMarketerName = null;
 
     function saveApp(){
       localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
@@ -857,9 +709,18 @@
       return appData.projects.find(p => p.id === currentProjectId);
     }
 
+    function ensureArrays(project){
+      if(!project.units) project.units = [];
+      if(!project.expenses) project.expenses = [];
+      if(!project.partners) project.partners = [];
+      if(!project.investors) project.investors = [];
+      if(!project.advances) project.advances = [];
+      if(!project.movements) project.movements = [];
+    }
+
     function addMovement(type, name, amount, note, dateValue){
       const p = getProject();
-      if(!p.movements) p.movements = [];
+      ensureArrays(p);
       p.movements.unshift({
         date: dateValue || todayText(),
         type: type || "",
@@ -873,7 +734,7 @@
       const u = document.getElementById("loginUser").value.trim();
       const p = document.getElementById("loginPass").value;
       if(u === AUTH_USER && p === AUTH_PASS){
-        sessionStorage.setItem("anasLoggedInMonster", "1");
+        sessionStorage.setItem("anasLoggedIndependent", "1");
         document.getElementById("loginView").classList.add("hidden");
         document.getElementById("appView").classList.remove("hidden");
         renderProjects();
@@ -883,12 +744,12 @@
     }
 
     function logout(){
-      sessionStorage.removeItem("anasLoggedInMonster");
+      sessionStorage.removeItem("anasLoggedIndependent");
       location.reload();
     }
 
     (function init(){
-      if(sessionStorage.getItem("anasLoggedInMonster") === "1"){
+      if(sessionStorage.getItem("anasLoggedIndependent") === "1"){
         document.getElementById("loginView").classList.add("hidden");
         document.getElementById("appView").classList.remove("hidden");
         renderProjects();
@@ -914,6 +775,7 @@
         expenses: [],
         partners: [],
         investors: [],
+        advances: [],
         movements: []
       });
 
@@ -922,7 +784,6 @@
       document.getElementById("newProjectCost").value = "";
       document.getElementById("newProjectNotes").value = "";
       renderProjects();
-      renderCompanyReport();
     }
 
     function renderProjects(){
@@ -931,11 +792,11 @@
 
       if(!appData.projects.length){
         box.innerHTML = '<div class="small">لا يوجد مشاريع بعد</div>';
-        renderCompanyReport();
         return;
       }
 
       appData.projects.forEach(p => {
+        ensureArrays(p);
         box.innerHTML += `
           <div class="project-item">
             <div>
@@ -949,8 +810,7 @@
           </div>
         `;
       });
-
-      renderCompanyReport();
+      saveApp();
     }
 
     function deleteProject(id){
@@ -974,19 +834,12 @@
       renderProjects();
     }
 
-    function toggleCompanyReport(){
-      const el = document.getElementById("companyReportSection");
-      el.classList.toggle("hidden");
-      renderCompanyReport();
-    }
-
     function showTab(id, btn){
       document.querySelectorAll(".tab-panel").forEach(x => x.classList.add("hidden"));
       document.getElementById(id).classList.remove("hidden");
       document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
       btn.classList.add("active");
-      if(id === "reportsTab") renderSingleReportSelectors();
-      if(id === "balancesTab") renderBalances();
+      if(id === "advancesTab") refreshAdvanceNames();
     }
 
     function partnerRowsWithCompany(project){
@@ -1079,9 +932,24 @@
       return marketerSummaryForProject(getProject());
     }
 
+    function calcAdvanceTotals(project){
+      const adv = project.advances || [];
+      const result = {
+        partner:{},
+        investor:{},
+        marketer:{}
+      };
+      adv.forEach(a => {
+        if(!result[a.entityType][a.entityName]) result[a.entityType][a.entityName] = 0;
+        result[a.entityType][a.entityName] += num(a.amount);
+      });
+      return result;
+    }
+
     function calcProjectFinancials(project){
       const units = project.units || [];
       const expenses = project.expenses || [];
+      const advanceTotals = calcAdvanceTotals(project);
 
       const totalSales = units.filter(u => u.status === "مباعة").reduce((s,u) => s + num(u.price), 0);
       const totalExpenses = expenses.reduce((s,e) => s + num(e.amount), 0);
@@ -1091,26 +959,39 @@
       const soldUnits = units.filter(u => u.status === "مباعة").length;
       const bookedUnits = units.filter(u => u.status === "محجوزة").length;
       const availableUnits = units.filter(u => u.status === "متاحة").length;
-      const totalCollected = units.reduce((s,u) => s + num(u.paid), 0);
-      const totalUnitsRemain = units.reduce((s,u) => s + num(u.remaining), 0);
 
       const profit = totalSales - num(project.cost) - totalExpenses - totalCommissionPaid;
 
-      const partnersFull = partnerRowsWithCompany(project);
-      partnersFull.forEach(x => {
-        x.share = (num(x.percent) / 100) * profit;
+      const partnersFull = partnerRowsWithCompany(project).map(x => {
+        const share = (num(x.percent) / 100) * profit;
+        const paidAdvance = num(advanceTotals.partner[x.name] || 0);
+        return {...x, share, paidAdvance, remain: share - paidAdvance};
       });
 
       const companyRow = partnersFull.find(x => x.name === "الشركة");
       const companyShareProfit = companyRow ? num(companyRow.share) : 0;
 
-      const investorsFull = investorRowsWithCompany(project, companyShareProfit);
+      const investorsFull = investorRowsWithCompany(project, companyShareProfit).map(x => {
+        const paidAdvance = num(advanceTotals.investor[x.name] || 0);
+        return {...x, paidAdvance, remain: x.netShare - paidAdvance};
+      });
 
       const totalInvestorAdmin = investorsFull
         .filter(x => !x.auto)
         .reduce((s,x) => s + num(x.adminValue), 0);
 
       const companyFinalProfit = companyShareProfit + totalInvestorAdmin;
+
+      const marketers = marketerSummaryForProject(project);
+      const marketerRows = Object.keys(marketers).map(name => {
+        const paidAdvance = num(advanceTotals.marketer[name] || 0);
+        return {
+          name,
+          ...marketers[name],
+          paidAdvance,
+          remainAfterAdvance: marketers[name].commissionRemain - paidAdvance
+        };
+      });
 
       return {
         totalSales,
@@ -1121,14 +1002,13 @@
         soldUnits,
         bookedUnits,
         availableUnits,
-        totalCollected,
-        totalUnitsRemain,
         profit,
         companyShareProfit,
         partnersFull,
         investorsFull,
         totalInvestorAdmin,
-        companyFinalProfit
+        companyFinalProfit,
+        marketerRows
       };
     }
 
@@ -1149,129 +1029,92 @@
       return names.sort();
     }
 
-    function renderMarketerFilters(){
+    function renderMarketerFilter(){
       const p = getProject();
-      if(!p) return;
       const names = uniqueMarketers(p);
-
-      const unitFilter = document.getElementById("unitMarketerFilter");
-      const movementFilter = document.getElementById("movementMarketerFilter");
-
-      const currentUnitValue = unitFilter ? unitFilter.value : "";
-      const currentMovementValue = movementFilter ? movementFilter.value : "";
-
-      if(unitFilter){
-        unitFilter.innerHTML = `<option value="">كل المسوقين</option>` + names.map(n => `<option value="${n}">${n}</option>`).join("");
-        unitFilter.value = names.includes(currentUnitValue) ? currentUnitValue : "";
-      }
-
-      if(movementFilter){
-        movementFilter.innerHTML = `<option value="">كل المسوقين</option>` + names.map(n => `<option value="${n}">${n}</option>`).join("");
-        movementFilter.value = names.includes(currentMovementValue) ? currentMovementValue : "";
-      }
+      const filter = document.getElementById("unitMarketerFilter");
+      const currentValue = filter ? filter.value : "";
+      filter.innerHTML = `<option value="">كل المسوقين</option>` + names.map(n => `<option value="${n}">${n}</option>`).join("");
+      filter.value = names.includes(currentValue) ? currentValue : "";
     }
 
-    function renderCompanyReport(){
-      const projects = appData.projects || [];
-
-      let sumSales = 0;
-      let sumCost = 0;
-      let sumExpenses = 0;
-      let sumCommissionDue = 0;
-      let sumCommissionPaid = 0;
-      let sumProfit = 0;
-      let sumCompanyPartners = 0;
-      let sumInvestorAdmin = 0;
-      let sumCompanyFinal = 0;
-      let sumSold = 0;
-      let sumBooked = 0;
-      let sumAvailable = 0;
-
-      const body = document.getElementById("companyProjectsBody");
-      body.innerHTML = "";
-
-      if(!projects.length){
-        document.getElementById("crProjectsCount").innerText = 0;
-        document.getElementById("crSales").innerText = money(0);
-        document.getElementById("crCost").innerText = money(0);
-        document.getElementById("crExpenses").innerText = money(0);
-        document.getElementById("crCommissionDue").innerText = money(0);
-        document.getElementById("crCommissionPaid").innerText = money(0);
-        document.getElementById("crProfit").innerText = money(0);
-        document.getElementById("crCompanyPartners").innerText = money(0);
-        document.getElementById("crInvestorAdmin").innerText = money(0);
-        document.getElementById("crCompanyFinal").innerText = money(0);
-        document.getElementById("crSold").innerText = 0;
-        document.getElementById("crBooked").innerText = 0;
-        document.getElementById("crAvailable").innerText = 0;
-        document.getElementById("companyReportText").innerHTML = "لا يوجد مشاريع بعد.";
-        body.innerHTML = '<tr><td colspan="12">لا يوجد مشاريع</td></tr>';
-        return;
-      }
-
-      projects.forEach(project => {
-        const f = calcProjectFinancials(project);
-
-        sumSales += f.totalSales;
-        sumCost += num(project.cost);
-        sumExpenses += f.totalExpenses;
-        sumCommissionDue += f.totalCommissionDue;
-        sumCommissionPaid += f.totalCommissionPaid;
-        sumProfit += f.profit;
-        sumCompanyPartners += f.companyShareProfit;
-        sumInvestorAdmin += f.totalInvestorAdmin;
-        sumCompanyFinal += f.companyFinalProfit;
-        sumSold += f.soldUnits;
-        sumBooked += f.bookedUnits;
-        sumAvailable += f.availableUnits;
-
-        body.innerHTML += `
-          <tr>
-            <td>${project.name}</td>
-            <td>${money(f.totalSales)}</td>
-            <td>${money(project.cost)}</td>
-            <td>${money(f.totalExpenses)}</td>
-            <td>${money(f.totalCommissionPaid)}</td>
-            <td>${money(f.profit)}</td>
-            <td>${money(f.companyShareProfit)}</td>
-            <td>${money(f.totalInvestorAdmin)}</td>
-            <td>${money(f.companyFinalProfit)}</td>
-            <td>${f.soldUnits}</td>
-            <td>${f.bookedUnits}</td>
-            <td>${f.availableUnits}</td>
-          </tr>
-        `;
+    function buildAlerts(project){
+      const alerts = [];
+      (project.units || []).forEach(u => {
+        if(num(u.remaining) > 0 && (u.status === "محجوزة" || u.status === "مباعة")){
+          alerts.push(`الوحدة ${u.number} في مبنى ${u.building} عليها متبقي ${money(u.remaining)}`);
+        }
       });
 
-      document.getElementById("crProjectsCount").innerText = projects.length;
-      document.getElementById("crSales").innerText = money(sumSales);
-      document.getElementById("crCost").innerText = money(sumCost);
-      document.getElementById("crExpenses").innerText = money(sumExpenses);
-      document.getElementById("crCommissionDue").innerText = money(sumCommissionDue);
-      document.getElementById("crCommissionPaid").innerText = money(sumCommissionPaid);
-      document.getElementById("crProfit").innerText = money(sumProfit);
-      document.getElementById("crCompanyPartners").innerText = money(sumCompanyPartners);
-      document.getElementById("crInvestorAdmin").innerText = money(sumInvestorAdmin);
-      document.getElementById("crCompanyFinal").innerText = money(sumCompanyFinal);
-      document.getElementById("crSold").innerText = sumSold;
-      document.getElementById("crBooked").innerText = sumBooked;
-      document.getElementById("crAvailable").innerText = sumAvailable;
+      projectFinancials().marketerRows.forEach(m => {
+        if(num(m.remainAfterAdvance) > 0){
+          alerts.push(`المسوق ${m.name} له متبقي ${money(m.remainAfterAdvance)}`);
+        }
+      });
 
-      document.getElementById("companyReportText").innerHTML = `
-        <strong>عدد المشاريع:</strong> ${projects.length}<br>
-        <strong>إجمالي المبيعات:</strong> ${money(sumSales)}<br>
-        <strong>إجمالي التكلفة الأساسية:</strong> ${money(sumCost)}<br>
-        <strong>إجمالي المصروفات:</strong> ${money(sumExpenses)}<br>
-        <strong>إجمالي السعي المصروف:</strong> ${money(sumCommissionPaid)}<br>
-        <strong>الربح الكلي المجمع:</strong> ${money(sumProfit)}<br>
-        <strong>نصيب الشركة من الشركاء:</strong> ${money(sumCompanyPartners)}<br>
-        <strong>إجمالي إدارة المساهمين:</strong> ${money(sumInvestorAdmin)}<br>
-        <strong>ربح الشركة النهائي المجمع:</strong> ${money(sumCompanyFinal)}
-      `;
+      projectFinancials().partnersFull.filter(x => !x.auto).forEach(x => {
+        if(num(x.remain) > 0){
+          alerts.push(`الشريك ${x.name} له متبقي ${money(x.remain)}`);
+        }
+      });
+
+      projectFinancials().investorsFull.filter(x => !x.auto).forEach(x => {
+        if(num(x.remain) > 0){
+          alerts.push(`المساهم ${x.name} له متبقي ${money(x.remain)}`);
+        }
+      });
+
+      return alerts;
+    }
+
+    function buildIssues(project){
+      const issues = [];
+      const seen = new Set();
+
+      (project.units || []).forEach(u => {
+        const key = `${u.number}||${u.building}`;
+        if(seen.has(key)){
+          issues.push(`تكرار وحدة: رقم ${u.number} - مبنى ${u.building}`);
+        } else {
+          seen.add(key);
+        }
+
+        if(!u.number || !u.building){
+          issues.push(`بيانات ناقصة في إحدى الوحدات`);
+        }
+
+        if(num(u.paid) > num(u.price)){
+          issues.push(`الوحدة ${u.number} المدفوع فيها أكبر من سعرها`);
+        }
+
+        if(num(u.commissionPaid) > num(u.commissionDue)){
+          issues.push(`الوحدة ${u.number} السعي المصروف فيها أكبر من المستحق`);
+        }
+      });
+
+      return issues;
+    }
+
+    function renderAlertsAndIssues(){
+      const p = getProject();
+      const alerts = buildAlerts(p);
+      const issues = buildIssues(p);
+
+      const alertsBox = document.getElementById("alertsBox");
+      const issuesBox = document.getElementById("issuesBox");
+
+      alertsBox.innerHTML = alerts.length
+        ? `<div class="danger"><strong>تنبيهات:</strong><br>${alerts.join("<br>")}</div>`
+        : `<div class="success"><strong>التنبيهات:</strong> لا توجد متأخرات حالياً.</div>`;
+
+      issuesBox.innerHTML = issues.length
+        ? `<div class="danger"><strong>مراجعة الأخطاء:</strong><br>${issues.join("<br>")}</div>`
+        : `<div class="success"><strong>مراجعة الأخطاء:</strong> لا توجد أخطاء أو تكرارات.</div>`;
     }
 
     function renderProject(){
       const p = getProject();
+      ensureArrays(p);
       const f = projectFinancials();
 
       document.getElementById("projectTitle").innerText = p.name;
@@ -1291,51 +1134,153 @@
       document.getElementById("kpiBooked").innerText = f.bookedUnits;
       document.getElementById("kpiAvailable").innerText = f.availableUnits;
 
-      renderMarketerFilters();
+      renderAlertsAndIssues();
+      renderMarketerFilter();
       renderUnits();
-      renderBalances();
       renderMarketers();
       renderExpenses();
       renderPartners();
       renderInvestors();
+      renderAdvances();
       renderMovements();
       renderReport();
-      renderSingleReportSelectors();
-      renderCompanyReport();
+      refreshAdvanceNames();
+
       saveApp();
     }
 
     function addUnit(){
       const p = getProject();
-      const number = document.getElementById("unitNumber").value.trim();
-      const price = num(document.getElementById("unitPrice").value);
 
-      if(!number || !price){
-        alert("اكمل بيانات الوحدة");
-        return;
-      }
-
-      p.units.push({
-        number,
-        price,
+      const unit = {
+        number: document.getElementById("unitNumber").value.trim(),
+        model: document.getElementById("unitModel").value.trim(),
+        floor: document.getElementById("unitFloor").value.trim(),
+        building: document.getElementById("unitBuilding").value.trim(),
+        view: document.getElementById("unitView").value.trim(),
+        area: document.getElementById("unitArea").value.trim(),
+        components: document.getElementById("unitComponents").value.trim(),
+        price: num(document.getElementById("unitPrice").value),
         status: "متاحة",
         client: "-",
         clientPhone: "-",
         marketer: "-",
         marketerPhone: "-",
-        commissionDue: calcCommission(price),
+        commissionDue: 0,
         commissionPaid: 0,
         commissionPayments: [],
         payments: [0,0,0,0,0],
         paymentDates: ["","","","",""],
         paid: 0,
-        remaining: price
+        remaining: num(document.getElementById("unitPrice").value)
+      };
+
+      if(!unit.number || !unit.building){
+        alert("رقم الشقة والمبنى مطلوبان");
+        return;
+      }
+
+      const exists = p.units.find(u => u.number === unit.number && u.building === unit.building);
+      if(exists){
+        alert("الوحدة مكررة داخل هذا المشروع");
+        return;
+      }
+
+      p.units.push(unit);
+      addMovement("إضافة وحدة", `${unit.number} - ${unit.building}`, unit.price, "إضافة وحدة يدويًا", todayText());
+
+      document.getElementById("unitNumber").value = "";
+      document.getElementById("unitModel").value = "";
+      document.getElementById("unitFloor").value = "";
+      document.getElementById("unitBuilding").value = "";
+      document.getElementById("unitView").value = "";
+      document.getElementById("unitArea").value = "";
+      document.getElementById("unitComponents").value = "";
+      document.getElementById("unitPrice").value = "";
+
+      renderProject();
+    }
+
+    function importUnitsExcel(){
+      const file = document.getElementById("unitExcelFile").files[0];
+      if(!file){
+        alert("اختر ملف إكسل أولًا");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e){
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, {type:"array"});
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, {header:1});
+        processImportedUnits(rows);
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function importUnitsPaste(){
+      const text = document.getElementById("unitPasteData").value.trim();
+      if(!text){
+        alert("الصق البيانات أولًا");
+        return;
+      }
+      const rows = text.split("\n").map(r => r.split("\t"));
+      processImportedUnits(rows);
+    }
+
+    function processImportedUnits(rows){
+      const p = getProject();
+      let added = 0, duplicated = 0, errors = 0;
+
+      rows.forEach((row, index) => {
+        if(index === 0) return;
+
+        try{
+          const [number, model, floor, building, view, area, components, price] = row;
+
+          if(!number || !building){
+            errors++;
+            return;
+          }
+
+          const exists = p.units.find(u => String(u.number) === String(number) && String(u.building) === String(building));
+          if(exists){
+            duplicated++;
+            return;
+          }
+
+          p.units.push({
+            number: String(number).trim(),
+            model: String(model || "").trim(),
+            floor: String(floor || "").trim(),
+            building: String(building || "").trim(),
+            view: String(view || "").trim(),
+            area: String(area || "").trim(),
+            components: String(components || "").trim(),
+            price: num(price),
+            status: "متاحة",
+            client: "-",
+            clientPhone: "-",
+            marketer: "-",
+            marketerPhone: "-",
+            commissionDue: 0,
+            commissionPaid: 0,
+            commissionPayments: [],
+            payments: [0,0,0,0,0],
+            paymentDates: ["","","","",""],
+            paid: 0,
+            remaining: num(price)
+          });
+          added++;
+        }catch(err){
+          errors++;
+        }
       });
 
-      addMovement("إضافة وحدة", number, price, "تمت إضافة وحدة جديدة", todayText());
-      document.getElementById("unitNumber").value = "";
-      document.getElementById("unitPrice").value = "";
+      addMovement("استيراد وحدات", p.name, added, `تمت إضافة ${added} | مكرر ${duplicated} | أخطاء ${errors}`, todayText());
       renderProject();
+      alert(`تم الاستيراد\nالمضاف: ${added}\nالمكرر: ${duplicated}\nالأخطاء: ${errors}`);
     }
 
     function statusBadge(status){
@@ -1356,30 +1301,30 @@
       }
 
       if(!units.length){
-        body.innerHTML = '<tr><td colspan="14">لا توجد وحدات</td></tr>';
+        body.innerHTML = '<tr><td colspan="16">لا توجد وحدات</td></tr>';
         return;
       }
 
-      units.forEach((u) => {
+      units.forEach(u => {
         const i = p.units.indexOf(u);
-        const paymentCount = (u.payments || []).filter(x => num(x) > 0).length;
-        const commissionRemain = num(u.commissionDue) - num(u.commissionPaid);
-
+        const rowClass = num(u.remaining) > 0 && (u.status === "محجوزة" || u.status === "مباعة") ? "warn-row" : "";
         body.innerHTML += `
-          <tr>
-            <td>${u.number}</td>
-            <td>${money(u.price)}</td>
+          <tr class="${rowClass}">
+            <td class="editable" contenteditable="true" onblur="editUnitField(${i},'number',this.innerText)">${u.number}</td>
+            <td class="editable" contenteditable="true" onblur="editUnitField(${i},'model',this.innerText)">${u.model || ""}</td>
+            <td class="editable" contenteditable="true" onblur="editUnitField(${i},'floor',this.innerText)">${u.floor || ""}</td>
+            <td class="editable" contenteditable="true" onblur="editUnitField(${i},'building',this.innerText)">${u.building || ""}</td>
+            <td class="editable" contenteditable="true" onblur="editUnitField(${i},'view',this.innerText)">${u.view || ""}</td>
+            <td class="editable" contenteditable="true" onblur="editUnitField(${i},'area',this.innerText)">${u.area || ""}</td>
+            <td class="editable" contenteditable="true" onblur="editUnitField(${i},'components',this.innerText)">${u.components || ""}</td>
+            <td class="editable" contenteditable="true" onblur="editUnitField(${i},'price',this.innerText,true)">${num(u.price)}</td>
             <td>${statusBadge(u.status)}</td>
             <td>${u.client}</td>
             <td>${phoneCell(u.clientPhone, "اتصال")}</td>
             <td>${u.marketer}</td>
             <td>${phoneCell(u.marketerPhone, "اتصال")}</td>
-            <td>${money(u.commissionDue)}</td>
-            <td>${money(u.commissionPaid)}</td>
-            <td>${money(commissionRemain)}</td>
             <td>${money(u.paid)}</td>
             <td>${money(u.remaining)}</td>
-            <td>${paymentCount}/5</td>
             <td class="no-print">
               <div class="actions">
                 <button class="btn" onclick="openBooking(${i})">حجز/دفعات</button>
@@ -1392,78 +1337,24 @@
       });
     }
 
-    function renderBalances(){
+    function editUnitField(index, field, value, isNumber=false){
       const p = getProject();
-      if(!p) return;
-      const f = projectFinancials();
-      const marketers = marketerSummary();
+      const u = p.units[index];
+      if(!u) return;
 
-      document.getElementById("balCollected").innerText = money(f.totalCollected);
-      document.getElementById("balUnitsRemain").innerText = money(f.totalUnitsRemain);
-      document.getElementById("balCommissionRemain").innerText = money(f.totalCommissionRemain);
-      document.getElementById("balCompanyFinal").innerText = money(f.companyFinalProfit);
+      const oldValue = u[field];
+      u[field] = isNumber ? num(value) : String(value).trim();
 
-      const marketersBody = document.getElementById("balancesMarketersBody");
-      marketersBody.innerHTML = "";
-      const marketerNames = Object.keys(marketers);
-      if(!marketerNames.length){
-        marketersBody.innerHTML = '<tr><td colspan="4">لا يوجد مسوقون</td></tr>';
-      } else {
-        marketerNames.forEach(name => {
-          const m = marketers[name];
-          marketersBody.innerHTML += `
-            <tr>
-              <td>${name}</td>
-              <td>${money(m.commissionDue)}</td>
-              <td>${money(m.commissionPaid)}</td>
-              <td>${money(m.commissionRemain)}</td>
-            </tr>
-          `;
-        });
+      if(field === "price"){
+        u.remaining = num(u.price) - num(u.paid);
+        u.commissionDue = calcCommission(u.price);
+        if(num(u.commissionPaid) > num(u.commissionDue)){
+          u.commissionPaid = u.commissionDue;
+        }
       }
 
-      const unitsBody = document.getElementById("balancesUnitsBody");
-      unitsBody.innerHTML = "";
-      const dueUnits = (p.units || []).filter(u => num(u.remaining) > 0);
-      if(!dueUnits.length){
-        unitsBody.innerHTML = '<tr><td colspan="4">لا توجد وحدات عليها متبقي</td></tr>';
-      } else {
-        dueUnits.forEach(u => {
-          unitsBody.innerHTML += `
-            <tr>
-              <td>${u.number}</td>
-              <td>${u.client}</td>
-              <td>${money(u.paid)}</td>
-              <td>${money(u.remaining)}</td>
-            </tr>
-          `;
-        });
-      }
-
-      const partnersBody = document.getElementById("balancesPartnersBody");
-      partnersBody.innerHTML = "";
-      f.partnersFull.forEach(x => {
-        partnersBody.innerHTML += `
-          <tr class="${x.auto ? 'auto-row' : ''}">
-            <td>${x.name}</td>
-            <td>${num(x.percent).toFixed(2)}%</td>
-            <td>${money(x.share)}</td>
-          </tr>
-        `;
-      });
-
-      const investorsBody = document.getElementById("balancesInvestorsBody");
-      investorsBody.innerHTML = "";
-      f.investorsFull.forEach(x => {
-        investorsBody.innerHTML += `
-          <tr class="${x.auto ? 'auto-row' : ''}">
-            <td>${x.name}</td>
-            <td>${money(x.grossShare)}</td>
-            <td>${money(x.adminValue)}</td>
-            <td>${money(x.netShare)}</td>
-          </tr>
-        `;
-      });
+      addMovement("تعديل وحدة", `${u.number} - ${u.building}`, 0, `تعديل الحقل ${field} من ${oldValue} إلى ${u[field]}`, todayText());
+      renderProject();
     }
 
     function openBooking(i){
@@ -1542,7 +1433,6 @@
       }
 
       const oldPaid = num(u.commissionPaid);
-      const oldLog = Array.isArray(u.commissionPayments) ? u.commissionPayments : [];
       const oldPayments = u.payments || [0,0,0,0,0];
 
       u.client = client;
@@ -1552,7 +1442,6 @@
       u.price = price;
       u.commissionDue = calcCommission(price);
       u.commissionPaid = Math.min(oldPaid, u.commissionDue);
-      u.commissionPayments = oldLog;
       u.payments = payments;
       u.paymentDates = paymentDates;
       u.paid = payments.reduce((a,b) => a + num(b), 0);
@@ -1602,125 +1491,45 @@
     function deleteUnit(i){
       if(!confirm("هل تريد حذف الوحدة؟")) return;
       const u = getProject().units[i];
-      addMovement("حذف وحدة", u.number, u.price, "تم حذف الوحدة من المشروع", todayText());
+      addMovement("حذف وحدة", `${u.number} - ${u.building}`, u.price, "تم حذف الوحدة", todayText());
       getProject().units.splice(i,1);
       renderProject();
     }
 
-    function marketerStatus(m){
-      if(m.commissionDue <= 0) return '<span class="badge none-status">لا يوجد</span>';
-      if(m.commissionRemain <= 0) return '<span class="badge full-status">مكتمل</span>';
-      if(m.commissionPaid > 0) return '<span class="badge partial-status">جزئي</span>';
-      return '<span class="badge none-status">لم يصرف</span>';
-    }
-
     function renderMarketers(){
       const body = document.getElementById("marketersBody");
-      const map = marketerSummary();
+      const rows = projectFinancials().marketerRows;
       body.innerHTML = "";
 
-      const names = Object.keys(map);
-      if(!names.length){
-        body.innerHTML = '<tr><td colspan="8">لا يوجد مسوقون</td></tr>';
+      if(!rows.length){
+        body.innerHTML = '<tr><td colspan="6">لا يوجد مسوقون</td></tr>';
         return;
       }
 
-      names.forEach(name => {
-        const m = map[name];
+      rows.forEach(m => {
+        const cls = num(m.remainAfterAdvance) > 0 ? "warn-row" : "";
         body.innerHTML += `
-          <tr>
-            <td>${name}</td>
+          <tr class="${cls}">
+            <td>${m.name}</td>
             <td>${m.units}</td>
             <td>${money(m.commissionDue)}</td>
-            <td>${money(m.commissionPaid)}</td>
-            <td>${money(m.commissionRemain)}</td>
-            <td>${marketerStatus(m)}</td>
+            <td>${money(m.paidAdvance)}</td>
+            <td>${money(m.remainAfterAdvance)}</td>
             <td>${phoneCell(m.phone, "اتصال")}</td>
-            <td class="no-print"><button class="btn-green" onclick="openCommissionModal('${name.replace(/'/g, "\\'")}')">صرف سعي</button></td>
           </tr>
         `;
       });
     }
 
-    function openCommissionModal(name){
-      currentMarketerName = name;
-      const map = marketerSummary();
-      const m = map[name];
-
-      document.getElementById("commissionInfo").innerHTML = `
-        <strong>المسوق:</strong> ${name}<br>
-        <strong>الجوال:</strong> ${m.phone || "-"}<br>
-        <strong>إجمالي السعي:</strong> ${money(m.commissionDue)}<br>
-        <strong>تم صرفه:</strong> ${money(m.commissionPaid)}<br>
-        <strong>المتبقي:</strong> ${money(m.commissionRemain)}
-      `;
-
-      document.getElementById("commissionPayAmount").value = "";
-      document.getElementById("commissionPayDate").value = todayText();
-      document.getElementById("commissionPayNote").value = "";
-      document.getElementById("commissionModal").classList.remove("hidden");
-    }
-
-    function saveCommissionPayment(){
-      const p = getProject();
-      const amount = num(document.getElementById("commissionPayAmount").value);
-      const date = document.getElementById("commissionPayDate").value || todayText();
-      const note = document.getElementById("commissionPayNote").value.trim();
-
-      if(amount <= 0){
-        alert("اكتب مبلغ صحيح");
-        return;
-      }
-
-      let remain = amount;
-
-      p.units
-        .filter(u => u.marketer === currentMarketerName)
-        .forEach(u => {
-          if(remain <= 0) return;
-
-          const available = num(u.commissionDue) - num(u.commissionPaid);
-          if(available <= 0) return;
-
-          const take = Math.min(available, remain);
-          u.commissionPaid = num(u.commissionPaid) + take;
-
-          if(!Array.isArray(u.commissionPayments)){
-            u.commissionPayments = [];
-          }
-
-          u.commissionPayments.push({
-            amount: take,
-            note: note,
-            date: date
-          });
-
-          remain -= take;
-        });
-
-      addMovement("صرف سعي", currentMarketerName, amount - remain, note || "صرف سعي مسوق", date);
-
-      if(remain > 0){
-        alert("المبلغ أكبر من المتبقي للمسوق، تم تسجيل المتاح فقط.");
-      }
-
-      closeCommission();
-      renderProject();
-    }
-
-    function closeCommission(){
-      document.getElementById("commissionModal").classList.add("hidden");
-      currentMarketerName = null;
-    }
-
     function addExpense(){
       const p = getProject();
+
       const date = document.getElementById("expenseDate").value || todayText();
-      const category = document.getElementById("expenseCategory").value;
+      const category = document.getElementById("expenseCategory").value.trim();
       const description = document.getElementById("expenseDesc").value.trim();
       const amount = num(document.getElementById("expenseAmount").value);
 
-      if(!date || !category || !description || !amount){
+      if(!category || !description || !amount){
         alert("اكمل بيانات المصروف");
         return;
       }
@@ -1800,15 +1609,18 @@
 
     function renderPartners(){
       const body = document.getElementById("partnersBody");
-      const f = projectFinancials();
+      const rows = projectFinancials().partnersFull;
       body.innerHTML = "";
 
-      f.partnersFull.forEach((x,i) => {
+      rows.forEach((x,i) => {
+        const cls = !x.auto && num(x.remain) > 0 ? "warn-row" : "";
         body.innerHTML += `
-          <tr class="${x.auto ? 'auto-row' : ''}">
+          <tr class="${x.auto ? 'auto-row' : cls}">
             <td>${x.name}${x.auto ? ' (تلقائي)' : ''}</td>
             <td>${num(x.percent).toFixed(2)}%</td>
             <td>${money(x.share)}</td>
+            <td>${money(x.paidAdvance || 0)}</td>
+            <td>${money(x.remain || x.share)}</td>
             <td>${x.date || "-"}</td>
             <td class="no-print">
               ${x.auto ? '-' : `<button class="btn-red" onclick="deletePartner(${i-1})">حذف</button>`}
@@ -1870,12 +1682,13 @@
 
     function renderInvestors(){
       const body = document.getElementById("investorsBody");
-      const f = projectFinancials();
+      const rows = projectFinancials().investorsFull;
       body.innerHTML = "";
 
-      f.investorsFull.forEach((x,i) => {
+      rows.forEach((x,i) => {
+        const cls = !x.auto && num(x.remain) > 0 ? "warn-row" : "";
         body.innerHTML += `
-          <tr class="${x.auto ? 'auto-row' : ''}">
+          <tr class="${x.auto ? 'auto-row' : cls}">
             <td>${x.name}${x.auto ? ' (تلقائي)' : ''}</td>
             <td>${money(x.amount)}</td>
             <td>${num(x.ratio).toFixed(2)}%</td>
@@ -1883,6 +1696,8 @@
             <td>${num(x.adminRate).toFixed(2)}%</td>
             <td>${money(x.adminValue)}</td>
             <td>${money(x.netShare)}</td>
+            <td>${money(x.paidAdvance || 0)}</td>
+            <td>${money(x.remain || x.netShare)}</td>
             <td>${x.date || "-"}</td>
             <td class="no-print">
               ${x.auto ? '-' : `<button class="btn-red" onclick="deleteInvestor(${i-1})">حذف</button>`}
@@ -1900,36 +1715,92 @@
       renderProject();
     }
 
-    function filteredMovements(){
+    function refreshAdvanceNames(){
       const p = getProject();
-      const moves = p.movements || [];
-      const q = (document.getElementById("movementSearch")?.value || "").trim().toLowerCase();
-      const t = document.getElementById("movementTypeFilter")?.value || "";
-      const marketer = document.getElementById("movementMarketerFilter")?.value || "";
-      const from = document.getElementById("movementFrom")?.value || "";
-      const to = document.getElementById("movementTo")?.value || "";
+      if(!p) return;
 
-      return moves.filter(m => {
-        const matchQ = !q || `${m.name} ${m.note}`.toLowerCase().includes(q);
-        const matchT = !t || m.type === t;
-        const matchMarketer = !marketer || `${m.name} ${m.note}`.includes(marketer);
-        const matchFrom = !from || (m.date && m.date >= from);
-        const matchTo = !to || (m.date && m.date <= to);
-        return matchQ && matchT && matchMarketer && matchFrom && matchTo;
+      const type = document.getElementById("advanceType");
+      const nameSel = document.getElementById("advanceName");
+      if(!type || !nameSel) return;
+
+      let names = [];
+      if(type.value === "partner"){
+        names = projectFinancials().partnersFull.filter(x => !x.auto).map(x => x.name);
+      } else if(type.value === "investor"){
+        names = projectFinancials().investorsFull.filter(x => !x.auto).map(x => x.name);
+      } else {
+        names = projectFinancials().marketerRows.map(x => x.name);
+      }
+
+      nameSel.innerHTML = names.length
+        ? names.map(n => `<option value="${n}">${n}</option>`).join("")
+        : `<option value="">لا يوجد</option>`;
+    }
+
+    function addAdvance(){
+      const p = getProject();
+      const entityType = document.getElementById("advanceType").value;
+      const entityName = document.getElementById("advanceName").value;
+      const amount = num(document.getElementById("advanceAmount").value);
+      const date = document.getElementById("advanceDate").value || todayText();
+      const note = document.getElementById("advanceNote").value.trim();
+
+      if(!entityName){
+        alert("اختر اسمًا");
+        return;
+      }
+      if(amount <= 0){
+        alert("اكتب مبلغًا صحيحًا");
+        return;
+      }
+
+      p.advances.unshift({entityType, entityName, amount, date, note});
+
+      const typeLabel = entityType === "partner" ? "دفعة شريك" : entityType === "investor" ? "دفعة مساهم" : "دفعة مسوق";
+      addMovement(typeLabel, entityName, amount, note || "دفعة تحت الحساب", date);
+
+      document.getElementById("advanceAmount").value = "";
+      document.getElementById("advanceDate").value = "";
+      document.getElementById("advanceNote").value = "";
+
+      renderProject();
+    }
+
+    function renderAdvances(){
+      const p = getProject();
+      const body = document.getElementById("advancesBody");
+      body.innerHTML = "";
+
+      if(!p.advances.length){
+        body.innerHTML = '<tr><td colspan="5">لا توجد دفعات تحت الحساب</td></tr>';
+        return;
+      }
+
+      p.advances.forEach(a => {
+        const typeLabel = a.entityType === "partner" ? "شريك" : a.entityType === "investor" ? "مساهم" : "مسوق";
+        body.innerHTML += `
+          <tr>
+            <td>${a.date}</td>
+            <td>${typeLabel}</td>
+            <td>${a.entityName}</td>
+            <td>${money(a.amount)}</td>
+            <td>${a.note || "-"}</td>
+          </tr>
+        `;
       });
     }
 
     function renderMovements(){
+      const p = getProject();
       const body = document.getElementById("movementsBody");
       body.innerHTML = "";
 
-      const moves = filteredMovements();
-      if(!moves.length){
-        body.innerHTML = '<tr><td colspan="5">لا توجد حركات مطابقة</td></tr>';
+      if(!p.movements.length){
+        body.innerHTML = '<tr><td colspan="5">لا توجد حركات</td></tr>';
         return;
       }
 
-      moves.forEach(m => {
+      p.movements.forEach(m => {
         body.innerHTML += `
           <tr>
             <td>${m.date || "-"}</td>
@@ -1942,119 +1813,21 @@
       });
     }
 
-    function renderSingleReportSelectors(){
-      const type = document.getElementById("singleReportType");
-      const item = document.getElementById("singleReportItem");
-      if(!type || !item || !currentProjectId) return;
-
-      const p = getProject();
-      const f = projectFinancials();
-      item.innerHTML = "";
-
-      if(type.value === "marketer"){
-        const names = Object.keys(marketerSummary());
-        if(!names.length){ item.innerHTML = '<option value="">لا يوجد</option>'; return; }
-        names.forEach(n => item.innerHTML += `<option value="${n}">${n}</option>`);
-      } else if(type.value === "investor"){
-        const rows = f.investorsFull.filter(x => !x.auto);
-        if(!rows.length){ item.innerHTML = '<option value="">لا يوجد</option>'; return; }
-        rows.forEach(x => item.innerHTML += `<option value="${x.name}">${x.name}</option>`);
-      } else if(type.value === "partner"){
-        const rows = f.partnersFull.filter(x => !x.auto);
-        if(!rows.length){ item.innerHTML = '<option value="">لا يوجد</option>'; return; }
-        rows.forEach(x => item.innerHTML += `<option value="${x.name}">${x.name}</option>`);
-      } else if(type.value === "unit"){
-        const rows = p.units || [];
-        if(!rows.length){ item.innerHTML = '<option value="">لا يوجد</option>'; return; }
-        rows.forEach(x => item.innerHTML += `<option value="${x.number}">${x.number}</option>`);
-      }
-    }
-
-    function generateSingleReport(){
-      const type = document.getElementById("singleReportType").value;
-      const value = document.getElementById("singleReportItem").value;
-      const box = document.getElementById("singleReportBox");
-      const p = getProject();
-      const f = projectFinancials();
-
-      if(!value){
-        box.innerHTML = "لا يوجد بيانات لهذا النوع.";
-        return;
-      }
-
-      if(type === "marketer"){
-        const map = marketerSummary();
-        const m = map[value];
-        const units = (p.units || []).filter(u => u.marketer === value);
-        box.innerHTML = `
-          <strong>تقرير مسوق:</strong> ${value}<br>
-          <strong>الجوال:</strong> ${m.phone || "-"}<br>
-          <strong>عدد الوحدات:</strong> ${m.units}<br>
-          <strong>إجمالي السعي:</strong> ${money(m.commissionDue)}<br>
-          <strong>تم صرفه:</strong> ${money(m.commissionPaid)}<br>
-          <strong>المتبقي:</strong> ${money(m.commissionRemain)}<hr>
-          <strong>الوحدات:</strong><br>
-          ${units.map(u => `${u.number} | ${money(u.price)} | ${u.client}`).join("<br>")}
-        `;
-      } else if(type === "investor"){
-        const inv = f.investorsFull.find(x => x.name === value);
-        box.innerHTML = `
-          <strong>تقرير مساهم:</strong> ${inv.name}<br>
-          <strong>المبلغ:</strong> ${money(inv.amount)}<br>
-          <strong>النسبة:</strong> ${num(inv.ratio).toFixed(2)}%<br>
-          <strong>قبل الإدارة:</strong> ${money(inv.grossShare)}<br>
-          <strong>نسبة الإدارة:</strong> ${num(inv.adminRate).toFixed(2)}%<br>
-          <strong>قيمة الإدارة:</strong> ${money(inv.adminValue)}<br>
-          <strong>الصافي:</strong> ${money(inv.netShare)}<br>
-          <strong>التاريخ:</strong> ${inv.date}
-        `;
-      } else if(type === "partner"){
-        const part = f.partnersFull.find(x => x.name === value);
-        box.innerHTML = `
-          <strong>تقرير شريك:</strong> ${part.name}<br>
-          <strong>النسبة:</strong> ${num(part.percent).toFixed(2)}%<br>
-          <strong>نصيبه من الربح:</strong> ${money(part.share)}<br>
-          <strong>التاريخ:</strong> ${part.date}
-        `;
-      } else if(type === "unit"){
-        const u = (p.units || []).find(x => x.number === value);
-        const rows = (u.payments || []).map((amt, idx) => amt > 0 ? `دفعة ${idx+1}: ${money(amt)} | ${u.paymentDates?.[idx] || "-"}` : "").filter(Boolean);
-        box.innerHTML = `
-          <strong>تقرير وحدة:</strong> ${u.number}<br>
-          <strong>السعر:</strong> ${money(u.price)}<br>
-          <strong>الحالة:</strong> ${u.status}<br>
-          <strong>العميل:</strong> ${u.client}<br>
-          <strong>جوال العميل:</strong> ${u.clientPhone || "-"}<br>
-          <strong>المسوق:</strong> ${u.marketer}<br>
-          <strong>جوال المسوق:</strong> ${u.marketerPhone || "-"}<br>
-          <strong>السعي المستحق:</strong> ${money(u.commissionDue)}<br>
-          <strong>السعي المصروف:</strong> ${money(u.commissionPaid)}<br>
-          <strong>المدفوع:</strong> ${money(u.paid)}<br>
-          <strong>المتبقي:</strong> ${money(u.remaining)}<hr>
-          <strong>الدفعات:</strong><br>
-          ${rows.length ? rows.join("<br>") : "لا توجد دفعات"}
-        `;
-      }
-    }
-
     function renderReport(){
       const p = getProject();
       const f = projectFinancials();
-      const marketerMap = marketerSummary();
 
-      const marketerLines = Object.keys(marketerMap).length
-        ? Object.keys(marketerMap).map(name =>
-            `${name}: إجمالي ${money(marketerMap[name].commissionDue)} | صرف ${money(marketerMap[name].commissionPaid)} | متبقي ${money(marketerMap[name].commissionRemain)}`
-          ).join("<br>")
+      const partnerLines = f.partnersFull.map(x => {
+        return `${x.name}: نسبة ${num(x.percent).toFixed(2)}% | نصيب ${money(x.share)} | صرف تحت الحساب ${money(x.paidAdvance || 0)} | متبقي ${money(x.remain || x.share)}`;
+      }).join("<br>");
+
+      const investorLines = f.investorsFull.map(x => {
+        return `${x.name}: مبلغ ${money(x.amount)} | نسبة ${num(x.ratio).toFixed(2)}% | صافي ${money(x.netShare)} | صرف تحت الحساب ${money(x.paidAdvance || 0)} | متبقي ${money(x.remain || x.netShare)}`;
+      }).join("<br>");
+
+      const marketerLines = f.marketerRows.length
+        ? f.marketerRows.map(x => `${x.name}: مستحق ${money(x.commissionDue)} | صرف ${money(x.paidAdvance)} | متبقي ${money(x.remainAfterAdvance)}`).join("<br>")
         : "لا يوجد مسوقون";
-
-      const partnersLines = f.partnersFull
-        .map(x => `${x.name}: ${num(x.percent).toFixed(2)}% = ${money(x.share)}`)
-        .join("<br>");
-
-      const investorsLines = f.investorsFull
-        .map(x => `${x.name}: ${money(x.amount)} | ${num(x.ratio).toFixed(2)}% | قبل الإدارة ${money(x.grossShare)} | الإدارة ${money(x.adminValue)} | الصافي ${money(x.netShare)}`)
-        .join("<br>");
 
       document.getElementById("reportBox").innerHTML = `
         <strong>اسم المشروع:</strong> ${p.name}<br>
@@ -2068,107 +1841,62 @@
         <strong>نصيب الشركة من الشركاء:</strong> ${money(f.companyShareProfit)}<br>
         <strong>إجمالي إدارة المساهمين:</strong> ${money(f.totalInvestorAdmin)}<br>
         <strong>ربح الشركة النهائي:</strong> ${money(f.companyFinalProfit)}<hr>
-
-        <strong>توزيع الشركاء:</strong><br>${partnersLines}<hr>
-        <strong>توزيع المساهمين داخل الشركة:</strong><br>${investorsLines}<hr>
-        <strong>ملخص المسوقين:</strong><br>${marketerLines}
+        <strong>الشركاء:</strong><br>${partnerLines}<hr>
+        <strong>المساهمون:</strong><br>${investorLines}<hr>
+        <strong>المسوقون:</strong><br>${marketerLines}
       `;
     }
 
+    function exportProjectCSV(){
+      const p = getProject();
+      const rows = [
+        ["رقم الشقة","النموذج","الدور","المبنى","الإطلالة","المساحة","المكونات","سعر العرض","الحالة","العميل","جوال العميل","المسوق","جوال المسوق","المدفوع","المتبقي"]
+      ];
+
+      (p.units || []).forEach(u => {
+        rows.push([
+          u.number,u.model,u.floor,u.building,u.view,u.area,u.components,
+          u.price,u.status,u.client,u.clientPhone,u.marketer,u.marketerPhone,u.paid,u.remaining
+        ]);
+      });
+
+      const content = rows.map(r => r.map(csvEscape).join(",")).join("\n");
+      downloadTextFile(`${p.name}_units.csv`, content, "text/csv;charset=utf-8");
+    }
+
     function downloadBackup(){
-      downloadTextFile("anas_backup.json", JSON.stringify(appData, null, 2), "application/json;charset=utf-8");
+      const blob = new Blob([JSON.stringify(appData, null, 2)], {type:"application/json;charset=utf-8"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "anas_backup.json";
+      a.click();
+      URL.revokeObjectURL(url);
     }
 
     function restoreBackup(event){
       const file = event.target.files[0];
       if(!file) return;
+
       const reader = new FileReader();
       reader.onload = function(e){
         try{
           const data = JSON.parse(e.target.result);
           if(!data || !Array.isArray(data.projects)){
-            alert("ملف النسخة الاحتياطية غير صالح");
+            alert("ملف غير صالح");
             return;
           }
           appData = data;
           saveApp();
           renderProjects();
-          alert("تم استرجاع النسخة الاحتياطية بنجاح");
+          alert("تم الاسترجاع بنجاح");
         }catch(err){
-          alert("حدث خطأ في قراءة الملف");
+          alert("فشل قراءة الملف");
         } finally {
           event.target.value = "";
         }
       };
       reader.readAsText(file, "utf-8");
-    }
-
-    function exportCompanyCSV(){
-      const projects = appData.projects || [];
-      let csv = [
-        ["المشروع","المبيعات","التكلفة","المصروفات","السعي المصروف","الربح الكلي","نصيب الشركة","إدارة المساهمين","ربح الشركة النهائي","مباعة","محجوزة","متاحة"]
-      ];
-
-      projects.forEach(project => {
-        const f = calcProjectFinancials(project);
-        csv.push([
-          project.name,
-          f.totalSales,
-          project.cost,
-          f.totalExpenses,
-          f.totalCommissionPaid,
-          f.profit,
-          f.companyShareProfit,
-          f.totalInvestorAdmin,
-          f.companyFinalProfit,
-          f.soldUnits,
-          f.bookedUnits,
-          f.availableUnits
-        ]);
-      });
-
-      const content = csv.map(row => row.map(csvEscape).join(",")).join("\n");
-      downloadTextFile("company_report.csv", content, "text/csv;charset=utf-8");
-    }
-
-    function exportMovementsCSV(){
-      const moves = filteredMovements();
-      let csv = [["التاريخ","نوع الحركة","الاسم / البيان","المبلغ","ملاحظة"]];
-      moves.forEach(m => csv.push([m.date, m.type, m.name, m.amount, m.note]));
-      const content = csv.map(row => row.map(csvEscape).join(",")).join("\n");
-      downloadTextFile("movements_report.csv", content, "text/csv;charset=utf-8");
-    }
-
-    function exportBalancesCSV(){
-      const p = getProject();
-      const f = projectFinancials();
-      const marketers = marketerSummary();
-      let rows = [["القسم","الاسم","1","2","3","4"]];
-
-      rows.push(["ملخص","إجمالي المتحصل",f.totalCollected,"","",""]);
-      rows.push(["ملخص","إجمالي المتبقي على الوحدات",f.totalUnitsRemain,"","",""]);
-      rows.push(["ملخص","إجمالي متبقي السعي",f.totalCommissionRemain,"","",""]);
-      rows.push(["ملخص","ربح الشركة النهائي",f.companyFinalProfit,"","",""]);
-
-      Object.keys(marketers).forEach(name => {
-        const m = marketers[name];
-        rows.push(["مسوق",name,m.commissionDue,m.commissionPaid,m.commissionRemain,m.phone]);
-      });
-
-      f.partnersFull.forEach(x => {
-        rows.push(["شريك",x.name,x.percent,x.share,"",""]);
-      });
-
-      f.investorsFull.forEach(x => {
-        rows.push(["مساهم",x.name,x.grossShare,x.adminValue,x.netShare,""]);
-      });
-
-      (p.units || []).filter(u => num(u.remaining) > 0).forEach(u => {
-        rows.push(["وحدة",u.number,u.client,u.paid,u.remaining,u.clientPhone || ""]);
-      });
-
-      const content = rows.map(row => row.map(csvEscape).join(",")).join("\n");
-      downloadTextFile("balances_report.csv", content, "text/csv;charset=utf-8");
     }
   </script>
 </body>
