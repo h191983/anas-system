@@ -1,145 +1,1435 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<title>نظام أنس - الإصدار النهائي</title>
-<style>
-body{font-family:Tahoma;background:#f5f5f5;margin:0}
-.header{background:#1f3b57;color:#fff;padding:15px;font-size:22px}
-.container{padding:15px}
-.card{background:#fff;padding:15px;border-radius:10px;margin-bottom:10px}
-input,button{padding:8px;margin:5px;border-radius:6px;border:1px solid #ccc}
-button{cursor:pointer}
-.btn{background:#2563eb;color:#fff}
-.btn-red{background:#dc2626;color:#fff}
-table{width:100%;border-collapse:collapse;margin-top:10px}
-td,th{border:1px solid #ddd;padding:6px;text-align:center}
-.auto{background:#eee;font-weight:bold}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>نظام أنس - الوحش الكامل</title>
+  <style>
+    :root{
+      --bg:#f5f6fa;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --primary:#1f3b57;
+      --blue:#2563eb;
+      --green:#16a34a;
+      --red:#dc2626;
+      --orange:#ea580c;
+      --gray:#6b7280;
+      --purple:#7c3aed;
+      --teal:#0f766e;
+      --border:#e5e7eb;
+      --shadow:0 2px 10px rgba(0,0,0,.08);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Tahoma,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .header{
+      background:var(--primary);
+      color:#fff;
+      padding:16px 20px;
+      font-size:22px;
+      font-weight:bold;
+    }
+    .container{padding:18px}
+    .card{
+      background:#fff;
+      border-radius:12px;
+      padding:16px;
+      box-shadow:var(--shadow);
+      margin-bottom:16px;
+    }
+    h2,h3,h4{margin-top:0}
+    input,select,button,textarea{
+      font-family:inherit;
+      font-size:14px;
+      padding:10px;
+      border-radius:8px;
+      border:1px solid #d0d7de;
+      width:100%;
+    }
+    textarea{min-height:90px;resize:vertical}
+    button{
+      border:none;
+      cursor:pointer;
+      width:auto;
+      min-width:110px;
+    }
+    .btn{background:var(--blue);color:#fff}
+    .btn-green{background:var(--green);color:#fff}
+    .btn-red{background:var(--red);color:#fff}
+    .btn-orange{background:var(--orange);color:#fff}
+    .btn-gray{background:var(--gray);color:#fff}
+    .btn-purple{background:var(--purple);color:#fff}
+    .btn-teal{background:var(--teal);color:#fff}
+    .grid{display:grid;gap:12px}
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+    @media (max-width:900px){
+      .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+    }
+    .hidden{display:none !important}
+    .small{font-size:12px;color:var(--muted)}
+    .login-wrap{max-width:430px;margin:60px auto}
+    .section-title{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .project-item{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      padding:12px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      margin-top:10px;
+      flex-wrap:wrap;
+    }
+    .kpis{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:12px;
+      margin-bottom:16px;
+    }
+    .kpi{
+      background:#fff;
+      padding:14px;
+      border-radius:12px;
+      box-shadow:var(--shadow);
+    }
+    .kpi-title{
+      color:#555;
+      font-size:13px;
+      margin-bottom:6px;
+    }
+    .kpi-value{
+      font-size:21px;
+      font-weight:bold;
+    }
+    .tabs{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+    .tab{
+      background:#e5e7eb;
+      color:#111;
+      padding:10px 12px;
+      border-radius:8px;
+      min-width:auto;
+    }
+    .tab.active{
+      background:var(--primary);
+      color:#fff;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      background:#fff;
+      font-size:13px;
+      margin-top:12px;
+    }
+    th,td{
+      border:1px solid var(--border);
+      padding:8px;
+      text-align:center;
+      vertical-align:middle;
+    }
+    th{background:#f8fafc}
+    .badge{
+      padding:4px 8px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:bold;
+      display:inline-block;
+    }
+    .available{background:#dcfce7;color:#166534}
+    .booked{background:#fef3c7;color:#92400e}
+    .sold{background:#dbeafe;color:#1d4ed8}
+    .none-status{background:#fee2e2;color:#991b1b}
+    .partial-status{background:#fef3c7;color:#92400e}
+    .full-status{background:#dcfce7;color:#166534}
+    .note{
+      background:#eef8ff;
+      border:1px solid #cfe9ff;
+      border-radius:8px;
+      padding:10px;
+      margin:10px 0;
+      line-height:1.9;
+    }
+    .danger{
+      background:#fff7ed;
+      border:1px solid #fdba74;
+      border-radius:8px;
+      padding:10px;
+      margin:10px 0;
+      line-height:1.9;
+    }
+    .success{
+      background:#ecfdf5;
+      border:1px solid #86efac;
+      border-radius:8px;
+      padding:10px;
+      margin:10px 0;
+      line-height:1.9;
+    }
+    .modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.45);
+      padding:20px;
+      overflow:auto;
+      z-index:1000;
+    }
+    .modal-content{
+      max-width:1000px;
+      margin:20px auto;
+      background:#fff;
+      border-radius:12px;
+      padding:18px;
+      box-shadow:var(--shadow);
+    }
+    .report-box{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:14px;
+      line-height:2;
+    }
+    .auto-row{
+      background:#f8fafc;
+      font-weight:bold;
+    }
+    @media print{
+      .header,.tabs,.no-print,.modal{display:none !important}
+      .card,.kpi{box-shadow:none}
+      body{background:#fff}
+    }
+  </style>
 </head>
-
 <body>
+  <div class="header">نظام أنس - الوحش الكامل</div>
 
-<div class="header">نظام أنس - المرحلة النهائية</div>
+  <div class="container">
+    <div id="loginView" class="login-wrap">
+      <div class="card">
+        <h2>تسجيل الدخول</h2>
+        <div class="grid">
+          <input id="loginUser" placeholder="اسم المستخدم" />
+          <input id="loginPass" type="password" placeholder="كلمة المرور" />
+          <button class="btn" onclick="login()">دخول</button>
+        </div>
+      </div>
+    </div>
 
-<div class="container">
+    <div id="appView" class="hidden">
+      <div id="projectsView" class="card">
+        <div class="section-title">
+          <h2>المشاريع</h2>
+          <div class="actions">
+            <button class="btn-gray" onclick="logout()">خروج</button>
+          </div>
+        </div>
 
-<h3>الربح الكلي للمشروع</h3>
-<input id="profit" type="number" placeholder="اكتب الربح">
+        <div class="card" style="box-shadow:none;border:1px solid #e5e7eb">
+          <h3>إنشاء مشروع جديد</h3>
+          <div class="grid grid-3">
+            <input id="newProjectName" placeholder="اسم المشروع" />
+            <input id="newProjectCost" type="number" placeholder="التكلفة الأساسية" />
+            <input id="newProjectNotes" placeholder="ملاحظات" />
+          </div>
+          <div style="margin-top:12px">
+            <button class="btn-green" onclick="createProject()">إنشاء المشروع</button>
+          </div>
+        </div>
 
-<h3>الشركاء</h3>
-<input id="pname" placeholder="اسم الشريك">
-<input id="ppercent" type="number" placeholder="النسبة %">
-<button class="btn" onclick="addPartner()">إضافة</button>
+        <div id="projectsList"></div>
+      </div>
 
-<table id="partners"></table>
+      <div id="workspaceView" class="hidden">
+        <div class="card">
+          <div class="section-title">
+            <div>
+              <h2 id="projectTitle">اسم المشروع</h2>
+              <div id="projectMeta" class="small"></div>
+            </div>
+            <div class="actions no-print">
+              <button class="btn-gray" onclick="backToProjects()">رجوع للمشاريع</button>
+              <button class="btn-teal" onclick="window.print()">طباعة</button>
+            </div>
+          </div>
+        </div>
 
-<h3>المساهمين داخل الشركة</h3>
-<input id="iname" placeholder="اسم المساهم">
-<input id="iamount" type="number" placeholder="المبلغ">
-<button class="btn" onclick="addInvestor()">إضافة</button>
+        <div class="kpis">
+          <div class="kpi"><div class="kpi-title">إجمالي المبيعات</div><div class="kpi-value" id="kpiSales">0</div></div>
+          <div class="kpi"><div class="kpi-title">التكلفة الأساسية</div><div class="kpi-value" id="kpiCost">0</div></div>
+          <div class="kpi"><div class="kpi-title">إجمالي المصروفات</div><div class="kpi-value" id="kpiExpenses">0</div></div>
+          <div class="kpi"><div class="kpi-title">إجمالي السعي المستحق</div><div class="kpi-value" id="kpiCommissionDue">0</div></div>
+          <div class="kpi"><div class="kpi-title">السعي المصروف فعليًا</div><div class="kpi-value" id="kpiCommissionPaid">0</div></div>
+          <div class="kpi"><div class="kpi-title">متبقي السعي</div><div class="kpi-value" id="kpiCommissionRemain">0</div></div>
+          <div class="kpi"><div class="kpi-title">الربح الكلي</div><div class="kpi-value" id="kpiProfit">0</div></div>
+          <div class="kpi"><div class="kpi-title">نصيب الشركة من الشركاء</div><div class="kpi-value" id="kpiCompanyFromPartners">0</div></div>
+          <div class="kpi"><div class="kpi-title">إدارة المساهمين</div><div class="kpi-value" id="kpiInvestorAdmin">0</div></div>
+          <div class="kpi"><div class="kpi-title">ربح الشركة النهائي</div><div class="kpi-value" id="kpiCompanyFinal">0</div></div>
+          <div class="kpi"><div class="kpi-title">الوحدات المباعة</div><div class="kpi-value" id="kpiSold">0</div></div>
+          <div class="kpi"><div class="kpi-title">الوحدات المحجوزة</div><div class="kpi-value" id="kpiBooked">0</div></div>
+          <div class="kpi"><div class="kpi-title">الوحدات المتاحة</div><div class="kpi-value" id="kpiAvailable">0</div></div>
+        </div>
 
-<table id="investors"></table>
+        <div class="tabs no-print">
+          <button class="tab active" onclick="showTab('unitsTab', this)">الوحدات والحجز</button>
+          <button class="tab" onclick="showTab('marketersTab', this)">المسوقون والسعي</button>
+          <button class="tab" onclick="showTab('expensesTab', this)">المصروفات</button>
+          <button class="tab" onclick="showTab('partnersTab', this)">الشركاء</button>
+          <button class="tab" onclick="showTab('investorsTab', this)">المساهمون</button>
+          <button class="tab" onclick="showTab('movementsTab', this)">دفتر الحركة</button>
+          <button class="tab" onclick="showTab('reportTab', this)">ملخص المشروع</button>
+        </div>
 
-</div>
+        <div id="unitsTab" class="card tab-panel">
+          <h3>الوحدات والحجز</h3>
+          <div class="grid grid-3 no-print">
+            <input id="unitNumber" placeholder="رقم الوحدة" />
+            <input id="unitPrice" type="number" placeholder="سعر الوحدة" />
+            <button class="btn-green" onclick="addUnit()">إضافة وحدة</button>
+          </div>
 
-<script>
+          <div class="note">
+            الحجز على ٥ دفعات. الدفعة الأولى = عربون الحجز.<br>
+            سعي المسوق = ٢.٥٪ من قيمة الوحدة.<br>
+            الربح الكلي = المبيعات - التكلفة - المصروفات - السعي المصروف فعليًا.
+          </div>
 
-let partners=[]
-let investors=[]
+          <table>
+            <thead>
+              <tr>
+                <th>الوحدة</th>
+                <th>السعر</th>
+                <th>الحالة</th>
+                <th>العميل</th>
+                <th>المسوق</th>
+                <th>سعي مستحق</th>
+                <th>تم صرفه</th>
+                <th>متبقي السعي</th>
+                <th>المدفوع</th>
+                <th>المتبقي</th>
+                <th>الدفعات</th>
+                <th class="no-print">إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="unitsBody"></tbody>
+          </table>
+        </div>
 
-function num(v){return Number(v||0)}
-function money(v){return num(v).toLocaleString()+" ر.س"}
+        <div id="marketersTab" class="card tab-panel hidden">
+          <h3>المسوقون والسعي</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>المسوق</th>
+                <th>عدد الوحدات</th>
+                <th>إجمالي السعي</th>
+                <th>تم صرفه</th>
+                <th>المتبقي</th>
+                <th>الحالة</th>
+                <th class="no-print">إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="marketersBody"></tbody>
+          </table>
+        </div>
 
-function totalPartnerPercent(){
-return partners.reduce((s,x)=>s+num(x.percent),0)
-}
+        <div id="expensesTab" class="card tab-panel hidden">
+          <h3>المصروفات</h3>
+          <div class="grid grid-4 no-print">
+            <input id="expenseDate" type="date" />
+            <select id="expenseCategory">
+              <option value="">التصنيف</option>
+              <option>أرض</option>
+              <option>بناء</option>
+              <option>تشطيب</option>
+              <option>تسويق</option>
+              <option>إدارة</option>
+              <option>خدمات</option>
+              <option>ضريبة</option>
+              <option>أخرى</option>
+            </select>
+            <input id="expenseDesc" placeholder="البيان" />
+            <input id="expenseAmount" type="number" placeholder="المبلغ" />
+          </div>
+          <div style="margin-top:12px" class="no-print">
+            <button class="btn-orange" onclick="addExpense()">إضافة مصروف</button>
+          </div>
 
-function companyPercent(){
-return 100-totalPartnerPercent()
-}
+          <table>
+            <thead>
+              <tr>
+                <th>التاريخ</th>
+                <th>التصنيف</th>
+                <th>البيان</th>
+                <th>المبلغ</th>
+                <th class="no-print">إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="expensesBody"></tbody>
+          </table>
+        </div>
 
-function companyProfit(){
-return num(document.getElementById("profit").value)*(companyPercent()/100)
-}
+        <div id="partnersTab" class="card tab-panel hidden">
+          <h3>الشركاء</h3>
 
-function addPartner(){
-let name=document.getElementById("pname").value
-let percent=num(document.getElementById("ppercent").value)
+          <div class="danger">
+            الشركة موجودة تلقائيًا دائمًا بنسبة ١٠٠٪ في البداية.<br>
+            كل شريك تضيفه ينقص من نسبة الشركة تلقائيًا.<br>
+            لا يمكن أن يزيد مجموع نسب الشركاء عن ١٠٠٪.
+          </div>
 
-if(!name||percent<=0)return alert("بيانات غلط")
+          <div class="grid grid-4 no-print">
+            <input id="partnerName" placeholder="اسم الشريك" />
+            <input id="partnerPercent" type="number" placeholder="نسبة الشريك %" />
+            <input id="partnerDate" type="date" />
+            <button class="btn-green" onclick="addPartner()">إضافة شريك</button>
+          </div>
 
-if(totalPartnerPercent()+percent>100)return alert("مجموع النسب أكبر من 100")
+          <table>
+            <thead>
+              <tr>
+                <th>الاسم</th>
+                <th>النسبة %</th>
+                <th>نصيبه من الربح</th>
+                <th>التاريخ</th>
+                <th class="no-print">إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="partnersBody"></tbody>
+          </table>
+        </div>
 
-partners.push({name,percent})
+        <div id="investorsTab" class="card tab-panel hidden">
+          <h3>المساهمون داخل الشركة</h3>
 
-render()
-}
+          <div class="danger">
+            المساهمون هنا بالمبلغ فقط، وليس بالنسبة.<br>
+            نسبة كل مساهم تظهر تلقائيًا من نصيب الشركة من الشركاء.<br>
+            الشركة موجودة تلقائيًا داخل هذه الشاشة، وأي مبلغ مساهم ينقص من الشركة تلقائيًا.<br>
+            الإدارة تخصم من المساهم وتعود إلى ربح الشركة.
+          </div>
 
-function addInvestor(){
-let name=document.getElementById("iname").value
-let amount=num(document.getElementById("iamount").value)
+          <div class="grid grid-4 no-print">
+            <input id="investorName" placeholder="اسم المساهم" />
+            <input id="investorAmount" type="number" placeholder="مبلغ المساهمة" />
+            <input id="investorAdminRate" type="number" placeholder="نسبة الإدارة %" />
+            <input id="investorDate" type="date" />
+          </div>
+          <div class="no-print" style="margin-top:12px">
+            <button class="btn-green" onclick="addInvestor()">إضافة مساهم</button>
+          </div>
 
-let base=companyProfit()
+          <table>
+            <thead>
+              <tr>
+                <th>الاسم</th>
+                <th>المبلغ</th>
+                <th>النسبة %</th>
+                <th>نصيبه من نصيب الشركة</th>
+                <th>نسبة الإدارة</th>
+                <th>قيمة الإدارة</th>
+                <th>الصافي</th>
+                <th>التاريخ</th>
+                <th class="no-print">إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="investorsBody"></tbody>
+          </table>
+        </div>
 
-let total=investors.reduce((s,x)=>s+num(x.amount),0)
+        <div id="movementsTab" class="card tab-panel hidden">
+          <h3>دفتر الحركة</h3>
+          <div class="success">
+            أي حركة مالية أو إدارية مهمة تتسجل هنا بالتاريخ تلقائيًا أو من الإدخال.
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>التاريخ</th>
+                <th>نوع الحركة</th>
+                <th>الاسم / البيان</th>
+                <th>المبلغ</th>
+                <th>ملاحظة</th>
+              </tr>
+            </thead>
+            <tbody id="movementsBody"></tbody>
+          </table>
+        </div>
 
-if(!name||amount<=0)return alert("بيانات غلط")
+        <div id="reportTab" class="card tab-panel hidden">
+          <h3>ملخص المشروع</h3>
+          <div id="reportBox" class="report-box"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-if(amount+total>base)return alert("المبلغ أكبر من نصيب الشركة")
+  <div id="bookingModal" class="modal hidden">
+    <div class="modal-content">
+      <h3>بيانات الحجز والدفعات</h3>
 
-investors.push({name,amount})
+      <div class="grid grid-4">
+        <input id="bkClient" placeholder="اسم العميل" />
+        <input id="bkMarketer" placeholder="اسم المسوق" />
+        <input id="bkPrice" type="number" placeholder="سعر البيع" oninput="updateCommissionPreview()" />
+        <input id="bkCommission" readonly placeholder="السعي المستحق" />
+      </div>
 
-render()
-}
+      <div class="grid grid-2" style="margin-top:10px">
+        <select id="bkStatus">
+          <option value="محجوزة">محجوزة</option>
+          <option value="مباعة">مباعة</option>
+        </select>
+        <div class="note" style="margin:0">السعي ثابت ٢.٥٪ من سعر البيع</div>
+      </div>
 
-function render(){
+      <h4 style="margin-top:18px">الدفعات الخمس</h4>
+      <div class="grid grid-5"></div>
+      <div class="grid grid-4">
+        <input id="pay1" type="number" placeholder="الدفعة ١ - عربون" />
+        <input id="pay1Date" type="date" />
+        <input id="pay2" type="number" placeholder="الدفعة ٢" />
+        <input id="pay2Date" type="date" />
+      </div>
+      <div class="grid grid-4">
+        <input id="pay3" type="number" placeholder="الدفعة ٣" />
+        <input id="pay3Date" type="date" />
+        <input id="pay4" type="number" placeholder="الدفعة ٤" />
+        <input id="pay4Date" type="date" />
+      </div>
+      <div class="grid grid-2">
+        <input id="pay5" type="number" placeholder="الدفعة ٥" />
+        <input id="pay5Date" type="date" />
+      </div>
 
-// الشركاء
-let phtml=""
-let profit=num(document.getElementById("profit").value)
+      <div class="actions" style="margin-top:16px">
+        <button class="btn-green" onclick="saveBooking()">حفظ</button>
+        <button class="btn-gray" onclick="closeBooking()">إلغاء</button>
+      </div>
+    </div>
+  </div>
 
-phtml+=`<tr class="auto"><td>الشركة</td><td>${companyPercent().toFixed(2)}%</td><td>${money(companyProfit())}</td></tr>`
+  <div id="commissionModal" class="modal hidden">
+    <div class="modal-content" style="max-width:700px">
+      <h3>صرف سعي المسوق</h3>
+      <div id="commissionInfo" class="note"></div>
 
-partners.forEach(p=>{
-phtml+=`<tr>
-<td>${p.name}</td>
-<td>${p.percent}%</td>
-<td>${money(profit*(p.percent/100))}</td>
-</tr>`
-})
+      <div class="grid grid-3">
+        <input id="commissionPayAmount" type="number" placeholder="المبلغ المصروف" />
+        <input id="commissionPayDate" type="date" />
+        <input id="commissionPayNote" placeholder="ملاحظة اختيارية" />
+      </div>
 
-document.getElementById("partners").innerHTML=phtml
+      <div class="actions" style="margin-top:16px">
+        <button class="btn-green" onclick="saveCommissionPayment()">حفظ الصرف</button>
+        <button class="btn-gray" onclick="closeCommission()">إلغاء</button>
+      </div>
+    </div>
+  </div>
 
-// المساهمين
-let ihtml=""
-let base=companyProfit()
-let total=investors.reduce((s,x)=>s+num(x.amount),0)
+  <script>
+    const AUTH_USER = "ANAS";
+    const AUTH_PASS = "Anas8844";
+    const COMMISSION_RATE = 2.5;
+    const STORAGE_KEY = "anas_monster_system_v1";
 
-let companyRemain=base-total
-let companyRatio=base?companyRemain/base*100:0
+    let appData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"projects":[]}');
+    let currentProjectId = null;
+    let bookingUnitIndex = null;
+    let currentMarketerName = null;
 
-ihtml+=`<tr class="auto">
-<td>الشركة</td>
-<td>${money(companyRemain)}</td>
-<td>${companyRatio.toFixed(2)}%</td>
-<td>${money(companyRemain)}</td>
-</tr>`
+    function saveApp(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+    }
 
-investors.forEach(i=>{
-let ratio=base?i.amount/base*100:0
-ihtml+=`<tr>
-<td>${i.name}</td>
-<td>${money(i.amount)}</td>
-<td>${ratio.toFixed(2)}%</td>
-<td>${money(i.amount)}</td>
-</tr>`
-})
+    function num(v){ return Number(v || 0); }
+    function money(v){ return Number(v || 0).toLocaleString('en-US', {maximumFractionDigits: 2}) + " ر.س"; }
+    function calcCommission(price){ return num(price) * COMMISSION_RATE / 100; }
+    function todayText(){ return new Date().toLocaleDateString('en-CA'); }
 
-document.getElementById("investors").innerHTML=ihtml
-}
+    function getProject(){
+      return appData.projects.find(p => p.id === currentProjectId);
+    }
 
-</script>
+    function addMovement(type, name, amount, note, dateValue){
+      const p = getProject();
+      if(!p.movements) p.movements = [];
+      p.movements.unshift({
+        date: dateValue || todayText(),
+        type: type || "",
+        name: name || "",
+        amount: num(amount),
+        note: note || ""
+      });
+    }
 
+    function login(){
+      const u = document.getElementById("loginUser").value.trim();
+      const p = document.getElementById("loginPass").value;
+      if(u === AUTH_USER && p === AUTH_PASS){
+        sessionStorage.setItem("anasLoggedInMonster", "1");
+        document.getElementById("loginView").classList.add("hidden");
+        document.getElementById("appView").classList.remove("hidden");
+        renderProjects();
+      }else{
+        alert("اسم المستخدم أو كلمة المرور غير صحيح");
+      }
+    }
+
+    function logout(){
+      sessionStorage.removeItem("anasLoggedInMonster");
+      location.reload();
+    }
+
+    (function init(){
+      if(sessionStorage.getItem("anasLoggedInMonster") === "1"){
+        document.getElementById("loginView").classList.add("hidden");
+        document.getElementById("appView").classList.remove("hidden");
+        renderProjects();
+      }
+    })();
+
+    function createProject(){
+      const name = document.getElementById("newProjectName").value.trim();
+      const cost = num(document.getElementById("newProjectCost").value);
+      const notes = document.getElementById("newProjectNotes").value.trim();
+
+      if(!name){
+        alert("اكتب اسم المشروع");
+        return;
+      }
+
+      appData.projects.push({
+        id: Date.now().toString(),
+        name,
+        cost,
+        notes,
+        units: [],
+        expenses: [],
+        partners: [],
+        investors: [],
+        movements: []
+      });
+
+      saveApp();
+
+      document.getElementById("newProjectName").value = "";
+      document.getElementById("newProjectCost").value = "";
+      document.getElementById("newProjectNotes").value = "";
+
+      renderProjects();
+    }
+
+    function renderProjects(){
+      const box = document.getElementById("projectsList");
+      box.innerHTML = "";
+
+      if(!appData.projects.length){
+        box.innerHTML = '<div class="small">لا يوجد مشاريع بعد</div>';
+        return;
+      }
+
+      appData.projects.forEach(p => {
+        box.innerHTML += `
+          <div class="project-item">
+            <div>
+              <strong>${p.name}</strong><br>
+              <span class="small">التكلفة الأساسية: ${money(p.cost)} ${p.notes ? " | " + p.notes : ""}</span>
+            </div>
+            <div class="actions">
+              <button class="btn" onclick="openProject('${p.id}')">فتح المشروع</button>
+              <button class="btn-red" onclick="deleteProject('${p.id}')">حذف</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function deleteProject(id){
+      if(!confirm("هل تريد حذف المشروع؟")) return;
+      appData.projects = appData.projects.filter(p => p.id !== id);
+      saveApp();
+      renderProjects();
+    }
+
+    function openProject(id){
+      currentProjectId = id;
+      document.getElementById("projectsView").classList.add("hidden");
+      document.getElementById("workspaceView").classList.remove("hidden");
+      renderProject();
+    }
+
+    function backToProjects(){
+      currentProjectId = null;
+      document.getElementById("workspaceView").classList.add("hidden");
+      document.getElementById("projectsView").classList.remove("hidden");
+      renderProjects();
+    }
+
+    function showTab(id, btn){
+      document.querySelectorAll(".tab-panel").forEach(x => x.classList.add("hidden"));
+      document.getElementById(id).classList.remove("hidden");
+      document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+      btn.classList.add("active");
+    }
+
+    function partnerRowsWithCompany(){
+      const p = getProject();
+      const manualPartners = p.partners || [];
+      const sumPartners = manualPartners.reduce((s,x) => s + num(x.percent), 0);
+      const companyPercent = Math.max(0, 100 - sumPartners);
+
+      return [
+        {name:"الشركة", percent:companyPercent, date:"-", auto:true},
+        ...manualPartners.map(x => ({
+          name:x.name,
+          percent:num(x.percent),
+          date:x.date || "-",
+          auto:false
+        }))
+      ];
+    }
+
+    function investorRowsWithCompany(companyShareProfit){
+      const p = getProject();
+      const manualInvestors = p.investors || [];
+      const baseAmount = num(companyShareProfit);
+      const totalInvestorAmount = manualInvestors.reduce((s,x) => s + num(x.amount), 0);
+
+      const rows = manualInvestors.map(x => {
+        const ratio = baseAmount > 0 ? (num(x.amount) / baseAmount) * 100 : 0;
+        const grossShare = num(x.amount);
+        const adminRate = num(x.adminRate);
+        const adminValue = grossShare * adminRate / 100;
+        const netShare = grossShare - adminValue;
+        return {
+          name: x.name,
+          amount: num(x.amount),
+          ratio: ratio,
+          grossShare: grossShare,
+          adminRate: adminRate,
+          adminValue: adminValue,
+          netShare: netShare,
+          date: x.date || "-",
+          auto: false
+        };
+      });
+
+      const companyRemainingAmount = Math.max(0, baseAmount - totalInvestorAmount);
+      const companyRatio = baseAmount > 0 ? (companyRemainingAmount / baseAmount) * 100 : 0;
+
+      rows.unshift({
+        name: "الشركة",
+        amount: companyRemainingAmount,
+        ratio: companyRatio,
+        grossShare: companyRemainingAmount,
+        adminRate: 0,
+        adminValue: 0,
+        netShare: companyRemainingAmount,
+        date: "-",
+        auto: true
+      });
+
+      return rows;
+    }
+
+    function marketerSummary(){
+      const p = getProject();
+      const map = {};
+
+      p.units.forEach((u) => {
+        const name = (u.marketer && u.marketer !== "-") ? u.marketer : "";
+        if(!name) return;
+
+        if(!map[name]){
+          map[name] = {
+            units: 0,
+            commissionDue: 0,
+            commissionPaid: 0,
+            commissionRemain: 0
+          };
+        }
+
+        map[name].units += 1;
+        map[name].commissionDue += num(u.commissionDue);
+        map[name].commissionPaid += num(u.commissionPaid);
+        map[name].commissionRemain += num(u.commissionDue) - num(u.commissionPaid);
+      });
+
+      return map;
+    }
+
+    function projectFinancials(){
+      const p = getProject();
+      const units = p.units || [];
+      const expenses = p.expenses || [];
+
+      const totalSales = units.filter(u => u.status === "مباعة").reduce((s,u) => s + num(u.price), 0);
+      const totalExpenses = expenses.reduce((s,e) => s + num(e.amount), 0);
+      const totalCommissionDue = units.reduce((s,u) => s + num(u.commissionDue), 0);
+      const totalCommissionPaid = units.reduce((s,u) => s + num(u.commissionPaid), 0);
+      const totalCommissionRemain = totalCommissionDue - totalCommissionPaid;
+      const soldUnits = units.filter(u => u.status === "مباعة").length;
+      const bookedUnits = units.filter(u => u.status === "محجوزة").length;
+      const availableUnits = units.filter(u => u.status === "متاحة").length;
+
+      const profit = totalSales - num(p.cost) - totalExpenses - totalCommissionPaid;
+
+      const partnersFull = partnerRowsWithCompany();
+      partnersFull.forEach(x => {
+        x.share = (num(x.percent) / 100) * profit;
+      });
+
+      const companyRow = partnersFull.find(x => x.name === "الشركة");
+      const companyShareProfit = companyRow ? num(companyRow.share) : 0;
+
+      const investorsFull = investorRowsWithCompany(companyShareProfit);
+
+      const totalInvestorAdmin = investorsFull
+        .filter(x => !x.auto)
+        .reduce((s,x) => s + num(x.adminValue), 0);
+
+      const companyFinalProfit = companyShareProfit + totalInvestorAdmin;
+
+      return {
+        totalSales,
+        totalExpenses,
+        totalCommissionDue,
+        totalCommissionPaid,
+        totalCommissionRemain,
+        soldUnits,
+        bookedUnits,
+        availableUnits,
+        profit,
+        companyShareProfit,
+        partnersFull,
+        investorsFull,
+        totalInvestorAdmin,
+        companyFinalProfit
+      };
+    }
+
+    function renderProject(){
+      const p = getProject();
+      const f = projectFinancials();
+
+      document.getElementById("projectTitle").innerText = p.name;
+      document.getElementById("projectMeta").innerText = `التكلفة الأساسية: ${money(p.cost)}${p.notes ? " | " + p.notes : ""}`;
+
+      document.getElementById("kpiSales").innerText = money(f.totalSales);
+      document.getElementById("kpiCost").innerText = money(p.cost);
+      document.getElementById("kpiExpenses").innerText = money(f.totalExpenses);
+      document.getElementById("kpiCommissionDue").innerText = money(f.totalCommissionDue);
+      document.getElementById("kpiCommissionPaid").innerText = money(f.totalCommissionPaid);
+      document.getElementById("kpiCommissionRemain").innerText = money(f.totalCommissionRemain);
+      document.getElementById("kpiProfit").innerText = money(f.profit);
+      document.getElementById("kpiCompanyFromPartners").innerText = money(f.companyShareProfit);
+      document.getElementById("kpiInvestorAdmin").innerText = money(f.totalInvestorAdmin);
+      document.getElementById("kpiCompanyFinal").innerText = money(f.companyFinalProfit);
+      document.getElementById("kpiSold").innerText = f.soldUnits;
+      document.getElementById("kpiBooked").innerText = f.bookedUnits;
+      document.getElementById("kpiAvailable").innerText = f.availableUnits;
+
+      renderUnits();
+      renderMarketers();
+      renderExpenses();
+      renderPartners();
+      renderInvestors();
+      renderMovements();
+      renderReport();
+      saveApp();
+    }
+
+    function addUnit(){
+      const p = getProject();
+      const number = document.getElementById("unitNumber").value.trim();
+      const price = num(document.getElementById("unitPrice").value);
+
+      if(!number || !price){
+        alert("اكمل بيانات الوحدة");
+        return;
+      }
+
+      p.units.push({
+        number,
+        price,
+        status: "متاحة",
+        client: "-",
+        marketer: "-",
+        commissionDue: calcCommission(price),
+        commissionPaid: 0,
+        commissionPayments: [],
+        payments: [0,0,0,0,0],
+        paymentDates: ["","","","",""],
+        paid: 0,
+        remaining: price
+      });
+
+      addMovement("إضافة وحدة", number, price, "تمت إضافة وحدة جديدة", todayText());
+
+      document.getElementById("unitNumber").value = "";
+      document.getElementById("unitPrice").value = "";
+
+      renderProject();
+    }
+
+    function statusBadge(status){
+      if(status === "متاحة") return '<span class="badge available">متاحة</span>';
+      if(status === "محجوزة") return '<span class="badge booked">محجوزة</span>';
+      return '<span class="badge sold">مباعة</span>';
+    }
+
+    function renderUnits(){
+      const p = getProject();
+      const body = document.getElementById("unitsBody");
+      body.innerHTML = "";
+
+      if(!p.units.length){
+        body.innerHTML = '<tr><td colspan="12">لا توجد وحدات</td></tr>';
+        return;
+      }
+
+      p.units.forEach((u,i) => {
+        const paymentCount = (u.payments || []).filter(x => num(x) > 0).length;
+        const commissionRemain = num(u.commissionDue) - num(u.commissionPaid);
+
+        body.innerHTML += `
+          <tr>
+            <td>${u.number}</td>
+            <td>${money(u.price)}</td>
+            <td>${statusBadge(u.status)}</td>
+            <td>${u.client}</td>
+            <td>${u.marketer}</td>
+            <td>${money(u.commissionDue)}</td>
+            <td>${money(u.commissionPaid)}</td>
+            <td>${money(commissionRemain)}</td>
+            <td>${money(u.paid)}</td>
+            <td>${money(u.remaining)}</td>
+            <td>${paymentCount}/5</td>
+            <td class="no-print">
+              <div class="actions">
+                <button class="btn" onclick="openBooking(${i})">حجز/دفعات</button>
+                <button class="btn-purple" onclick="forceSold(${i})">بيع</button>
+                <button class="btn-red" onclick="deleteUnit(${i})">حذف</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function openBooking(i){
+      const u = getProject().units[i];
+      bookingUnitIndex = i;
+
+      document.getElementById("bkClient").value = u.client === "-" ? "" : u.client;
+      document.getElementById("bkMarketer").value = u.marketer === "-" ? "" : u.marketer;
+      document.getElementById("bkPrice").value = u.price;
+      document.getElementById("bkCommission").value = calcCommission(u.price).toFixed(2);
+      document.getElementById("bkStatus").value = u.status === "مباعة" ? "مباعة" : "محجوزة";
+
+      const pays = u.payments || [0,0,0,0,0];
+      const dates = u.paymentDates || ["","","","",""];
+
+      document.getElementById("pay1").value = pays[0] || 0;
+      document.getElementById("pay2").value = pays[1] || 0;
+      document.getElementById("pay3").value = pays[2] || 0;
+      document.getElementById("pay4").value = pays[3] || 0;
+      document.getElementById("pay5").value = pays[4] || 0;
+
+      document.getElementById("pay1Date").value = dates[0] || "";
+      document.getElementById("pay2Date").value = dates[1] || "";
+      document.getElementById("pay3Date").value = dates[2] || "";
+      document.getElementById("pay4Date").value = dates[3] || "";
+      document.getElementById("pay5Date").value = dates[4] || "";
+
+      document.getElementById("bookingModal").classList.remove("hidden");
+    }
+
+    function updateCommissionPreview(){
+      const price = num(document.getElementById("bkPrice").value);
+      document.getElementById("bkCommission").value = calcCommission(price).toFixed(2);
+    }
+
+    function saveBooking(){
+      const p = getProject();
+      const u = p.units[bookingUnitIndex];
+
+      const client = document.getElementById("bkClient").value.trim();
+      const marketer = document.getElementById("bkMarketer").value.trim();
+      const price = num(document.getElementById("bkPrice").value);
+      const status = document.getElementById("bkStatus").value;
+
+      const payments = [
+        num(document.getElementById("pay1").value),
+        num(document.getElementById("pay2").value),
+        num(document.getElementById("pay3").value),
+        num(document.getElementById("pay4").value),
+        num(document.getElementById("pay5").value)
+      ];
+
+      const paymentDates = [
+        document.getElementById("pay1Date").value,
+        document.getElementById("pay2Date").value,
+        document.getElementById("pay3Date").value,
+        document.getElementById("pay4Date").value,
+        document.getElementById("pay5Date").value
+      ];
+
+      if(!client){
+        alert("اكتب اسم العميل");
+        return;
+      }
+
+      if(price <= 0){
+        alert("اكتب سعر البيع");
+        return;
+      }
+
+      if(payments[0] <= 0){
+        alert("لازم عربون الحجز أكبر من صفر");
+        return;
+      }
+
+      const oldPaid = num(u.commissionPaid);
+      const oldLog = Array.isArray(u.commissionPayments) ? u.commissionPayments : [];
+      const oldPayments = u.payments || [0,0,0,0,0];
+
+      u.client = client;
+      u.marketer = marketer || "-";
+      u.price = price;
+      u.commissionDue = calcCommission(price);
+      u.commissionPaid = Math.min(oldPaid, u.commissionDue);
+      u.commissionPayments = oldLog;
+      u.payments = payments;
+      u.paymentDates = paymentDates;
+      u.paid = payments.reduce((a,b) => a + num(b), 0);
+      u.remaining = price - u.paid;
+      u.status = status;
+
+      for(let i=0;i<5;i++){
+        if(num(payments[i]) > 0 && num(oldPayments[i]) !== num(payments[i])){
+          addMovement(
+            "تحصيل دفعة",
+            `${u.number} - ${client} - دفعة ${i+1}`,
+            payments[i],
+            i===0 ? "عربون حجز" : `دفعة رقم ${i+1}`,
+            paymentDates[i] || todayText()
+          );
+        }
+      }
+
+      addMovement(
+        "تحديث حجز",
+        `${u.number} - ${client}`,
+        price,
+        `الحالة: ${status} | المسوق: ${marketer || "-"}`,
+        todayText()
+      );
+
+      closeBooking();
+      renderProject();
+    }
+
+    function closeBooking(){
+      document.getElementById("bookingModal").classList.add("hidden");
+      bookingUnitIndex = null;
+    }
+
+    function forceSold(i){
+      const u = getProject().units[i];
+      if(u.client === "-"){
+        alert("أدخل بيانات الحجز أولًا");
+        return;
+      }
+      u.status = "مباعة";
+      addMovement("بيع وحدة", `${u.number} - ${u.client}`, u.price, "تم تحويل الوحدة إلى مباعة", todayText());
+      renderProject();
+    }
+
+    function deleteUnit(i){
+      if(!confirm("هل تريد حذف الوحدة؟")) return;
+      const u = getProject().units[i];
+      addMovement("حذف وحدة", u.number, u.price, "تم حذف الوحدة من المشروع", todayText());
+      getProject().units.splice(i,1);
+      renderProject();
+    }
+
+    function marketerStatus(m){
+      if(m.commissionDue <= 0) return '<span class="badge none-status">لا يوجد</span>';
+      if(m.commissionRemain <= 0) return '<span class="badge full-status">مكتمل</span>';
+      if(m.commissionPaid > 0) return '<span class="badge partial-status">جزئي</span>';
+      return '<span class="badge none-status">لم يصرف</span>';
+    }
+
+    function renderMarketers(){
+      const body = document.getElementById("marketersBody");
+      const map = marketerSummary();
+      body.innerHTML = "";
+
+      const names = Object.keys(map);
+      if(!names.length){
+        body.innerHTML = '<tr><td colspan="7">لا يوجد مسوقون</td></tr>';
+        return;
+      }
+
+      names.forEach(name => {
+        const m = map[name];
+        body.innerHTML += `
+          <tr>
+            <td>${name}</td>
+            <td>${m.units}</td>
+            <td>${money(m.commissionDue)}</td>
+            <td>${money(m.commissionPaid)}</td>
+            <td>${money(m.commissionRemain)}</td>
+            <td>${marketerStatus(m)}</td>
+            <td class="no-print"><button class="btn-green" onclick="openCommissionModal('${name.replace(/'/g, "\\'")}')">صرف سعي</button></td>
+          </tr>
+        `;
+      });
+    }
+
+    function openCommissionModal(name){
+      currentMarketerName = name;
+      const map = marketerSummary();
+      const m = map[name];
+
+      document.getElementById("commissionInfo").innerHTML = `
+        <strong>المسوق:</strong> ${name}<br>
+        <strong>إجمالي السعي:</strong> ${money(m.commissionDue)}<br>
+        <strong>تم صرفه:</strong> ${money(m.commissionPaid)}<br>
+        <strong>المتبقي:</strong> ${money(m.commissionRemain)}
+      `;
+
+      document.getElementById("commissionPayAmount").value = "";
+      document.getElementById("commissionPayDate").value = todayText();
+      document.getElementById("commissionPayNote").value = "";
+      document.getElementById("commissionModal").classList.remove("hidden");
+    }
+
+    function saveCommissionPayment(){
+      const p = getProject();
+      const amount = num(document.getElementById("commissionPayAmount").value);
+      const date = document.getElementById("commissionPayDate").value || todayText();
+      const note = document.getElementById("commissionPayNote").value.trim();
+
+      if(amount <= 0){
+        alert("اكتب مبلغ صحيح");
+        return;
+      }
+
+      let remain = amount;
+
+      p.units
+        .filter(u => u.marketer === currentMarketerName)
+        .forEach(u => {
+          if(remain <= 0) return;
+
+          const available = num(u.commissionDue) - num(u.commissionPaid);
+          if(available <= 0) return;
+
+          const take = Math.min(available, remain);
+          u.commissionPaid = num(u.commissionPaid) + take;
+
+          if(!Array.isArray(u.commissionPayments)){
+            u.commissionPayments = [];
+          }
+
+          u.commissionPayments.push({
+            amount: take,
+            note: note,
+            date: date
+          });
+
+          remain -= take;
+        });
+
+      addMovement("صرف سعي", currentMarketerName, amount - remain, note || "صرف سعي مسوق", date);
+
+      if(remain > 0){
+        alert("المبلغ أكبر من المتبقي للمسوق، تم تسجيل المتاح فقط.");
+      }
+
+      closeCommission();
+      renderProject();
+    }
+
+    function closeCommission(){
+      document.getElementById("commissionModal").classList.add("hidden");
+      currentMarketerName = null;
+    }
+
+    function addExpense(){
+      const p = getProject();
+
+      const date = document.getElementById("expenseDate").value || todayText();
+      const category = document.getElementById("expenseCategory").value;
+      const description = document.getElementById("expenseDesc").value.trim();
+      const amount = num(document.getElementById("expenseAmount").value);
+
+      if(!date || !category || !description || !amount){
+        alert("اكمل بيانات المصروف");
+        return;
+      }
+
+      p.expenses.push({date, category, description, amount});
+
+      addMovement("مصروف", `${category} - ${description}`, amount, "إضافة مصروف", date);
+
+      document.getElementById("expenseDate").value = "";
+      document.getElementById("expenseCategory").value = "";
+      document.getElementById("expenseDesc").value = "";
+      document.getElementById("expenseAmount").value = "";
+
+      renderProject();
+    }
+
+    function renderExpenses(){
+      const p = getProject();
+      const body = document.getElementById("expensesBody");
+      body.innerHTML = "";
+
+      if(!p.expenses.length){
+        body.innerHTML = '<tr><td colspan="5">لا توجد مصروفات</td></tr>';
+        return;
+      }
+
+      p.expenses.forEach((e,i) => {
+        body.innerHTML += `
+          <tr>
+            <td>${e.date}</td>
+            <td>${e.category}</td>
+            <td>${e.description}</td>
+            <td>${money(e.amount)}</td>
+            <td class="no-print"><button class="btn-red" onclick="deleteExpense(${i})">حذف</button></td>
+          </tr>
+        `;
+      });
+    }
+
+    function deleteExpense(i){
+      if(!confirm("حذف المصروف؟")) return;
+      const e = getProject().expenses[i];
+      addMovement("حذف مصروف", `${e.category} - ${e.description}`, e.amount, "تم حذف المصروف", todayText());
+      getProject().expenses.splice(i,1);
+      renderProject();
+    }
+
+    function addPartner(){
+      const p = getProject();
+      const name = document.getElementById("partnerName").value.trim();
+      const percent = num(document.getElementById("partnerPercent").value);
+      const date = document.getElementById("partnerDate").value || todayText();
+
+      if(!name){
+        alert("اكتب اسم الشريك");
+        return;
+      }
+
+      if(percent <= 0){
+        alert("اكتب نسبة صحيحة");
+        return;
+      }
+
+      const currentSum = p.partners.reduce((s,x) => s + num(x.percent), 0);
+      if(currentSum + percent > 100){
+        alert("مجموع نسب الشركاء لا يمكن أن يزيد عن 100%");
+        return;
+      }
+
+      p.partners.push({name, percent, date});
+
+      addMovement("إضافة شريك", name, percent, `نسبة الشريك ${percent}%`, date);
+
+      document.getElementById("partnerName").value = "";
+      document.getElementById("partnerPercent").value = "";
+      document.getElementById("partnerDate").value = "";
+
+      renderProject();
+    }
+
+    function renderPartners(){
+      const body = document.getElementById("partnersBody");
+      const f = projectFinancials();
+      body.innerHTML = "";
+
+      f.partnersFull.forEach((x,i) => {
+        body.innerHTML += `
+          <tr class="${x.auto ? 'auto-row' : ''}">
+            <td>${x.name}${x.auto ? ' (تلقائي)' : ''}</td>
+            <td>${num(x.percent).toFixed(2)}%</td>
+            <td>${money(x.share)}</td>
+            <td>${x.date || "-"}</td>
+            <td class="no-print">
+              ${x.auto ? '-' : `<button class="btn-red" onclick="deletePartner(${i-1})">حذف</button>`}
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function deletePartner(i){
+      if(!confirm("حذف الشريك؟")) return;
+      const x = getProject().partners[i];
+      addMovement("حذف شريك", x.name, x.percent, `تم حذف شريك بنسبة ${x.percent}%`, todayText());
+      getProject().partners.splice(i,1);
+      renderProject();
+    }
+
+    function addInvestor(){
+      const p = getProject();
+      const f = projectFinancials();
+
+      const name = document.getElementById("investorName").value.trim();
+      const amount = num(document.getElementById("investorAmount").value);
+      const adminRate = num(document.getElementById("investorAdminRate").value);
+      const date = document.getElementById("investorDate").value || todayText();
+
+      if(!name){
+        alert("اكتب اسم المساهم");
+        return;
+      }
+
+      if(amount <= 0){
+        alert("اكتب مبلغ صحيح");
+        return;
+      }
+
+      const companyBase = num(f.companyShareProfit);
+      const currentTotal = (p.investors || []).reduce((s, x) => s + num(x.amount), 0);
+
+      if(companyBase <= 0){
+        alert("لا يمكن إضافة مساهمين قبل وجود نصيب للشركة من الشركاء.");
+        return;
+      }
+
+      if(currentTotal + amount > companyBase){
+        alert("مجموع مبالغ المساهمين لا يمكن أن يزيد عن نصيب الشركة من الشركاء.");
+        return;
+      }
+
+      p.investors.push({ name, amount, adminRate, date });
+
+      addMovement("إضافة مساهم", name, amount, `إدارة ${adminRate}%`, date);
+
+      document.getElementById("investorName").value = "";
+      document.getElementById("investorAmount").value = "";
+      document.getElementById("investorAdminRate").value = "";
+      document.getElementById("investorDate").value = "";
+
+      renderProject();
+    }
+
+    function renderInvestors(){
+      const body = document.getElementById("investorsBody");
+      const f = projectFinancials();
+      body.innerHTML = "";
+
+      f.investorsFull.forEach((x,i) => {
+        body.innerHTML += `
+          <tr class="${x.auto ? 'auto-row' : ''}">
+            <td>${x.name}${x.auto ? ' (تلقائي)' : ''}</td>
+            <td>${money(x.amount)}</td>
+            <td>${num(x.ratio).toFixed(2)}%</td>
+            <td>${money(x.grossShare)}</td>
+            <td>${num(x.adminRate).toFixed(2)}%</td>
+            <td>${money(x.adminValue)}</td>
+            <td>${money(x.netShare)}</td>
+            <td>${x.date || "-"}</td>
+            <td class="no-print">
+              ${x.auto ? '-' : `<button class="btn-red" onclick="deleteInvestor(${i-1})">حذف</button>`}
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function deleteInvestor(i){
+      if(!confirm("حذف المساهم؟")) return;
+      const x = getProject().investors[i];
+      addMovement("حذف مساهم", x.name, x.amount, `تم حذف مساهم | إدارة ${x.adminRate || 0}%`, todayText());
+      getProject().investors.splice(i,1);
+      renderProject();
+    }
+
+    function renderMovements(){
+      const p = getProject();
+      const body = document.getElementById("movementsBody");
+      body.innerHTML = "";
+
+      const moves = p.movements || [];
+      if(!moves.length){
+        body.innerHTML = '<tr><td colspan="5">لا توجد حركات بعد</td></tr>';
+        return;
+      }
+
+      moves.forEach(m => {
+        body.innerHTML += `
+          <tr>
+            <td>${m.date || "-"}</td>
+            <td>${m.type || "-"}</td>
+            <td>${m.name || "-"}</td>
+            <td>${money(m.amount)}</td>
+            <td>${m.note || "-"}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function renderReport(){
+      const p = getProject();
+      const f = projectFinancials();
+      const marketerMap = marketerSummary();
+
+      const marketerLines = Object.keys(marketerMap).length
+        ? Object.keys(marketerMap).map(name =>
+            `${name}: إجمالي ${money(marketerMap[name].commissionDue)} | صرف ${money(marketerMap[name].commissionPaid)} | متبقي ${money(marketerMap[name].commissionRemain)}`
+          ).join("<br>")
+        : "لا يوجد مسوقون";
+
+      const partnersLines = f.partnersFull
+        .map(x => `${x.name}: ${num(x.percent).toFixed(2)}% = ${money(x.share)}`)
+        .join("<br>");
+
+      const investorsLines = f.investorsFull
+        .map(x => `${x.name}: ${money(x.amount)} | ${num(x.ratio).toFixed(2)}% | قبل الإدارة ${money(x.grossShare)} | الإدارة ${money(x.adminValue)} | الصافي ${money(x.netShare)}`)
+        .join("<br>");
+
+      document.getElementById("reportBox").innerHTML = `
+        <strong>اسم المشروع:</strong> ${p.name}<br>
+        <strong>إجمالي المبيعات:</strong> ${money(f.totalSales)}<br>
+        <strong>التكلفة الأساسية:</strong> ${money(p.cost)}<br>
+        <strong>إجمالي المصروفات:</strong> ${money(f.totalExpenses)}<br>
+        <strong>إجمالي السعي المستحق:</strong> ${money(f.totalCommissionDue)}<br>
+        <strong>السعي المصروف فعليًا:</strong> ${money(f.totalCommissionPaid)}<br>
+        <strong>متبقي السعي:</strong> ${money(f.totalCommissionRemain)}<br>
+        <strong>الربح الكلي:</strong> ${money(f.profit)}<br>
+        <strong>نصيب الشركة من الشركاء:</strong> ${money(f.companyShareProfit)}<br>
+        <strong>إجمالي إدارة المساهمين:</strong> ${money(f.totalInvestorAdmin)}<br>
+        <strong>ربح الشركة النهائي:</strong> ${money(f.companyFinalProfit)}<hr>
+
+        <strong>توزيع الشركاء:</strong><br>${partnersLines}<hr>
+        <strong>توزيع المساهمين داخل الشركة:</strong><br>${investorsLines}<hr>
+        <strong>ملخص المسوقين:</strong><br>${marketerLines}
+      `;
+    }
+  </script>
 </body>
 </html>
