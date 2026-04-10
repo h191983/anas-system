@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>نظام أنس - النسخة الكاملة</title>
+  <title>نظام أنس - النسخة الكاملة + شاشة الأرصدة</title>
   <style>
     :root{
       --bg:#f5f6fa;
@@ -228,7 +228,7 @@
   </style>
 </head>
 <body>
-  <div class="header">نظام أنس - النسخة الكاملة</div>
+  <div class="header">نظام أنس - النسخة الكاملة + شاشة الأرصدة</div>
 
   <div class="container">
     <div id="loginView" class="login-wrap">
@@ -351,6 +351,7 @@
 
         <div class="tabs no-print">
           <button class="tab active" onclick="showTab('unitsTab', this)">الوحدات والحجز</button>
+          <button class="tab" onclick="showTab('balancesTab', this)">الأرصدة المختصرة</button>
           <button class="tab" onclick="showTab('marketersTab', this)">المسوقون والسعي</button>
           <button class="tab" onclick="showTab('expensesTab', this)">المصروفات</button>
           <button class="tab" onclick="showTab('partnersTab', this)">الشركاء</button>
@@ -393,6 +394,85 @@
             </thead>
             <tbody id="unitsBody"></tbody>
           </table>
+        </div>
+
+        <div id="balancesTab" class="card tab-panel hidden">
+          <div class="section-title">
+            <h3>شاشة الأرصدة المختصرة</h3>
+            <div class="actions no-print">
+              <button class="btn-teal" onclick="exportBalancesCSV()">تصدير CSV</button>
+            </div>
+          </div>
+
+          <div class="kpis">
+            <div class="kpi"><div class="kpi-title">إجمالي المتحصل من الوحدات</div><div class="kpi-value" id="balCollected">0</div></div>
+            <div class="kpi"><div class="kpi-title">إجمالي المتبقي على الوحدات</div><div class="kpi-value" id="balUnitsRemain">0</div></div>
+            <div class="kpi"><div class="kpi-title">إجمالي متبقي السعي</div><div class="kpi-value" id="balCommissionRemain">0</div></div>
+            <div class="kpi"><div class="kpi-title">ربح الشركة النهائي</div><div class="kpi-value" id="balCompanyFinal">0</div></div>
+          </div>
+
+          <div class="grid grid-2">
+            <div class="card" style="box-shadow:none;border:1px solid #e5e7eb">
+              <h4>أرصدة المسوقين</h4>
+              <table>
+                <thead>
+                  <tr>
+                    <th>المسوق</th>
+                    <th>إجمالي السعي</th>
+                    <th>تم صرفه</th>
+                    <th>المتبقي</th>
+                  </tr>
+                </thead>
+                <tbody id="balancesMarketersBody"></tbody>
+              </table>
+            </div>
+
+            <div class="card" style="box-shadow:none;border:1px solid #e5e7eb">
+              <h4>الوحدات التي عليها متبقي</h4>
+              <table>
+                <thead>
+                  <tr>
+                    <th>الوحدة</th>
+                    <th>العميل</th>
+                    <th>المدفوع</th>
+                    <th>المتبقي</th>
+                  </tr>
+                </thead>
+                <tbody id="balancesUnitsBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="grid grid-2">
+            <div class="card" style="box-shadow:none;border:1px solid #e5e7eb">
+              <h4>أرصدة الشركاء</h4>
+              <table>
+                <thead>
+                  <tr>
+                    <th>الاسم</th>
+                    <th>النسبة</th>
+                    <th>النصيب</th>
+                  </tr>
+                </thead>
+                <tbody id="balancesPartnersBody"></tbody>
+              </table>
+            </div>
+
+            <div class="card" style="box-shadow:none;border:1px solid #e5e7eb">
+              <h4>أرصدة المساهمين</h4>
+              <table>
+                <thead>
+                  <tr>
+                    <th>الاسم</th>
+                    <th>قبل الإدارة</th>
+                    <th>الإدارة</th>
+                    <th>الصافي</th>
+                  </tr>
+                </thead>
+                <tbody id="balancesInvestorsBody"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
         <div id="marketersTab" class="card tab-panel hidden">
@@ -821,9 +901,8 @@
       document.getElementById(id).classList.remove("hidden");
       document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
       btn.classList.add("active");
-      if(id === "reportsTab") {
-        renderSingleReportSelectors();
-      }
+      if(id === "reportsTab") renderSingleReportSelectors();
+      if(id === "balancesTab") renderBalances();
     }
 
     function partnerRowsWithCompany(project){
@@ -923,6 +1002,8 @@
       const soldUnits = units.filter(u => u.status === "مباعة").length;
       const bookedUnits = units.filter(u => u.status === "محجوزة").length;
       const availableUnits = units.filter(u => u.status === "متاحة").length;
+      const totalCollected = units.reduce((s,u) => s + num(u.paid), 0);
+      const totalUnitsRemain = units.reduce((s,u) => s + num(u.remaining), 0);
 
       const profit = totalSales - num(project.cost) - totalExpenses - totalCommissionPaid;
 
@@ -951,6 +1032,8 @@
         soldUnits,
         bookedUnits,
         availableUnits,
+        totalCollected,
+        totalUnitsRemain,
         profit,
         companyShareProfit,
         partnersFull,
@@ -1085,6 +1168,7 @@
       document.getElementById("kpiAvailable").innerText = f.availableUnits;
 
       renderUnits();
+      renderBalances();
       renderMarketers();
       renderExpenses();
       renderPartners();
@@ -1094,6 +1178,80 @@
       renderSingleReportSelectors();
       renderCompanyReport();
       saveApp();
+    }
+
+    function renderBalances(){
+      const p = getProject();
+      if(!p) return;
+      const f = projectFinancials();
+      const marketers = marketerSummary();
+
+      document.getElementById("balCollected").innerText = money(f.totalCollected);
+      document.getElementById("balUnitsRemain").innerText = money(f.totalUnitsRemain);
+      document.getElementById("balCommissionRemain").innerText = money(f.totalCommissionRemain);
+      document.getElementById("balCompanyFinal").innerText = money(f.companyFinalProfit);
+
+      const marketersBody = document.getElementById("balancesMarketersBody");
+      marketersBody.innerHTML = "";
+      const marketerNames = Object.keys(marketers);
+      if(!marketerNames.length){
+        marketersBody.innerHTML = '<tr><td colspan="4">لا يوجد مسوقون</td></tr>';
+      } else {
+        marketerNames.forEach(name => {
+          const m = marketers[name];
+          marketersBody.innerHTML += `
+            <tr>
+              <td>${name}</td>
+              <td>${money(m.commissionDue)}</td>
+              <td>${money(m.commissionPaid)}</td>
+              <td>${money(m.commissionRemain)}</td>
+            </tr>
+          `;
+        });
+      }
+
+      const unitsBody = document.getElementById("balancesUnitsBody");
+      unitsBody.innerHTML = "";
+      const dueUnits = (p.units || []).filter(u => num(u.remaining) > 0);
+      if(!dueUnits.length){
+        unitsBody.innerHTML = '<tr><td colspan="4">لا توجد وحدات عليها متبقي</td></tr>';
+      } else {
+        dueUnits.forEach(u => {
+          unitsBody.innerHTML += `
+            <tr>
+              <td>${u.number}</td>
+              <td>${u.client}</td>
+              <td>${money(u.paid)}</td>
+              <td>${money(u.remaining)}</td>
+            </tr>
+          `;
+        });
+      }
+
+      const partnersBody = document.getElementById("balancesPartnersBody");
+      partnersBody.innerHTML = "";
+      f.partnersFull.forEach(x => {
+        partnersBody.innerHTML += `
+          <tr class="${x.auto ? 'auto-row' : ''}">
+            <td>${x.name}</td>
+            <td>${num(x.percent).toFixed(2)}%</td>
+            <td>${money(x.share)}</td>
+          </tr>
+        `;
+      });
+
+      const investorsBody = document.getElementById("balancesInvestorsBody");
+      investorsBody.innerHTML = "";
+      f.investorsFull.forEach(x => {
+        investorsBody.innerHTML += `
+          <tr class="${x.auto ? 'auto-row' : ''}">
+            <td>${x.name}</td>
+            <td>${money(x.grossShare)}</td>
+            <td>${money(x.adminValue)}</td>
+            <td>${money(x.netShare)}</td>
+          </tr>
+        `;
+      });
     }
 
     function addUnit(){
@@ -1122,10 +1280,8 @@
       });
 
       addMovement("إضافة وحدة", number, price, "تمت إضافة وحدة جديدة", todayText());
-
       document.getElementById("unitNumber").value = "";
       document.getElementById("unitPrice").value = "";
-
       renderProject();
     }
 
@@ -1461,7 +1617,7 @@
     }
 
     function deleteExpense(i){
-      if(!confirm("حذف المصروف؟")) return;
+      if(!confirm("هل تريد حذف المصروف؟")) return;
       const e = getProject().expenses[i];
       addMovement("حذف مصروف", `${e.category} - ${e.description}`, e.amount, "تم حذف المصروف", todayText());
       getProject().expenses.splice(i,1);
@@ -1520,7 +1676,7 @@
     }
 
     function deletePartner(i){
-      if(!confirm("حذف الشريك؟")) return;
+      if(!confirm("هل تريد حذف الشريك؟")) return;
       const x = getProject().partners[i];
       addMovement("حذف شريك", x.name, x.percent, `تم حذف شريك بنسبة ${x.percent}%`, todayText());
       getProject().partners.splice(i,1);
@@ -1594,7 +1750,7 @@
     }
 
     function deleteInvestor(i){
-      if(!confirm("حذف المساهم؟")) return;
+      if(!confirm("هل تريد حذف المساهم؟")) return;
       const x = getProject().investors[i];
       addMovement("حذف مساهم", x.name, x.amount, `تم حذف مساهم | إدارة ${x.adminRate || 0}%`, todayText());
       getProject().investors.splice(i,1);
@@ -1829,14 +1985,42 @@
 
     function exportMovementsCSV(){
       const moves = filteredMovements();
-      let csv = [
-        ["التاريخ","نوع الحركة","الاسم / البيان","المبلغ","ملاحظة"]
-      ];
-      moves.forEach(m => {
-        csv.push([m.date, m.type, m.name, m.amount, m.note]);
-      });
+      let csv = [["التاريخ","نوع الحركة","الاسم / البيان","المبلغ","ملاحظة"]];
+      moves.forEach(m => csv.push([m.date, m.type, m.name, m.amount, m.note]));
       const content = csv.map(row => row.map(csvEscape).join(",")).join("\n");
       downloadTextFile("movements_report.csv", content, "text/csv;charset=utf-8");
+    }
+
+    function exportBalancesCSV(){
+      const p = getProject();
+      const f = projectFinancials();
+      const marketers = marketerSummary();
+      let rows = [["القسم","الاسم","1","2","3","4"]];
+
+      rows.push(["ملخص","إجمالي المتحصل",f.totalCollected,"","",""]);
+      rows.push(["ملخص","إجمالي المتبقي على الوحدات",f.totalUnitsRemain,"","",""]);
+      rows.push(["ملخص","إجمالي متبقي السعي",f.totalCommissionRemain,"","",""]);
+      rows.push(["ملخص","ربح الشركة النهائي",f.companyFinalProfit,"","",""]);
+
+      Object.keys(marketers).forEach(name => {
+        const m = marketers[name];
+        rows.push(["مسوق",name,m.commissionDue,m.commissionPaid,m.commissionRemain,""]);
+      });
+
+      f.partnersFull.forEach(x => {
+        rows.push(["شريك",x.name,x.percent,x.share,"",""]);
+      });
+
+      f.investorsFull.forEach(x => {
+        rows.push(["مساهم",x.name,x.grossShare,x.adminValue,x.netShare,""]);
+      });
+
+      (p.units || []).filter(u => num(u.remaining) > 0).forEach(u => {
+        rows.push(["وحدة",u.number,u.client,u.paid,u.remaining,""]);
+      });
+
+      const content = rows.map(row => row.map(csvEscape).join(",")).join("\n");
+      downloadTextFile("balances_report.csv", content, "text/csv;charset=utf-8");
     }
   </script>
 </body>
