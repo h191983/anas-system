@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1f3b57" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="نظام أنس" />
+  <link rel="manifest" href="manifest.webmanifest" />
   <title>نظام أنس - النسخة المطورة</title>
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
@@ -385,6 +390,7 @@
           <h2>المشاريع</h2>
           <div class="actions">
             <div id="cloudBadge" class="cloud-badge"><span id="cloudDot" class="cloud-dot offline"></span><span id="cloudText">أوفلاين</span></div>
+            <button class="btn-teal" id="installAppBtn" onclick="installPWA()" style="display:none">تثبيت التطبيق</button>
             <button class="btn-teal" onclick="openCloudModal()">إعداد الأونلاين</button>
             <button class="btn" onclick="manualCloudSync()">مزامنة الآن</button>
             <button class="btn-purple" onclick="downloadBackup()">نسخة احتياطية</button>
@@ -533,8 +539,8 @@
             <thead>
               <tr>
                 <th>المسوق</th>
-                <th>عدد الوحدات</th>
-                <th>إجمالي السعي</th>
+                <th>عدد الحجوزات</th>
+                <th>إجمالي السعي المستحق</th>
                 <th>تم صرفه</th>
                 <th>المتبقي</th>
                 <th>الجوال</th>
@@ -1427,6 +1433,9 @@
         if(!map[name]){
           map[name] = {
             units: 0,
+            bookedUnits: 0,
+            soldUnits: 0,
+            activeUnits: 0,
             commissionDue: 0,
             commissionPaid: 0,
             commissionRemain: 0,
@@ -1439,6 +1448,9 @@
         }
 
         map[name].units += 1;
+        if(u.status === "محجوزة") map[name].bookedUnits += 1;
+        if(u.status === "مباعة") map[name].soldUnits += 1;
+        if(u.status === "محجوزة" || u.status === "مباعة") map[name].activeUnits += 1;
         map[name].commissionDue += num(u.commissionDue);
         map[name].commissionPaid += num(u.commissionPaid);
         map[name].commissionRemain += num(u.commissionDue) - num(u.commissionPaid);
@@ -2062,7 +2074,7 @@
         body.innerHTML += `
           <tr class="${cls}">
             <td>${m.name}</td>
-            <td>${m.units}</td>
+            <td>${m.activeUnits} <span class="small">(محجوز ${m.bookedUnits} / مباعة ${m.soldUnits})</span></td>
             <td>${money(m.commissionDue)}</td>
             <td>${money(m.paidAdvance)}</td>
             <td>${money(m.remainAfterAdvance)}</td>
@@ -2673,12 +2685,13 @@
       const row = projectFinancials().marketerRows.find(x => x.name === name);
       if(!row) return;
 
-      const units = (p.units || []).filter(u => u.marketer === name).map(u => `
+      const units = (p.units || []).filter(u => u.marketer === name && (u.status === 'محجوزة' || u.status === 'مباعة')).map(u => `
         <tr>
           <td>${escapeHtml(u.number)}</td>
           <td>${escapeHtml(u.building)}</td>
           <td>${escapeHtml(u.client)}</td>
-          <td>${money(u.price)}</td>
+          <td>${escapeHtml(u.status)}</td>
+          <td>${money(u.finalPrice || u.price)}</td>
           <td>${money(u.commissionDue)}</td>
         </tr>
       `).join("");
@@ -2688,7 +2701,9 @@
         <div class="line"><strong>المشروع:</strong> ${escapeHtml(p.name)}</div>
         <div class="line"><strong>اسم المسوق:</strong> ${escapeHtml(row.name)}</div>
         <div class="line"><strong>الجوال:</strong> ${escapeHtml(row.phone || "-")}</div>
-        <div class="line"><strong>عدد الوحدات:</strong> ${row.units}</div>
+        <div class="line"><strong>عدد الحجوزات بالمشروع:</strong> ${row.activeUnits}</div>
+        <div class="line"><strong>منها محجوز:</strong> ${row.bookedUnits}</div>
+        <div class="line"><strong>منها مباعة:</strong> ${row.soldUnits}</div>
         <div class="line"><strong>إجمالي السعي:</strong> ${money(row.commissionDue)}</div>
         <div class="line"><strong>المصروف تحت الحساب:</strong> ${money(row.paidAdvance)}</div>
         <div class="line"><strong>المتبقي:</strong> ${money(row.remainAfterAdvance)}</div>
@@ -2700,15 +2715,53 @@
               <th>رقم الشقة</th>
               <th>المبنى</th>
               <th>العميل</th>
-              <th>السعر</th>
+              <th>الحالة</th>
+              <th>السعر النهائي</th>
               <th>السعي</th>
             </tr>
           </thead>
-          <tbody>${units || '<tr><td colspan="5">لا توجد وحدات</td></tr>'}</tbody>
+          <tbody>${units || '<tr><td colspan="6">لا توجد وحدات</td></tr>'}</tbody>
         </table>
       `;
 
       await createPdfFromHtml(html, `marketer_${name}.pdf`);
+    }
+
+
+
+    let deferredInstallPrompt = null;
+
+    function installPWA(){
+      if(!deferredInstallPrompt){
+        alert("لو ما ظهرش زر التثبيت تلقائيًا، افتح من المتصفح واختر: إضافة إلى الشاشة الرئيسية");
+        return;
+      }
+      deferredInstallPrompt.prompt();
+      deferredInstallPrompt.userChoice.finally(() => {
+        deferredInstallPrompt = null;
+        const btn = document.getElementById("installAppBtn");
+        if(btn) btn.style.display = "none";
+      });
+    }
+
+    function setupPWA(){
+      window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        const btn = document.getElementById("installAppBtn");
+        if(btn) btn.style.display = "inline-block";
+      });
+
+      window.addEventListener("appinstalled", () => {
+        const btn = document.getElementById("installAppBtn");
+        if(btn) btn.style.display = "none";
+      });
+
+      if("serviceWorker" in navigator){
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("sw.js").catch(() => {});
+        });
+      }
     }
 
     function downloadBackup(){
