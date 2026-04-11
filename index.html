@@ -1117,7 +1117,7 @@
     }
 
     function getProject(){
-      return appData.projects.find(p => p.id === currentProjectId);
+      return (appData.projects || []).find(p => String(p.id) === String(currentProjectId));
     }
 
     function ensureArrays(project){
@@ -1243,7 +1243,13 @@
     }
 
     function openProject(id){
-      currentProjectId = id;
+      currentProjectId = String(id);
+      const project = getProject();
+      if(!project){
+        alert("تعذر فتح المشروع. جرّب تحديث الصفحة.");
+        currentProjectId = null;
+        return;
+      }
       document.getElementById("projectsView").classList.add("hidden");
       document.getElementById("workspaceView").classList.remove("hidden");
       renderProject();
@@ -1536,6 +1542,11 @@
 
     function renderProject(){
       const p = getProject();
+      if(!p){
+        alert("تعذر تحميل بيانات المشروع. حدّث الصفحة ثم افتح المشروع مرة أخرى.");
+        backToProjects();
+        return;
+      }
       ensureArrays(p);
       const f = projectFinancials();
 
