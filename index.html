@@ -805,7 +805,32 @@
     let cloudBusy = false;
 
     function loadCloudSettings(){
-      return JSON.parse(localStorage.getItem(CLOUD_SETTINGS_KEY) || '{"firebaseConfig":{"apiKey":"","authDomain":"","databaseURL":"","projectId":"","storageBucket":"","messagingSenderId":"","appId":""},"dataPath":"anas_system/shared_data"}');
+      const saved = localStorage.getItem(CLOUD_SETTINGS_KEY);
+      const defaults = {
+        firebaseConfig: {
+          apiKey: "AIzaSyDwkfviTEO6P-cfChiSPsdsfA59GQlPCck",
+          authDomain: "anas-system-84a86.firebaseapp.com",
+          databaseURL: "https://anas-system-84a86-default-rtdb.europe-west1.firebasedatabase.app",
+          projectId: "anas-system-84a86",
+          storageBucket: "anas-system-84a86.firebasestorage.app",
+          messagingSenderId: "651502155278",
+          appId: "1:651502155278:web:91184fab804a606ea76e5f"
+        },
+        dataPath: "anas_system/shared_data"
+      };
+      if(!saved) return defaults;
+      try{
+        const parsed = JSON.parse(saved);
+        return {
+          firebaseConfig: {
+            ...defaults.firebaseConfig,
+            ...(parsed.firebaseConfig || {})
+          },
+          dataPath: parsed.dataPath || defaults.dataPath
+        };
+      }catch(e){
+        return defaults;
+      }
     }
 
     function saveCloudSettingsToStorage(){
