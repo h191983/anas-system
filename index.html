@@ -8,6 +8,7 @@
   <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.12.0/firebase-database-compat.js"></script>
 
@@ -452,6 +453,7 @@
           <button class="tab" onclick="showTab('advancesTab', this)">الدفعات تحت الحساب</button>
           <button class="tab" onclick="showTab('movementsTab', this)">دفتر الحركة</button>
           <button class="tab" onclick="showTab('reportTab', this)">ملخص المشروع</button>
+          <button class="tab" onclick="showTab('dashboardTab', this)">لوحة التحكم</button>
         </div>
 
         <div id="unitsTab" class="card tab-panel">
@@ -472,7 +474,19 @@
             <input id="unitView" placeholder="الإطلالة" />
             <input id="unitArea" placeholder="المساحة" />
             <input id="unitComponents" placeholder="مكونات الوحدة" />
-            <input id="unitPrice" type="number" placeholder="سعر العرض" />
+            <input id="unitPrice" type="number" placeholder="سعر العرض" oninput="updateUnitFinalPrice()" />
+            <select id="unitPaymentPlan" onchange="updateUnitFinalPrice()">
+              <option value="">نسبة السداد / الخصم</option>
+              <option value="bank">بنك - بدون خصم</option>
+              <option value="20">20% سداد - خصم 4%</option>
+              <option value="30">30% سداد - خصم 6%</option>
+              <option value="40">40% سداد - خصم 8%</option>
+              <option value="50">50% سداد - خصم 10%</option>
+              <option value="75">75% سداد - خصم 15%</option>
+              <option value="100">100% سداد - خصم 20%</option>
+            </select>
+            <input id="unitExtraDiscount" type="number" placeholder="خصم إضافي" oninput="updateUnitFinalPrice()" />
+            <input id="unitFinalPrice" type="number" placeholder="سعر البيع بعد الخصومات" readonly />
           </div>
           <div class="no-print" style="margin-top:12px">
             <button class="btn-green" onclick="addUnit()">إضافة وحدة</button>
@@ -507,6 +521,10 @@
                 <th>المساحة</th>
                 <th>المكونات</th>
                 <th>سعر العرض</th>
+                <th>نظام السداد</th>
+                <th>الخصم الأساسي</th>
+                <th>خصم إضافي</th>
+                <th>سعر البيع</th>
                 <th>الحالة</th>
                 <th>العميل</th>
                 <th>جوال العميل</th>
@@ -689,6 +707,28 @@
             </div>
           </div>
           <div id="reportBox" class="report-box"></div>
+        </div>
+
+        <div id="dashboardTab" class="card tab-panel hidden">
+          <div class="section-title">
+            <h3>لوحة التحكم التحليلية</h3>
+          </div>
+          <div class="kpis">
+            <div class="kpi"><div class="kpi-title">إجمالي سعر العرض</div><div class="kpi-value" id="dashTotalOriginal">0</div></div>
+            <div class="kpi"><div class="kpi-title">إجمالي بعد الخصومات</div><div class="kpi-value" id="dashTotalFinal">0</div></div>
+            <div class="kpi"><div class="kpi-title">إجمالي الخصومات</div><div class="kpi-value" id="dashDiscount">0</div></div>
+            <div class="kpi"><div class="kpi-title">نسبة الخصم العامة</div><div class="kpi-value" id="dashDiscountPercent">0%</div></div>
+            <div class="kpi"><div class="kpi-title">الربح الحقيقي</div><div class="kpi-value" id="dashProfit">0</div></div>
+            <div class="kpi"><div class="kpi-title">إجمالي المتوقع من المتاح</div><div class="kpi-value" id="dashExpected">0</div></div>
+          </div>
+          <div class="grid grid-2">
+            <div class="card"><h4>تحليل أنظمة السداد</h4><div id="dashPaymentAnalysis" class="report-box"></div></div>
+            <div class="card"><h4>أفضل المسوقين</h4><div id="dashTopMarketers" class="report-box"></div></div>
+          </div>
+          <div class="grid grid-2">
+            <div class="card"><h4>تحليل أسعار البيع</h4><canvas id="salesChart"></canvas></div>
+            <div class="card"><h4>توزيع أنظمة السداد</h4><canvas id="paymentChart"></canvas></div>
+          </div>
         </div>
       </div>
     </div>
@@ -1079,6 +1119,32 @@
     function money(v){ return Number(v || 0).toLocaleString('en-US', {maximumFractionDigits: 2}) + " ر.س"; }
 
     function calcCommission(price){ return num(price) * COMMISSION_RATE / 100; }
+    function getDiscountPercent(plan){
+      const map = {"20":4,"30":6,"40":8,"50":10,"75":15,"100":20,"bank":0};
+      return num(map[plan] || 0);
+    }
+    function paymentPlanLabel(plan){
+      if(plan === "bank") return "بنك";
+      if(!plan) return "-";
+      return `${plan}%`;
+    }
+    function calcUnitFinalPrice(price, paymentPlan, extraDiscount){
+      const original = num(price);
+      const baseDiscountPercent = getDiscountPercent(paymentPlan);
+      const baseDiscountValue = original * baseDiscountPercent / 100;
+      const extra = num(extraDiscount);
+      return Math.max(0, original - baseDiscountValue - extra);
+    }
+    function updateUnitFinalPrice(){
+      const price = num(document.getElementById("unitPrice")?.value);
+      const plan = document.getElementById("unitPaymentPlan")?.value || "";
+      const extra = num(document.getElementById("unitExtraDiscount")?.value);
+      const finalValue = calcUnitFinalPrice(price, plan, extra);
+      const out = document.getElementById("unitFinalPrice");
+      if(out) out.value = finalValue ? finalValue.toFixed(2) : "0";
+    }
+    let salesChart = null;
+    let paymentChart = null;
 
     function todayText(){ return new Date().toLocaleDateString('en-CA'); }
 
@@ -1268,6 +1334,7 @@
       document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
       btn.classList.add("active");
       if(id === "advancesTab") refreshAdvanceNames();
+      if(id === "dashboardTab") renderDashboard();
     }
 
     function partnerRowsWithCompany(project){
@@ -1379,7 +1446,7 @@
       const expenses = project.expenses || [];
       const advanceTotals = calcAdvanceTotals(project);
 
-      const totalSales = units.filter(u => u.status === "مباعة").reduce((s,u) => s + num(u.price), 0);
+      const totalSales = units.filter(u => u.status === "مباعة").reduce((s,u) => s + num(u.finalPrice || u.price), 0);
       const totalExpenses = expenses.reduce((s,e) => s + num(e.amount), 0);
       const totalCommissionDue = units.reduce((s,u) => s + num(u.commissionDue), 0);
       const totalCommissionPaid = units.reduce((s,u) => s + num(u.commissionPaid), 0);
@@ -1511,7 +1578,7 @@
           issues.push(`بيانات ناقصة في إحدى الوحدات`);
         }
 
-        if(num(u.paid) > num(u.price)){
+        if(num(u.paid) > num(u.finalPrice || u.price)){
           issues.push(`الوحدة ${u.number} المدفوع فيها أكبر من سعرها`);
         }
 
@@ -1577,6 +1644,7 @@
       renderAdvances();
       renderMovements();
       renderReport();
+      renderDashboard();
       refreshAdvanceNames();
 
       saveApp();
@@ -1584,6 +1652,13 @@
 
     function addUnit(){
       const p = getProject();
+      const price = num(document.getElementById("unitPrice").value);
+      const paymentPlan = document.getElementById("unitPaymentPlan").value;
+      const extraDiscount = num(document.getElementById("unitExtraDiscount").value);
+      const finalPriceInput = num(document.getElementById("unitFinalPrice").value);
+      const baseDiscountPercent = getDiscountPercent(paymentPlan);
+      const baseDiscountValue = price * baseDiscountPercent / 100;
+      const finalPrice = finalPriceInput || calcUnitFinalPrice(price, paymentPlan, extraDiscount);
 
       const unit = {
         number: document.getElementById("unitNumber").value.trim(),
@@ -1593,7 +1668,12 @@
         view: document.getElementById("unitView").value.trim(),
         area: document.getElementById("unitArea").value.trim(),
         components: document.getElementById("unitComponents").value.trim(),
-        price: num(document.getElementById("unitPrice").value),
+        price: price,
+        paymentPlan: paymentPlan,
+        baseDiscountPercent: baseDiscountPercent,
+        baseDiscountValue: baseDiscountValue,
+        extraDiscount: extraDiscount,
+        finalPrice: finalPrice,
         status: "متاحة",
         client: "-",
         clientPhone: "-",
@@ -1604,7 +1684,7 @@
         payments: [0,0,0,0,0],
         paymentDates: ["","","","",""],
         paid: 0,
-        remaining: num(document.getElementById("unitPrice").value)
+        remaining: finalPrice
       };
 
       if(!unit.number || !unit.building){
@@ -1619,7 +1699,7 @@
       }
 
       p.units.push(unit);
-      addMovement("إضافة وحدة", `${unit.number} - ${unit.building}`, unit.price, "إضافة وحدة يدويًا", todayText());
+      addMovement("إضافة وحدة", `${unit.number} - ${unit.building}`, unit.finalPrice, "إضافة وحدة يدويًا", todayText());
 
       document.getElementById("unitNumber").value = "";
       document.getElementById("unitModel").value = "";
@@ -1629,6 +1709,9 @@
       document.getElementById("unitArea").value = "";
       document.getElementById("unitComponents").value = "";
       document.getElementById("unitPrice").value = "";
+      document.getElementById("unitPaymentPlan").value = "";
+      document.getElementById("unitExtraDiscount").value = "";
+      document.getElementById("unitFinalPrice").value = "";
 
       renderProject();
     }
@@ -1691,6 +1774,11 @@
             area: String(area || "").trim(),
             components: String(components || "").trim(),
             price: num(price),
+            paymentPlan: "",
+            baseDiscountPercent: 0,
+            baseDiscountValue: 0,
+            extraDiscount: 0,
+            finalPrice: num(price),
             status: "متاحة",
             client: "-",
             clientPhone: "-",
@@ -1732,12 +1820,13 @@
       }
 
       if(!units.length){
-        body.innerHTML = '<tr><td colspan="16">لا توجد وحدات</td></tr>';
+        body.innerHTML = '<tr><td colspan="20">لا توجد وحدات</td></tr>';
         return;
       }
 
       units.forEach(u => {
         const i = p.units.indexOf(u);
+        const finalPrice = num(u.finalPrice || u.price);
         const rowClass = num(u.remaining) > 0 && (u.status === "محجوزة" || u.status === "مباعة") ? "warn-row" : "";
         body.innerHTML += `
           <tr class="${rowClass}">
@@ -1749,6 +1838,10 @@
             <td class="editable" contenteditable="true" onblur="editUnitField(${i},'area',this.innerText)">${u.area || ""}</td>
             <td class="editable" contenteditable="true" onblur="editUnitField(${i},'components',this.innerText)">${u.components || ""}</td>
             <td class="editable" contenteditable="true" onblur="editUnitField(${i},'price',this.innerText,true)">${num(u.price)}</td>
+            <td>${paymentPlanLabel(u.paymentPlan)}</td>
+            <td>${num(u.baseDiscountPercent || getDiscountPercent(u.paymentPlan)).toFixed(2)}%</td>
+            <td>${money(u.extraDiscount || 0)}</td>
+            <td><strong>${money(finalPrice)}</strong></td>
             <td>${statusBadge(u.status)}</td>
             <td>${u.client}</td>
             <td>${phoneCell(u.clientPhone, "اتصال")}</td>
@@ -1777,8 +1870,11 @@
       u[field] = isNumber ? num(value) : String(value).trim();
 
       if(field === "price"){
-        u.remaining = num(u.price) - num(u.paid);
-        u.commissionDue = calcCommission(u.price);
+        u.baseDiscountPercent = getDiscountPercent(u.paymentPlan);
+        u.baseDiscountValue = num(u.price) * num(u.baseDiscountPercent) / 100;
+        u.finalPrice = calcUnitFinalPrice(u.price, u.paymentPlan, u.extraDiscount || 0);
+        u.remaining = num(u.finalPrice || u.price) - num(u.paid);
+        u.commissionDue = calcCommission(u.finalPrice || u.price);
         if(num(u.commissionPaid) > num(u.commissionDue)){
           u.commissionPaid = u.commissionDue;
         }
@@ -1796,8 +1892,8 @@
       document.getElementById("bkClientPhone").value = u.clientPhone === "-" ? "" : u.clientPhone;
       document.getElementById("bkMarketer").value = u.marketer === "-" ? "" : u.marketer;
       document.getElementById("bkMarketerPhone").value = u.marketerPhone === "-" ? "" : u.marketerPhone;
-      document.getElementById("bkPrice").value = u.price;
-      document.getElementById("bkCommission").value = calcCommission(u.price).toFixed(2);
+      document.getElementById("bkPrice").value = num(u.finalPrice || u.price);
+      document.getElementById("bkCommission").value = calcCommission(u.finalPrice || u.price).toFixed(2);
       document.getElementById("bkStatus").value = u.status === "مباعة" ? "مباعة" : "محجوزة";
 
       const pays = u.payments || [0,0,0,0,0];
@@ -1870,13 +1966,13 @@
       u.clientPhone = clientPhone || "-";
       u.marketer = marketer || "-";
       u.marketerPhone = marketerPhone || "-";
-      u.price = price;
+      u.finalPrice = price;
       u.commissionDue = calcCommission(price);
       u.commissionPaid = Math.min(oldPaid, u.commissionDue);
       u.payments = payments;
       u.paymentDates = paymentDates;
       u.paid = payments.reduce((a,b) => a + num(b), 0);
-      u.remaining = price - u.paid;
+      u.remaining = num(u.finalPrice || u.price) - u.paid;
       u.status = status;
 
       for(let i=0;i<5;i++){
@@ -1894,7 +1990,7 @@
       addMovement(
         "تحديث حجز",
         `${u.number} - ${client}`,
-        price,
+        num(u.finalPrice || u.price),
         `الحالة: ${status} | المسوق: ${marketer || "-"} | جوال المسوق: ${marketerPhone || "-"} | جوال العميل: ${clientPhone || "-"}`,
         todayText()
       );
@@ -1915,14 +2011,14 @@
         return;
       }
       u.status = "مباعة";
-      addMovement("بيع وحدة", `${u.number} - ${u.client}`, u.price, "تم تحويل الوحدة إلى مباعة", todayText());
+      addMovement("بيع وحدة", `${u.number} - ${u.client}`, num(u.finalPrice || u.price), "تم تحويل الوحدة إلى مباعة", todayText());
       renderProject();
     }
 
     function deleteUnit(i){
       if(!confirm("هل تريد حذف الوحدة؟")) return;
       const u = getProject().units[i];
-      addMovement("حذف وحدة", `${u.number} - ${u.building}`, u.price, "تم حذف الوحدة", todayText());
+      addMovement("حذف وحدة", `${u.number} - ${u.building}`, num(u.finalPrice || u.price), "تم حذف الوحدة", todayText());
       getProject().units.splice(i,1);
       renderProject();
     }
@@ -2247,6 +2343,63 @@
       });
     }
 
+    function renderDashboard(){
+      const p = getProject();
+      if(!p) return;
+      const units = p.units || [];
+      const totalOriginal = units.reduce((s,u) => s + num(u.price), 0);
+      const totalFinal = units.reduce((s,u) => s + num(u.finalPrice || u.price), 0);
+      const totalDiscount = totalOriginal - totalFinal;
+      const discountPercent = totalOriginal ? ((totalDiscount / totalOriginal) * 100).toFixed(2) : "0.00";
+      const f = projectFinancials();
+      const expected = units.filter(u => u.status === "متاحة").reduce((s,u) => s + num(u.finalPrice || u.price), 0);
+
+      document.getElementById("dashTotalOriginal").innerText = money(totalOriginal);
+      document.getElementById("dashTotalFinal").innerText = money(totalFinal);
+      document.getElementById("dashDiscount").innerText = money(totalDiscount);
+      document.getElementById("dashDiscountPercent").innerText = `${discountPercent}%`;
+      document.getElementById("dashProfit").innerText = money(f.profit);
+      document.getElementById("dashExpected").innerText = money(expected);
+
+      const paymentStats = {};
+      const marketerStats = {};
+      units.forEach(u => {
+        const label = paymentPlanLabel(u.paymentPlan);
+        paymentStats[label] = (paymentStats[label] || 0) + num(u.finalPrice || u.price);
+        const marketer = (u.marketer && u.marketer !== '-') ? u.marketer : 'غير محدد';
+        marketerStats[marketer] = (marketerStats[marketer] || 0) + num(u.finalPrice || u.price);
+      });
+
+      const paymentHtml = Object.entries(paymentStats).map(([k,v]) => `<div>${k}: ${money(v)}</div>`).join("") || "لا يوجد بيانات";
+      document.getElementById("dashPaymentAnalysis").innerHTML = paymentHtml;
+
+      const topMarketers = Object.entries(marketerStats).sort((a,b) => b[1]-a[1]).slice(0,5);
+      const marketerHtml = topMarketers.map(([k,v]) => `<div>${k}: ${money(v)}</div>`).join("") || "لا يوجد بيانات";
+      document.getElementById("dashTopMarketers").innerHTML = marketerHtml;
+
+      const salesLabels = units.map(u => `${u.number}`);
+      const salesValues = units.map(u => num(u.finalPrice || u.price));
+      if(salesChart) salesChart.destroy();
+      const salesCtx = document.getElementById("salesChart");
+      if(salesCtx){
+        salesChart = new Chart(salesCtx, {
+          type: 'bar',
+          data: { labels: salesLabels, datasets: [{ label: 'سعر البيع', data: salesValues }] },
+          options: { responsive: true, plugins:{legend:{display:false}} }
+        });
+      }
+
+      if(paymentChart) paymentChart.destroy();
+      const paymentCtx = document.getElementById("paymentChart");
+      if(paymentCtx){
+        paymentChart = new Chart(paymentCtx, {
+          type: 'pie',
+          data: { labels: Object.keys(paymentStats), datasets: [{ data: Object.values(paymentStats) }] },
+          options: { responsive: true }
+        });
+      }
+    }
+
     function renderReport(){
       const p = getProject();
       const f = projectFinancials();
@@ -2263,9 +2416,15 @@
         ? f.marketerRows.map(x => `${x.name}: مستحق ${money(x.commissionDue)} | صرف ${money(x.paidAdvance)} | متبقي ${money(x.remainAfterAdvance)}`).join("<br>")
         : "لا يوجد مسوقون";
 
+      const totalOriginal = (p.units || []).reduce((s,u) => s + num(u.price), 0);
+      const totalFinal = (p.units || []).reduce((s,u) => s + num(u.finalPrice || u.price), 0);
+      const totalDiscount = totalOriginal - totalFinal;
       document.getElementById("reportBox").innerHTML = `
         <strong>اسم المشروع:</strong> ${p.name}<br>
-        <strong>إجمالي المبيعات:</strong> ${money(f.totalSales)}<br>
+        <strong>إجمالي سعر العرض:</strong> ${money(totalOriginal)}<br>
+        <strong>إجمالي بعد الخصومات:</strong> ${money(totalFinal)}<br>
+        <strong>إجمالي الخصومات:</strong> ${money(totalDiscount)}<br>
+        <strong>إجمالي المبيعات الفعلية:</strong> ${money(f.totalSales)}<br>
         <strong>التكلفة الأساسية:</strong> ${money(p.cost)}<br>
         <strong>إجمالي المصروفات:</strong> ${money(f.totalExpenses)}<br>
         <strong>إجمالي السعي المستحق:</strong> ${money(f.totalCommissionDue)}<br>
@@ -2289,6 +2448,8 @@
       const summaryRows = [
         ["البند","القيمة"],
         ["اسم المشروع", p.name],
+        ["إجمالي سعر العرض", (p.units || []).reduce((s,u)=>s+num(u.price),0)],
+        ["إجمالي بعد الخصومات", (p.units || []).reduce((s,u)=>s+num(u.finalPrice || u.price),0)],
         ["إجمالي المبيعات", f.totalSales],
         ["التكلفة الأساسية", p.cost],
         ["إجمالي المصروفات", f.totalExpenses],
@@ -2305,9 +2466,9 @@
       ];
       XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(summaryRows), "ملخص");
 
-      const unitsRows = [["رقم الشقة","النموذج","الدور","المبنى","الإطلالة","المساحة","المكونات","سعر العرض","الحالة","العميل","جوال العميل","المسوق","جوال المسوق","السعي المستحق","السعي المصروف","المدفوع","المتبقي"]];
+      const unitsRows = [["رقم الشقة","النموذج","الدور","المبنى","الإطلالة","المساحة","المكونات","سعر العرض","نظام السداد","نسبة الخصم","خصم إضافي","سعر البيع","الحالة","العميل","جوال العميل","المسوق","جوال المسوق","السعي المستحق","السعي المصروف","المدفوع","المتبقي"]];
       (p.units || []).forEach(u => {
-        unitsRows.push([u.number,u.model,u.floor,u.building,u.view,u.area,u.components,u.price,u.status,u.client,u.clientPhone,u.marketer,u.marketerPhone,u.commissionDue,u.commissionPaid,u.paid,u.remaining]);
+        unitsRows.push([u.number,u.model,u.floor,u.building,u.view,u.area,u.components,u.price,paymentPlanLabel(u.paymentPlan),u.baseDiscountPercent || getDiscountPercent(u.paymentPlan),u.extraDiscount || 0,u.finalPrice || u.price,u.status,u.client,u.clientPhone,u.marketer,u.marketerPhone,u.commissionDue,u.commissionPaid,u.paid,u.remaining]);
       });
       XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(unitsRows), "الوحدات");
 
