@@ -474,19 +474,7 @@
             <input id="unitView" placeholder="الإطلالة" />
             <input id="unitArea" placeholder="المساحة" />
             <input id="unitComponents" placeholder="مكونات الوحدة" />
-            <input id="unitPrice" type="number" placeholder="سعر العرض" oninput="updateUnitFinalPrice()" />
-            <select id="unitPaymentPlan" onchange="updateUnitFinalPrice()">
-              <option value="">نسبة السداد / الخصم</option>
-              <option value="bank">بنك - بدون خصم</option>
-              <option value="20">20% سداد - خصم 4%</option>
-              <option value="30">30% سداد - خصم 6%</option>
-              <option value="40">40% سداد - خصم 8%</option>
-              <option value="50">50% سداد - خصم 10%</option>
-              <option value="75">75% سداد - خصم 15%</option>
-              <option value="100">100% سداد - خصم 20%</option>
-            </select>
-            <input id="unitExtraDiscount" type="number" placeholder="خصم إضافي" oninput="updateUnitFinalPrice()" />
-            <input id="unitFinalPrice" type="number" placeholder="سعر البيع بعد الخصومات" readonly />
+            <input id="unitPrice" type="number" placeholder="سعر العرض" />
           </div>
           <div class="no-print" style="margin-top:12px">
             <button class="btn-green" onclick="addUnit()">إضافة وحدة</button>
@@ -745,8 +733,25 @@
         <input id="bkMarketerPhone" placeholder="رقم جوال المسوق" />
       </div>
 
-      <div class="grid grid-2" style="margin-top:10px">
-        <input id="bkPrice" type="number" placeholder="سعر البيع" oninput="updateCommissionPreview()" />
+      <div class="grid grid-4" style="margin-top:10px">
+        <input id="bkPrice" type="number" placeholder="سعر العرض قبل الخصم" oninput="updateBookingFinalPrice()" />
+        <select id="bkPaymentPlan" onchange="updateBookingFinalPrice()">
+          <option value="">نسبة السداد / الخصم</option>
+          <option value="bank">بنك - بدون خصم</option>
+          <option value="20">20% سداد - خصم 4%</option>
+          <option value="30">30% سداد - خصم 6%</option>
+          <option value="40">40% سداد - خصم 8%</option>
+          <option value="50">50% سداد - خصم 10%</option>
+          <option value="75">75% سداد - خصم 15%</option>
+          <option value="100">100% سداد - خصم 20%</option>
+        </select>
+        <input id="bkExtraDiscount" type="number" placeholder="خصم إضافي" oninput="updateBookingFinalPrice()" />
+        <input id="bkFinalPrice" type="number" placeholder="سعر البيع بعد الخصومات" readonly />
+      </div>
+
+      <div class="grid grid-3" style="margin-top:10px">
+        <input id="bkBaseDiscountPercent" type="number" placeholder="نسبة الخصم" readonly />
+        <input id="bkBaseDiscountValue" type="number" placeholder="قيمة الخصم الأساسي" readonly />
         <input id="bkCommission" readonly placeholder="السعي المستحق" />
       </div>
 
@@ -755,7 +760,7 @@
           <option value="محجوزة">محجوزة</option>
           <option value="مباعة">مباعة</option>
         </select>
-        <div class="note" style="margin:0">السعي ثابت ٢.٥٪ من سعر البيع</div>
+        <div class="note" style="margin:0">السعي ثابت ٢.٥٪ من سعر البيع النهائي بعد الخصومات</div>
       </div>
 
       <h4 style="margin-top:18px">الدفعات الخمس</h4>
@@ -1653,12 +1658,6 @@
     function addUnit(){
       const p = getProject();
       const price = num(document.getElementById("unitPrice").value);
-      const paymentPlan = document.getElementById("unitPaymentPlan").value;
-      const extraDiscount = num(document.getElementById("unitExtraDiscount").value);
-      const finalPriceInput = num(document.getElementById("unitFinalPrice").value);
-      const baseDiscountPercent = getDiscountPercent(paymentPlan);
-      const baseDiscountValue = price * baseDiscountPercent / 100;
-      const finalPrice = finalPriceInput || calcUnitFinalPrice(price, paymentPlan, extraDiscount);
 
       const unit = {
         number: document.getElementById("unitNumber").value.trim(),
@@ -1669,11 +1668,11 @@
         area: document.getElementById("unitArea").value.trim(),
         components: document.getElementById("unitComponents").value.trim(),
         price: price,
-        paymentPlan: paymentPlan,
-        baseDiscountPercent: baseDiscountPercent,
-        baseDiscountValue: baseDiscountValue,
-        extraDiscount: extraDiscount,
-        finalPrice: finalPrice,
+        paymentPlan: "",
+        baseDiscountPercent: 0,
+        baseDiscountValue: 0,
+        extraDiscount: 0,
+        finalPrice: price,
         status: "متاحة",
         client: "-",
         clientPhone: "-",
@@ -1684,7 +1683,7 @@
         payments: [0,0,0,0,0],
         paymentDates: ["","","","",""],
         paid: 0,
-        remaining: finalPrice
+        remaining: price
       };
 
       if(!unit.number || !unit.building){
@@ -1709,9 +1708,6 @@
       document.getElementById("unitArea").value = "";
       document.getElementById("unitComponents").value = "";
       document.getElementById("unitPrice").value = "";
-      document.getElementById("unitPaymentPlan").value = "";
-      document.getElementById("unitExtraDiscount").value = "";
-      document.getElementById("unitFinalPrice").value = "";
 
       renderProject();
     }
@@ -1892,7 +1888,12 @@
       document.getElementById("bkClientPhone").value = u.clientPhone === "-" ? "" : u.clientPhone;
       document.getElementById("bkMarketer").value = u.marketer === "-" ? "" : u.marketer;
       document.getElementById("bkMarketerPhone").value = u.marketerPhone === "-" ? "" : u.marketerPhone;
-      document.getElementById("bkPrice").value = num(u.finalPrice || u.price);
+      document.getElementById("bkPrice").value = num(u.price);
+      document.getElementById("bkPaymentPlan").value = u.paymentPlan || "";
+      document.getElementById("bkExtraDiscount").value = num(u.extraDiscount);
+      document.getElementById("bkFinalPrice").value = num(u.finalPrice || u.price).toFixed(2);
+      document.getElementById("bkBaseDiscountPercent").value = num(u.baseDiscountPercent);
+      document.getElementById("bkBaseDiscountValue").value = num(u.baseDiscountValue).toFixed(2);
       document.getElementById("bkCommission").value = calcCommission(u.finalPrice || u.price).toFixed(2);
       document.getElementById("bkStatus").value = u.status === "مباعة" ? "مباعة" : "محجوزة";
 
@@ -1911,12 +1912,12 @@
       document.getElementById("pay4Date").value = dates[3] || "";
       document.getElementById("pay5Date").value = dates[4] || "";
 
+      updateBookingFinalPrice();
       document.getElementById("bookingModal").classList.remove("hidden");
     }
 
     function updateCommissionPreview(){
-      const price = num(document.getElementById("bkPrice").value);
-      document.getElementById("bkCommission").value = calcCommission(price).toFixed(2);
+      updateBookingFinalPrice();
     }
 
     function saveBooking(){
@@ -1928,6 +1929,11 @@
       const marketer = document.getElementById("bkMarketer").value.trim();
       const marketerPhone = document.getElementById("bkMarketerPhone").value.trim();
       const price = num(document.getElementById("bkPrice").value);
+      const paymentPlan = document.getElementById("bkPaymentPlan").value;
+      const extraDiscount = num(document.getElementById("bkExtraDiscount").value);
+      const baseDiscountPercent = getDiscountPercent(paymentPlan);
+      const baseDiscountValue = price * baseDiscountPercent / 100;
+      const finalPrice = Math.max(0, price - baseDiscountValue - extraDiscount);
       const status = document.getElementById("bkStatus").value;
 
       const payments = [
@@ -1951,7 +1957,7 @@
         return;
       }
       if(price <= 0){
-        alert("اكتب سعر البيع");
+        alert("اكتب سعر العرض");
         return;
       }
       if(payments[0] <= 0){
