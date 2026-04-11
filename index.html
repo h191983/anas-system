@@ -1148,6 +1148,24 @@
       const out = document.getElementById("unitFinalPrice");
       if(out) out.value = finalValue ? finalValue.toFixed(2) : "0";
     }
+    function updateBookingFinalPrice(){
+      const price = num(document.getElementById("bkPrice")?.value);
+      const plan = document.getElementById("bkPaymentPlan")?.value || "";
+      const extra = num(document.getElementById("bkExtraDiscount")?.value);
+      const baseDiscountPercent = getDiscountPercent(plan);
+      const baseDiscountValue = price * baseDiscountPercent / 100;
+      const finalValue = Math.max(0, price - baseDiscountValue - extra);
+
+      const percentEl = document.getElementById("bkBaseDiscountPercent");
+      const valueEl = document.getElementById("bkBaseDiscountValue");
+      const finalEl = document.getElementById("bkFinalPrice");
+      const commissionEl = document.getElementById("bkCommission");
+
+      if(percentEl) percentEl.value = baseDiscountPercent.toFixed(2);
+      if(valueEl) valueEl.value = baseDiscountValue.toFixed(2);
+      if(finalEl) finalEl.value = finalValue.toFixed(2);
+      if(commissionEl) commissionEl.value = calcCommission(finalValue).toFixed(2);
+    }
     let salesChart = null;
     let paymentChart = null;
 
