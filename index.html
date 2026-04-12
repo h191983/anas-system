@@ -742,6 +742,13 @@
         <div class="note" style="margin:0">السعي ثابت ٢.٥٪ من السعر النهائي بعد الخصومات</div>
       </div>
 
+      <div class="note" id="bkDiscountSummary" style="margin-top:10px">
+        قيمة خصم السداد: 0.00 ر.س | قيمة الخصم الإضافي: 0.00 ر.س | السعر النهائي: 0.00 ر.س
+      </div>
+      <div class="danger hidden" id="bkDiscountWarning" style="margin-top:10px">
+        الخصم الإضافي أكبر من السعر بعد خصم السداد. عدّل الخصم حتى يكون السعر النهائي أكبر من صفر.
+      </div>
+
       <h4 style="margin-top:18px">الدفعات الخمس</h4>
       <div class="grid grid-4">
         <input id="pay1" type="number" placeholder="الدفعة ١ - عربون" />
@@ -1863,6 +1870,7 @@
       document.getElementById("pay4Date").value = dates[3] || "";
       document.getElementById("pay5Date").value = dates[4] || "";
 
+      updateBookingPrice();
       document.getElementById("bookingModal").classList.remove("hidden");
     }
 
@@ -1885,10 +1893,26 @@
       const extra = num(document.getElementById("bkExtraDiscount").value);
       const discountPercent = getBookingDiscountPercent(plan);
       const discountValue = price * (discountPercent / 100);
-      const finalPrice = Math.max(0, price - discountValue - extra);
+      const afterPlanDiscount = price - discountValue;
+      const finalPriceRaw = afterPlanDiscount - extra;
+      const finalPrice = Math.max(0, finalPriceRaw);
 
       document.getElementById("bkFinalPrice").value = finalPrice.toFixed(2);
       document.getElementById("bkCommission").value = calcCommission(finalPrice).toFixed(2) + ' ر.س';
+
+      const summary = document.getElementById("bkDiscountSummary");
+      if(summary){
+        summary.textContent = `قيمة خصم السداد: ${discountValue.toFixed(2)} ر.س | قيمة الخصم الإضافي: ${extra.toFixed(2)} ر.س | السعر النهائي: ${finalPrice.toFixed(2)} ر.س`;
+      }
+
+      const warning = document.getElementById("bkDiscountWarning");
+      if(warning){
+        if(finalPriceRaw <= 0 && (discountValue > 0 || extra > 0)){
+          warning.classList.remove("hidden");
+        }else{
+          warning.classList.add("hidden");
+        }
+      }
     }
 
     function updateCommissionPreview(){
@@ -1937,8 +1961,9 @@
         alert("اكتب سعر البيع");
         return;
       }
-      if(payments[0] <= 0){
-        alert("لازم عربون الحجز أكبر من صفر");
+      const finalPriceRaw = price - (price * discountPercent / 100) - extraDiscount;
+      if(finalPriceRaw <= 0 && (discountPercent > 0 || extraDiscount > 0)){
+        alert("الخصم الإضافي أو إجمالي الخصومات أكبر من المسموح. عدّل الخصومات حتى يكون السعر النهائي أكبر من صفر.");
         return;
       }
 
