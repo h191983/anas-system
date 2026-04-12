@@ -641,6 +641,7 @@
               <option value="partner">شريك</option>
               <option value="investor">مساهم</option>
               <option value="marketer">مسوق</option>
+              <option value="company">الشركة</option>
             </select>
             <select id="advanceName"></select>
             <input id="advanceAmount" type="number" placeholder="المبلغ المصروف (يسمح بالسالب)" />
@@ -1398,7 +1399,8 @@
       const result = {
         partner:{},
         investor:{},
-        marketer:{}
+        marketer:{},
+        company:{}
       };
       adv.forEach(a => {
         if(!result[a.entityType][a.entityName]) result[a.entityType][a.entityName] = 0;
@@ -1412,20 +1414,23 @@
       const expenses = project.expenses || [];
       const advanceTotals = calcAdvanceTotals(project);
 
-      const totalSales = units.filter(u => u.status === "مباعة").reduce((s,u) => s + num(u.finalPrice || u.price), 0);
+      const revenueStatuses = ["مباعة","تم السداد","تمت المراجعة النهائية","تم الافراغ"];
+      const totalSales = units.filter(u => revenueStatuses.includes(u.status)).reduce((s,u) => s + num(u.finalPrice || u.price), 0);
       const totalExpenses = expenses.reduce((s,e) => s + num(e.amount), 0);
       const totalCommissionDue = units.reduce((s,u) => s + num(u.commissionDue), 0);
-      const totalCommissionPaid = units.reduce((s,u) => s + num(u.commissionPaid), 0);
+      const totalCommissionPaid = Object.values(advanceTotals.marketer || {}).reduce((s,v) => s + num(v), 0);
       const totalCommissionRemain = totalCommissionDue - totalCommissionPaid;
       const soldUnits = units.filter(u => u.status === "مباعة").length;
       const bookedUnits = units.filter(u => u.status === "محجوزة").length;
       const availableUnits = units.filter(u => u.status === "متاحة").length;
 
-      const profit = totalSales - num(project.cost) - totalExpenses - totalCommissionPaid;
+      const profit = totalSales - num(project.cost) - totalExpenses - totalCommissionDue;
 
       const partnersFull = partnerRowsWithCompany(project).map(x => {
         const share = (num(x.percent) / 100) * profit;
-        const paidAdvance = num(advanceTotals.partner[x.name] || 0);
+        const paidAdvance = x.name === "الشركة"
+          ? num(advanceTotals.company[x.name] || 0)
+          : num(advanceTotals.partner[x.name] || 0);
         return {...x, share, paidAdvance, remain: share - paidAdvance};
       });
 
@@ -2270,7 +2275,7 @@ function addPartner(){
             <td>${num(x.percent).toFixed(2)}%</td>
             <td>${money(x.share)}</td>
             <td>${money(x.paidAdvance || 0)}</td>
-            <td>${money(x.remain || x.share)}</td>
+            <td>${money(x.remain)}</td>
             <td>${x.date || "-"}</td>
             <td class="no-print">${x.auto ? '-' : `<button class="btn-teal" onclick="exportPartnerPDF('${escapeQuotes(x.name)}')">PDF</button>`}</td>
             <td class="no-print">
@@ -2348,7 +2353,7 @@ function addPartner(){
             <td>${money(x.adminValue)}</td>
             <td>${money(x.netShare)}</td>
             <td>${money(x.paidAdvance || 0)}</td>
-            <td>${money(x.remain || x.netShare)}</td>
+            <td>${money(x.remain)}</td>
             <td>${x.date || "-"}</td>
             <td class="no-print">${x.auto ? '-' : `<button class="btn-teal" onclick="exportInvestorPDF('${escapeQuotes(x.name)}')">PDF</button>`}</td>
             <td class="no-print">
@@ -2380,6 +2385,8 @@ function addPartner(){
         names = projectFinancials().partnersFull.filter(x => !x.auto).map(x => x.name);
       } else if(type.value === "investor"){
         names = projectFinancials().investorsFull.filter(x => !x.auto).map(x => x.name);
+      } else if(type.value === "company"){
+        names = ["الشركة"];
       } else {
         names = projectFinancials().marketerRows.map(x => x.name);
       }
@@ -2408,7 +2415,7 @@ function addPartner(){
 
       p.advances.unshift({entityType, entityName, amount, date, note});
 
-      const typeLabel = entityType === "partner" ? "دفعة شريك" : entityType === "investor" ? "دفعة مساهم" : "دفعة مسوق";
+      const typeLabel = entityType === "partner" ? "دفعة شريك" : entityType === "investor" ? "دفعة مساهم" : entityType === "company" ? "دفعة شركة" : "دفعة مسوق";
       addMovement(typeLabel, entityName, amount, note || "دفعة تحت الحساب", date);
 
       document.getElementById("advanceAmount").value = "";
@@ -2429,7 +2436,7 @@ function addPartner(){
       }
 
       p.advances.forEach(a => {
-        const typeLabel = a.entityType === "partner" ? "شريك" : a.entityType === "investor" ? "مساهم" : "مسوق";
+        const typeLabel = a.entityType === "partner" ? "شريك" : a.entityType === "investor" ? "مساهم" : a.entityType === "company" ? "شركة" : "مسوق";
         body.innerHTML += `
           <tr>
             <td>${a.date}</td>
@@ -2471,11 +2478,11 @@ function addPartner(){
       const f = projectFinancials();
 
       const partnerLines = f.partnersFull.map(x => {
-        return `${x.name}: نسبة ${num(x.percent).toFixed(2)}% | نصيب ${money(x.share)} | صرف تحت الحساب ${money(x.paidAdvance || 0)} | متبقي ${money(x.remain || x.share)}`;
+        return `${x.name}: نسبة ${num(x.percent).toFixed(2)}% | نصيب ${money(x.share)} | صرف تحت الحساب ${money(x.paidAdvance || 0)} | متبقي ${money(x.remain)}`;
       }).join("<br>");
 
       const investorLines = f.investorsFull.map(x => {
-        return `${x.name}: مبلغ ${money(x.amount)} | نسبة ${num(x.ratio).toFixed(2)}% | صافي ${money(x.netShare)} | صرف تحت الحساب ${money(x.paidAdvance || 0)} | متبقي ${money(x.remain || x.netShare)}`;
+        return `${x.name}: مبلغ ${money(x.amount)} | نسبة ${num(x.ratio).toFixed(2)}% | صافي ${money(x.netShare)} | صرف تحت الحساب ${money(x.paidAdvance || 0)} | متبقي ${money(x.remain)}`;
       }).join("<br>");
 
       const marketerLines = f.marketerRows.length
