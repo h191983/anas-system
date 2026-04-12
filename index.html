@@ -417,6 +417,7 @@
             </div>
             <div class="actions no-print">
               <button class="btn-gray" onclick="backToProjects()">رجوع للمشاريع</button>
+              <button class="btn-orange" onclick="editProjectBasics()">تعديل بيانات المشروع</button>
               <button class="btn-teal" onclick="exportProjectExcel()">Excel</button>
               <button class="btn-teal" onclick="exportProjectPDF()">PDF</button>
               <button class="btn-teal" onclick="window.print()">طباعة</button>
@@ -546,7 +547,7 @@
             <input id="expenseDate" type="date" />
             <input id="expenseCategory" placeholder="التصنيف" />
             <input id="expenseDesc" placeholder="البيان" />
-            <input id="expenseAmount" type="number" placeholder="المبلغ" />
+            <input id="expenseAmount" type="number" placeholder="المبلغ (يسمح بالسالب)" />
           </div>
           <div style="margin-top:12px" class="no-print">
             <button class="btn-orange" onclick="addExpense()">إضافة مصروف</button>
@@ -642,7 +643,7 @@
               <option value="marketer">مسوق</option>
             </select>
             <select id="advanceName"></select>
-            <input id="advanceAmount" type="number" placeholder="المبلغ المصروف" />
+            <input id="advanceAmount" type="number" placeholder="المبلغ المصروف (يسمح بالسالب)" />
             <input id="advanceDate" type="date" />
           </div>
           <div class="grid grid-2 no-print">
@@ -660,6 +661,7 @@
                 <th>الاسم</th>
                 <th>المبلغ</th>
                 <th>ملاحظة</th>
+                <th class="no-print">إجراء</th>
               </tr>
             </thead>
             <tbody id="advancesBody"></tbody>
@@ -676,6 +678,7 @@
                 <th>الاسم / البيان</th>
                 <th>المبلغ</th>
                 <th>ملاحظة</th>
+                <th class="no-print">إجراء</th>
               </tr>
             </thead>
             <tbody id="movementsBody"></tbody>
@@ -2031,8 +2034,8 @@
       const description = document.getElementById("expenseDesc").value.trim();
       const amount = num(document.getElementById("expenseAmount").value);
 
-      if(!category || !description || !amount){
-        alert("اكمل بيانات المصروف");
+      if(!category || !description || Number.isNaN(amount) || amount === 0){
+        alert("اكمل بيانات المصروف، ويُسمح بالمبلغ السالب أو الموجب بشرط ألا يكون صفرًا");
         return;
       }
 
@@ -2064,7 +2067,7 @@
             <td>${e.category}</td>
             <td>${e.description}</td>
             <td>${money(e.amount)}</td>
-            <td class="no-print"><button class="btn-red" onclick="deleteExpense(${i})">حذف</button></td>
+            <td class="no-print"><div class="actions"><button class="btn-orange" onclick="editExpense(${i})">تعديل</button><button class="btn-red" onclick="deleteExpense(${i})">حذف</button></div></td>
           </tr>
         `;
       });
@@ -2078,7 +2081,117 @@
       renderProject();
     }
 
-    function addPartner(){
+    
+    function editProjectBasics(){
+      const p = getProject();
+      if(!p) return;
+      const name = prompt("اسم المشروع", p.name || "");
+      if(name === null) return;
+      const costText = prompt("التكلفة الأساسية - يسمح بالسالب أو الموجب", String(num(p.cost)));
+      if(costText === null) return;
+      const cost = Number(costText);
+      if(Number.isNaN(cost)){
+        alert("التكلفة الأساسية غير صحيحة");
+        return;
+      }
+      const notes = prompt("ملاحظات المشروع", p.notes || "");
+      if(notes === null) return;
+
+      const oldName = p.name || "";
+      const oldCost = num(p.cost);
+      p.name = String(name).trim() || oldName;
+      p.cost = cost;
+      p.notes = notes.trim();
+      addMovement("تعديل المشروع", p.name, cost - oldCost, `تم تعديل البيانات الأساسية من ${oldName} إلى ${p.name}`, todayText());
+      renderProject();
+      renderProjects();
+    }
+
+    function editExpense(i){
+      const p = getProject();
+      const e = p.expenses[i];
+      if(!e) return;
+
+      const date = prompt("تاريخ المصروف", e.date || todayText());
+      if(date === null) return;
+      const category = prompt("تصنيف المصروف", e.category || "");
+      if(category === null) return;
+      const description = prompt("بيان المصروف", e.description || "");
+      if(description === null) return;
+      const amountText = prompt("المبلغ - يسمح بالسالب أو الموجب", String(num(e.amount)));
+      if(amountText === null) return;
+      const amount = Number(amountText);
+
+      if(!String(category).trim() || !String(description).trim() || Number.isNaN(amount) || amount === 0){
+        alert("بيانات التعديل غير صحيحة");
+        return;
+      }
+
+      const oldAmount = num(e.amount);
+      p.expenses[i] = {
+        date: String(date).trim() || e.date,
+        category: String(category).trim(),
+        description: String(description).trim(),
+        amount
+      };
+
+      addMovement("تعديل مصروف", `${p.expenses[i].category} - ${p.expenses[i].description}`, amount - oldAmount, "تم تعديل المصروف", p.expenses[i].date);
+      renderProject();
+    }
+
+    function editAdvance(i){
+      const p = getProject();
+      const a = p.advances[i];
+      if(!a) return;
+
+      const typeLabelNow = a.entityType === "partner" ? "شريك" : a.entityType === "investor" ? "مساهم" : "مسوق";
+      const typeText = prompt("نوع الدفعة: partner أو investor أو marketer", a.entityType || "partner");
+      if(typeText === null) return;
+      const entityType = String(typeText).trim();
+      if(!["partner","investor","marketer"].includes(entityType)){
+        alert("النوع يجب أن يكون partner أو investor أو marketer");
+        return;
+      }
+
+      const entityName = prompt("الاسم", a.entityName || "");
+      if(entityName === null) return;
+      const amountText = prompt("المبلغ - يسمح بالسالب أو الموجب", String(num(a.amount)));
+      if(amountText === null) return;
+      const amount = Number(amountText);
+      if(!String(entityName).trim() || Number.isNaN(amount) || amount === 0){
+        alert("بيانات الدفعة غير صحيحة");
+        return;
+      }
+      const date = prompt("التاريخ", a.date || todayText());
+      if(date === null) return;
+      const note = prompt("ملاحظة", a.note || "");
+      if(note === null) return;
+
+      const oldAmount = num(a.amount);
+      p.advances[i] = {
+        entityType,
+        entityName: String(entityName).trim(),
+        amount,
+        date: String(date).trim() || a.date,
+        note: String(note).trim()
+      };
+
+      const newTypeLabel = entityType === "partner" ? "دفعة شريك" : entityType === "investor" ? "دفعة مساهم" : "دفعة مسوق";
+      addMovement("تعديل دفعة تحت الحساب", p.advances[i].entityName, amount - oldAmount, `${newTypeLabel} - تم تعديل الدفعة`, p.advances[i].date);
+      renderProject();
+    }
+
+    function deleteAdvance(i){
+      if(!confirm("هل تريد حذف الدفعة تحت الحساب؟")) return;
+      const p = getProject();
+      const a = p.advances[i];
+      if(!a) return;
+      addMovement("حذف دفعة تحت الحساب", a.entityName, a.amount, "تم حذف الدفعة", todayText());
+      p.advances.splice(i,1);
+      renderProject();
+    }
+
+function addPartner(){
       const p = getProject();
       const name = document.getElementById("partnerName").value.trim();
       const percent = num(document.getElementById("partnerPercent").value);
@@ -2253,8 +2366,8 @@
         alert("اختر اسمًا");
         return;
       }
-      if(amount <= 0){
-        alert("اكتب مبلغًا صحيحًا");
+      if(Number.isNaN(amount) || amount === 0){
+        alert("اكتب مبلغًا صحيحًا، ويُسمح بالسالب أو الموجب بشرط ألا يكون صفرًا");
         return;
       }
 
@@ -2276,7 +2389,7 @@
       body.innerHTML = "";
 
       if(!p.advances.length){
-        body.innerHTML = '<tr><td colspan="5">لا توجد دفعات تحت الحساب</td></tr>';
+        body.innerHTML = '<tr><td colspan="6">لا توجد دفعات تحت الحساب</td></tr>';
         return;
       }
 
@@ -2289,6 +2402,7 @@
             <td>${a.entityName}</td>
             <td>${money(a.amount)}</td>
             <td>${a.note || "-"}</td>
+            <td class="no-print"><div class="actions"><button class="btn-orange" onclick="editAdvance(${p.advances.indexOf(a)})">تعديل</button><button class="btn-red" onclick="deleteAdvance(${p.advances.indexOf(a)})">حذف</button></div></td>
           </tr>
         `;
       });
