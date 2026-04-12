@@ -731,7 +731,12 @@
 
       <div class="grid grid-2" style="margin-top:10px">
         <select id="bkStatus">
-          <option value="محجوزة">محجوزة</option>
+          <option value="متاحة">متاحة</option>
+<option value="محجوزة">محجوزة</option>
+<option value="تم الافراغ">تم الافراغ</option>
+<option value="تم السداد">تم السداد</option>
+<option value="شقة العرض">شقة العرض</option>
+<option value="تمت المراجعة النهائية">تمت المراجعة النهائية</option>
           <option value="مباعة">مباعة</option>
         </select>
         <div class="note" style="margin:0">السعي ثابت ٢.٥٪ من السعر النهائي بعد الخصومات</div>
@@ -1833,8 +1838,8 @@
       document.getElementById("bkPrice").value = num(u.price);
       document.getElementById("bkPaymentPlan").value = u.paymentPlan || "";
       document.getElementById("bkExtraDiscount").value = num(u.extraDiscount);
-      document.getElementById("bkFinalPrice").value = num(u.finalPrice || u.price).toFixed(2);
-      document.getElementById("bkCommission").value = calcCommission(num(u.finalPrice || u.price)).toFixed(2);
+      document.getElementById("bkFinalPrice").value = num(u.finalPrice || u.price).toFixed(2) + ' ر.س';
+      document.getElementById("bkCommission").value = calcCommission(num(u.finalPrice || u.price)).toFixed(2) + ' ر.س';
       document.getElementById("bkStatus").value = u.status === "مباعة" ? "مباعة" : "محجوزة";
       updateBookingPrice();
 
@@ -1877,8 +1882,8 @@
       const discountValue = price * (discountPercent / 100);
       const finalPrice = Math.max(0, price - discountValue - extra);
 
-      document.getElementById("bkFinalPrice").value = finalPrice.toFixed(2);
-      document.getElementById("bkCommission").value = calcCommission(finalPrice).toFixed(2);
+      document.getElementById("bkFinalPrice").value = finalPrice.toFixed(2) + ' ر.س';
+      document.getElementById("bkCommission").value = calcCommission(finalPrice).toFixed(2) + ' ر.س';
     }
 
     function updateCommissionPreview(){
