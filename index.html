@@ -1891,7 +1891,14 @@
       const marketer = document.getElementById("bkMarketer").value.trim();
       const marketerPhone = document.getElementById("bkMarketerPhone").value.trim();
       const price = num(document.getElementById("bkPrice").value);
+      const paymentPlan = document.getElementById("bkPaymentPlan").value;
+      const extraDiscount = num(document.getElementById("bkExtraDiscount").value);
+      const finalPriceInput = num(document.getElementById("bkFinalPrice").value);
       const status = document.getElementById("bkStatus").value;
+
+      const discountPercent = getBookingDiscountPercent(paymentPlan);
+      const computedFinalPrice = Math.max(0, price - (price * discountPercent / 100) - extraDiscount);
+      const finalPrice = finalPriceInput > 0 ? finalPriceInput : computedFinalPrice;
 
       const payments = [
         num(document.getElementById("pay1").value),
@@ -1930,12 +1937,15 @@
       u.marketer = marketer || "-";
       u.marketerPhone = marketerPhone || "-";
       u.price = price;
-      u.commissionDue = calcCommission(price);
+      u.paymentPlan = paymentPlan || "";
+      u.extraDiscount = extraDiscount;
+      u.finalPrice = finalPrice;
+      u.commissionDue = calcCommission(finalPrice);
       u.commissionPaid = Math.min(oldPaid, u.commissionDue);
       u.payments = payments;
       u.paymentDates = paymentDates;
       u.paid = payments.reduce((a,b) => a + num(b), 0);
-      u.remaining = price - u.paid;
+      u.remaining = finalPrice - u.paid;
       u.status = status;
 
       for(let i=0;i<5;i++){
@@ -1953,13 +1963,14 @@
       addMovement(
         "تحديث حجز",
         `${u.number} - ${client}`,
-        price,
-        `الحالة: ${status} | المسوق: ${marketer || "-"} | جوال المسوق: ${marketerPhone || "-"} | جوال العميل: ${clientPhone || "-"}`,
+        finalPrice,
+        `الحالة: ${status} | نظام السداد: ${paymentPlan || "-"} | الخصم الإضافي: ${extraDiscount} | المسوق: ${marketer || "-"} | جوال المسوق: ${marketerPhone || "-"} | جوال العميل: ${clientPhone || "-"}`,
         todayText()
       );
 
+      saveProjects();
+      renderCurrentProject();
       closeBooking();
-      renderProject();
     }
 
     function closeBooking(){
