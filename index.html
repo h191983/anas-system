@@ -1840,7 +1840,7 @@
       document.getElementById("bkExtraDiscount").value = num(u.extraDiscount);
       document.getElementById("bkFinalPrice").value = num(u.finalPrice || u.price).toFixed(2) + ' ر.س';
       document.getElementById("bkCommission").value = calcCommission(num(u.finalPrice || u.price)).toFixed(2) + ' ر.س';
-      document.getElementById("bkStatus").value = u.status === "مباعة" ? "مباعة" : "محجوزة";
+      document.getElementById("bkStatus").value = u.status || "محجوزة";
       updateBookingPrice();
 
       const pays = u.payments || [0,0,0,0,0];
@@ -1993,7 +1993,7 @@
         return;
       }
       u.status = "مباعة";
-      addMovement("بيع وحدة", `${u.number} - ${u.client}`, u.price, "تم تحويل الوحدة إلى مباعة", todayText());
+      addMovement("بيع وحدة", `${u.number} - ${u.client}`, num(u.finalPrice || u.price), "تم تحويل الوحدة إلى مباعة", todayText());
       renderProject();
     }
 
