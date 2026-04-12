@@ -1752,7 +1752,12 @@
     function statusBadge(status){
       if(status === "متاحة") return '<span class="badge available">متاحة</span>';
       if(status === "محجوزة") return '<span class="badge booked">محجوزة</span>';
-      return '<span class="badge sold">مباعة</span>';
+      if(status === "تم الافراغ") return '<span class="badge sold">تم الافراغ</span>';
+      if(status === "تم السداد") return '<span class="badge sold">تم السداد</span>';
+      if(status === "شقة العرض") return '<span class="badge booked">شقة العرض</span>';
+      if(status === "تمت المراجعة النهائية") return '<span class="badge available">تمت المراجعة النهائية</span>';
+      if(status === "مباعة") return '<span class="badge sold">مباعة</span>';
+      return '<span class="badge sold">' + (status || "مباعة") + '</span>';
     }
 
     function renderUnits(){
@@ -1773,7 +1778,7 @@
 
       units.forEach(u => {
         const i = p.units.indexOf(u);
-        const rowClass = num(u.remaining) > 0 && (u.status === "محجوزة" || u.status === "مباعة") ? "warn-row" : "";
+        const rowClass = num(u.remaining) > 0 && (u.status === "محجوزة" || u.status === "مباعة" || u.status === "تم السداد" || u.status === "تم الافراغ") ? "warn-row" : "";
         body.innerHTML += `
           <tr class="${rowClass}">
             <td class="editable" contenteditable="true" onblur="editUnitField(${i},'number',this.innerText)">${u.number}</td>
