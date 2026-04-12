@@ -1843,7 +1843,7 @@
       document.getElementById("bkPrice").value = num(u.price);
       document.getElementById("bkPaymentPlan").value = u.paymentPlan || "";
       document.getElementById("bkExtraDiscount").value = num(u.extraDiscount);
-      document.getElementById("bkFinalPrice").value = num(u.finalPrice || u.price).toFixed(2) + ' ر.س';
+      document.getElementById("bkFinalPrice").value = num(u.finalPrice || u.price).toFixed(2);
       document.getElementById("bkCommission").value = calcCommission(num(u.finalPrice || u.price)).toFixed(2) + ' ر.س';
       document.getElementById("bkStatus").value = u.status || "محجوزة";
       updateBookingPrice();
@@ -1887,7 +1887,7 @@
       const discountValue = price * (discountPercent / 100);
       const finalPrice = Math.max(0, price - discountValue - extra);
 
-      document.getElementById("bkFinalPrice").value = finalPrice.toFixed(2) + ' ر.س';
+      document.getElementById("bkFinalPrice").value = finalPrice.toFixed(2);
       document.getElementById("bkCommission").value = calcCommission(finalPrice).toFixed(2) + ' ر.س';
     }
 
