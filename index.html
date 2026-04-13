@@ -1427,15 +1427,17 @@
 
       const profit = totalSales - num(project.cost) - totalExpenses - totalCommissionDue;
 
-      const partnersFull = partnerRowsWithCompany(project).map(x => {
+      const companyPaidAdvance = num((advanceTotals.company || {})["الشركة"] || 0);
+
+      const partnersFullBase = partnerRowsWithCompany(project).map(x => {
         const share = (num(x.percent) / 100) * profit;
         const paidAdvance = x.name === "الشركة"
           ? 0
-          : num((advanceTotals.partner || {})[x.name] || 0);
+          : num(advanceTotals.partner[x.name] || 0);
         return {...x, share, paidAdvance, remain: share - paidAdvance};
       });
 
-      const companyRow = partnersFull.find(x => x.name === "الشركة");
+      const companyRow = partnersFullBase.find(x => x.name === "الشركة");
       const companyShareProfit = companyRow ? num(companyRow.share) : 0;
 
       const investorsFull = investorRowsWithCompany(project, companyShareProfit).map(x => {
@@ -1447,9 +1449,19 @@
         .filter(x => !x.auto)
         .reduce((s,x) => s + num(x.adminValue), 0);
 
-      const companyPaidAdvance = num(((advanceTotals.company || {})["الشركة"]) || 0);
       const companyTotalProfit = companyShareProfit + totalInvestorAdmin;
       const companyFinalProfit = companyTotalProfit - companyPaidAdvance;
+
+      const partnersFull = partnersFullBase.map(x => {
+        if(x.name !== "الشركة") return x;
+        return {
+          ...x,
+          paidAdvance: companyPaidAdvance,
+          remain: companyFinalProfit,
+          companyBaseShare: companyShareProfit,
+          companyTotalProfit
+        };
+      });
 
       const marketers = marketerSummaryForProject(project);
       const marketerRows = Object.keys(marketers).map(name => {
@@ -1461,8 +1473,6 @@
           remainAfterAdvance: marketers[name].commissionRemain - paidAdvance
         };
       });
-
-      const partnersFullAdjusted = partnersFull.map(x => x.name === "الشركة" ? ({...x, paidAdvance: companyPaidAdvance, remain: companyFinalProfit, companyTotalProfit}) : x);
 
       return {
         totalSales,
@@ -1477,7 +1487,7 @@
         companyShareProfit,
         companyPaidAdvance,
         companyTotalProfit,
-        partnersFull: partnersFullAdjusted,
+        partnersFull,
         investorsFull,
         totalInvestorAdmin,
         companyFinalProfit,
@@ -1791,7 +1801,7 @@
       }
 
       if(!units.length){
-        body.innerHTML = '<tr><td colspan="17">لا توجد وحدات</td></tr>';
+        body.innerHTML = '<tr><td colspan="18">لا توجد وحدات</td></tr>';
         return;
       }
 
@@ -1823,6 +1833,7 @@
                 <button class="btn-red" onclick="deleteUnit(${i})">حذف</button>
               </div>
             </td>
+            <td class="no-print"><button class="btn-gray" onclick="printUnitReport(${i})">تقرير</button></td>
           </tr>
         `;
       });
@@ -2485,6 +2496,9 @@ function addPartner(){
       const f = projectFinancials();
 
       const partnerLines = f.partnersFull.map(x => {
+        if(x.name === "الشركة"){
+          return `${x.name}: نسبة ${num(x.percent).toFixed(2)}% | نصيب الشركاء ${money(x.share)} | إدارة المساهمين ${money(f.totalInvestorAdmin)} | إجمالي ربح الشركة ${money(f.companyTotalProfit)} | صرف تحت الحساب ${money(x.paidAdvance || 0)} | متبقي ${money(x.remain)}`;
+        }
         return `${x.name}: نسبة ${num(x.percent).toFixed(2)}% | نصيب ${money(x.share)} | صرف تحت الحساب ${money(x.paidAdvance || 0)} | متبقي ${money(x.remain)}`;
       }).join("<br>");
 
@@ -2625,11 +2639,11 @@ function addPartner(){
 
     async 
     function unitReportHTML(u, project){
+      const discountPercent = getBookingDiscountPercent(u.paymentPlan || "");
+      const discountValue = num(u.price) * (discountPercent / 100);
       const paymentLabels = ["الدفعة ١", "الدفعة ٢", "الدفعة ٣", "الدفعة ٤", "الدفعة ٥"];
       const pays = u.payments || [0,0,0,0,0];
       const dates = u.paymentDates || ["","","","",""];
-      const discountPercent = typeof getBookingDiscountPercent === "function" ? getBookingDiscountPercent(u.paymentPlan || "") : 0;
-      const discountValue = num(u.price) * (discountPercent / 100);
 
       const paymentsRows = paymentLabels.map((label, idx) => `
         <tr>
@@ -2645,25 +2659,26 @@ function addPartner(){
             <img src="${APP_LOGO}" alt="logo" />
             <div class="pdf-brand-text">
               <div class="title">تقرير وحدة مستقل</div>
-              <div class="sub">${escapeHtml(project.name || "-")}</div>
+              <div class="sub">${project.name || "-"}</div>
             </div>
           </div>
-          <h2>بيانات الوحدة ${escapeHtml(u.number || "-")}</h2>
-          <div class="line"><strong>رقم الشقة:</strong> ${escapeHtml(u.number || "-")}</div>
-          <div class="line"><strong>النموذج:</strong> ${escapeHtml(u.model || "-")}</div>
-          <div class="line"><strong>الدور:</strong> ${escapeHtml(u.floor || "-")}</div>
-          <div class="line"><strong>المبنى:</strong> ${escapeHtml(u.building || "-")}</div>
-          <div class="line"><strong>الإطلالة:</strong> ${escapeHtml(u.view || "-")}</div>
-          <div class="line"><strong>المساحة:</strong> ${escapeHtml(u.area || "-")}</div>
-          <div class="line"><strong>المكونات:</strong> ${escapeHtml(u.components || "-")}</div>
-          <div class="line"><strong>الحالة:</strong> ${escapeHtml(u.status || "-")}</div>
-          <div class="line"><strong>العميل:</strong> ${escapeHtml(u.client || "-")}</div>
-          <div class="line"><strong>جوال العميل:</strong> ${escapeHtml(u.clientPhone || "-")}</div>
-          <div class="line"><strong>المسوق:</strong> ${escapeHtml(u.marketer || "-")}</div>
-          <div class="line"><strong>جوال المسوق:</strong> ${escapeHtml(u.marketerPhone || "-")}</div>
-          <div class="line"><strong>السعر قبل الخصم:</strong> ${money(u.price || 0)}</div>
-          <div class="line"><strong>نوع السداد:</strong> ${escapeHtml(u.paymentPlan || "-")}</div>
-          <div class="line"><strong>نسبة الخصم:</strong> ${num(discountPercent).toFixed(2)}%</div>
+
+          <h2>بيانات الوحدة ${u.number || "-"}</h2>
+          <div class="line"><strong>رقم الشقة:</strong> ${u.number || "-"}</div>
+          <div class="line"><strong>النموذج:</strong> ${u.model || "-"}</div>
+          <div class="line"><strong>الدور:</strong> ${u.floor || "-"}</div>
+          <div class="line"><strong>المبنى:</strong> ${u.building || "-"}</div>
+          <div class="line"><strong>الإطلالة:</strong> ${u.view || "-"}</div>
+          <div class="line"><strong>المساحة:</strong> ${u.area || "-"}</div>
+          <div class="line"><strong>المكونات:</strong> ${u.components || "-"}</div>
+          <div class="line"><strong>الحالة:</strong> ${u.status || "-"}</div>
+          <div class="line"><strong>العميل:</strong> ${u.client || "-"}</div>
+          <div class="line"><strong>جوال العميل:</strong> ${u.clientPhone || "-"}</div>
+          <div class="line"><strong>المسوق:</strong> ${u.marketer || "-"}</div>
+          <div class="line"><strong>جوال المسوق:</strong> ${u.marketerPhone || "-"}</div>
+          <div class="line"><strong>سعر العرض / البيع قبل الخصم:</strong> ${money(u.price || 0)}</div>
+          <div class="line"><strong>نوع السداد:</strong> ${u.paymentPlan || "-"}</div>
+          <div class="line"><strong>نسبة الخصم:</strong> ${discountPercent.toFixed(2)}%</div>
           <div class="line"><strong>قيمة خصم السداد:</strong> ${money(discountValue)}</div>
           <div class="line"><strong>الخصم الإضافي:</strong> ${money(u.extraDiscount || 0)}</div>
           <div class="line"><strong>السعر النهائي:</strong> ${money(u.finalPrice || u.price || 0)}</div>
@@ -2671,9 +2686,12 @@ function addPartner(){
           <div class="line"><strong>السعي المصروف:</strong> ${money(u.commissionPaid || 0)}</div>
           <div class="line"><strong>إجمالي المدفوع:</strong> ${money(u.paid || 0)}</div>
           <div class="line"><strong>المتبقي:</strong> ${money(u.remaining || 0)}</div>
+
           <h3>الدفعات</h3>
           <table>
-            <thead><tr><th>الدفعة</th><th>المبلغ</th><th>التاريخ</th></tr></thead>
+            <thead>
+              <tr><th>الدفعة</th><th>المبلغ</th><th>التاريخ</th></tr>
+            </thead>
             <tbody>${paymentsRows}</tbody>
           </table>
         </div>
@@ -2684,8 +2702,10 @@ function addPartner(){
       const project = getProject();
       const u = (project.units || [])[i];
       if(!u) return;
+
       const area = document.getElementById("pdfRenderArea");
       area.innerHTML = unitReportHTML(u, project);
+
       const target = area.firstElementChild;
       const canvas = await html2canvas(target, {scale:2, backgroundColor:"#ffffff"});
       const img = canvas.toDataURL("image/png");
@@ -2728,9 +2748,11 @@ function exportProjectPDF(){
         <div class="line"><strong>السعي المصروف:</strong> ${money(f.totalCommissionPaid)}</div>
         <div class="line"><strong>متبقي السعي:</strong> ${money(f.totalCommissionRemain)}</div>
         <div class="line"><strong>الربح الكلي:</strong> ${money(f.profit)}</div>
-        <div class="line"><strong>نصيب الشركة من الشركاء:</strong> ${money(f.companyShareProfit)}</div>
+        <div class="line"><strong>ربح الشركة من الشركاء:</strong> ${money(f.companyShareProfit)}</div>
         <div class="line"><strong>إدارة المساهمين:</strong> ${money(f.totalInvestorAdmin)}</div>
-        <div class="line"><strong>ربح الشركة النهائي:</strong> ${money(f.companyFinalProfit)}</div>
+        <div class="line"><strong>إجمالي ربح الشركة:</strong> ${money(f.companyTotalProfit)}</div>
+        <div class="line"><strong>المصروف للشركة:</strong> ${money(f.companyPaidAdvance || 0)}</div>
+        <div class="line"><strong>المتبقي للشركة:</strong> ${money(f.companyFinalProfit)}</div>
 
         <h3>الوحدات</h3>
         <table>
