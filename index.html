@@ -419,7 +419,7 @@
               <button class="btn-gray" onclick="backToProjects()">رجوع للمشاريع</button>
               <button class="btn-orange" onclick="editProjectBasics()">تعديل بيانات المشروع</button>
               <button class="btn-teal" onclick="exportProjectExcel()">Excel</button>
-              <button class="btn-teal" onclick="exportProjectPDF()">PDF</button>
+              <button class="btn-teal" style="display:none">PDF</button>
               <button class="btn-teal" onclick="window.print()">طباعة</button>
             </div>
           </div>
@@ -689,7 +689,7 @@
           <div class="section-title">
             <h3>ملخص المشروع</h3>
             <div class="actions no-print">
-              <button class="btn-teal" onclick="exportProjectPDF()">تقرير PDF</button>
+              <button class="btn-teal" style="display:none">تقرير</button>
             </div>
           </div>
           <div id="reportBox" class="report-box"></div>
@@ -1630,6 +1630,7 @@
       renderPartners();
       renderInvestors();
       renderAdvances();
+      renderReport();
       renderMovements();
       renderReport();
       refreshAdvanceNames();
@@ -2074,7 +2075,7 @@
             <td>${money(m.remainAfterAdvance)}</td>
             <td>${phoneCell(m.phone, "اتصال")}</td>
             <td class="no-print"><button class="btn-teal" onclick="exportMarketerPDF('${escapeQuotes(m.name)}')">PDF</button></td>
-            <td class="no-print"><button class="btn-gray" onclick="openUnitReport(${i})">📄 تقرير</button></td>
+            <td class="no-print"><button class="btn-gray" onclick="openUnitReport(${i})"></button></td>
           </tr>
         `;
       });
@@ -2122,7 +2123,7 @@
             <td>${e.description}</td>
             <td>${money(e.amount)}</td>
             <td class="no-print"><div class="actions"><button class="btn-orange" onclick="editExpense(${i})">تعديل</button><button class="btn-red" onclick="deleteExpense(${i})">حذف</button></div></td>
-            <td class="no-print"><button class="btn-gray" onclick="openUnitReport(${i})">📄 تقرير</button></td>
+            <td class="no-print"><button class="btn-gray" onclick="openUnitReport(${i})"></button></td>
           </tr>
         `;
       });
@@ -2296,7 +2297,7 @@ function addPartner(){
             <td class="no-print">
               ${x.auto ? '-' : `<button class="btn-red" onclick="deletePartner(${i-1})">حذف</button>`}
             </td>
-            <td class="no-print"><button class="btn-gray" onclick="openUnitReport(${i})">📄 تقرير</button></td>
+            <td class="no-print"><button class="btn-gray" onclick="openUnitReport(${i})"></button></td>
           </tr>
         `;
       });
@@ -2375,7 +2376,7 @@ function addPartner(){
             <td class="no-print">
               ${x.auto ? '-' : `<button class="btn-red" onclick="deleteInvestor(${i-1})">حذف</button>`}
             </td>
-            <td class="no-print"><button class="btn-gray" onclick="openUnitReport(${i})">📄 تقرير</button></td>
+            <td class="no-print"><button class="btn-gray" onclick="openUnitReport(${i})"></button></td>
           </tr>
         `;
       });
@@ -2462,7 +2463,7 @@ function addPartner(){
             <td>${money(a.amount)}</td>
             <td>${a.note || "-"}</td>
             <td class="no-print"><div class="actions"><button class="btn-orange" onclick="editAdvance(${p.advances.indexOf(a)})">تعديل</button><button class="btn-red" onclick="deleteAdvance(${p.advances.indexOf(a)})">حذف</button></div></td>
-            <td class="no-print"><button class="btn-gray" onclick="openUnitReport(${i})">📄 تقرير</button></td>
+            <td class="no-print"><button class="btn-gray" onclick="openUnitReport(${i})"></button></td>
           </tr>
         `;
       });
@@ -2486,7 +2487,7 @@ function addPartner(){
             <td>${m.name || "-"}</td>
             <td>${money(m.amount)}</td>
             <td>${m.note || "-"}</td>
-            <td class="no-print"><button class="btn-gray" onclick="openUnitReport(${i})">📄 تقرير</button></td>
+            <td class="no-print"><button class="btn-gray" onclick="openUnitReport(${i})"></button></td>
           </tr>
         `;
       });
