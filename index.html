@@ -517,7 +517,6 @@
                 <th>المدفوع</th>
                 <th>المتبقي</th>
                 <th class="no-print">إجراء</th>
-                <th class="no-print">تقرير</th>
               </tr>
             </thead>
             <tbody id="unitsBody"></tbody>
@@ -642,7 +641,6 @@
               <option value="partner">شريك</option>
               <option value="investor">مساهم</option>
               <option value="marketer">مسوق</option>
-              <option value="company">الشركة</option>
             </select>
             <select id="advanceName"></select>
             <input id="advanceAmount" type="number" placeholder="المبلغ المصروف (يسمح بالسالب)" />
@@ -1415,25 +1413,22 @@
       const expenses = project.expenses || [];
       const advanceTotals = calcAdvanceTotals(project);
 
-      const revenueStatuses = ["مباعة","تم السداد","تمت المراجعة النهائية","تم الافراغ"];
-      const totalSales = units.filter(u => revenueStatuses.includes(u.status)).reduce((s,u) => s + num(u.finalPrice || u.price), 0);
+      const totalSales = units.filter(u => u.status === "مباعة").reduce((s,u) => s + num(u.finalPrice || u.price), 0);
       const totalExpenses = expenses.reduce((s,e) => s + num(e.amount), 0);
       const totalCommissionDue = units.reduce((s,u) => s + num(u.commissionDue), 0);
-      const totalCommissionPaid = Object.values(advanceTotals.marketer || {}).reduce((s,v) => s + num(v), 0);
+      const totalCommissionPaid = units.reduce((s,u) => s + num(u.commissionPaid), 0);
       const totalCommissionRemain = totalCommissionDue - totalCommissionPaid;
       const soldUnits = units.filter(u => u.status === "مباعة").length;
       const bookedUnits = units.filter(u => u.status === "محجوزة").length;
       const availableUnits = units.filter(u => u.status === "متاحة").length;
 
-      const profit = totalSales - num(project.cost) - totalExpenses - totalCommissionDue;
+      const profit = totalSales - num(project.cost) - totalExpenses - totalCommissionPaid;
 
       const companyPaidAdvance = num((advanceTotals.company || {})["الشركة"] || 0);
 
       const partnersFullBase = partnerRowsWithCompany(project).map(x => {
         const share = (num(x.percent) / 100) * profit;
-        const paidAdvance = x.name === "الشركة"
-          ? 0
-          : num(advanceTotals.partner[x.name] || 0);
+        const paidAdvance = x.name === "الشركة" ? 0 : num(advanceTotals.partner[x.name] || 0);
         return {...x, share, paidAdvance, remain: share - paidAdvance};
       });
 
@@ -1458,7 +1453,6 @@
           ...x,
           paidAdvance: companyPaidAdvance,
           remain: companyFinalProfit,
-          companyBaseShare: companyShareProfit,
           companyTotalProfit
         };
       });
@@ -1801,7 +1795,7 @@
       }
 
       if(!units.length){
-        body.innerHTML = '<tr><td colspan="18">لا توجد وحدات</td></tr>';
+        body.innerHTML = '<tr><td colspan="17">لا توجد وحدات</td></tr>';
         return;
       }
 
@@ -1830,10 +1824,11 @@
               <div class="actions">
                 <button class="btn" onclick="openBooking(${i})">حجز / تعديل / دفعات</button>
                 <button class="btn-purple" onclick="forceSold(${i})">بيع</button>
+                <button class="btn-teal" onclick="printUnitReport(${i})">تقرير</button>
                 <button class="btn-red" onclick="deleteUnit(${i})">حذف</button>
               </div>
             </td>
-            <td class="no-print"><button class="btn-gray" onclick="printUnitReport(${i})">تقرير</button></td>
+            <td class="no-print"><button class="btn-gray" onclick="openUnitReport(${i})">📄 تقرير</button></td>
           </tr>
         `;
       });
@@ -2079,6 +2074,7 @@
             <td>${money(m.remainAfterAdvance)}</td>
             <td>${phoneCell(m.phone, "اتصال")}</td>
             <td class="no-print"><button class="btn-teal" onclick="exportMarketerPDF('${escapeQuotes(m.name)}')">PDF</button></td>
+            <td class="no-print"><button class="btn-gray" onclick="openUnitReport(${i})">📄 تقرير</button></td>
           </tr>
         `;
       });
@@ -2126,6 +2122,7 @@
             <td>${e.description}</td>
             <td>${money(e.amount)}</td>
             <td class="no-print"><div class="actions"><button class="btn-orange" onclick="editExpense(${i})">تعديل</button><button class="btn-red" onclick="deleteExpense(${i})">حذف</button></div></td>
+            <td class="no-print"><button class="btn-gray" onclick="openUnitReport(${i})">📄 تقرير</button></td>
           </tr>
         `;
       });
@@ -2202,12 +2199,12 @@
       const a = p.advances[i];
       if(!a) return;
 
-      const typeLabelNow = a.entityType === "partner" ? "شريك" : a.entityType === "investor" ? "مساهم" : "مسوق";
-      const typeText = prompt("نوع الدفعة: partner أو investor أو marketer", a.entityType || "partner");
+      const typeLabelNow = a.entityType === "partner" ? "شريك" : a.entityType === "investor" ? "مساهم" : a.entityType === "company" ? "شركة" : "مسوق";
+      const typeText = prompt("نوع الدفعة: partner أو investor أو marketer أو company", a.entityType || "partner");
       if(typeText === null) return;
       const entityType = String(typeText).trim();
-      if(!["partner","investor","marketer"].includes(entityType)){
-        alert("النوع يجب أن يكون partner أو investor أو marketer");
+      if(!["partner","investor","marketer","company"].includes(entityType)){
+        alert("النوع يجب أن يكون partner أو investor أو marketer أو company");
         return;
       }
 
@@ -2234,7 +2231,7 @@
         note: String(note).trim()
       };
 
-      const newTypeLabel = entityType === "partner" ? "دفعة شريك" : entityType === "investor" ? "دفعة مساهم" : "دفعة مسوق";
+      const newTypeLabel = entityType === "partner" ? "دفعة شريك" : entityType === "investor" ? "دفعة مساهم" : entityType === "company" ? "دفعة شركة" : "دفعة مسوق";
       addMovement("تعديل دفعة تحت الحساب", p.advances[i].entityName, amount - oldAmount, `${newTypeLabel} - تم تعديل الدفعة`, p.advances[i].date);
       renderProject();
     }
@@ -2293,12 +2290,13 @@ function addPartner(){
             <td>${num(x.percent).toFixed(2)}%</td>
             <td>${money(x.share)}</td>
             <td>${money(x.paidAdvance || 0)}</td>
-            <td>${money(x.remain)}</td>
+            <td>${money(x.remain || x.share)}</td>
             <td>${x.date || "-"}</td>
             <td class="no-print">${x.auto ? '-' : `<button class="btn-teal" onclick="exportPartnerPDF('${escapeQuotes(x.name)}')">PDF</button>`}</td>
             <td class="no-print">
               ${x.auto ? '-' : `<button class="btn-red" onclick="deletePartner(${i-1})">حذف</button>`}
             </td>
+            <td class="no-print"><button class="btn-gray" onclick="openUnitReport(${i})">📄 تقرير</button></td>
           </tr>
         `;
       });
@@ -2371,12 +2369,13 @@ function addPartner(){
             <td>${money(x.adminValue)}</td>
             <td>${money(x.netShare)}</td>
             <td>${money(x.paidAdvance || 0)}</td>
-            <td>${money(x.remain)}</td>
+            <td>${money(x.remain || x.netShare)}</td>
             <td>${x.date || "-"}</td>
             <td class="no-print">${x.auto ? '-' : `<button class="btn-teal" onclick="exportInvestorPDF('${escapeQuotes(x.name)}')">PDF</button>`}</td>
             <td class="no-print">
               ${x.auto ? '-' : `<button class="btn-red" onclick="deleteInvestor(${i-1})">حذف</button>`}
             </td>
+            <td class="no-print"><button class="btn-gray" onclick="openUnitReport(${i})">📄 تقرير</button></td>
           </tr>
         `;
       });
@@ -2463,6 +2462,7 @@ function addPartner(){
             <td>${money(a.amount)}</td>
             <td>${a.note || "-"}</td>
             <td class="no-print"><div class="actions"><button class="btn-orange" onclick="editAdvance(${p.advances.indexOf(a)})">تعديل</button><button class="btn-red" onclick="deleteAdvance(${p.advances.indexOf(a)})">حذف</button></div></td>
+            <td class="no-print"><button class="btn-gray" onclick="openUnitReport(${i})">📄 تقرير</button></td>
           </tr>
         `;
       });
@@ -2486,6 +2486,7 @@ function addPartner(){
             <td>${m.name || "-"}</td>
             <td>${money(m.amount)}</td>
             <td>${m.note || "-"}</td>
+            <td class="no-print"><button class="btn-gray" onclick="openUnitReport(${i})">📄 تقرير</button></td>
           </tr>
         `;
       });
@@ -2499,11 +2500,11 @@ function addPartner(){
         if(x.name === "الشركة"){
           return `${x.name}: نسبة ${num(x.percent).toFixed(2)}% | نصيب الشركاء ${money(x.share)} | إدارة المساهمين ${money(f.totalInvestorAdmin)} | إجمالي ربح الشركة ${money(f.companyTotalProfit)} | صرف تحت الحساب ${money(x.paidAdvance || 0)} | متبقي ${money(x.remain)}`;
         }
-        return `${x.name}: نسبة ${num(x.percent).toFixed(2)}% | نصيب ${money(x.share)} | صرف تحت الحساب ${money(x.paidAdvance || 0)} | متبقي ${money(x.remain)}`;
+        return `${x.name}: نسبة ${num(x.percent).toFixed(2)}% | نصيب ${money(x.share)} | صرف تحت الحساب ${money(x.paidAdvance || 0)} | متبقي ${money(x.remain || x.share)}`;
       }).join("<br>");
 
       const investorLines = f.investorsFull.map(x => {
-        return `${x.name}: مبلغ ${money(x.amount)} | نسبة ${num(x.ratio).toFixed(2)}% | صافي ${money(x.netShare)} | صرف تحت الحساب ${money(x.paidAdvance || 0)} | متبقي ${money(x.remain)}`;
+        return `${x.name}: مبلغ ${money(x.amount)} | نسبة ${num(x.ratio).toFixed(2)}% | صافي ${money(x.netShare)} | صرف تحت الحساب ${money(x.paidAdvance || 0)} | متبقي ${money(x.remain || x.netShare)}`;
       }).join("<br>");
 
       const marketerLines = f.marketerRows.length
@@ -2638,89 +2639,73 @@ function addPartner(){
     }
 
     async 
-    function unitReportHTML(u, project){
+    function unitReportHtml(u, project){
       const discountPercent = getBookingDiscountPercent(u.paymentPlan || "");
       const discountValue = num(u.price) * (discountPercent / 100);
-      const paymentLabels = ["الدفعة ١", "الدفعة ٢", "الدفعة ٣", "الدفعة ٤", "الدفعة ٥"];
-      const pays = u.payments || [0,0,0,0,0];
-      const dates = u.paymentDates || ["","","","",""];
+      const payments = u.payments || [0,0,0,0,0];
+      const paymentDates = u.paymentDates || ["","","","",""];
 
-      const paymentsRows = paymentLabels.map((label, idx) => `
+      const paymentRows = payments.map((amount, idx) => `
         <tr>
-          <td>${label}</td>
-          <td>${money(pays[idx] || 0)}</td>
-          <td>${dates[idx] || "-"}</td>
+          <td>الدفعة ${idx + 1}</td>
+          <td>${money(amount)}</td>
+          <td>${escapeHtml(paymentDates[idx] || "-")}</td>
         </tr>
       `).join("");
 
       return `
-        <div class="pdf-sheet">
-          <div class="pdf-brand">
-            <img src="${APP_LOGO}" alt="logo" />
-            <div class="pdf-brand-text">
-              <div class="title">تقرير وحدة مستقل</div>
-              <div class="sub">${project.name || "-"}</div>
-            </div>
-          </div>
+        <h2>تقرير وحدة مستقل</h2>
+        <div class="line"><strong>اسم المشروع:</strong> ${escapeHtml(project.name)}</div>
+        <div class="line"><strong>رقم الشقة:</strong> ${escapeHtml(u.number)}</div>
+        <div class="line"><strong>النموذج:</strong> ${escapeHtml(u.model || "-")}</div>
+        <div class="line"><strong>الدور:</strong> ${escapeHtml(u.floor || "-")}</div>
+        <div class="line"><strong>المبنى:</strong> ${escapeHtml(u.building || "-")}</div>
+        <div class="line"><strong>الإطلالة:</strong> ${escapeHtml(u.view || "-")}</div>
+        <div class="line"><strong>المساحة:</strong> ${escapeHtml(u.area || "-")}</div>
+        <div class="line"><strong>المكونات:</strong> ${escapeHtml(u.components || "-")}</div>
+        <div class="line"><strong>الحالة:</strong> ${escapeHtml(u.status || "-")}</div>
+        <div class="line"><strong>اسم العميل:</strong> ${escapeHtml(u.client || "-")}</div>
+        <div class="line"><strong>جوال العميل:</strong> ${escapeHtml(u.clientPhone || "-")}</div>
+        <div class="line"><strong>اسم المسوق:</strong> ${escapeHtml(u.marketer || "-")}</div>
+        <div class="line"><strong>جوال المسوق:</strong> ${escapeHtml(u.marketerPhone || "-")}</div>
+        <div class="line"><strong>سعر العرض / البيع قبل الخصم:</strong> ${money(u.price || 0)}</div>
+        <div class="line"><strong>نوع السداد:</strong> ${escapeHtml(u.paymentPlan || "-")}</div>
+        <div class="line"><strong>نسبة الخصم:</strong> ${num(discountPercent).toFixed(2)}%</div>
+        <div class="line"><strong>قيمة خصم السداد:</strong> ${money(discountValue)}</div>
+        <div class="line"><strong>الخصم الإضافي:</strong> ${money(u.extraDiscount || 0)}</div>
+        <div class="line"><strong>السعر النهائي:</strong> ${money(u.finalPrice || u.price || 0)}</div>
+        <div class="line"><strong>السعي المستحق:</strong> ${money(u.commissionDue || 0)}</div>
+        <div class="line"><strong>السعي المصروف:</strong> ${money(u.commissionPaid || 0)}</div>
+        <div class="line"><strong>إجمالي المدفوع:</strong> ${money(u.paid || 0)}</div>
+        <div class="line"><strong>المتبقي:</strong> ${money(u.remaining || 0)}</div>
 
-          <h2>بيانات الوحدة ${u.number || "-"}</h2>
-          <div class="line"><strong>رقم الشقة:</strong> ${u.number || "-"}</div>
-          <div class="line"><strong>النموذج:</strong> ${u.model || "-"}</div>
-          <div class="line"><strong>الدور:</strong> ${u.floor || "-"}</div>
-          <div class="line"><strong>المبنى:</strong> ${u.building || "-"}</div>
-          <div class="line"><strong>الإطلالة:</strong> ${u.view || "-"}</div>
-          <div class="line"><strong>المساحة:</strong> ${u.area || "-"}</div>
-          <div class="line"><strong>المكونات:</strong> ${u.components || "-"}</div>
-          <div class="line"><strong>الحالة:</strong> ${u.status || "-"}</div>
-          <div class="line"><strong>العميل:</strong> ${u.client || "-"}</div>
-          <div class="line"><strong>جوال العميل:</strong> ${u.clientPhone || "-"}</div>
-          <div class="line"><strong>المسوق:</strong> ${u.marketer || "-"}</div>
-          <div class="line"><strong>جوال المسوق:</strong> ${u.marketerPhone || "-"}</div>
-          <div class="line"><strong>سعر العرض / البيع قبل الخصم:</strong> ${money(u.price || 0)}</div>
-          <div class="line"><strong>نوع السداد:</strong> ${u.paymentPlan || "-"}</div>
-          <div class="line"><strong>نسبة الخصم:</strong> ${discountPercent.toFixed(2)}%</div>
-          <div class="line"><strong>قيمة خصم السداد:</strong> ${money(discountValue)}</div>
-          <div class="line"><strong>الخصم الإضافي:</strong> ${money(u.extraDiscount || 0)}</div>
-          <div class="line"><strong>السعر النهائي:</strong> ${money(u.finalPrice || u.price || 0)}</div>
-          <div class="line"><strong>السعي المستحق:</strong> ${money(u.commissionDue || 0)}</div>
-          <div class="line"><strong>السعي المصروف:</strong> ${money(u.commissionPaid || 0)}</div>
-          <div class="line"><strong>إجمالي المدفوع:</strong> ${money(u.paid || 0)}</div>
-          <div class="line"><strong>المتبقي:</strong> ${money(u.remaining || 0)}</div>
-
-          <h3>الدفعات</h3>
-          <table>
-            <thead>
-              <tr><th>الدفعة</th><th>المبلغ</th><th>التاريخ</th></tr>
-            </thead>
-            <tbody>${paymentsRows}</tbody>
-          </table>
-        </div>
+        <h3>الدفعات</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>الدفعة</th>
+              <th>المبلغ</th>
+              <th>التاريخ</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${paymentRows}
+          </tbody>
+        </table>
       `;
     }
 
     async function printUnitReport(i){
-      const project = getProject();
-      const u = (project.units || [])[i];
-      if(!u) return;
-
-      const area = document.getElementById("pdfRenderArea");
-      area.innerHTML = unitReportHTML(u, project);
-
-      const target = area.firstElementChild;
-      const canvas = await html2canvas(target, {scale:2, backgroundColor:"#ffffff"});
-      const img = canvas.toDataURL("image/png");
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF("p","pt","a4");
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      const ratio = Math.min(pageWidth / canvas.width, pageHeight / canvas.height);
-      const w = canvas.width * ratio;
-      const h = canvas.height * ratio;
-      pdf.addImage(img, "PNG", (pageWidth - w) / 2, 20, w, h);
-      pdf.save(`تقرير-الوحدة-${u.number || "بدون-رقم"}.pdf`);
+      const p = getProject();
+      const u = (p.units || [])[i];
+      if(!u){
+        alert("الوحدة غير موجودة");
+        return;
+      }
+      await createPdfFromHtml(unitReportHtml(u, p), `تقرير-الوحدة-${u.number || i + 1}.pdf`);
     }
 
-function exportProjectPDF(){
+async function exportProjectPDF(){
       const p = getProject();
       const f = projectFinancials();
 
@@ -2748,11 +2733,9 @@ function exportProjectPDF(){
         <div class="line"><strong>السعي المصروف:</strong> ${money(f.totalCommissionPaid)}</div>
         <div class="line"><strong>متبقي السعي:</strong> ${money(f.totalCommissionRemain)}</div>
         <div class="line"><strong>الربح الكلي:</strong> ${money(f.profit)}</div>
-        <div class="line"><strong>ربح الشركة من الشركاء:</strong> ${money(f.companyShareProfit)}</div>
+        <div class="line"><strong>نصيب الشركة من الشركاء:</strong> ${money(f.companyShareProfit)}</div>
         <div class="line"><strong>إدارة المساهمين:</strong> ${money(f.totalInvestorAdmin)}</div>
-        <div class="line"><strong>إجمالي ربح الشركة:</strong> ${money(f.companyTotalProfit)}</div>
-        <div class="line"><strong>المصروف للشركة:</strong> ${money(f.companyPaidAdvance || 0)}</div>
-        <div class="line"><strong>المتبقي للشركة:</strong> ${money(f.companyFinalProfit)}</div>
+        <div class="line"><strong>ربح الشركة النهائي:</strong> ${money(f.companyFinalProfit)}</div>
 
         <h3>الوحدات</h3>
         <table>
@@ -2894,6 +2877,65 @@ function exportProjectPDF(){
       };
       reader.readAsText(file, "utf-8");
     }
-  </script>
+  
+function openUnitReport(i){
+  const p = getProject();
+  const u = p.units[i];
+  const win = window.open("", "_blank");
+  const discountPercent = getBookingDiscountPercent(u.paymentPlan || "");
+  const discountValue = (u.price || 0) * (discountPercent / 100);
+  win.document.write(`
+  <html dir="rtl">
+  <head>
+    <title>تقرير وحدة</title>
+    <style>
+      body{font-family:Tahoma;padding:20px}
+      h2{margin-bottom:10px}
+      .line{margin:6px 0}
+      table{width:100%;border-collapse:collapse;margin-top:10px}
+      td,th{border:1px solid #ccc;padding:6px;text-align:center}
+    </style>
+  </head>
+  <body>
+    <h2>تقرير الوحدة ${u.number}</h2>
+    <div class="line">المشروع: ${p.name}</div>
+    <div class="line">المبنى: ${u.building}</div>
+    <div class="line">الدور: ${u.floor}</div>
+    <div class="line">المساحة: ${u.area}</div>
+    <div class="line">الحالة: ${u.status}</div>
+    <hr>
+    <div class="line">العميل: ${u.client}</div>
+    <div class="line">المسوق: ${u.marketer}</div>
+    <hr>
+    <div class="line">سعر العرض: ${money(u.price)}</div>
+    <div class="line">نسبة الخصم: ${discountPercent}%</div>
+    <div class="line">قيمة الخصم: ${money(discountValue)}</div>
+    <div class="line">خصم إضافي: ${money(u.extraDiscount)}</div>
+    <div class="line"><strong>السعر النهائي: ${money(u.finalPrice)}</strong></div>
+    <hr>
+    <div class="line">السعي: ${money(u.commissionDue)}</div>
+    <hr>
+    <h3>الدفعات</h3>
+    <table>
+      <tr><th>الدفعة</th><th>المبلغ</th><th>التاريخ</th></tr>
+      ${(u.payments || []).map((v,i)=>`
+        <tr>
+          <td>${i+1}</td>
+          <td>${money(v)}</td>
+          <td>${(u.paymentDates||[])[i] || ""}</td>
+        </tr>
+      `).join("")}
+    </table>
+    <hr>
+    <div class="line">إجمالي المدفوع: ${money(u.paid)}</div>
+    <div class="line">المتبقي: ${money(u.remaining)}</div>
+    <br><br>
+    <button onclick="window.print()">🖨️ طباعة</button>
+  </body>
+  </html>
+  `);
+  win.document.close();
+}
+</script>
 </body>
 </html>
