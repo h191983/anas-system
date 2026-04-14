@@ -894,6 +894,7 @@
           <button class="tab" onclick="showTab('advancesTab', this)">الدفعات تحت الحساب</button>
           <button class="tab" onclick="showTab('siteCustodyTab', this)">عهدة الموقع</button>
           <button class="tab" onclick="showTab('movementsTab', this)">دفتر الحركة</button>
+          <button id="paymentAlertsTabButton" class="tab" onclick="showTab('paymentAlertsTab', this)">تنبيه الدفعات <span id="paymentAlertsTabCount" class="tab-badge">0</span></button>
           <button id="alertsTabButton" class="tab" onclick="showTab('alertsTab', this)">التنبيهات <span id="alertsTabCount" class="tab-badge">0</span></button>
           <button class="tab" onclick="showTab('reportTab', this)">ملخص المشروع</button>
         </div>
@@ -1015,7 +1016,8 @@
                 <th>تم صرفه</th>
                 <th>المتبقي</th>
                 <th>الجوال</th>
-                <th class="no-print">تقرير</th>
+                <th class="no-print">تقرير السعي</th>
+                <th class="no-print">تقرير الدفعات المستحقة</th>
               </tr>
             </thead>
             <tbody id="marketersBody"></tbody>
@@ -1289,6 +1291,19 @@
           </table>
         </div>
 
+        <div id="paymentAlertsTab" class="card tab-panel hidden">
+          <div class="section-title">
+            <div>
+              <h3>تنبيه الدفعات</h3>
+              <div class="section-kicker">متابعة الدفعات المستحقة والمتأخرة على الوحدات حسب جدول الاستحقاق</div>
+            </div>
+            <div class="actions no-print">
+              <span class="mini-stat" id="paymentAlertsSummaryCount">0 تنبيه</span>
+            </div>
+          </div>
+          <div id="paymentAlertsContent"></div>
+        </div>
+
         <div id="alertsTab" class="card tab-panel hidden">
           <div class="section-title">
             <div>
@@ -1386,6 +1401,34 @@
       <div class="grid grid-2">
         <input id="pay5" type="number" placeholder="الدفعة ٥" />
         <input id="pay5Date" type="date" />
+      </div>
+
+      <h4 style="margin-top:18px">جدول استحقاق الدفعات</h4>
+      <div class="note" style="margin-top:10px">سجّل مبلغ وتاريخ الاستحقاق لكل دفعة، وسيظهر التنبيه تلقائيًا داخل تبويب <strong>تنبيه الدفعات</strong> عند حلول الموعد أو تأخر السداد.</div>
+      <div class="grid grid-3" style="margin-top:10px">
+        <input id="dueLabel1" placeholder="بيان الدفعة ١" />
+        <input id="dueAmount1" type="number" placeholder="مبلغ استحقاق الدفعة ١" />
+        <input id="dueDate1" type="date" />
+      </div>
+      <div class="grid grid-3">
+        <input id="dueLabel2" placeholder="بيان الدفعة ٢" />
+        <input id="dueAmount2" type="number" placeholder="مبلغ استحقاق الدفعة ٢" />
+        <input id="dueDate2" type="date" />
+      </div>
+      <div class="grid grid-3">
+        <input id="dueLabel3" placeholder="بيان الدفعة ٣" />
+        <input id="dueAmount3" type="number" placeholder="مبلغ استحقاق الدفعة ٣" />
+        <input id="dueDate3" type="date" />
+      </div>
+      <div class="grid grid-3">
+        <input id="dueLabel4" placeholder="بيان الدفعة ٤" />
+        <input id="dueAmount4" type="number" placeholder="مبلغ استحقاق الدفعة ٤" />
+        <input id="dueDate4" type="date" />
+      </div>
+      <div class="grid grid-3">
+        <input id="dueLabel5" placeholder="بيان الدفعة ٥" />
+        <input id="dueAmount5" type="number" placeholder="مبلغ استحقاق الدفعة ٥" />
+        <input id="dueDate5" type="date" />
       </div>
 
       <div class="actions" style="margin-top:16px">
@@ -2339,6 +2382,11 @@
       if(!project.advances) project.advances = [];
       if(!project.siteCustody) project.siteCustody = [];
       if(!project.movements) project.movements = [];
+      (project.units || []).forEach(unit => {
+        if(!unit.paymentDueAmounts) unit.paymentDueAmounts = [0,0,0,0,0];
+        if(!unit.paymentDueDates) unit.paymentDueDates = ["","","","",""];
+        if(!unit.paymentDueLabels) unit.paymentDueLabels = ["الدفعة ١","الدفعة ٢","الدفعة ٣","الدفعة ٤","الدفعة ٥"];
+      });
       if(typeof project.archived === "undefined") project.archived = false;
       if(!project.archivedAt) project.archivedAt = "";
     }
@@ -3507,6 +3555,173 @@
       }
     }
 
+
+    function getTodayIso(){
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,'0');
+      const day = String(d.getDate()).padStart(2,'0');
+      return `${y}-${m}-${day}`;
+    }
+
+    function daysBetweenIso(fromDate, toDate){
+      if(!fromDate || !toDate) return 0;
+      const a = new Date(`${fromDate}T00:00:00`);
+      const b = new Date(`${toDate}T00:00:00`);
+      return Math.round((b - a) / 86400000);
+    }
+
+    function getUnitPaymentAlerts(project = getProject()){
+      if(!project) return [];
+      const today = getTodayIso();
+      const upcomingWindow = 7;
+      const rows = [];
+      (project.units || []).forEach((u, unitIndex) => {
+        const dueAmounts = u.paymentDueAmounts || [0,0,0,0,0];
+        const dueDates = u.paymentDueDates || ["","","","",""];
+        const dueLabels = u.paymentDueLabels || ["الدفعة ١","الدفعة ٢","الدفعة ٣","الدفعة ٤","الدفعة ٥"];
+        const actualPayments = u.payments || [0,0,0,0,0];
+        dueAmounts.forEach((dueAmount, idx) => {
+          const amount = num(dueAmount);
+          const dueDate = String(dueDates[idx] || '').trim();
+          if(amount <= 0 || !dueDate) return;
+          const paidAmount = num(actualPayments[idx] || 0);
+          const remain = Math.max(0, amount - paidAmount);
+          if(remain <= 0) return;
+          const diff = daysBetweenIso(today, dueDate);
+          if(dueDate < today){
+            rows.push({
+              severity: 'late',
+              unitIndex,
+              unitNumber: u.number || '-',
+              building: u.building || '-',
+              client: u.client || '-',
+              label: dueLabels[idx] || `الدفعة ${idx+1}`,
+              dueDate,
+              dueAmount: amount,
+              paidAmount,
+              remain,
+              daysLate: Math.abs(diff),
+              message: `متأخر ${Math.abs(diff)} يوم`
+            });
+          }else if(dueDate === today){
+            rows.push({
+              severity: 'today',
+              unitIndex,
+              unitNumber: u.number || '-',
+              building: u.building || '-',
+              client: u.client || '-',
+              label: dueLabels[idx] || `الدفعة ${idx+1}`,
+              dueDate,
+              dueAmount: amount,
+              paidAmount,
+              remain,
+              daysLate: 0,
+              message: 'مستحق اليوم'
+            });
+          }else if(diff <= upcomingWindow){
+            rows.push({
+              severity: 'soon',
+              unitIndex,
+              unitNumber: u.number || '-',
+              building: u.building || '-',
+              client: u.client || '-',
+              label: dueLabels[idx] || `الدفعة ${idx+1}`,
+              dueDate,
+              dueAmount: amount,
+              paidAmount,
+              remain,
+              daysLate: -diff,
+              message: `مستحق بعد ${diff} يوم`
+            });
+          }
+        });
+      });
+      const order = {late:0, today:1, soon:2};
+      rows.sort((a,b) => (order[a.severity]-order[b.severity]) || String(a.dueDate).localeCompare(String(b.dueDate)) || String(a.unitNumber).localeCompare(String(b.unitNumber)));
+      return rows;
+    }
+
+    function updatePaymentAlertsTabBadge(items){
+      const total = items.length;
+      const late = items.filter(x => x.severity === 'late').length;
+      const todayDue = items.filter(x => x.severity === 'today').length;
+      const badge = document.getElementById('paymentAlertsTabCount');
+      const button = document.getElementById('paymentAlertsTabButton');
+      const summary = document.getElementById('paymentAlertsSummaryCount');
+      if(badge) badge.textContent = total;
+      if(summary) summary.textContent = `${total} تنبيه`;
+      if(button){
+        button.classList.toggle('has-alerts', total > 0);
+        button.title = late ? `يوجد ${late} دفعات متأخرة` : (todayDue ? `يوجد ${todayDue} دفعات مستحقة اليوم` : '');
+      }
+    }
+
+    function openPaymentAlertUnit(unitIndex){
+      showTab('unitsTab', getTabButtonByPanelId('unitsTab'));
+      setTimeout(() => {
+        focusSpecificAlertTarget('unitsTab', 'unit', getProject().units[unitIndex]?.number || '', getProject().units[unitIndex]?.building || '');
+      }, 120);
+    }
+
+    function renderPaymentAlerts(){
+      const box = document.getElementById('paymentAlertsContent');
+      if(!box) return;
+      const rows = getUnitPaymentAlerts(getProject());
+      updatePaymentAlertsTabBadge(rows);
+      if(!rows.length){
+        box.innerHTML = `<div class="success">لا توجد دفعات مستحقة أو متأخرة حالياً.</div>`;
+        return;
+      }
+      const late = rows.filter(x => x.severity === 'late').length;
+      const todayDue = rows.filter(x => x.severity === 'today').length;
+      const soon = rows.filter(x => x.severity === 'soon').length;
+      const severityBadge = sev => sev === 'late'
+        ? '<span class="badge" style="background:#fee2e2;color:#991b1b">متأخرة</span>'
+        : sev === 'today'
+          ? '<span class="badge" style="background:#fef3c7;color:#92400e">اليوم</span>'
+          : '<span class="badge" style="background:#dbeafe;color:#1d4ed8">قريبة</span>';
+      box.innerHTML = `
+        <div class="alert-summary">
+          <div class="alert-card"><strong>${late}</strong><span>دفعات متأخرة</span></div>
+          <div class="alert-card"><strong>${todayDue}</strong><span>دفعات مستحقة اليوم</span></div>
+          <div class="alert-card"><strong>${soon}</strong><span>دفعات خلال 7 أيام</span></div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>الحالة</th>
+              <th>رقم الشقة</th>
+              <th>المبنى</th>
+              <th>العميل</th>
+              <th>الدفعة</th>
+              <th>تاريخ الاستحقاق</th>
+              <th>المبلغ المستحق</th>
+              <th>المسدّد</th>
+              <th>المتبقي</th>
+              <th class="no-print">إجراء</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(row => `
+              <tr class="${row.severity === 'late' ? 'warn-row' : ''}">
+                <td>${severityBadge(row.severity)}<div class="small">${escapeHtml(row.message)}</div></td>
+                <td>${escapeHtml(row.unitNumber)}</td>
+                <td>${escapeHtml(row.building)}</td>
+                <td>${escapeHtml(row.client)}</td>
+                <td>${escapeHtml(row.label)}</td>
+                <td>${escapeHtml(row.dueDate)}</td>
+                <td>${money(row.dueAmount)}</td>
+                <td>${money(row.paidAmount)}</td>
+                <td>${money(row.remain)}</td>
+                <td class="no-print"><button class="btn-orange" onclick="openPaymentAlertUnit(${row.unitIndex})">فتح الوحدة</button></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
     function renderAlertsAndIssues(){
       const p = getProject();
       const alerts = buildAlerts(p);
@@ -3680,6 +3895,7 @@
       renderAdvances();
       renderSiteCustody();
       renderMovements();
+      renderPaymentAlerts();
       renderReport();
       refreshAdvanceNames();
 
@@ -3714,6 +3930,9 @@
         commissionPaid: 0,
         payments: [0,0,0,0,0],
         paymentDates: ["","","","",""],
+        paymentDueAmounts: [0,0,0,0,0],
+        paymentDueDates: ["","","","",""],
+        paymentDueLabels: ["الدفعة ١","الدفعة ٢","الدفعة ٣","الدفعة ٤","الدفعة ٥"],
         paid: 0,
         remaining: num(document.getElementById("unitPrice").value)
       };
@@ -3817,6 +4036,9 @@
             commissionPaid: 0,
             payments: [0,0,0,0,0],
             paymentDates: ["","","","",""],
+            paymentDueAmounts: [0,0,0,0,0],
+            paymentDueDates: ["","","","",""],
+            paymentDueLabels: ["الدفعة ١","الدفعة ٢","الدفعة ٣","الدفعة ٤","الدفعة ٥"],
             paid: 0,
             remaining: num(price)
           });
@@ -3983,6 +4205,15 @@
       document.getElementById("pay4Date").value = dates[3] || "";
       document.getElementById("pay5Date").value = dates[4] || "";
 
+      const dueAmounts = u.paymentDueAmounts || [0,0,0,0,0];
+      const dueDates = u.paymentDueDates || ["","","","",""];
+      const dueLabels = u.paymentDueLabels || ["الدفعة ١","الدفعة ٢","الدفعة ٣","الدفعة ٤","الدفعة ٥"];
+      for(let j=1;j<=5;j++){
+        document.getElementById(`dueAmount${j}`).value = dueAmounts[j-1] || 0;
+        document.getElementById(`dueDate${j}`).value = dueDates[j-1] || "";
+        document.getElementById(`dueLabel${j}`).value = dueLabels[j-1] || `الدفعة ${j}`;
+      }
+
       updateBookingPrice();
       document.getElementById("bookingModal").classList.remove("hidden");
     }
@@ -4068,6 +4299,27 @@
         document.getElementById("pay4Date").value,
         document.getElementById("pay5Date").value
       ];
+      const paymentDueAmounts = [
+        num(document.getElementById("dueAmount1").value),
+        num(document.getElementById("dueAmount2").value),
+        num(document.getElementById("dueAmount3").value),
+        num(document.getElementById("dueAmount4").value),
+        num(document.getElementById("dueAmount5").value)
+      ];
+      const paymentDueDates = [
+        document.getElementById("dueDate1").value,
+        document.getElementById("dueDate2").value,
+        document.getElementById("dueDate3").value,
+        document.getElementById("dueDate4").value,
+        document.getElementById("dueDate5").value
+      ];
+      const paymentDueLabels = [
+        document.getElementById("dueLabel1").value.trim() || "الدفعة ١",
+        document.getElementById("dueLabel2").value.trim() || "الدفعة ٢",
+        document.getElementById("dueLabel3").value.trim() || "الدفعة ٣",
+        document.getElementById("dueLabel4").value.trim() || "الدفعة ٤",
+        document.getElementById("dueLabel5").value.trim() || "الدفعة ٥"
+      ];
 
       if(!client){
         alert("اكتب اسم العميل");
@@ -4098,6 +4350,9 @@
       u.commissionPaid = Math.min(oldPaid, u.commissionDue);
       u.payments = payments;
       u.paymentDates = paymentDates;
+      u.paymentDueAmounts = paymentDueAmounts;
+      u.paymentDueDates = paymentDueDates;
+      u.paymentDueLabels = paymentDueLabels;
       u.paid = payments.reduce((a,b) => a + num(b), 0);
       u.remaining = finalPrice - u.paid;
       u.status = status;
@@ -4160,7 +4415,7 @@
       body.innerHTML = "";
 
       if(!rows.length){
-        body.innerHTML = '<tr><td colspan="7">لا يوجد مسوقون مطابقون للفلاتر الحالية</td></tr>';
+        body.innerHTML = '<tr><td colspan="8">لا يوجد مسوقون مطابقون للفلاتر الحالية</td></tr>';
         return;
       }
 
@@ -4174,7 +4429,8 @@
             <td>${money(m.paidAdvance)}</td>
             <td>${money(m.remainAfterAdvance)}</td>
             <td>${phoneCell(m.phone, "اتصال")}</td>
-            <td class="no-print"><button class="btn-teal" onclick="printMarketerReport('${escapeQuotes(m.name)}')">طباعة</button></td>
+            <td class="no-print"><button class="btn-teal" onclick="printMarketerReport('${escapeQuotes(m.name)}')">طباعة السعي</button></td>
+            <td class="no-print"><button class="btn-orange" onclick="printMarketerDuePaymentsReport('${escapeQuotes(m.name)}')">طباعة الدفعات</button></td>
           </tr>
         `;
       });
@@ -5486,26 +5742,36 @@ function addPartner(){
       openPrintWindow(`تقرير المساهمين - ${p.name}`, html);
     }
 
+    function getMarketerUnitsForReport(name){
+      const eligibleStatuses = ["محجوزة","تم الافراغ","تم السداد","تمت المراجعة النهائية","مباعة"];
+      return (getProject().units || []).filter(u => u.marketer === name && num(u.commissionDue) > 0 && eligibleStatuses.includes(String(u.status || '').trim()));
+    }
+
     function printMarketerReport(name){
       const p = getProject();
       const row = projectFinancials().marketerRows.find(x => x.name === name);
       if(!row) return;
 
-      const units = (p.units || []).filter(u => u.marketer === name).map(u => `
+      const marketerUnits = getMarketerUnitsForReport(name);
+      const units = marketerUnits.map(u => `
         <tr>
           <td>${escapeHtml(u.number || '-')}</td>
           <td>${escapeHtml(u.building || '-')}</td>
+          <td>${escapeHtml(u.status || '-')}</td>
           <td>${escapeHtml(u.client || '-')}</td>
           <td>${money(u.finalPrice || u.price)}</td>
           <td>${money(u.commissionDue)}</td>
         </tr>
       `).join("");
 
+      const reportUnitsCount = marketerUnits.length;
+      const reportUnitsCommission = marketerUnits.reduce((s,u) => s + num(u.commissionDue), 0);
+
       const html = `
         <div class="report-title">
           <div>
-            <h2>تقرير مسوق</h2>
-            <div class="report-sub">تقرير فردي للمسوق مع الوحدات التابعة له والسعي المستحق</div>
+            <h2>تقرير سعي المسوق</h2>
+            <div class="report-sub">تقرير طباعة عن المشروع كله للوحدات التي باعها المسوق والمستحق عليها سعي</div>
           </div>
         </div>
 
@@ -5513,19 +5779,19 @@ function addPartner(){
           ${printMetaCard("المشروع", escapeHtml(p.name || '-'))}
           ${printMetaCard("اسم المسوق", escapeHtml(row.name || '-'))}
           ${printMetaCard("الجوال", escapeHtml(row.phone || '-'))}
-          ${printMetaCard("عدد الوحدات", String(row.units))}
+          ${printMetaCard("عدد الوحدات المستحقة", String(reportUnitsCount))}
         </div>
 
         <div class="summary-grid">
-          ${printSummaryCard("إجمالي السعي", money(row.commissionDue))}
+          ${printSummaryCard("إجمالي السعي المستحق", money(reportUnitsCommission))}
           ${printSummaryCard("المصروف تحت الحساب", money(row.paidAdvance))}
-          ${printSummaryCard("المتبقي", money(row.remainAfterAdvance))}
+          ${printSummaryCard("المتبقي", money(reportUnitsCommission - num(row.paidAdvance)))}
         </div>
 
         <div class="section">
           <div class="section-header">
-            <h3>الوحدات التابعة للمسوق</h3>
-            <div class="section-note">الوحدات المحتسبة في عمولة هذا المسوق</div>
+            <h3>الوحدات المستحقة للسعي</h3>
+            <div class="section-note">يظهر هنا كل وحدات المشروع المرتبطة بالمسوق والتي لها سعي مستحق</div>
           </div>
           ${units ? `
             <table>
@@ -5533,6 +5799,7 @@ function addPartner(){
                 <tr>
                   <th>رقم الشقة</th>
                   <th>المبنى</th>
+                  <th>الحالة</th>
                   <th>العميل</th>
                   <th>سعر البيع</th>
                   <th>السعي</th>
@@ -5540,10 +5807,87 @@ function addPartner(){
               </thead>
               <tbody>${units}</tbody>
             </table>
-          ` : `<div class="empty-box">لا توجد وحدات مرتبطة بهذا المسوق.</div>`}
+          ` : `<div class="empty-box">لا توجد وحدات مستحقة للسعي لهذا المسوق داخل المشروع.</div>`}
         </div>
       `;
-      openPrintWindow(`تقرير مسوق - ${name}`, html);
+      openPrintWindow(`تقرير سعي المسوق - ${name}`, html);
+    }
+
+    function printMarketerDuePaymentsReport(name){
+      const p = getProject();
+      const marketerPhone = ((projectFinancials().marketerRows.find(x => x.name === name) || {}).phone) || '-';
+      const rowsData = getUnitPaymentAlerts(p).filter(row => {
+        const u = (p.units || [])[row.unitIndex];
+        return u && u.marketer === name;
+      });
+
+      const late = rowsData.filter(x => x.severity === 'late').length;
+      const todayDue = rowsData.filter(x => x.severity === 'today').length;
+      const soon = rowsData.filter(x => x.severity === 'soon').length;
+      const totalRemain = rowsData.reduce((s,x) => s + num(x.remain), 0);
+
+      const rows = rowsData.map(row => `
+        <tr>
+          <td>${escapeHtml(row.unitNumber || '-')}</td>
+          <td>${escapeHtml(row.building || '-')}</td>
+          <td>${escapeHtml(row.client || '-')}</td>
+          <td>${escapeHtml(row.label || '-')}</td>
+          <td>${escapeHtml(row.dueDate || '-')}</td>
+          <td>${money(row.dueAmount)}</td>
+          <td>${money(row.paidAmount)}</td>
+          <td>${money(row.remain)}</td>
+          <td>${escapeHtml(row.message || '-')}</td>
+        </tr>
+      `).join('');
+
+      const html = `
+        <div class="report-title">
+          <div>
+            <h2>تقرير الدفعات المستحقة للمسوق</h2>
+            <div class="report-sub">الوحدات التابعة لهذا المسوق والتي عليها دفعات مستحقة أو متأخرة أو قريبة خلال 7 أيام</div>
+          </div>
+        </div>
+
+        <div class="meta-grid">
+          ${printMetaCard("المشروع", escapeHtml(p.name || '-'))}
+          ${printMetaCard("اسم المسوق", escapeHtml(name || '-'))}
+          ${printMetaCard("الجوال", escapeHtml(marketerPhone || '-'))}
+          ${printMetaCard("عدد التنبيهات", String(rowsData.length))}
+        </div>
+
+        <div class="summary-grid">
+          ${printSummaryCard("دفعات متأخرة", String(late))}
+          ${printSummaryCard("مستحقة اليوم", String(todayDue))}
+          ${printSummaryCard("قريبة", String(soon))}
+          ${printSummaryCard("إجمالي المتبقي", money(totalRemain))}
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <h3>بيانات الدفعات المستحقة</h3>
+            <div class="section-note">هذا التقرير خاص بالوحدات المسجلة على نفس المسوق داخل المشروع الحالي</div>
+          </div>
+          ${rows ? `
+            <table>
+              <thead>
+                <tr>
+                  <th>رقم الشقة</th>
+                  <th>المبنى</th>
+                  <th>العميل</th>
+                  <th>الدفعة</th>
+                  <th>تاريخ الاستحقاق</th>
+                  <th>المبلغ المستحق</th>
+                  <th>المسدّد</th>
+                  <th>المتبقي</th>
+                  <th>الحالة</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          ` : `<div class="empty-box">لا توجد حالياً دفعات مستحقة لهذا المسوق.</div>`}
+        </div>
+      `;
+      openPrintWindow(`تقرير دفعات المسوق - ${name}`, html);
     }
 
     function printMarketersReport(){
