@@ -37,9 +37,11 @@
       font-family:Tahoma, Arial, sans-serif;
       background:var(--bg);
       color:var(--text);
+      max-width:100%;
+      overflow-x:hidden;
     }
 
-    .container{padding:18px}
+    .container{padding:18px;max-width:100%;overflow-x:hidden}
     .card{
       background:#fff;
       border-radius:12px;
@@ -94,6 +96,24 @@
     .grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
     @media (max-width:900px){
       .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+    }
+    @media (max-width:768px){
+      .container{padding:10px}
+      .card{padding:12px}
+      .header{padding:10px 12px;font-size:18px}
+      .header-title small{font-size:11px}
+      #workspaceView,#projectsView,#appView,.tab-panel{max-width:100%;overflow-x:hidden}
+      .kpis,.dashboard-grid,.home-dashboard-grid,.project-charts-grid,.home-charts-grid{grid-template-columns:1fr}
+      .table-scroll{width:100%;max-width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;border-radius:10px;border:1px solid var(--border);background:#fff}
+      .table-scroll table{min-width:1100px;margin-top:0;border-collapse:collapse}
+      #unitsTab .table-scroll table{min-width:1400px}
+      #marketersTab .table-scroll table,
+      #expensesTab .table-scroll table,
+      #partnersTab .table-scroll table,
+      #investorsTab .table-scroll table,
+      #advancesTab .table-scroll table,
+      #siteCustodyTab .table-scroll table,
+      #movementsTab .table-scroll table{min-width:760px}
     }
     .hidden{display:none !important}
     .small{font-size:12px;color:var(--muted)}
@@ -1780,16 +1800,16 @@
 
     function fillSystemSettingsInputs(){
       const settings = loadSystemSettings();
-      const setVal = (id, value) => { const el = document.getElementById(id); if(el) el.value = value ?? ""; };
+      const setVal = (id, value) => { const el = document.getElementById(id); if(el) el.value = (value == null ? "" : value); };
       setVal("systemAppTitle", settings.appTitle || "");
       setVal("systemCompanyName", settings.companyName || "");
       setVal("systemCommissionRate", settings.commissionRate || DEFAULT_COMMISSION_RATE);
     }
 
     function readSystemSettingsInputs(){
-      const appTitle = document.getElementById("systemAppTitle")?.value.trim() || "نظام أنس - النسخة المطورة";
-      const companyName = document.getElementById("systemCompanyName")?.value.trim() || "فارس الشرقية للتطوير العقاري";
-      const commissionRate = num(document.getElementById("systemCommissionRate")?.value);
+      const appTitle = (document.getElementById("systemAppTitle") ? document.getElementById("systemAppTitle").value.trim() : "") || "نظام أنس - النسخة المطورة";
+      const companyName = (document.getElementById("systemCompanyName") ? document.getElementById("systemCompanyName").value.trim() : "") || "فارس الشرقية للتطوير العقاري";
+      const commissionRate = num((document.getElementById("systemCommissionRate") ? document.getElementById("systemCommissionRate").value : ""));
       saveSystemSettings({
         appTitle,
         companyName,
@@ -1896,10 +1916,10 @@
       const accounts = loadUserAccounts();
       map.managerUsername = accounts.manager.username || "";
       map.managerPassword = accounts.manager.password || "";
-      map.manager2Username = accounts.manager2?.username || "";
-      map.manager2Password = accounts.manager2?.password || "";
-      map.manager3Username = accounts.manager3?.username || "";
-      map.manager3Password = accounts.manager3?.password || "";
+      map.manager2Username = ((accounts.manager2 && accounts.manager2.username) || "") || "";
+      map.manager2Password = ((accounts.manager2 && accounts.manager2.password) || "") || "";
+      map.manager3Username = ((accounts.manager3 && accounts.manager3.username) || "") || "";
+      map.manager3Password = ((accounts.manager3 && accounts.manager3.password) || "") || "";
       map.accountantUsername = accounts.accountant.username || "";
       map.accountantPassword = accounts.accountant.password || "";
       map.entryUsername = accounts.entry.username || "";
@@ -1913,8 +1933,8 @@
     }
 
     function readCloudInputs(){
-      const secretCode = document.getElementById("systemSecretCode")?.value || "";
-      const secretCodeConfirm = document.getElementById("systemSecretCodeConfirm")?.value || "";
+      const secretCode = (document.getElementById("systemSecretCode") ? document.getElementById("systemSecretCode").value : "") || "";
+      const secretCodeConfirm = (document.getElementById("systemSecretCodeConfirm") ? document.getElementById("systemSecretCodeConfirm").value : "") || "";
       if(secretCode || secretCodeConfirm){
         if(secretCode.length < 4){
           alert("الكود السري لازم يكون 4 أرقام أو أكثر");
@@ -1930,45 +1950,45 @@
       saveUserAccounts({
         manager: {
           ...currentAccounts.manager,
-          username: document.getElementById("managerUsername")?.value.trim() || currentAccounts.manager.username,
-          password: document.getElementById("managerPassword")?.value || currentAccounts.manager.password
+          username: (document.getElementById("managerUsername") ? document.getElementById("managerUsername").value.trim() : "") || currentAccounts.manager.username,
+          password: (document.getElementById("managerPassword") ? document.getElementById("managerPassword").value : "") || currentAccounts.manager.password
         },
         manager2: {
           ...(currentAccounts.manager2 || { role: "manager", label: "مدير 2" }),
-          username: document.getElementById("manager2Username")?.value.trim() || currentAccounts.manager2?.username || "manager2",
-          password: document.getElementById("manager2Password")?.value || currentAccounts.manager2?.password || "2222",
+          username: (document.getElementById("manager2Username") ? document.getElementById("manager2Username").value.trim() : "") || ((currentAccounts.manager2 && currentAccounts.manager2.username) || "") || "manager2",
+          password: (document.getElementById("manager2Password") ? document.getElementById("manager2Password").value : "") || ((currentAccounts.manager2 && currentAccounts.manager2.password) || "") || "2222",
           role: "manager",
           label: "مدير 2"
         },
         manager3: {
           ...(currentAccounts.manager3 || { role: "manager", label: "مدير 3" }),
-          username: document.getElementById("manager3Username")?.value.trim() || currentAccounts.manager3?.username || "manager3",
-          password: document.getElementById("manager3Password")?.value || currentAccounts.manager3?.password || "3333",
+          username: (document.getElementById("manager3Username") ? document.getElementById("manager3Username").value.trim() : "") || ((currentAccounts.manager3 && currentAccounts.manager3.username) || "") || "manager3",
+          password: (document.getElementById("manager3Password") ? document.getElementById("manager3Password").value : "") || ((currentAccounts.manager3 && currentAccounts.manager3.password) || "") || "3333",
           role: "manager",
           label: "مدير 3"
         },
         accountant: {
           ...currentAccounts.accountant,
-          username: document.getElementById("accountantUsername")?.value.trim() || currentAccounts.accountant.username,
-          password: document.getElementById("accountantPassword")?.value || currentAccounts.accountant.password
+          username: (document.getElementById("accountantUsername") ? document.getElementById("accountantUsername").value.trim() : "") || currentAccounts.accountant.username,
+          password: (document.getElementById("accountantPassword") ? document.getElementById("accountantPassword").value : "") || currentAccounts.accountant.password
         },
         entry: {
           ...currentAccounts.entry,
-          username: document.getElementById("entryUsername")?.value.trim() || currentAccounts.entry.username,
-          password: document.getElementById("entryPassword")?.value || currentAccounts.entry.password
+          username: (document.getElementById("entryUsername") ? document.getElementById("entryUsername").value.trim() : "") || currentAccounts.entry.username,
+          password: (document.getElementById("entryPassword") ? document.getElementById("entryPassword").value : "") || currentAccounts.entry.password
         }
       });
       cloudConfig = {
         firebaseConfig: {
-          apiKey: document.getElementById("fbApiKey")?.value.trim() || "",
-          authDomain: document.getElementById("fbAuthDomain")?.value.trim() || "",
-          databaseURL: document.getElementById("fbDatabaseURL")?.value.trim() || "",
-          projectId: document.getElementById("fbProjectId")?.value.trim() || "",
-          storageBucket: document.getElementById("fbStorageBucket")?.value.trim() || "",
-          messagingSenderId: document.getElementById("fbMessagingSenderId")?.value.trim() || "",
-          appId: document.getElementById("fbAppId")?.value.trim() || ""
+          apiKey: (document.getElementById("fbApiKey") ? document.getElementById("fbApiKey").value.trim() : "") || "",
+          authDomain: (document.getElementById("fbAuthDomain") ? document.getElementById("fbAuthDomain").value.trim() : "") || "",
+          databaseURL: (document.getElementById("fbDatabaseURL") ? document.getElementById("fbDatabaseURL").value.trim() : "") || "",
+          projectId: (document.getElementById("fbProjectId") ? document.getElementById("fbProjectId").value.trim() : "") || "",
+          storageBucket: (document.getElementById("fbStorageBucket") ? document.getElementById("fbStorageBucket").value.trim() : "") || "",
+          messagingSenderId: (document.getElementById("fbMessagingSenderId") ? document.getElementById("fbMessagingSenderId").value.trim() : "") || "",
+          appId: (document.getElementById("fbAppId") ? document.getElementById("fbAppId").value.trim() : "") || ""
         },
-        dataPath: document.getElementById("fbDataPath")?.value.trim() || "anas_system/shared_data"
+        dataPath: (document.getElementById("fbDataPath") ? document.getElementById("fbDataPath").value.trim() : "") || "anas_system/shared_data"
       };
       saveCloudSettingsToStorage();
       return cloudConfig;
@@ -2455,9 +2475,11 @@
         document.getElementById("appView").classList.remove("hidden");
         updateCurrentUserBadge();
         renderProjects();
+        applyMobileTableWrappers();
       }
     }
     init();
+    applyMobileTableWrappers();
 
 
     function isCurrentProjectClosed(){
@@ -3060,15 +3082,15 @@
 
     function getActiveFilterSummary(){
       const parts = [];
-      const unitSearch = document.getElementById("unitQuickSearch")?.value.trim();
-      const unitMarketer = document.getElementById("unitMarketerFilter")?.value;
-      const unitStatus = document.getElementById("unitStatusFilter")?.value;
-      const unitBuilding = document.getElementById("unitBuildingFilter")?.value.trim();
-      const unitFloor = document.getElementById("unitFloorFilter")?.value.trim();
-      const expenseSearch = document.getElementById("expenseSearch")?.value.trim();
-      const expenseCategory = document.getElementById("expenseCategoryFilter")?.value.trim();
-      const expenseDateFrom = document.getElementById("expenseDateFrom")?.value;
-      const expenseDateTo = document.getElementById("expenseDateTo")?.value;
+      const unitSearch = (document.getElementById("unitQuickSearch") ? document.getElementById("unitQuickSearch").value.trim() : "");
+      const unitMarketer = (document.getElementById("unitMarketerFilter") ? document.getElementById("unitMarketerFilter").value : "");
+      const unitStatus = (document.getElementById("unitStatusFilter") ? document.getElementById("unitStatusFilter").value : "");
+      const unitBuilding = (document.getElementById("unitBuildingFilter") ? document.getElementById("unitBuildingFilter").value.trim() : "");
+      const unitFloor = (document.getElementById("unitFloorFilter") ? document.getElementById("unitFloorFilter").value.trim() : "");
+      const expenseSearch = (document.getElementById("expenseSearch") ? document.getElementById("expenseSearch").value.trim() : "");
+      const expenseCategory = (document.getElementById("expenseCategoryFilter") ? document.getElementById("expenseCategoryFilter").value.trim() : "");
+      const expenseDateFrom = (document.getElementById("expenseDateFrom") ? document.getElementById("expenseDateFrom").value : "");
+      const expenseDateTo = (document.getElementById("expenseDateTo") ? document.getElementById("expenseDateTo").value : "");
 
       if(unitSearch) parts.push(`بحث الوحدات: ${unitSearch}`);
       if(unitMarketer) parts.push(`مسوق: ${unitMarketer}`);
@@ -3094,11 +3116,11 @@
 
     function getFilteredUnits(project = getProject()){
       const units = [...(project.units || [])];
-      const search = document.getElementById("unitQuickSearch")?.value.trim().toLowerCase() || "";
-      const marketerFilter = document.getElementById("unitMarketerFilter")?.value || "";
-      const statusFilter = document.getElementById("unitStatusFilter")?.value || "";
-      const buildingFilter = document.getElementById("unitBuildingFilter")?.value.trim().toLowerCase() || "";
-      const floorFilter = document.getElementById("unitFloorFilter")?.value.trim().toLowerCase() || "";
+      const search = (document.getElementById("unitQuickSearch") ? document.getElementById("unitQuickSearch").value.trim() : "").toLowerCase() || "";
+      const marketerFilter = (document.getElementById("unitMarketerFilter") ? document.getElementById("unitMarketerFilter").value : "") || "";
+      const statusFilter = (document.getElementById("unitStatusFilter") ? document.getElementById("unitStatusFilter").value : "") || "";
+      const buildingFilter = (document.getElementById("unitBuildingFilter") ? document.getElementById("unitBuildingFilter").value.trim() : "").toLowerCase() || "";
+      const floorFilter = (document.getElementById("unitFloorFilter") ? document.getElementById("unitFloorFilter").value.trim() : "").toLowerCase() || "";
 
       return units.filter(u => {
         if(marketerFilter && (u.marketer || "") !== marketerFilter) return false;
@@ -3114,7 +3136,7 @@
     }
 
     function getFilteredMarketerRows(){
-      const search = document.getElementById("marketerSearch")?.value.trim().toLowerCase() || "";
+      const search = ((document.getElementById("marketerSearch") ? document.getElementById("marketerSearch").value.trim().toLowerCase() : "")) || "";
       return projectFinancials().marketerRows.filter(m => {
         if(!search) return true;
         return [m.name, m.phone].join(' ').toLowerCase().includes(search);
@@ -3122,10 +3144,10 @@
     }
 
     function getFilteredExpenses(project = getProject()){
-      const search = document.getElementById("expenseSearch")?.value.trim().toLowerCase() || "";
-      const categoryFilter = document.getElementById("expenseCategoryFilter")?.value.trim().toLowerCase() || "";
-      const dateFrom = document.getElementById("expenseDateFrom")?.value || "";
-      const dateTo = document.getElementById("expenseDateTo")?.value || "";
+      const search = (document.getElementById("expenseSearch") ? document.getElementById("expenseSearch").value.trim() : "").toLowerCase() || "";
+      const categoryFilter = (document.getElementById("expenseCategoryFilter") ? document.getElementById("expenseCategoryFilter").value.trim() : "").toLowerCase() || "";
+      const dateFrom = (document.getElementById("expenseDateFrom") ? document.getElementById("expenseDateFrom").value : "") || "";
+      const dateTo = (document.getElementById("expenseDateTo") ? document.getElementById("expenseDateTo").value : "") || "";
       return [...(project.expenses || [])].filter(e => {
         if(search && ![e.category,e.description,e.date].join(' ').toLowerCase().includes(search)) return false;
         if(categoryFilter && !containsText(e.category, categoryFilter)) return false;
@@ -3136,8 +3158,8 @@
     }
 
     function getFilteredPartners(){
-      const search = document.getElementById("partnerSearch")?.value.trim().toLowerCase() || "";
-      const remainFilter = document.getElementById("partnerRemainFilter")?.value || "";
+      const search = ((document.getElementById("partnerSearch") ? document.getElementById("partnerSearch").value.trim().toLowerCase() : "")) || "";
+      const remainFilter = (document.getElementById("partnerRemainFilter") ? document.getElementById("partnerRemainFilter").value : "") || "";
       return projectFinancials().partnersFull.filter(x => {
         if(x.auto) return true;
         if(search && !String(x.name || '').toLowerCase().includes(search)) return false;
@@ -3148,8 +3170,8 @@
     }
 
     function getFilteredInvestors(){
-      const search = document.getElementById("investorSearch")?.value.trim().toLowerCase() || "";
-      const remainFilter = document.getElementById("investorRemainFilter")?.value || "";
+      const search = ((document.getElementById("investorSearch") ? document.getElementById("investorSearch").value.trim().toLowerCase() : "")) || "";
+      const remainFilter = (document.getElementById("investorRemainFilter") ? document.getElementById("investorRemainFilter").value : "") || "";
       return projectFinancials().investorsFull.filter(x => {
         if(x.auto) return true;
         if(search && !String(x.name || '').toLowerCase().includes(search)) return false;
@@ -3660,7 +3682,7 @@
     function openPaymentAlertUnit(unitIndex){
       showTab('unitsTab', getTabButtonByPanelId('unitsTab'));
       setTimeout(() => {
-        focusSpecificAlertTarget('unitsTab', 'unit', getProject().units[unitIndex]?.number || '', getProject().units[unitIndex]?.building || '');
+        focusSpecificAlertTarget('unitsTab', 'unit', ((getProject().units[unitIndex] && getProject().units[unitIndex].number) || "") || '', ((getProject().units[unitIndex] && getProject().units[unitIndex].building) || "") || '');
       }, 120);
     }
 
@@ -3851,6 +3873,18 @@
       }
     }
 
+
+    function applyMobileTableWrappers(){
+      const scope = document.querySelectorAll('#workspaceView .card table, #projectsView .card table');
+      scope.forEach(table => {
+        if(table.closest('.pdf-sheet') || table.closest('.report-box') || table.closest('.table-scroll')) return;
+        const wrap = document.createElement('div');
+        wrap.className = 'table-scroll';
+        table.parentNode.insertBefore(wrap, table);
+        wrap.appendChild(table);
+      });
+    }
+
     function renderProject(){
       const p = getProject();
       if(!p){
@@ -3898,6 +3932,7 @@
       renderPaymentAlerts();
       renderReport();
       refreshAdvanceNames();
+      applyMobileTableWrappers();
 
       saveApp();
       applyRolePermissions();
@@ -5276,15 +5311,15 @@ function addPartner(){
     }
 
     function escapeHtml(text){
-      return String(text ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;");
+      return String(text == null ? "" : text)
+        .split("&").join("&amp;")
+        .split("<").join("&lt;")
+        .split(">").join("&gt;")
+        .split('"').join("&quot;");
     }
 
     function escapeQuotes(text){
-      return String(text ?? "").replaceAll("\\","\\\\").replaceAll("'","\\'");
+      return String(text == null ? "" : text).split("\\").join("\\\\").split("'").join("\\'");
     }
 
     function printMetaCard(label, value){
