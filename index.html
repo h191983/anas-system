@@ -734,6 +734,8 @@
           <input id="loginUser" placeholder="اسم المستخدم" />
           <input id="loginPass" type="password" placeholder="كلمة المرور" />
           <button class="btn" onclick="login()">دخول</button>
+          <button id="biometricLoginBtn" class="btn-teal hidden" onclick="loginWithBiometric()">دخول بالبصمة</button>
+          <div class="small" id="biometricHint" style="text-align:center"></div>
         </div>
       </div>
     </div>
@@ -751,6 +753,7 @@
             <button class="btn-purple" onclick="openBackupsModal()">إدارة النسخ</button>
             <button class="btn-orange" onclick="document.getElementById('restoreFile').click()">استرجاع</button>
             <input id="restoreFile" type="file" accept=".json" class="hidden" onchange="restoreBackup(event)" />
+            <button id="biometricSetupBtn" class="btn-teal" onclick="setupBiometricForCurrentUser()">تفعيل البصمة</button>
             <button class="btn-gray" onclick="logout()">خروج</button>
           </div>
         </div>
@@ -1732,6 +1735,200 @@
     const STORAGE_KEY = "anas_projects_excel_pdf_v2";
     const CLOUD_SETTINGS_KEY = "anas_cloud_firebase_settings_v1";
 
+    const REMEMBER_LOGIN_KEY = "anasRememberLoginExcelPdf";
+    const BIOMETRIC_KEY = "anasBiometricExcelPdf";
+    const HISTORY_ROOT_KEY = "anasHistoryRootExcelPdf";
+    let appHistoryBusy = false;
+
+    function saveRememberedUser(user){
+      if(!user || !user.username) return;
+      localStorage.setItem(REMEMBER_LOGIN_KEY, JSON.stringify({ username: user.username, role: user.role || "manager" }));
+    }
+
+    function getRememberedUser(){
+      try{
+        return JSON.parse(localStorage.getItem(REMEMBER_LOGIN_KEY) || "null");
+      }catch(e){
+        return null;
+      }
+    }
+
+    function clearRememberedUser(){
+      localStorage.removeItem(REMEMBER_LOGIN_KEY);
+    }
+
+    function applyLoginSuccess(user){
+      setCurrentUserSession({ username: user.username, role: user.role || "manager" });
+      saveRememberedUser(user);
+      document.getElementById("loginView").classList.add("hidden");
+      document.getElementById("appView").classList.remove("hidden");
+      applySystemBranding();
+      updateCurrentUserBadge();
+      maybeAutoBackup();
+      ensureAppHistoryRoot();
+      pullCloudData().then(() => renderProjects());
+    }
+
+    function ensureAppHistoryRoot(){
+      if(appHistoryBusy) return;
+      const state = history.state || {};
+      if(state.__anasApp) return;
+      appHistoryBusy = true;
+      history.replaceState({ __anasApp:true, view:"projects", projectId:null, root:true }, "", location.href);
+      appHistoryBusy = false;
+    }
+
+    function pushAppHistory(view, projectId){
+      if(appHistoryBusy) return;
+      const curr = history.state || {};
+      if(curr.__anasApp && curr.view === view && String(curr.projectId || "") === String(projectId || "")) return;
+      appHistoryBusy = true;
+      history.pushState({ __anasApp:true, view:view, projectId: projectId ? String(projectId) : null }, "", location.href);
+      appHistoryBusy = false;
+    }
+
+    function handleAppBackNavigation(){
+      if(document.getElementById("appView").classList.contains("hidden")) return false;
+      if(!document.getElementById("workspaceView").classList.contains("hidden")){
+        backToProjects(false);
+        return true;
+      }
+      return false;
+    }
+
+    function registerHardwareBackHandler(){
+      ensureAppHistoryRoot();
+      window.addEventListener("popstate", function(ev){
+        const state = ev.state || {};
+        if(document.getElementById("appView").classList.contains("hidden")) return;
+        if(state.__anasApp){
+          if(state.view === "project" && state.projectId){
+            currentProjectId = String(state.projectId);
+            document.getElementById("projectsView").classList.add("hidden");
+            document.getElementById("workspaceView").classList.remove("hidden");
+            renderProject();
+          }else{
+            currentProjectId = null;
+            document.getElementById("workspaceView").classList.add("hidden");
+            document.getElementById("projectsView").classList.remove("hidden");
+            renderProjects();
+          }
+          return;
+        }
+        if(handleAppBackNavigation()){
+          ensureAppHistoryRoot();
+        }
+      });
+    }
+
+    function canUseBiometric(){
+      return !!(window.isSecureContext && window.PublicKeyCredential && navigator.credentials && typeof navigator.credentials.get === "function");
+    }
+
+    function base64UrlToArrayBuffer(base64url){
+      const pad = '='.repeat((4 - base64url.length % 4) % 4);
+      const base64 = (base64url + pad).replace(/-/g, '+').replace(/_/g, '/');
+      const str = atob(base64);
+      const bytes = new Uint8Array(str.length);
+      for(let i=0;i<str.length;i++) bytes[i] = str.charCodeAt(i);
+      return bytes.buffer;
+    }
+
+    function arrayBufferToBase64Url(buffer){
+      const bytes = new Uint8Array(buffer);
+      let str = '';
+      for(let i=0;i<bytes.length;i++) str += String.fromCharCode(bytes[i]);
+      return btoa(str).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+    }
+
+    function getBiometricConfig(){
+      try{
+        return JSON.parse(localStorage.getItem(BIOMETRIC_KEY) || "null");
+      }catch(e){
+        return null;
+      }
+    }
+
+    function updateBiometricUI(){
+      const btn = document.getElementById("biometricLoginBtn");
+      const hint = document.getElementById("biometricHint");
+      const setupBtn = document.getElementById("biometricSetupBtn");
+      const cfg = getBiometricConfig();
+      const supported = canUseBiometric();
+      if(btn) btn.classList.toggle("hidden", !(supported && cfg && cfg.credentialId && cfg.username));
+      if(hint){
+        if(cfg && cfg.username && supported) hint.innerText = "الدخول بالبصمة مفعّل لهذا الجهاز للمستخدم: " + cfg.username;
+        else if(!supported) hint.innerText = "البصمة تعمل فقط داخل رابط آمن HTTPS أو تطبيق مثبت يدعمها.";
+        else hint.innerText = "يمكنك تفعيل البصمة بعد أول دخول عادي من داخل النظام.";
+      }
+      if(setupBtn){
+        setupBtn.disabled = !supported;
+        setupBtn.innerText = (cfg && cfg.credentialId ? "إعادة ضبط البصمة" : "تفعيل البصمة");
+      }
+    }
+
+    async function setupBiometricForCurrentUser(){
+      const user = getCurrentUser();
+      if(!user || !user.username){ alert("سجل دخول أولاً ثم فعّل البصمة لهذا الجهاز."); return; }
+      if(!canUseBiometric()){
+        alert("البصمة تحتاج فتح النظام من رابط آمن HTTPS أو كتطبيق مثبت على الجوال.");
+        return;
+      }
+      try{
+        const challenge = crypto.getRandomValues(new Uint8Array(32));
+        const userId = crypto.getRandomValues(new Uint8Array(16));
+        const cred = await navigator.credentials.create({
+          publicKey: {
+            challenge,
+            rp: { name: document.title || "نظام أنس" },
+            user: {
+              id: userId,
+              name: user.username,
+              displayName: user.username
+            },
+            pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
+            authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required", residentKey: "preferred" },
+            timeout: 60000,
+            attestation: "none"
+          }
+        });
+        if(!cred || !cred.rawId) throw new Error("لم يتم إنشاء بيانات البصمة.");
+        localStorage.setItem(BIOMETRIC_KEY, JSON.stringify({
+          username: user.username,
+          role: user.role || "manager",
+          credentialId: arrayBufferToBase64Url(cred.rawId),
+          enabledAt: Date.now()
+        }));
+        updateBiometricUI();
+        alert("تم تفعيل البصمة لهذا الجهاز بنجاح.");
+      }catch(err){
+        alert("تعذر تفعيل البصمة على هذا الجهاز: " + (err && err.message ? err.message : "خطأ غير معروف"));
+      }
+    }
+
+    async function loginWithBiometric(){
+      const cfg = getBiometricConfig();
+      if(!cfg || !cfg.credentialId || !cfg.username){ alert("لا توجد بصمة مفعلة على هذا الجهاز."); return; }
+      if(!canUseBiometric()){
+        alert("البصمة تحتاج رابط آمن HTTPS أو تطبيق مثبت.");
+        return;
+      }
+      try{
+        const challenge = crypto.getRandomValues(new Uint8Array(32));
+        await navigator.credentials.get({
+          publicKey: {
+            challenge,
+            allowCredentials: [{ id: base64UrlToArrayBuffer(cfg.credentialId), type: "public-key" }],
+            userVerification: "required",
+            timeout: 60000
+          }
+        });
+        applyLoginSuccess({ username: cfg.username, role: cfg.role || "manager" });
+      }catch(err){
+        alert("فشل الدخول بالبصمة: " + (err && err.message ? err.message : "تم إلغاء العملية"));
+      }
+    }
+
     let appData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"projects":[]}');
     let currentProjectId = null;
     let bookingUnitIndex = null;
@@ -2438,13 +2635,7 @@
         matched = { username: AUTH_USER, role: "manager", label: "مدير" };
       }
       if(matched){
-        setCurrentUserSession({ username: matched.username, role: matched.role || "manager" });
-        document.getElementById("loginView").classList.add("hidden");
-        document.getElementById("appView").classList.remove("hidden");
-        applySystemBranding();
-        updateCurrentUserBadge();
-        maybeAutoBackup();
-        pullCloudData().then(() => renderProjects());
+        applyLoginSuccess({ username: matched.username, role: matched.role || "manager" });
       }else{
         alert("اسم المستخدم أو كلمة المرور غير صحيح");
       }
@@ -2453,6 +2644,7 @@
     function logout(){
       sessionStorage.removeItem("anasLoggedExcelPdf");
       sessionStorage.removeItem(SESSION_USER_KEY);
+      clearRememberedUser();
       location.reload();
     }
 
@@ -2469,11 +2661,18 @@
       setupCurrencyInputs();
       fillCloudInputs();
       maybeAutoBackup();
+      updateBiometricUI();
+      registerHardwareBackHandler();
       await pullCloudData();
-      if(sessionStorage.getItem("anasLoggedExcelPdf") === "1"){
+      const remembered = getRememberedUser();
+      if(sessionStorage.getItem("anasLoggedExcelPdf") === "1" || (remembered && remembered.username)){
+        if(remembered && remembered.username && sessionStorage.getItem("anasLoggedExcelPdf") !== "1"){
+          setCurrentUserSession({ username: remembered.username, role: remembered.role || "manager" });
+        }
         document.getElementById("loginView").classList.add("hidden");
         document.getElementById("appView").classList.remove("hidden");
         updateCurrentUserBadge();
+        ensureAppHistoryRoot();
         renderProjects();
         applyMobileTableWrappers();
       }
@@ -2839,7 +3038,7 @@
       renderProjects();
     }
 
-    function openProject(id){
+    function openProject(id, pushHistoryState=true){
       currentProjectId = String(id);
       const project = getProject();
       if(!project){
@@ -2850,13 +3049,15 @@
       }
       document.getElementById("projectsView").classList.add("hidden");
       document.getElementById("workspaceView").classList.remove("hidden");
+      if(pushHistoryState !== false) pushAppHistory("project", currentProjectId);
       renderProject();
     }
 
-    function backToProjects(){
+    function backToProjects(pushHistoryState=true){
       currentProjectId = null;
       document.getElementById("workspaceView").classList.add("hidden");
       document.getElementById("projectsView").classList.remove("hidden");
+      if(pushHistoryState !== false) pushAppHistory("projects", null);
       renderProjects();
     }
 
