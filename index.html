@@ -520,6 +520,172 @@
       margin-top:14px;
     }
 
+    .cloud-modal-content{
+      max-width:1280px;
+      border-radius:24px;
+      padding:24px;
+      background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);
+      border:1px solid #dbe7f3;
+      box-shadow:0 24px 60px rgba(15,23,42,.18);
+    }
+    .cloud-head-note{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+    .cloud-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#eff6ff;
+      border:1px solid #bfdbfe;
+      color:#1d4ed8;
+      font-size:12px;
+      font-weight:bold;
+    }
+    .cloud-sections-grid{
+      display:grid;
+      grid-template-columns:1.15fr .95fr;
+      gap:16px;
+      align-items:start;
+    }
+    .cloud-section-card{
+      background:#fff;
+      border:1px solid #dbe7f3;
+      border-radius:20px;
+      padding:18px;
+      box-shadow:0 10px 30px rgba(15,23,42,.06);
+    }
+    .cloud-section-title{
+      margin:0 0 6px 0;
+      font-size:18px;
+      color:#0f172a;
+    }
+    .cloud-section-sub{
+      margin:0 0 14px 0;
+      color:#64748b;
+      font-size:12px;
+      line-height:1.8;
+    }
+    .cloud-settings-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+    }
+    .cloud-settings-grid input,
+    .account-row input{
+      background:#f8fafc;
+      border:1px solid #d7e1ea;
+      height:48px;
+      transition:border-color .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+    .cloud-settings-grid input:focus,
+    .account-row input:focus{
+      outline:none;
+      border-color:#60a5fa;
+      background:#fff;
+      box-shadow:0 0 0 4px rgba(96,165,250,.16);
+    }
+    .account-settings-box{
+      border:1px solid #dbe7f3;
+      border-radius:20px;
+      background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);
+      padding:18px;
+      box-shadow:0 10px 30px rgba(15,23,42,.05);
+    }
+    .account-settings-title{
+      margin:0 0 4px 0;
+      font-size:18px;
+      font-weight:800;
+      color:var(--primary);
+    }
+    .account-settings-sub{
+      margin:0 0 14px 0;
+      font-size:12px;
+      color:#64748b;
+      line-height:1.8;
+    }
+    .account-row{
+      display:grid;
+      grid-template-columns:150px minmax(0,1fr) minmax(0,1fr);
+      gap:12px;
+      align-items:center;
+      padding:12px 14px;
+      border:1px solid #e5edf5;
+      border-radius:16px;
+      background:#ffffff;
+      margin-bottom:12px;
+    }
+    .account-row:last-child{margin-bottom:0}
+    .account-label{
+      font-size:13px;
+      font-weight:800;
+      color:#0f172a;
+      background:#eff6ff;
+      border:1px solid #bfdbfe;
+      border-radius:12px;
+      min-height:48px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:0 12px;
+    }
+    .password-wrap{
+      position:relative;
+      display:flex;
+      align-items:center;
+    }
+    .password-wrap input{padding-inline-end:58px}
+    .toggle-pass-btn{
+      position:absolute;
+      inset-inline-end:8px;
+      top:50%;
+      transform:translateY(-50%);
+      min-width:auto;
+      width:40px;
+      height:40px;
+      border-radius:12px;
+      border:1px solid #cbd5e1;
+      background:#ffffff;
+      color:#334155;
+      padding:0;
+      font-size:18px;
+      line-height:1;
+      cursor:pointer;
+      box-shadow:0 4px 12px rgba(15,23,42,.06);
+      transition:all .2s ease;
+    }
+    .toggle-pass-btn:hover{
+      background:#eff6ff;
+      border-color:#93c5fd;
+      transform:translateY(-50%) scale(1.03);
+    }
+    .cloud-actions-bar{
+      margin-top:16px;
+      padding-top:16px;
+      border-top:1px solid #dbe7f3;
+    }
+    .cloud-actions-bar .actions{gap:10px}
+    .cloud-actions-bar button{
+      min-height:46px;
+      border-radius:14px;
+      box-shadow:0 8px 20px rgba(15,23,42,.08);
+    }
+    @media (max-width:1100px){
+      .cloud-sections-grid{grid-template-columns:1fr}
+    }
+    @media (max-width:900px){
+      .cloud-settings-grid{grid-template-columns:1fr}
+      .account-row{grid-template-columns:1fr}
+      .account-label{justify-content:flex-start}
+      .cloud-modal-content{padding:16px}
+    }
+
     @media print{
       .tabs,.no-print,.modal{display:none !important}
       .card,.kpi{box-shadow:none}
@@ -703,7 +869,10 @@
           <div class="kpi"><div class="kpi-title">إجمالي السعي المستحق</div><div class="kpi-value" id="kpiCommissionDue">0</div></div>
           <div class="kpi"><div class="kpi-title">السعي المصروف فعليًا</div><div class="kpi-value" id="kpiCommissionPaid">0</div></div>
           <div class="kpi"><div class="kpi-title">متبقي السعي</div><div class="kpi-value" id="kpiCommissionRemain">0</div></div>
-          <div class="kpi"><div class="kpi-title">الربح الكلي</div><div class="kpi-value" id="kpiProfit">0</div></div>
+          <div class="kpi"><div class="kpi-title">الربح القابل للتوزيع</div><div class="kpi-value" id="kpiProfit">0</div></div>
+          <div class="kpi"><div class="kpi-title">المحجوز لعهدة الموقع</div><div class="kpi-value" id="kpiSiteCustodyAdded">0</div></div>
+          <div class="kpi"><div class="kpi-title">المصروف من عهدة الموقع</div><div class="kpi-value" id="kpiSiteCustodySpent">0</div></div>
+          <div class="kpi"><div class="kpi-title">رصيد عهدة الموقع</div><div class="kpi-value" id="kpiSiteCustodyBalance">0</div></div>
           <div class="kpi"><div class="kpi-title">نصيب الشركة من الشركاء</div><div class="kpi-value" id="kpiCompanyFromPartners">0</div></div>
           <div class="kpi"><div class="kpi-title">إدارة المساهمين</div><div class="kpi-value" id="kpiInvestorAdmin">0</div></div>
           <div class="kpi"><div class="kpi-title">ربح الشركة النهائي</div><div class="kpi-value" id="kpiCompanyFinal">0</div></div>
@@ -723,6 +892,7 @@
           <button class="tab" onclick="showTab('partnersTab', this)">الشركاء</button>
           <button class="tab" onclick="showTab('investorsTab', this)">المساهمون</button>
           <button class="tab" onclick="showTab('advancesTab', this)">الدفعات تحت الحساب</button>
+          <button class="tab" onclick="showTab('siteCustodyTab', this)">عهدة الموقع</button>
           <button class="tab" onclick="showTab('movementsTab', this)">دفتر الحركة</button>
           <button id="alertsTabButton" class="tab" onclick="showTab('alertsTab', this)">التنبيهات <span id="alertsTabCount" class="tab-badge">0</span></button>
           <button class="tab" onclick="showTab('reportTab', this)">ملخص المشروع</button>
@@ -1038,6 +1208,68 @@
           </table>
         </div>
 
+        <div id="siteCustodyTab" class="card tab-panel hidden">
+          <div class="section-title">
+            <div>
+              <h3>عهدة الموقع</h3>
+              <div class="section-kicker">مبالغ تُحجز من أرباح المشروع قبل التوزيع، ويستمر الصرف منها حتى بعد إقفال المشروع</div>
+            </div>
+            <div class="actions no-print">
+              <span class="mini-stat" id="siteCustodyCount">0 حركة</span>
+              <button class="btn-teal" onclick="printSiteCustodyReport()">طباعة تقرير العهدة</button>
+            </div>
+          </div>
+
+          <div class="note">
+            <strong>طريقة العمل:</strong> "إضافة للعهدة" تخصم من ربح المشروع قبل التوزيع، أما "صرف من العهدة" فيخصم من رصيد العهدة فقط ولا يخصم من الربح مرة ثانية.
+          </div>
+
+          <div class="custody-summary">
+            <div class="custody-card">
+              <div class="label">إجمالي ما حُجز للعهدة</div>
+              <div class="value" id="siteCustodyAdded">0</div>
+              <div class="sub">يُخصم قبل توزيع الأرباح</div>
+            </div>
+            <div class="custody-card">
+              <div class="label">إجمالي المصروف من العهدة</div>
+              <div class="value" id="siteCustodySpent">0</div>
+              <div class="sub">مصروفات تمت من رصيد العهدة</div>
+            </div>
+            <div class="custody-card">
+              <div class="label">الرصيد الحالي للعهدة</div>
+              <div class="value" id="siteCustodyBalance">0</div>
+              <div class="sub">المتاح للصرف حتى بعد إقفال المشروع</div>
+            </div>
+          </div>
+
+          <div class="grid grid-4 no-print">
+            <select id="siteCustodyType">
+              <option value="add">إضافة للعهدة</option>
+              <option value="spend">صرف من العهدة</option>
+            </select>
+            <input id="siteCustodyAmount" type="number" placeholder="المبلغ" />
+            <input id="siteCustodyDate" type="date" />
+            <input id="siteCustodyNote" placeholder="ملاحظة / البيان" />
+          </div>
+          <div style="margin-top:12px" class="no-print">
+            <button class="btn-purple" onclick="addSiteCustodyEntry()">تسجيل حركة العهدة</button>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>التاريخ</th>
+                <th>النوع</th>
+                <th>المبلغ</th>
+                <th>البيان</th>
+                <th>الأثر</th>
+                <th class="no-print">إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="siteCustodyBody"></tbody>
+          </table>
+        </div>
+
         <div id="movementsTab" class="card tab-panel hidden">
           <h3>دفتر الحركة</h3>
           <table>
@@ -1165,7 +1397,7 @@
 
 
   <div id="cloudModal" class="modal hidden">
-    <div class="modal-content">
+    <div class="modal-content cloud-modal-content">
       <div class="section-title">
         <h3>إعداد التخزين الأونلاين</h3>
         <div class="actions">
@@ -1173,42 +1405,103 @@
         </div>
       </div>
 
-      <div class="cloud-panel">
-        <strong>الفكرة:</strong> بعد إدخال بيانات Firebase مرة واحدة، كل حفظ داخل النظام يترفع للسحابة تلقائيًا،
-        وتقدر تفتح نفس البيانات من أي جهاز. لو قاعدة البيانات فاضية والنظام عندك عليه بيانات محلية، هيرفعها تلقائيًا كأول نسخة.
+      <div class="cloud-head-note">
+        <div class="cloud-panel" style="margin:0;flex:1">
+          <strong>الفكرة:</strong> بعد إدخال بيانات Firebase مرة واحدة، كل حفظ داخل النظام يترفع للسحابة تلقائيًا،
+          وتقدر تفتح نفس البيانات من أي جهاز. لو قاعدة البيانات فاضية والنظام عندك عليه بيانات محلية، هيرفعها تلقائيًا كأول نسخة.
+        </div>
+        <div class="cloud-chip">واجهة مطورة بنفس الوظائف</div>
       </div>
 
-      <div class="grid grid-2">
-        <input id="fbApiKey" placeholder="apiKey" />
-        <input id="fbAuthDomain" placeholder="authDomain" />
-        <input id="fbDatabaseURL" placeholder="databaseURL" />
-        <input id="fbProjectId" placeholder="projectId" />
-        <input id="fbStorageBucket" placeholder="storageBucket" />
-        <input id="fbMessagingSenderId" placeholder="messagingSenderId" />
-        <input id="fbAppId" placeholder="appId" />
-        <input id="fbDataPath" placeholder="مسار البيانات داخل القاعدة" />
-        <input id="systemSecretCode" type="password" placeholder="الكود السري للنظام" />
-        <input id="systemSecretCodeConfirm" type="password" placeholder="تأكيد الكود السري" />
-        <input id="systemAppTitle" placeholder="اسم النظام" />
-        <input id="systemCompanyName" placeholder="اسم الشركة" />
-        <input id="systemCommissionRate" type="number" placeholder="نسبة السعي %" />
-        <input id="managerUsername" placeholder="اسم مستخدم المدير" />
-        <input id="managerPassword" type="password" placeholder="رقم سري المدير" />
-        <input id="accountantUsername" placeholder="اسم مستخدم المحاسب" />
-        <input id="accountantPassword" type="password" placeholder="رقم سري المحاسب" />
-        <input id="entryUsername" placeholder="اسم مستخدم مدخل البيانات" />
-        <input id="entryPassword" type="password" placeholder="رقم سري مدخل البيانات" />
+      <div class="cloud-sections-grid">
+        <div class="cloud-section-card">
+          <h4 class="cloud-section-title">بيانات الربط والإعدادات العامة</h4>
+          <p class="cloud-section-sub">كل الحقول القديمة نفسها موجودة كما هي، لكن بترتيب أوضح وأسهل في القراءة.</p>
+          <div class="cloud-settings-grid">
+            <input id="fbApiKey" placeholder="apiKey" />
+            <input id="fbAuthDomain" placeholder="authDomain" />
+            <input id="fbDatabaseURL" placeholder="databaseURL" />
+            <input id="fbProjectId" placeholder="projectId" />
+            <input id="fbStorageBucket" placeholder="storageBucket" />
+            <input id="fbMessagingSenderId" placeholder="messagingSenderId" />
+            <input id="fbAppId" placeholder="appId" />
+            <input id="fbDataPath" placeholder="مسار البيانات داخل القاعدة" />
+            <div class="password-wrap">
+              <input id="systemSecretCode" type="password" placeholder="الكود السري للنظام" />
+              <button type="button" class="toggle-pass-btn" onclick="togglePasswordField('systemSecretCode', this)">👁</button>
+            </div>
+            <div class="password-wrap">
+              <input id="systemSecretCodeConfirm" type="password" placeholder="تأكيد الكود السري" />
+              <button type="button" class="toggle-pass-btn" onclick="togglePasswordField('systemSecretCodeConfirm', this)">👁</button>
+            </div>
+            <input id="systemAppTitle" placeholder="اسم النظام" />
+            <input id="systemCompanyName" placeholder="اسم الشركة" />
+            <input id="systemCommissionRate" type="number" placeholder="نسبة السعي %" />
+          </div>
+        </div>
+
+        <div class="account-settings-box">
+          <h4 class="account-settings-title">حسابات المستخدمين</h4>
+          <p class="account-settings-sub">اسم المستخدم مقابل كلمة المرور، مع زر إظهار سريع لكل حساب بدون تغيير أي وظيفة داخلية.</p>
+
+          <div class="account-row">
+            <div class="account-label">المدير 1</div>
+            <input id="managerUsername" placeholder="اسم المستخدم" />
+            <div class="password-wrap">
+              <input id="managerPassword" type="password" placeholder="كلمة المرور" />
+              <button type="button" class="toggle-pass-btn" onclick="togglePasswordField('managerPassword', this)">👁</button>
+            </div>
+          </div>
+
+          <div class="account-row">
+            <div class="account-label">المدير 2</div>
+            <input id="manager2Username" placeholder="اسم المستخدم" />
+            <div class="password-wrap">
+              <input id="manager2Password" type="password" placeholder="كلمة المرور" />
+              <button type="button" class="toggle-pass-btn" onclick="togglePasswordField('manager2Password', this)">👁</button>
+            </div>
+          </div>
+
+          <div class="account-row">
+            <div class="account-label">المدير 3</div>
+            <input id="manager3Username" placeholder="اسم المستخدم" />
+            <div class="password-wrap">
+              <input id="manager3Password" type="password" placeholder="كلمة المرور" />
+              <button type="button" class="toggle-pass-btn" onclick="togglePasswordField('manager3Password', this)">👁</button>
+            </div>
+          </div>
+
+          <div class="account-row">
+            <div class="account-label">المحاسب</div>
+            <input id="accountantUsername" placeholder="اسم المستخدم" />
+            <div class="password-wrap">
+              <input id="accountantPassword" type="password" placeholder="كلمة المرور" />
+              <button type="button" class="toggle-pass-btn" onclick="togglePasswordField('accountantPassword', this)">👁</button>
+            </div>
+          </div>
+
+          <div class="account-row">
+            <div class="account-label">مدخل البيانات</div>
+            <input id="entryUsername" placeholder="اسم المستخدم" />
+            <div class="password-wrap">
+              <input id="entryPassword" type="password" placeholder="كلمة المرور" />
+              <button type="button" class="toggle-pass-btn" onclick="togglePasswordField('entryPassword', this)">👁</button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="actions" style="margin-top:16px">
-        <button class="btn-green" onclick="saveCloudSettings()">حفظ الإعدادات</button>
-        <button class="btn" onclick="testCloudConnection()">اختبار الاتصال</button>
-        <button class="btn-orange" onclick="pullCloudNow()">سحب من السحابة</button>
-        <button class="btn-purple" onclick="pushCloudNow()">رفع إلى السحابة</button>
-        <button class="btn-red" onclick="clearCloudSettings()">مسح الإعدادات</button>
+      <div class="cloud-actions-bar">
+        <div class="actions">
+          <button class="btn-green" onclick="saveCloudSettings()">حفظ الإعدادات</button>
+          <button class="btn" onclick="testCloudConnection()">اختبار الاتصال</button>
+          <button class="btn-orange" onclick="pullCloudNow()">سحب من السحابة</button>
+          <button class="btn-purple" onclick="pushCloudNow()">رفع إلى السحابة</button>
+          <button class="btn-red" onclick="clearCloudSettings()">مسح الإعدادات</button>
+        </div>
       </div>
 
-      <div id="cloudStatusBox" class="note" style="margin-top:14px">أدخل بيانات Firebase من إعدادات مشروعك ثم اختبر الاتصال. ويمكنك من هنا أيضًا تغيير الكود السري للنظام.</div>
+      <div id="cloudStatusBox" class="note" style="margin-top:14px">أدخل بيانات Firebase من إعدادات مشروعك ثم اختبر الاتصال. ويمكنك من هنا أيضًا تغيير الكود السري للنظام وحسابات المدراء والمستخدمين.</div>
     </div>
   </div>
 
@@ -1243,14 +1536,18 @@
 
     function loadUserAccounts(){
       const defaults = {
-        manager: { username: AUTH_USER, password: AUTH_PASS, role: "manager", label: "مدير" },
-        accountant: { username: "المحاسب", password: "2222", role: "accountant", label: "محاسب" },
-        entry: { username: "المدخل", password: "3333", role: "entry", label: "مدخل بيانات" }
+        manager: { username: AUTH_USER, password: AUTH_PASS, role: "manager", label: "مدير 1" },
+        manager2: { username: "manager2", password: "2222", role: "manager", label: "مدير 2" },
+        manager3: { username: "manager3", password: "3333", role: "manager", label: "مدير 3" },
+        accountant: { username: "المحاسب", password: "4444", role: "accountant", label: "محاسب" },
+        entry: { username: "المدخل", password: "5555", role: "entry", label: "مدخل بيانات" }
       };
       try{
         const saved = JSON.parse(localStorage.getItem(USER_ACCOUNTS_KEY) || "{}");
         return {
           manager: { ...defaults.manager, ...(saved.manager || {}) },
+          manager2: { ...defaults.manager2, ...(saved.manager2 || {}) },
+          manager3: { ...defaults.manager3, ...(saved.manager3 || {}) },
           accountant: { ...defaults.accountant, ...(saved.accountant || {}) },
           entry: { ...defaults.entry, ...(saved.entry || {}) }
         };
@@ -1304,8 +1601,8 @@
       const role = currentRole();
       if(role === "manager") return true;
       const allowed = {
-        accountant: ["open","addUnit","saveBooking","addExpense","addPartner","addInvestor","addAdvance","print","view","editBasic","sendWhatsApp","importUnits"],
-        entry: ["open","addUnit","saveBooking","addExpense","print","view","sendWhatsApp","importUnits"]
+        accountant: ["open","addUnit","saveBooking","addExpense","addPartner","addInvestor","addAdvance","addSiteCustody","print","view","editBasic","sendWhatsApp","importUnits"],
+        entry: ["open","addUnit","saveBooking","addExpense","addSiteCustody","print","view","sendWhatsApp","importUnits"]
       };
       return (allowed[role] || []).includes(action);
     }
@@ -1330,7 +1627,8 @@
         ['button[onclick*="editProjectBasics"]', role === "entry" ? 'hide' : 'show'],
         ['button[onclick*="addPartner"]', role === "entry" ? 'hide' : 'show'],
         ['button[onclick*="addInvestor"]', role === "entry" ? 'hide' : 'show'],
-        ['button[onclick*="addAdvance"]', role === "entry" ? 'hide' : 'show']
+        ['button[onclick*="addAdvance"]', role === "entry" ? 'hide' : 'show'],
+        ['button[onclick*="addSiteCustodyEntry"]', 'show']
       ];
       mappings.forEach(([selector, mode]) => {
         document.querySelectorAll(selector).forEach(el => {
@@ -1530,6 +1828,14 @@
       box.innerHTML = message;
     }
 
+    function togglePasswordField(inputId, btn){
+      const input = document.getElementById(inputId);
+      if(!input) return;
+      const show = input.type === "password";
+      input.type = show ? "text" : "password";
+      if(btn) btn.textContent = show ? "🙈" : "👁";
+    }
+
     function fillCloudInputs(){
       const c = cloudConfig.firebaseConfig || {};
       const map = {
@@ -1547,6 +1853,10 @@
       const accounts = loadUserAccounts();
       map.managerUsername = accounts.manager.username || "";
       map.managerPassword = accounts.manager.password || "";
+      map.manager2Username = accounts.manager2?.username || "";
+      map.manager2Password = accounts.manager2?.password || "";
+      map.manager3Username = accounts.manager3?.username || "";
+      map.manager3Password = accounts.manager3?.password || "";
       map.accountantUsername = accounts.accountant.username || "";
       map.accountantPassword = accounts.accountant.password || "";
       map.entryUsername = accounts.entry.username || "";
@@ -1579,6 +1889,20 @@
           ...currentAccounts.manager,
           username: document.getElementById("managerUsername")?.value.trim() || currentAccounts.manager.username,
           password: document.getElementById("managerPassword")?.value || currentAccounts.manager.password
+        },
+        manager2: {
+          ...(currentAccounts.manager2 || { role: "manager", label: "مدير 2" }),
+          username: document.getElementById("manager2Username")?.value.trim() || currentAccounts.manager2?.username || "manager2",
+          password: document.getElementById("manager2Password")?.value || currentAccounts.manager2?.password || "2222",
+          role: "manager",
+          label: "مدير 2"
+        },
+        manager3: {
+          ...(currentAccounts.manager3 || { role: "manager", label: "مدير 3" }),
+          username: document.getElementById("manager3Username")?.value.trim() || currentAccounts.manager3?.username || "manager3",
+          password: document.getElementById("manager3Password")?.value || currentAccounts.manager3?.password || "3333",
+          role: "manager",
+          label: "مدير 3"
         },
         accountant: {
           ...currentAccounts.accountant,
@@ -2013,6 +2337,7 @@
       if(!project.partners) project.partners = [];
       if(!project.investors) project.investors = [];
       if(!project.advances) project.advances = [];
+      if(!project.siteCustody) project.siteCustody = [];
       if(!project.movements) project.movements = [];
       if(typeof project.archived === "undefined") project.archived = false;
       if(!project.archivedAt) project.archivedAt = "";
@@ -2199,6 +2524,7 @@
         partners: [],
         investors: [],
         advances: [],
+        siteCustody: [],
         movements: []
       });
 
@@ -2223,7 +2549,9 @@
         totalUnits: 0,
         availableUnits: 0,
         bookedUnits: 0,
-        soldUnits: 0
+        soldUnits: 0,
+        totalSiteCustodyBalance: 0,
+        totalSiteCustodyAdded: 0
       };
       (appData.projects || []).forEach(project => {
         ensureArrays(project);
@@ -2240,6 +2568,8 @@
         base.availableUnits += num(f.availableUnits);
         base.bookedUnits += num(f.bookedUnits);
         base.soldUnits += num(f.soldUnits);
+        base.totalSiteCustodyBalance += num(f.siteCustodyBalance);
+        base.totalSiteCustodyAdded += num(f.siteCustodyAdded);
       });
       return base;
     }
@@ -2264,7 +2594,8 @@
         ["إجمالي الربح", money(agg.totalProfit), "قبل تقفيل ربح الشركة النهائي"],
         ["ربح الشركة النهائي", money(agg.totalCompanyFinal), "بعد الشركاء والمساهمين"],
         ["عدد الوحدات", String(agg.totalUnits), `متاح ${agg.availableUnits} | محجوز ${agg.bookedUnits} | مباع ${agg.soldUnits}`],
-        ["متبقي السعي", money(agg.totalCommissionRemain), `مستحق ${money(agg.totalCommissionDue)} | مصروف ${money(agg.totalCommissionPaid)}`]
+        ["متبقي السعي", money(agg.totalCommissionRemain), `مستحق ${money(agg.totalCommissionDue)} | مصروف ${money(agg.totalCommissionPaid)}`],
+        ["رصيد عهدة الموقع", money(agg.totalSiteCustodyBalance), `إجمالي ما حُجز ${money(agg.totalSiteCustodyAdded)}`]
       ];
       container.innerHTML = cards.map((card, idx) => `
         <div class="dashboard-card ${idx === 3 ? 'success' : ''}">
@@ -2290,7 +2621,7 @@
         mainFinanceChart = new Chart(financeCanvas, {
           type: 'bar',
           data: {
-            labels: ['المبيعات', 'المصروفات', 'الربح', 'ربح الشركة'],
+            labels: ['المبيعات', 'المصروفات', 'الربح قبل التوزيع', 'ربح الشركة'],
             datasets: [{
               data: [agg.totalSales, agg.totalExpenses, agg.totalProfit, agg.totalCompanyFinal],
               borderWidth: 1
@@ -2343,8 +2674,8 @@
         projectFinanceChart = new Chart(financeCanvas, {
           type: 'doughnut',
           data: {
-            labels: ['المبيعات', 'المصروفات', 'السعي', 'الربح'],
-            datasets: [{ data: [f.totalSales, f.totalExpenses, f.totalCommissionDue, f.profit], borderWidth: 1 }]
+            labels: ['المبيعات', 'المصروفات', 'السعي', 'العهدة المحجوزة', 'الربح القابل للتوزيع'],
+            datasets: [{ data: [f.totalSales, f.totalExpenses, f.totalCommissionDue, f.siteCustodyAdded, f.distributableProfit], borderWidth: 1 }]
           },
           options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, position: 'bottom' } } }
         });
@@ -2577,10 +2908,22 @@
       return result;
     }
 
+    function calcSiteCustodyTotals(project){
+      const rows = project.siteCustody || [];
+      const added = rows.filter(x => x.type === "add").reduce((s,x) => s + num(x.amount), 0);
+      const spent = rows.filter(x => x.type === "spend").reduce((s,x) => s + num(x.amount), 0);
+      return {
+        added,
+        spent,
+        balance: added - spent
+      };
+    }
+
     function calcProjectFinancials(project){
       const units = project.units || [];
       const expenses = project.expenses || [];
       const advanceTotals = calcAdvanceTotals(project);
+      const custodyTotals = calcSiteCustodyTotals(project);
 
       const revenueStatuses = ["مباعة","تم السداد","تمت المراجعة النهائية","تم الافراغ"];
       const totalSales = units.filter(u => revenueStatuses.includes(u.status)).reduce((s,u) => s + num(u.finalPrice || u.price), 0);
@@ -2593,9 +2936,13 @@
       const availableUnits = units.filter(u => u.status === "متاحة").length;
 
       const profit = totalSales - num(project.cost) - totalExpenses - totalCommissionDue;
+      const siteCustodyAdded = custodyTotals.added;
+      const siteCustodySpent = custodyTotals.spent;
+      const siteCustodyBalance = custodyTotals.balance;
+      const distributableProfit = profit - siteCustodyAdded;
 
       const partnersFull = partnerRowsWithCompany(project).map(x => {
-        const share = (num(x.percent) / 100) * profit;
+        const share = (num(x.percent) / 100) * distributableProfit;
         const paidAdvance = x.name === "الشركة"
           ? num(advanceTotals.company[x.name] || 0)
           : num(advanceTotals.partner[x.name] || 0);
@@ -2638,6 +2985,10 @@
         bookedUnits,
         availableUnits,
         profit,
+        siteCustodyAdded,
+        siteCustodySpent,
+        siteCustodyBalance,
+        distributableProfit,
         companyShareProfit,
         partnersFull,
         investorsFull,
@@ -2650,7 +3001,7 @@
     function projectFinancials(){
       const project = getProject();
       if(!project){
-        return calcProjectFinancials({units:[], expenses:[], advances:[], partners:[], investors:[], cost:0});
+        return calcProjectFinancials({units:[], expenses:[], advances:[], siteCustody:[], partners:[], investors:[], cost:0});
       }
       return calcProjectFinancials(project);
     }
@@ -3306,10 +3657,13 @@
       document.getElementById("kpiCommissionDue").innerText = money(f.totalCommissionDue);
       document.getElementById("kpiCommissionPaid").innerText = money(f.totalCommissionPaid);
       document.getElementById("kpiCommissionRemain").innerText = money(f.totalCommissionRemain);
-      document.getElementById("kpiProfit").innerText = money(f.profit);
+      document.getElementById("kpiProfit").innerText = money(f.distributableProfit);
       document.getElementById("kpiCompanyFromPartners").innerText = money(f.companyShareProfit);
       document.getElementById("kpiInvestorAdmin").innerText = money(f.totalInvestorAdmin);
       document.getElementById("kpiCompanyFinal").innerText = money(f.companyFinalProfit);
+      const custodyAddedEl = document.getElementById("kpiSiteCustodyAdded"); if(custodyAddedEl) custodyAddedEl.innerText = money(f.siteCustodyAdded);
+      const custodySpentEl = document.getElementById("kpiSiteCustodySpent"); if(custodySpentEl) custodySpentEl.innerText = money(f.siteCustodySpent);
+      const custodyBalanceEl = document.getElementById("kpiSiteCustodyBalance"); if(custodyBalanceEl) custodyBalanceEl.innerText = money(f.siteCustodyBalance);
       document.getElementById("kpiSold").innerText = f.soldUnits;
       document.getElementById("kpiBooked").innerText = f.bookedUnits;
       document.getElementById("kpiAvailable").innerText = f.availableUnits;
@@ -3324,6 +3678,7 @@
       renderPartners();
       renderInvestors();
       renderAdvances();
+      renderSiteCustody();
       renderMovements();
       renderReport();
       refreshAdvanceNames();
@@ -3548,19 +3903,27 @@
       if(!phone) return;
       const cleanedPhone = phone.replace(/[^\d]/g, "");
       const message = [
-        "تقرير وحدة",
+        "تقرير الوحدة",
         "",
         `المشروع: ${p.name || "-"}`,
         `رقم الشقة: ${u.number || "-"}`,
+        `النموذج: ${u.model || "-"}`,
         `المبنى: ${u.building || "-"}`,
         `الدور: ${u.floor || "-"}`,
+        `الإطلالة: ${u.view || "-"}`,
+        `المساحة: ${u.area || "-"}`,
+        `المكونات: ${u.components || "-"}`,
         `الحالة: ${u.status || "-"}`,
         `سعر العرض: ${money(u.price)}`,
         `سعر البيع النهائي: ${money(u.finalPrice || u.price)}`,
-        `العميل: ${u.client || "-"}`,
+        `اسم العميل: ${u.client || "-"}`,
         `جوال العميل: ${u.clientPhone || "-"}`,
+        `اسم المسوق: ${u.marketer || "-"}`,
+        `جوال المسوق: ${u.marketerPhone || "-"}`,
         `المدفوع: ${money(u.paid)}`,
-        `المتبقي: ${money(u.remaining)}`
+        `المتبقي: ${money(u.remaining)}`,
+        "",
+        "نظام أنس العقاري"
       ].join("\n");
       window.open(`https://wa.me/${cleanedPhone}?text=${encodeURIComponent(message)}`, "_blank");
     }
@@ -4233,6 +4596,130 @@ function addPartner(){
       });
     }
 
+    function canModifySiteCustody(type, isEditing=false){
+      if(type === "spend") return true;
+      if(!isCurrentProjectClosed()) return true;
+      alert("بعد إقفال المشروع مسموح بالصرف من عهدة الموقع فقط، ولا يمكن إضافة مبالغ جديدة للعهدة.");
+      return false;
+    }
+
+    function addSiteCustodyEntry(){
+      if(!requirePermission("addSiteCustody", "هذه الصلاحية غير متاحة لك")) return;
+      const p = getProject();
+      if(!p) return;
+      const type = document.getElementById("siteCustodyType").value;
+      const amount = num(document.getElementById("siteCustodyAmount").value);
+      const date = document.getElementById("siteCustodyDate").value || todayText();
+      const note = document.getElementById("siteCustodyNote").value.trim();
+      if(!canModifySiteCustody(type)) return;
+      if(Number.isNaN(amount) || amount <= 0){
+        alert("اكتب مبلغًا صحيحًا أكبر من صفر");
+        return;
+      }
+      const current = calcSiteCustodyTotals(p);
+      if(type === "spend" && amount > current.balance){
+        alert("المبلغ أكبر من رصيد عهدة الموقع الحالي");
+        return;
+      }
+      p.siteCustody.unshift({type, amount, date, note});
+      const moveType = type === "add" ? "إضافة عهدة موقع" : "صرف من عهدة الموقع";
+      const moveAmount = type === "add" ? amount : -amount;
+      addMovement(moveType, "عهدة الموقع", moveAmount, note || moveType, date);
+      document.getElementById("siteCustodyAmount").value = "";
+      document.getElementById("siteCustodyDate").value = "";
+      document.getElementById("siteCustodyNote").value = "";
+      renderProject();
+    }
+
+    function editSiteCustodyEntry(i){
+      const p = getProject();
+      const row = (p.siteCustody || [])[i];
+      if(!row) return;
+      const typeText = prompt("النوع: add أو spend", row.type || "add");
+      if(typeText === null) return;
+      const type = String(typeText).trim();
+      if(!["add","spend"].includes(type)){
+        alert("النوع يجب أن يكون add أو spend");
+        return;
+      }
+      if(!canModifySiteCustody(type, true)) return;
+      const amountText = prompt("المبلغ", String(num(row.amount)));
+      if(amountText === null) return;
+      const amount = Number(amountText);
+      if(Number.isNaN(amount) || amount <= 0){
+        alert("اكتب مبلغًا صحيحًا أكبر من صفر");
+        return;
+      }
+      const date = prompt("التاريخ", row.date || todayText());
+      if(date === null) return;
+      const note = prompt("البيان", row.note || "");
+      if(note === null) return;
+
+      const cloned = (p.siteCustody || []).map((x, idx) => idx === i ? {type, amount, date: String(date).trim() || row.date, note: String(note).trim()} : x);
+      const totals = calcSiteCustodyTotals({ siteCustody: cloned });
+      if(totals.balance < 0){
+        alert("التعديل يجعل رصيد عهدة الموقع بالسالب، راجع المبلغ أو النوع");
+        return;
+      }
+
+      const oldSigned = row.type === "add" ? num(row.amount) : -num(row.amount);
+      const newSigned = type === "add" ? num(amount) : -num(amount);
+      p.siteCustody[i] = {type, amount, date: String(date).trim() || row.date, note: String(note).trim()};
+      addMovement("تعديل عهدة الموقع", "عهدة الموقع", newSigned - oldSigned, p.siteCustody[i].note || "تم تعديل حركة العهدة", p.siteCustody[i].date);
+      renderProject();
+    }
+
+    function deleteSiteCustodyEntry(i){
+      const p = getProject();
+      const row = (p.siteCustody || [])[i];
+      if(!row) return;
+      if(row.type === "add" && !canModifySiteCustody("add", true)) return;
+      if(!confirm("هل تريد حذف حركة عهدة الموقع؟")) return;
+      const signedAmount = row.type === "add" ? -num(row.amount) : num(row.amount);
+      p.siteCustody.splice(i,1);
+      const totals = calcSiteCustodyTotals(p);
+      if(totals.balance < 0){
+        p.siteCustody.splice(i,0,row);
+        alert("لا يمكن حذف هذه الحركة لأن الرصيد سيصبح بالسالب");
+        return;
+      }
+      addMovement("حذف حركة عهدة الموقع", "عهدة الموقع", signedAmount, row.note || "تم حذف حركة العهدة", todayText());
+      renderProject();
+    }
+
+    function renderSiteCustody(){
+      const p = getProject();
+      const body = document.getElementById("siteCustodyBody");
+      const countBox = document.getElementById("siteCustodyCount");
+      if(!body || !p) return;
+      const rows = p.siteCustody || [];
+      const totals = calcSiteCustodyTotals(p);
+      if(countBox) countBox.textContent = `${rows.length} حركة`;
+      const setText = (id, value) => { const el = document.getElementById(id); if(el) el.textContent = value; };
+      setText("siteCustodyAdded", money(totals.added));
+      setText("siteCustodySpent", money(totals.spent));
+      setText("siteCustodyBalance", money(totals.balance));
+      body.innerHTML = "";
+      if(!rows.length){
+        body.innerHTML = '<tr><td colspan="6">لا توجد حركات عهدة موقع</td></tr>';
+        return;
+      }
+      rows.forEach((row, idx) => {
+        const typeLabel = row.type === "add" ? "إضافة للعهدة" : "صرف من العهدة";
+        const effect = row.type === "add" ? "يخصم من الربح قبل التوزيع" : "يخصم من رصيد العهدة";
+        body.innerHTML += `
+          <tr class="${row.type === 'spend' ? 'warn-row' : ''}">
+            <td>${row.date || '-'}</td>
+            <td>${typeLabel}</td>
+            <td>${money(row.amount)}</td>
+            <td>${escapeHtml(row.note || '-')}</td>
+            <td>${effect}</td>
+            <td class="no-print"><div class="actions"><button class="btn-orange" onclick="editSiteCustodyEntry(${idx})">تعديل</button><button class="btn-red" onclick="deleteSiteCustodyEntry(${idx})">حذف</button></div></td>
+          </tr>
+        `;
+      });
+    }
+
     function renderMovements(){
       const p = getProject();
       const body = document.getElementById("movementsBody");
@@ -4282,9 +4769,13 @@ function addPartner(){
         <strong>التكلفة الأساسية:</strong> ${money(p.cost)}<br>
         <strong>إجمالي المصروفات:</strong> ${money(f.totalExpenses)}<br>
         <strong>إجمالي السعي المستحق:</strong> ${money(f.totalCommissionDue)}<br>
+        <strong>المحجوز لعهدة الموقع:</strong> ${money(f.siteCustodyAdded)}<br>
+        <strong>المصروف من عهدة الموقع:</strong> ${money(f.siteCustodySpent)}<br>
+        <strong>رصيد عهدة الموقع:</strong> ${money(f.siteCustodyBalance)}<br>
         <strong>السعي المصروف فعليًا:</strong> ${money(f.totalCommissionPaid)}<br>
         <strong>متبقي السعي:</strong> ${money(f.totalCommissionRemain)}<br>
-        <strong>الربح الكلي:</strong> ${money(f.profit)}<br>
+        <strong>الربح قبل عهدة الموقع:</strong> ${money(f.profit)}<br>
+        <strong>الربح القابل للتوزيع:</strong> ${money(f.distributableProfit)}<br>
         <strong>نصيب الشركة من الشركاء:</strong> ${money(f.companyShareProfit)}<br>
         <strong>إجمالي إدارة المساهمين:</strong> ${money(f.totalInvestorAdmin)}<br>
         <strong>ربح الشركة النهائي:</strong> ${money(f.companyFinalProfit)}<br>
@@ -4311,7 +4802,11 @@ function addPartner(){
         ["إجمالي السعي المستحق", f.totalCommissionDue],
         ["السعي المصروف", f.totalCommissionPaid],
         ["متبقي السعي", f.totalCommissionRemain],
-        ["الربح الكلي", f.profit],
+        ["الربح قبل عهدة الموقع", f.profit],
+        ["المحجوز لعهدة الموقع", f.siteCustodyAdded],
+        ["المصروف من عهدة الموقع", f.siteCustodySpent],
+        ["رصيد عهدة الموقع", f.siteCustodyBalance],
+        ["الربح القابل للتوزيع", f.distributableProfit],
         ["نصيب الشركة من الشركاء", f.companyShareProfit],
         ["إدارة المساهمين", f.totalInvestorAdmin],
         ["ربح الشركة النهائي", f.companyFinalProfit],
@@ -4346,6 +4841,10 @@ function addPartner(){
       const advancesRows = [["التاريخ","النوع","الاسم","المبلغ","ملاحظة"]];
       (p.advances || []).forEach(a => advancesRows.push([a.date,a.entityType,a.entityName,a.amount,a.note]));
       XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(advancesRows), "تحت الحساب");
+
+      const siteCustodyRows = [["التاريخ","النوع","المبلغ","البيان","الأثر"]];
+      (p.siteCustody || []).forEach(a => siteCustodyRows.push([a.date, a.type === "add" ? "إضافة للعهدة" : "صرف من العهدة", a.amount, a.note || "", a.type === "add" ? "يخصم قبل التوزيع" : "يخصم من رصيد العهدة"]));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(siteCustodyRows), "عهدة الموقع");
 
       const movementsRows = [["التاريخ","نوع الحركة","الاسم / البيان","المبلغ","ملاحظة"]];
       (p.movements || []).forEach(m => movementsRows.push([m.date,m.type,m.name,m.amount,m.note]));
@@ -4578,7 +5077,9 @@ function addPartner(){
         printSummaryCard("إجمالي السعي المستحق", money(f.totalCommissionDue)),
         printSummaryCard("السعي المصروف", money(f.totalCommissionPaid)),
         printSummaryCard("متبقي السعي", money(f.totalCommissionRemain)),
-        printSummaryCard("الربح الكلي", money(f.profit)),
+        printSummaryCard("المحجوز لعهدة الموقع", money(f.siteCustodyAdded)),
+        printSummaryCard("رصيد عهدة الموقع", money(f.siteCustodyBalance)),
+        printSummaryCard("الربح القابل للتوزيع", money(f.distributableProfit)),
         printSummaryCard("نصيب الشركة من الشركاء", money(f.companyShareProfit)),
         printSummaryCard("ربح الشركة النهائي", money(f.companyFinalProfit))
       ].join("");
@@ -4620,6 +5121,91 @@ function addPartner(){
           ` : `<div class="empty-box">لا توجد وحدات داخل هذا المشروع حتى الآن.</div>`}
         </div>
       `;
+    }
+
+    function buildSiteCustodyReportHtml(){
+      const p = getProject();
+      const totals = calcSiteCustodyTotals(p);
+      const rows = (p.siteCustody || []).slice().sort((a,b) => String(a.date||'').localeCompare(String(b.date||''))).map((row, idx) => {
+        const typeLabel = row.type === "add" ? "إضافة للعهدة" : "صرف من العهدة";
+        const effect = row.type === "add" ? "يخصم من الربح قبل التوزيع" : "يخصم من رصيد العهدة";
+        return `
+          <tr>
+            <td>${idx + 1}</td>
+            <td>${escapeHtml(row.date || '-')}</td>
+            <td>${typeLabel}</td>
+            <td>${money(row.amount)}</td>
+            <td>${escapeHtml(row.note || '-')}</td>
+            <td>${effect}</td>
+          </tr>
+        `;
+      }).join("");
+
+      const topMeta = [
+        printMetaCard("المشروع", escapeHtml(p.name || '-')),
+        printMetaCard("حالة المشروع", p.closed ? "مقفل" : "مفتوح"),
+        printMetaCard("عدد الحركات", String((p.siteCustody || []).length)),
+        printMetaCard("تاريخ الطباعة", escapeHtml(todayText()))
+      ].join("");
+
+      const summaryCards = [
+        printSummaryCard("إجمالي ما حُجز للعهدة", money(totals.added)),
+        printSummaryCard("إجمالي المصروف من العهدة", money(totals.spent)),
+        printSummaryCard("رصيد عهدة الموقع", money(totals.balance)),
+        printSummaryCard("طريقة الأثر", "الحجز قبل التوزيع")
+      ].join("");
+
+      return `
+        <div class="report-title">
+          <div>
+            <h2>تقرير عهدة الموقع</h2>
+            <div class="report-sub">تقرير مستقل يوضح ما تم حجزه من أرباح المشروع وما تم صرفه من رصيد العهدة</div>
+          </div>
+        </div>
+
+        <div class="meta-grid">${topMeta}</div>
+        <div class="summary-grid">${summaryCards}</div>
+
+        <div class="section">
+          <div class="section-header">
+            <h3>ملخص محاسبي</h3>
+            <div class="section-note">إضافة للعهدة = تخصم من ربح المشروع قبل التوزيع | صرف من العهدة = يخصم من الرصيد فقط</div>
+          </div>
+          <div class="info-grid">
+            ${printInfoItem("إجمالي المبالغ المحجوزة للعهدة", money(totals.added))}
+            ${printInfoItem("إجمالي ما تم صرفه من العهدة", money(totals.spent))}
+            ${printInfoItem("الرصيد الحالي المتاح", money(totals.balance))}
+            ${printInfoItem("ملاحظة", "العهدة تظل متاحة للصرف حتى بعد إقفال المشروع")}
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <h3>تفاصيل حركات عهدة الموقع</h3>
+            <div class="section-note">كل الحركات المسجلة داخل صفحة عهدة الموقع</div>
+          </div>
+          ${rows ? `
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>التاريخ</th>
+                  <th>النوع</th>
+                  <th>المبلغ</th>
+                  <th>البيان</th>
+                  <th>الأثر</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          ` : `<div class="empty-box">لا توجد حركات عهدة موقع مسجلة حتى الآن.</div>`}
+        </div>
+      `;
+    }
+
+    function printSiteCustodyReport(){
+      const p = getProject();
+      openPrintWindow(`تقرير عهدة الموقع - ${p.name}`, buildSiteCustodyReportHtml());
     }
 
     function printProjectReport(){
