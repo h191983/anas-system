@@ -706,6 +706,41 @@
       .cloud-modal-content{padding:16px}
     }
 
+    .home-settings-card{
+      margin-top:16px;
+    }
+    .home-settings-toggle{
+      width:100%;
+      min-width:auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      text-align:right;
+      background:linear-gradient(135deg,#f8fbff 0%,#eef6ff 100%);
+      border:1px solid #dbe7f3;
+      border-radius:14px;
+      padding:16px 18px;
+      color:var(--text);
+      box-shadow:var(--shadow);
+    }
+    .home-settings-toggle h3{
+      margin-bottom:6px;
+    }
+    .home-settings-chevron{
+      font-size:22px;
+      font-weight:bold;
+      color:#1d4ed8;
+      transition:transform .2s ease;
+      flex:0 0 auto;
+    }
+    .home-settings-chevron.open{
+      transform:rotate(180deg);
+    }
+    .home-settings-content{
+      margin-top:14px;
+    }
+
     @media print{
       .tabs,.no-print,.modal{display:none !important}
       .card,.kpi{box-shadow:none}
@@ -741,6 +776,10 @@
     </div>
 
     <div id="appView" class="hidden">
+      <datalist id="partnerMasterNames"></datalist>
+      <datalist id="investorMasterNames"></datalist>
+      <datalist id="marketerMasterNames"></datalist>
+      <datalist id="bankMasterNames"></datalist>
       <div id="projectsView" class="card">
         <div class="section-title">
           <h2>المشاريع</h2>
@@ -806,7 +845,91 @@
           </div>
         </div>
 
+
+        
         <div id="projectsList"></div>
+
+        <div class="card home-settings-card" style="box-shadow:none;border:1px solid #e5e7eb">
+          <button type="button" class="home-settings-toggle no-print" onclick="toggleHomeSettingsSection()">
+            <div>
+              <h3 style="margin:0">الإعدادات والإضافات العامة</h3>
+              <div class="section-kicker">قوائم عامة للشركاء والمسوقين والمساهمين والبنوك، قابلة للإضافة والتعديل والحذف وتظهر كخيارات جاهزة داخل المشاريع</div>
+            </div>
+            <span id="homeSettingsChevron" class="home-settings-chevron">▾</span>
+          </button>
+
+          <div id="homeSettingsContent" class="home-settings-content hidden">
+            <div class="note" style="margin-top:0">القسم هنا مرجع عام للنظام كله، وتم نقله أسفل الصفحة حتى تظل الصفحة الرئيسية مركزة على المشاريع والمؤشرات أولًا.</div>
+
+            <div class="card" style="box-shadow:none;border:1px solid #e5e7eb">
+              <h4>قائمة الشركاء العامة</h4>
+              <div class="grid grid-4 no-print">
+                <input id="globalPartnerName" placeholder="اسم الشريك" />
+                <input id="globalPartnerAdminRate" type="number" placeholder="نسبة الإدارة الافتراضية %" />
+                <input id="globalPartnerNotes" placeholder="ملاحظات" />
+                <div class="actions">
+                  <button id="globalPartnerSaveBtn" class="btn-green" onclick="saveGlobalListItem('partners')">إضافة شريك عام</button>
+                  <button id="globalPartnerCancelBtn" class="btn-gray hidden" onclick="resetGlobalForm('partners')">إلغاء</button>
+                </div>
+              </div>
+              <table>
+                <thead><tr><th>الاسم</th><th>الإدارة الافتراضية</th><th>ملاحظات</th><th class="no-print">إجراء</th></tr></thead>
+                <tbody id="globalPartnersBody"></tbody>
+              </table>
+            </div>
+
+            <div class="card" style="box-shadow:none;border:1px solid #e5e7eb">
+              <h4>قائمة المسوقين العامة</h4>
+              <div class="grid grid-4 no-print">
+                <input id="globalMarketerName" placeholder="اسم المسوق" />
+                <input id="globalMarketerPhone" placeholder="رقم الجوال" />
+                <input id="globalMarketerNotes" placeholder="ملاحظات" />
+                <div class="actions">
+                  <button id="globalMarketerSaveBtn" class="btn-green" onclick="saveGlobalListItem('marketers')">إضافة مسوق عام</button>
+                  <button id="globalMarketerCancelBtn" class="btn-gray hidden" onclick="resetGlobalForm('marketers')">إلغاء</button>
+                </div>
+              </div>
+              <table>
+                <thead><tr><th>الاسم</th><th>الجوال</th><th>ملاحظات</th><th class="no-print">إجراء</th></tr></thead>
+                <tbody id="globalMarketersBody"></tbody>
+              </table>
+            </div>
+
+            <div class="card" style="box-shadow:none;border:1px solid #e5e7eb">
+              <h4>قائمة المساهمين العامة</h4>
+              <div class="grid grid-4 no-print">
+                <input id="globalInvestorName" placeholder="اسم المساهم" />
+                <input id="globalInvestorAdminRate" type="number" placeholder="نسبة الإدارة الافتراضية %" />
+                <input id="globalInvestorNotes" placeholder="ملاحظات" />
+                <div class="actions">
+                  <button id="globalInvestorSaveBtn" class="btn-green" onclick="saveGlobalListItem('investors')">إضافة مساهم عام</button>
+                  <button id="globalInvestorCancelBtn" class="btn-gray hidden" onclick="resetGlobalForm('investors')">إلغاء</button>
+                </div>
+              </div>
+              <table>
+                <thead><tr><th>الاسم</th><th>الإدارة الافتراضية</th><th>ملاحظات</th><th class="no-print">إجراء</th></tr></thead>
+                <tbody id="globalInvestorsBody"></tbody>
+              </table>
+            </div>
+
+            <div class="card" style="box-shadow:none;border:1px solid #e5e7eb">
+              <h4>قائمة البنوك العامة</h4>
+              <div class="grid grid-3 no-print">
+                <input id="globalBankName" placeholder="اسم البنك" list="bankMasterNames" />
+                <input id="globalBankNotes" placeholder="ملاحظات" />
+                <div class="actions">
+                  <button id="globalBankSaveBtn" class="btn-green" onclick="saveGlobalListItem('banks')">إضافة بنك</button>
+                  <button id="globalBankCancelBtn" class="btn-gray hidden" onclick="resetGlobalForm('banks')">إلغاء</button>
+                </div>
+              </div>
+              <table>
+                <thead><tr><th>اسم البنك</th><th>ملاحظات</th><th class="no-print">إجراء</th></tr></thead>
+                <tbody id="globalBanksBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <div id="workspaceView" class="hidden">
@@ -887,13 +1010,19 @@
 
         <div class="kpis">
           <div class="kpi"><div class="kpi-title">إجمالي المبيعات</div><div class="kpi-value" id="kpiSales">0</div></div>
+          <div class="kpi"><div class="kpi-title">إجمالي السعي المستحق</div><div class="kpi-value" id="kpiCommissionDue">0</div></div>
+          <div class="kpi"><div class="kpi-title">صافي المبيعات بعد خصم السعي</div><div class="kpi-value" id="kpiNetSales">0</div></div>
           <div class="kpi"><div class="kpi-title">التكلفة الأساسية</div><div class="kpi-value" id="kpiCost">0</div></div>
           <div class="kpi"><div class="kpi-title">إجمالي المصروفات</div><div class="kpi-value" id="kpiExpenses">0</div></div>
-          <div class="kpi"><div class="kpi-title">إجمالي السعي المستحق</div><div class="kpi-value" id="kpiCommissionDue">0</div></div>
+          <div class="kpi"><div class="kpi-title">إجمالي التكلفة</div><div class="kpi-value" id="kpiTotalProjectCost">0</div></div>
+          <div class="kpi"><div class="kpi-title">الربح قبل عهدة الموقع</div><div class="kpi-value" id="kpiProfitBeforeCustody">0</div></div>
+          <div class="kpi"><div class="kpi-title">المحجوز لعهدة الموقع</div><div class="kpi-value" id="kpiSiteCustodyAdded">0</div></div>
+          <div class="kpi"><div class="kpi-title">الربح القابل للتوزيع</div><div class="kpi-value" id="kpiProfit">0</div></div>
+          <div class="kpi"><div class="kpi-title">نسبة الشركة من إجمالي التكلفة</div><div class="kpi-value" id="kpiCompanyPercent">0</div></div>
+          <div class="kpi"><div class="kpi-title">نسبة الشركاء من إجمالي التكلفة</div><div class="kpi-value" id="kpiPartnerPercent">0</div></div>
+          <div class="kpi"><div class="kpi-title">مبلغ الشركة من إجمالي التكلفة</div><div class="kpi-value" id="kpiCompanyCostShare">0</div></div>
           <div class="kpi"><div class="kpi-title">السعي المصروف فعليًا</div><div class="kpi-value" id="kpiCommissionPaid">0</div></div>
           <div class="kpi"><div class="kpi-title">متبقي السعي</div><div class="kpi-value" id="kpiCommissionRemain">0</div></div>
-          <div class="kpi"><div class="kpi-title">الربح القابل للتوزيع</div><div class="kpi-value" id="kpiProfit">0</div></div>
-          <div class="kpi"><div class="kpi-title">المحجوز لعهدة الموقع</div><div class="kpi-value" id="kpiSiteCustodyAdded">0</div></div>
           <div class="kpi"><div class="kpi-title">المصروف من عهدة الموقع</div><div class="kpi-value" id="kpiSiteCustodySpent">0</div></div>
           <div class="kpi"><div class="kpi-title">رصيد عهدة الموقع</div><div class="kpi-value" id="kpiSiteCustodyBalance">0</div></div>
           <div class="kpi"><div class="kpi-title">نصيب الشركة من الشركاء</div><div class="kpi-value" id="kpiCompanyFromPartners">0</div></div>
@@ -1118,9 +1247,12 @@
           </div>
 
           <div class="grid grid-4 no-print">
-            <input class="lockable-input" id="partnerName" placeholder="اسم الشريك" />
+            <input class="lockable-input" id="partnerName" placeholder="اسم الشريك" list="partnerMasterNames" oninput="applyPartnerTemplate()" />
             <input class="lockable-input" id="partnerPercent" type="number" placeholder="النسبة %" />
+            <input class="lockable-input" id="partnerAdminRate" type="number" placeholder="نسبة الإدارة %" />
             <input class="lockable-input" id="partnerDate" type="date" />
+          </div>
+          <div style="margin-top:12px" class="no-print">
             <button class="btn-green" onclick="addPartner()">إضافة شريك</button>
           </div>
 
@@ -1128,10 +1260,14 @@
             <thead>
               <tr>
                 <th>الاسم</th>
-                <th>النسبة</th>
-                <th>نصيبه من الربح</th>
-                <th>تم صرفه تحت الحساب</th>
-                <th>المتبقي</th>
+                <th>النسبة من إجمالي التكلفة</th>
+                <th>مبلغه من إجمالي التكلفة</th>
+                <th>ربحه الإجمالي</th>
+                <th>الإدارة</th>
+                <th>صافي الربح</th>
+                <th>إجمالي حقه</th>
+                <th>تم صرفه له</th>
+                <th>المتبقي له</th>
                 <th>التاريخ</th>
                 <th class="no-print">تقرير</th>
                 <th class="no-print">إجراء</th>
@@ -1168,7 +1304,7 @@
           </div>
 
           <div class="grid grid-4 no-print">
-            <input class="lockable-input" id="investorName" placeholder="اسم المساهم" />
+            <input class="lockable-input" id="investorName" placeholder="اسم المساهم" list="investorMasterNames" oninput="applyInvestorTemplate()" />
             <input class="lockable-input" id="investorAmount" type="number" placeholder="مبلغ المساهمة" />
             <input class="lockable-input" id="investorAdminRate" type="number" placeholder="نسبة الإدارة %" />
             <input class="lockable-input" id="investorDate" type="date" />
@@ -1181,11 +1317,12 @@
             <thead>
               <tr>
                 <th>الاسم</th>
-                <th>المبلغ</th>
-                <th>النسبة</th>
-                <th>قبل الإدارة</th>
+                <th>مساهمة المساهم</th>
+                <th>نسبته من قاعدة الشركة</th>
+                <th>ربحه الإجمالي</th>
                 <th>الإدارة</th>
                 <th>الصافي</th>
+                <th>إجمالي حقه</th>
                 <th>تم صرفه تحت الحساب</th>
                 <th>المتبقي</th>
                 <th>التاريخ</th>
@@ -1364,7 +1501,7 @@
       <div class="grid grid-4">
         <input id="bkClient" placeholder="اسم العميل" />
         <input id="bkClientPhone" placeholder="رقم جوال العميل" />
-        <input id="bkMarketer" placeholder="اسم المسوق" />
+        <input id="bkMarketer" placeholder="اسم المسوق" list="marketerMasterNames" oninput="applyMarketerTemplate()" />
         <input id="bkMarketerPhone" placeholder="رقم جوال المسوق" />
       </div>
 
@@ -1929,7 +2066,7 @@
       }
     }
 
-    let appData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"projects":[]}');
+    let appData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"projects":[],"masterLists":{"partners":[],"marketers":[],"investors":[],"banks":[]}}');
     let currentProjectId = null;
     let bookingUnitIndex = null;
 
@@ -1950,6 +2087,341 @@
     let projectFinanceChart = null;
     let projectArchiveFilter = "active";
 
+    
+    function toggleHomeSettingsSection(forceOpen=null){
+      const content = document.getElementById("homeSettingsContent");
+      const chevron = document.getElementById("homeSettingsChevron");
+      if(!content) return;
+
+      const shouldOpen = forceOpen === null ? content.classList.contains("hidden") : !!forceOpen;
+      content.classList.toggle("hidden", !shouldOpen);
+      if(chevron) chevron.classList.toggle("open", shouldOpen);
+    }
+let globalSettingsState = {
+      partnersEditId: null,
+      marketersEditId: null,
+      investorsEditId: null,
+      banksEditId: null
+    };
+
+    function generateListId(prefix){
+      return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
+    }
+
+    function ensureMasterLists(){
+      if(!appData || typeof appData !== "object") appData = {projects:[]};
+      if(!Array.isArray(appData.projects)) appData.projects = [];
+      if(!appData.masterLists || typeof appData.masterLists !== "object") appData.masterLists = {};
+      ["partners","marketers","investors","banks"].forEach(key => {
+        if(!Array.isArray(appData.masterLists[key])) appData.masterLists[key] = [];
+      });
+      appData.masterLists.partners = appData.masterLists.partners.map(item => ({
+        id: item.id || generateListId("partner"),
+        name: String(item.name || "").trim(),
+        adminRate: num(item.adminRate),
+        notes: String(item.notes || "").trim()
+      })).filter(item => item.name);
+      appData.masterLists.marketers = appData.masterLists.marketers.map(item => ({
+        id: item.id || generateListId("marketer"),
+        name: String(item.name || "").trim(),
+        phone: String(item.phone || "").trim(),
+        notes: String(item.notes || "").trim()
+      })).filter(item => item.name);
+      appData.masterLists.investors = appData.masterLists.investors.map(item => ({
+        id: item.id || generateListId("investor"),
+        name: String(item.name || "").trim(),
+        adminRate: num(item.adminRate),
+        notes: String(item.notes || "").trim()
+      })).filter(item => item.name);
+      appData.masterLists.banks = appData.masterLists.banks.map(item => ({
+        id: item.id || generateListId("bank"),
+        name: String(item.name || "").trim(),
+        notes: String(item.notes || "").trim()
+      })).filter(item => item.name);
+    }
+
+    function getMasterList(type){
+      ensureMasterLists();
+      return appData.masterLists[type] || [];
+    }
+
+    function findMasterItemByName(type, name){
+      const target = String(name || "").trim().toLowerCase();
+      if(!target) return null;
+      return getMasterList(type).find(item => String(item.name || "").trim().toLowerCase() === target) || null;
+    }
+
+    function updateDatalistOptions(listId, items, mapFn){
+      const el = document.getElementById(listId);
+      if(!el) return;
+      el.innerHTML = (items || []).map(item => `<option value="${escapeHtml(mapFn(item))}"></option>`).join("");
+    }
+
+    function populateGlobalSelectors(){
+      updateDatalistOptions("partnerMasterNames", getMasterList("partners"), item => item.name);
+      updateDatalistOptions("investorMasterNames", getMasterList("investors"), item => item.name);
+      updateDatalistOptions("marketerMasterNames", getMasterList("marketers"), item => item.name);
+      updateDatalistOptions("bankMasterNames", getMasterList("banks"), item => item.name);
+    }
+
+    function applyPartnerTemplate(){
+      const item = findMasterItemByName("partners", document.getElementById("partnerName")?.value);
+      const adminInput = document.getElementById("partnerAdminRate");
+      if(item && adminInput && !String(adminInput.value || "").trim()){
+        adminInput.value = num(item.adminRate || 0);
+      }
+    }
+
+    function applyInvestorTemplate(){
+      const item = findMasterItemByName("investors", document.getElementById("investorName")?.value);
+      const adminInput = document.getElementById("investorAdminRate");
+      if(item && adminInput && !String(adminInput.value || "").trim()){
+        adminInput.value = num(item.adminRate || 0);
+      }
+    }
+
+    function applyMarketerTemplate(){
+      const item = findMasterItemByName("marketers", document.getElementById("bkMarketer")?.value);
+      const phoneInput = document.getElementById("bkMarketerPhone");
+      if(item && phoneInput && !String(phoneInput.value || "").trim()){
+        phoneInput.value = item.phone || "";
+      }
+    }
+
+    function resetGlobalForm(type){
+      const stateKey = type + "EditId";
+      globalSettingsState[stateKey] = null;
+      if(type === "partners"){
+        const name = document.getElementById("globalPartnerName");
+        const admin = document.getElementById("globalPartnerAdminRate");
+        const notes = document.getElementById("globalPartnerNotes");
+        const btn = document.getElementById("globalPartnerSaveBtn");
+        const cancel = document.getElementById("globalPartnerCancelBtn");
+        if(name) name.value = "";
+        if(admin) admin.value = "";
+        if(notes) notes.value = "";
+        if(btn) btn.textContent = "إضافة شريك عام";
+        if(cancel) cancel.classList.add("hidden");
+      } else if(type === "marketers"){
+        const name = document.getElementById("globalMarketerName");
+        const phone = document.getElementById("globalMarketerPhone");
+        const notes = document.getElementById("globalMarketerNotes");
+        const btn = document.getElementById("globalMarketerSaveBtn");
+        const cancel = document.getElementById("globalMarketerCancelBtn");
+        if(name) name.value = "";
+        if(phone) phone.value = "";
+        if(notes) notes.value = "";
+        if(btn) btn.textContent = "إضافة مسوق عام";
+        if(cancel) cancel.classList.add("hidden");
+      } else if(type === "investors"){
+        const name = document.getElementById("globalInvestorName");
+        const admin = document.getElementById("globalInvestorAdminRate");
+        const notes = document.getElementById("globalInvestorNotes");
+        const btn = document.getElementById("globalInvestorSaveBtn");
+        const cancel = document.getElementById("globalInvestorCancelBtn");
+        if(name) name.value = "";
+        if(admin) admin.value = "";
+        if(notes) notes.value = "";
+        if(btn) btn.textContent = "إضافة مساهم عام";
+        if(cancel) cancel.classList.add("hidden");
+      } else if(type === "banks"){
+        const name = document.getElementById("globalBankName");
+        const notes = document.getElementById("globalBankNotes");
+        const btn = document.getElementById("globalBankSaveBtn");
+        const cancel = document.getElementById("globalBankCancelBtn");
+        if(name) name.value = "";
+        if(notes) notes.value = "";
+        if(btn) btn.textContent = "إضافة بنك";
+        if(cancel) cancel.classList.add("hidden");
+      }
+    }
+
+    function saveGlobalListItem(type){
+      toggleHomeSettingsSection(true);
+      ensureMasterLists();
+      const list = getMasterList(type);
+      const stateKey = type + "EditId";
+      if(type === "partners"){
+        const name = document.getElementById("globalPartnerName").value.trim();
+        const adminRate = num(document.getElementById("globalPartnerAdminRate").value);
+        const notes = document.getElementById("globalPartnerNotes").value.trim();
+        if(!name) return alert("اكتب اسم الشريك");
+        const dup = list.find(item => item.name.trim().toLowerCase() === name.toLowerCase() && item.id !== globalSettingsState[stateKey]);
+        if(dup) return alert("اسم الشريك موجود بالفعل");
+        if(globalSettingsState[stateKey]){
+          const item = list.find(x => x.id === globalSettingsState[stateKey]);
+          if(item){ item.name = name; item.adminRate = adminRate; item.notes = notes; }
+        }else{
+          list.unshift({id: generateListId("partner"), name, adminRate, notes});
+        }
+      } else if(type === "marketers"){
+        const name = document.getElementById("globalMarketerName").value.trim();
+        const phone = document.getElementById("globalMarketerPhone").value.trim();
+        const notes = document.getElementById("globalMarketerNotes").value.trim();
+        if(!name) return alert("اكتب اسم المسوق");
+        const dup = list.find(item => item.name.trim().toLowerCase() === name.toLowerCase() && item.id !== globalSettingsState[stateKey]);
+        if(dup) return alert("اسم المسوق موجود بالفعل");
+        if(globalSettingsState[stateKey]){
+          const item = list.find(x => x.id === globalSettingsState[stateKey]);
+          if(item){ item.name = name; item.phone = phone; item.notes = notes; }
+        }else{
+          list.unshift({id: generateListId("marketer"), name, phone, notes});
+        }
+      } else if(type === "investors"){
+        const name = document.getElementById("globalInvestorName").value.trim();
+        const adminRate = num(document.getElementById("globalInvestorAdminRate").value);
+        const notes = document.getElementById("globalInvestorNotes").value.trim();
+        if(!name) return alert("اكتب اسم المساهم");
+        const dup = list.find(item => item.name.trim().toLowerCase() === name.toLowerCase() && item.id !== globalSettingsState[stateKey]);
+        if(dup) return alert("اسم المساهم موجود بالفعل");
+        if(globalSettingsState[stateKey]){
+          const item = list.find(x => x.id === globalSettingsState[stateKey]);
+          if(item){ item.name = name; item.adminRate = adminRate; item.notes = notes; }
+        }else{
+          list.unshift({id: generateListId("investor"), name, adminRate, notes});
+        }
+      } else if(type === "banks"){
+        const name = document.getElementById("globalBankName").value.trim();
+        const notes = document.getElementById("globalBankNotes").value.trim();
+        if(!name) return alert("اكتب اسم البنك");
+        const dup = list.find(item => item.name.trim().toLowerCase() === name.toLowerCase() && item.id !== globalSettingsState[stateKey]);
+        if(dup) return alert("اسم البنك موجود بالفعل");
+        if(globalSettingsState[stateKey]){
+          const item = list.find(x => x.id === globalSettingsState[stateKey]);
+          if(item){ item.name = name; item.notes = notes; }
+        }else{
+          list.unshift({id: generateListId("bank"), name, notes});
+        }
+      }
+      saveApp("global-settings");
+      renderGlobalSettings();
+      populateGlobalSelectors();
+      resetGlobalForm(type);
+    }
+
+    function editGlobalListItem(type, id){
+      const item = getMasterList(type).find(x => x.id === id);
+      if(!item) return;
+      const stateKey = type + "EditId";
+      globalSettingsState[stateKey] = id;
+      if(type === "partners"){
+        document.getElementById("globalPartnerName").value = item.name || "";
+        document.getElementById("globalPartnerAdminRate").value = num(item.adminRate || 0);
+        document.getElementById("globalPartnerNotes").value = item.notes || "";
+        document.getElementById("globalPartnerSaveBtn").textContent = "حفظ تعديل الشريك";
+        document.getElementById("globalPartnerCancelBtn").classList.remove("hidden");
+      } else if(type === "marketers"){
+        document.getElementById("globalMarketerName").value = item.name || "";
+        document.getElementById("globalMarketerPhone").value = item.phone || "";
+        document.getElementById("globalMarketerNotes").value = item.notes || "";
+        document.getElementById("globalMarketerSaveBtn").textContent = "حفظ تعديل المسوق";
+        document.getElementById("globalMarketerCancelBtn").classList.remove("hidden");
+      } else if(type === "investors"){
+        document.getElementById("globalInvestorName").value = item.name || "";
+        document.getElementById("globalInvestorAdminRate").value = num(item.adminRate || 0);
+        document.getElementById("globalInvestorNotes").value = item.notes || "";
+        document.getElementById("globalInvestorSaveBtn").textContent = "حفظ تعديل المساهم";
+        document.getElementById("globalInvestorCancelBtn").classList.remove("hidden");
+      } else if(type === "banks"){
+        document.getElementById("globalBankName").value = item.name || "";
+        document.getElementById("globalBankNotes").value = item.notes || "";
+        document.getElementById("globalBankSaveBtn").textContent = "حفظ تعديل البنك";
+        document.getElementById("globalBankCancelBtn").classList.remove("hidden");
+      }
+    }
+
+    function deleteGlobalListItem(type, id){
+      const list = getMasterList(type);
+      const item = list.find(x => x.id === id);
+      if(!item) return;
+      if(!confirm("هل تريد حذف هذا العنصر من القائمة العامة؟")) return;
+      appData.masterLists[type] = list.filter(x => x.id !== id);
+      saveApp("global-settings-delete");
+      renderGlobalSettings();
+      populateGlobalSelectors();
+      resetGlobalForm(type);
+    }
+
+    function renderGlobalSettings(){
+      ensureMasterLists();
+      populateGlobalSelectors();
+
+      const partnerBody = document.getElementById("globalPartnersBody");
+      if(partnerBody){
+        const items = getMasterList("partners");
+        partnerBody.innerHTML = items.length ? items.map(item => `
+          <tr>
+            <td>${escapeHtml(item.name)}</td>
+            <td>${num(item.adminRate).toFixed(2)}%</td>
+            <td>${escapeHtml(item.notes || "-")}</td>
+            <td class="no-print">
+              <div class="actions">
+                <button class="btn-orange" onclick="editGlobalListItem('partners','${item.id}')">تعديل</button>
+                <button class="btn-red" onclick="deleteGlobalListItem('partners','${item.id}')">حذف</button>
+              </div>
+            </td>
+          </tr>
+        `).join("") : '<tr><td colspan="4">لا توجد أسماء بعد</td></tr>';
+      }
+
+      const marketerBody = document.getElementById("globalMarketersBody");
+      if(marketerBody){
+        const items = getMasterList("marketers");
+        marketerBody.innerHTML = items.length ? items.map(item => `
+          <tr>
+            <td>${escapeHtml(item.name)}</td>
+            <td>${escapeHtml(item.phone || "-")}</td>
+            <td>${escapeHtml(item.notes || "-")}</td>
+            <td class="no-print">
+              <div class="actions">
+                <button class="btn-orange" onclick="editGlobalListItem('marketers','${item.id}')">تعديل</button>
+                <button class="btn-red" onclick="deleteGlobalListItem('marketers','${item.id}')">حذف</button>
+              </div>
+            </td>
+          </tr>
+        `).join("") : '<tr><td colspan="4">لا توجد أسماء بعد</td></tr>';
+      }
+
+      const investorBody = document.getElementById("globalInvestorsBody");
+      if(investorBody){
+        const items = getMasterList("investors");
+        investorBody.innerHTML = items.length ? items.map(item => `
+          <tr>
+            <td>${escapeHtml(item.name)}</td>
+            <td>${num(item.adminRate).toFixed(2)}%</td>
+            <td>${escapeHtml(item.notes || "-")}</td>
+            <td class="no-print">
+              <div class="actions">
+                <button class="btn-orange" onclick="editGlobalListItem('investors','${item.id}')">تعديل</button>
+                <button class="btn-red" onclick="deleteGlobalListItem('investors','${item.id}')">حذف</button>
+              </div>
+            </td>
+          </tr>
+        `).join("") : '<tr><td colspan="4">لا توجد أسماء بعد</td></tr>';
+      }
+
+      const bankBody = document.getElementById("globalBanksBody");
+      if(bankBody){
+        const items = getMasterList("banks");
+        bankBody.innerHTML = items.length ? items.map(item => `
+          <tr>
+            <td>${escapeHtml(item.name)}</td>
+            <td>${escapeHtml(item.notes || "-")}</td>
+            <td class="no-print">
+              <div class="actions">
+                <button class="btn-orange" onclick="editGlobalListItem('banks','${item.id}')">تعديل</button>
+                <button class="btn-red" onclick="deleteGlobalListItem('banks','${item.id}')">حذف</button>
+              </div>
+            </td>
+          </tr>
+        `).join("") : '<tr><td colspan="3">لا توجد بنوك بعد</td></tr>';
+      }
+    }
+
+
+
+
+    ensureMasterLists();
 
     function loadSystemSettings(){
       const defaults = {
@@ -2332,6 +2804,7 @@
     }
 
     function saveApp(reason="update"){
+      ensureMasterLists();
       localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
       maybeAutoBackup();
       if(cloudReady){
@@ -2943,8 +3416,8 @@
         projectFinanceChart = new Chart(financeCanvas, {
           type: 'doughnut',
           data: {
-            labels: ['المبيعات', 'المصروفات', 'السعي', 'العهدة المحجوزة', 'الربح القابل للتوزيع'],
-            datasets: [{ data: [f.totalSales, f.totalExpenses, f.totalCommissionDue, f.siteCustodyAdded, f.distributableProfit], borderWidth: 1 }]
+            labels: ['إجمالي المبيعات', 'صافي المبيعات بعد السعي', 'إجمالي التكلفة', 'العهدة المحجوزة', 'الربح القابل للتوزيع'],
+            datasets: [{ data: [f.totalSales, f.netSalesAfterCommission, f.totalProjectCost, f.siteCustodyAdded, f.distributableProfit], borderWidth: 1 }]
           },
           options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, position: 'bottom' } } }
         });
@@ -2952,6 +3425,8 @@
     }
 
     function renderProjects(){
+      ensureMasterLists();
+      renderGlobalSettings();
       const box = document.getElementById("projectsList");
       box.innerHTML = "";
       renderMainDashboard();
@@ -3069,36 +3544,46 @@
       if(id === "advancesTab") refreshAdvanceNames();
     }
 
-    function partnerRowsWithCompany(project){
+    function partnerRowsWithCompany(project, totalProjectCost){
       const manualPartners = project.partners || [];
-      const sumPartners = manualPartners.reduce((s,x) => s + num(x.percent), 0);
-      const companyPercent = Math.max(0, 100 - sumPartners);
+      const totalPartnerPercent = manualPartners.reduce((s,x) => s + num(x.percent), 0);
+      const companyPercent = Math.max(0, 100 - totalPartnerPercent);
 
-      return [
-        {name:"الشركة", percent:companyPercent, date:"-", auto:true},
+      const rows = [
+        {
+          name: "الشركة",
+          percent: companyPercent,
+          adminRate: 0,
+          costShare: totalProjectCost * (companyPercent / 100),
+          date: "-",
+          auto: true
+        },
         ...manualPartners.map(x => ({
-          name:x.name,
-          percent:num(x.percent),
-          date:x.date || "-",
-          auto:false
+          name: x.name,
+          percent: num(x.percent),
+          adminRate: num(x.adminRate),
+          costShare: totalProjectCost * (num(x.percent) / 100),
+          date: x.date || "-",
+          auto: false
         }))
       ];
+
+      return rows;
     }
 
-    function investorRowsWithCompany(project, companyShareProfit){
-      const manualPartners = project.partners || [];
-      const companyPercent = Math.max(0, 100 - manualPartners.reduce((s,x) => s + num(x.percent), 0));
-      const companyCostBase = num(project.cost) * (companyPercent / 100);
+    function investorRowsWithCompany(project, companyCostShare, companyShareProfit){
       const manualInvestors = project.investors || [];
       const totalInvestorAmount = manualInvestors.reduce((s,x) => s + num(x.amount), 0);
 
       const rows = manualInvestors.map(x => {
         const amount = num(x.amount);
-        const ratio = companyCostBase > 0 ? (amount / companyCostBase) * 100 : 0;
-        const grossShare = num(companyShareProfit) * (ratio / 100);
+        const ratio = companyCostShare > 0 ? (amount / companyCostShare) * 100 : 0;
+        const grossShare = companyShareProfit * (ratio / 100);
         const adminRate = num(x.adminRate);
         const adminValue = grossShare * adminRate / 100;
         const netShare = grossShare - adminValue;
+        const totalEntitlement = amount + netShare;
+
         return {
           name: x.name,
           amount,
@@ -3107,24 +3592,26 @@
           adminRate,
           adminValue,
           netShare,
+          totalEntitlement,
           date: x.date || "-",
           auto: false
         };
       });
 
-      const companyRemainingAmount = Math.max(0, companyCostBase - totalInvestorAmount);
-      const companyRatio = companyCostBase > 0 ? (companyRemainingAmount / companyCostBase) * 100 : 0;
+      const companyOwnAmount = Math.max(0, companyCostShare - totalInvestorAmount);
+      const companyOwnRatio = companyCostShare > 0 ? (companyOwnAmount / companyCostShare) * 100 : 0;
       const investorsGrossTotal = rows.reduce((s,x) => s + num(x.grossShare), 0);
-      const companyGrossShare = num(companyShareProfit) - investorsGrossTotal;
+      const companyOwnGrossProfit = companyShareProfit - investorsGrossTotal;
 
       rows.unshift({
         name: "الشركة",
-        amount: companyRemainingAmount,
-        ratio: companyRatio,
-        grossShare: companyGrossShare,
+        amount: companyOwnAmount,
+        ratio: companyOwnRatio,
+        grossShare: companyOwnGrossProfit,
         adminRate: 0,
         adminValue: 0,
-        netShare: companyGrossShare,
+        netShare: companyOwnGrossProfit,
+        totalEntitlement: companyOwnAmount + companyOwnGrossProfit,
         date: "-",
         auto: true
       });
@@ -3206,24 +3693,50 @@
       const bookedUnits = units.filter(u => u.status === "محجوزة").length;
       const availableUnits = units.filter(u => u.status === "متاحة").length;
 
-      const profit = totalSales - num(project.cost) - totalExpenses - totalCommissionDue;
+      const netSalesAfterCommission = totalSales - totalCommissionDue;
+      const totalProjectCost = num(project.cost) + totalExpenses;
+      const profit = netSalesAfterCommission - totalProjectCost;
+
       const siteCustodyAdded = custodyTotals.added;
       const siteCustodySpent = custodyTotals.spent;
       const siteCustodyBalance = custodyTotals.balance;
       const distributableProfit = profit - siteCustodyAdded;
 
-      const partnersFull = partnerRowsWithCompany(project).map(x => {
-        const share = (num(x.percent) / 100) * distributableProfit;
+      const partnersFull = partnerRowsWithCompany(project, totalProjectCost).map(x => {
+        const grossShare = distributableProfit * (num(x.percent) / 100);
+        const adminRate = x.auto ? 0 : num(x.adminRate);
+        const adminValue = x.auto ? 0 : grossShare * adminRate / 100;
+        const netShare = grossShare - adminValue;
         const paidAdvance = x.name === "الشركة"
           ? num(advanceTotals.company[x.name] || 0)
           : num(advanceTotals.partner[x.name] || 0);
-        return {...x, share, paidAdvance, remain: share - paidAdvance};
+        const totalEntitlement = num(x.costShare) + netShare;
+        const totalRemain = totalEntitlement - paidAdvance;
+        return {
+          ...x,
+          grossShare,
+          share: grossShare,
+          adminRate,
+          adminValue,
+          netShare,
+          paidAdvance,
+          totalEntitlement,
+          totalRemain,
+          remain: totalRemain
+        };
       });
 
-      const companyRow = partnersFull.find(x => x.name === "الشركة");
-      const companyShareProfit = companyRow ? num(companyRow.share) : 0;
+      const totalPartnerAdmin = partnersFull
+        .filter(x => !x.auto)
+        .reduce((s,x) => s + num(x.adminValue), 0);
 
-      const investorsFull = investorRowsWithCompany(project, companyShareProfit).map(x => {
+      const companyRow = partnersFull.find(x => x.name === "الشركة");
+      const companyCostShare = companyRow ? num(companyRow.costShare) : 0;
+      const companyPercent = companyRow ? num(companyRow.percent) : 0;
+      const partnerPercentTotal = Math.max(0, 100 - companyPercent);
+      const companyShareProfit = companyRow ? (num(companyRow.netShare) + totalPartnerAdmin) : totalPartnerAdmin;
+
+      const investorsFull = investorRowsWithCompany(project, companyCostShare, companyShareProfit).map(x => {
         const paidAdvance = num(advanceTotals.investor[x.name] || 0);
         return {...x, paidAdvance, remain: x.netShare - paidAdvance};
       });
@@ -3255,14 +3768,20 @@
         soldUnits,
         bookedUnits,
         availableUnits,
+        netSalesAfterCommission,
+        totalProjectCost,
         profit,
         siteCustodyAdded,
         siteCustodySpent,
         siteCustodyBalance,
         distributableProfit,
+        companyPercent,
+        partnerPercentTotal,
+        companyCostShare,
         companyShareProfit,
         partnersFull,
         investorsFull,
+        totalPartnerAdmin,
         totalInvestorAdmin,
         companyFinalProfit,
         marketerRows
@@ -3364,8 +3883,8 @@
       return projectFinancials().partnersFull.filter(x => {
         if(x.auto) return true;
         if(search && !String(x.name || '').toLowerCase().includes(search)) return false;
-        if(remainFilter === 'remain' && !(num(x.remain) > 0)) return false;
-        if(remainFilter === 'overpaid' && !(num(x.remain) < 0)) return false;
+        if(remainFilter === 'remain' && !(num(x.totalRemain) > 0)) return false;
+        if(remainFilter === 'overpaid' && !(num(x.totalRemain) < 0)) return false;
         return true;
       });
     }
@@ -3376,8 +3895,8 @@
       return projectFinancials().investorsFull.filter(x => {
         if(x.auto) return true;
         if(search && !String(x.name || '').toLowerCase().includes(search)) return false;
-        if(remainFilter === 'remain' && !(num(x.remain) > 0)) return false;
-        if(remainFilter === 'overpaid' && !(num(x.remain) < 0)) return false;
+        if(remainFilter === 'remain' && !(num(x.totalRemain) > 0)) return false;
+        if(remainFilter === 'overpaid' && !(num(x.totalRemain) < 0)) return false;
         return true;
       });
     }
@@ -3464,11 +3983,11 @@
       });
 
       f.partnersFull.filter(x => !x.auto).forEach(x => {
-        if(num(x.remain) > 0){
+        if(num(x.totalRemain) > 0.01){
           alerts.push({
             severity:"warn",
             category:"متبقيات الشركاء",
-            message:`الشريك ${x.name} له متبقي ${money(x.remain)}`,
+            message:`الشريك ${x.name} له متبقي ${money(x.totalRemain)}`,
             tab:"partnersTab",
             search:x.name || "",
             targetType:"partner",
@@ -3479,11 +3998,11 @@
       });
 
       f.investorsFull.filter(x => !x.auto).forEach(x => {
-        if(num(x.remain) > 0){
+        if(num(x.totalRemain) > 0.01){
           alerts.push({
             severity:"warn",
             category:"متبقيات المساهمين",
-            message:`المساهم ${x.name} له متبقي ${money(x.remain)}`,
+            message:`المساهم ${x.name} له متبقي ${money(x.totalRemain)}`,
             tab:"investorsTab",
             search:x.name || "",
             targetType:"investor",
@@ -3519,7 +4038,7 @@
       const f = calcProjectFinancials(project);
       const partnerPercentSum = (project.partners || []).reduce((s,x) => s + num(x.percent), 0);
       const companyPercent = Math.max(0, 100 - partnerPercentSum);
-      const companyCostBase = num(project.cost) * (companyPercent / 100);
+      const companyCostBase = num(f.companyCostShare);
       const investorTotal = (project.investors || []).reduce((s,x) => s + num(x.amount), 0);
 
       (project.units || []).forEach(u => {
@@ -3633,7 +4152,7 @@
         issues.push({
           severity:"issue",
           category:"مبالغ المساهمين",
-          message:`مجموع مبالغ المساهمين ${money(investorTotal)} أكبر من تكلفة الشركة ${money(companyCostBase)}`,
+          message:`مجموع مبالغ المساهمين ${money(investorTotal)} أكبر من قاعدة الشركة ${money(companyCostBase)}`,
           tab:"investorsTab",
           search:"",
           targetType:"investor-list",
@@ -4105,8 +4624,14 @@
       document.getElementById("kpiCost").innerText = money(p.cost);
       document.getElementById("kpiExpenses").innerText = money(f.totalExpenses);
       document.getElementById("kpiCommissionDue").innerText = money(f.totalCommissionDue);
+      const netSalesEl = document.getElementById("kpiNetSales"); if(netSalesEl) netSalesEl.innerText = money(f.netSalesAfterCommission);
+      const totalProjectCostEl = document.getElementById("kpiTotalProjectCost"); if(totalProjectCostEl) totalProjectCostEl.innerText = money(f.totalProjectCost);
+      const companyPercentEl = document.getElementById("kpiCompanyPercent"); if(companyPercentEl) companyPercentEl.innerText = `${num(f.companyPercent).toFixed(2)}%`;
+      const partnerPercentEl = document.getElementById("kpiPartnerPercent"); if(partnerPercentEl) partnerPercentEl.innerText = `${num(f.partnerPercentTotal).toFixed(2)}%`;
+      const companyCostShareEl = document.getElementById("kpiCompanyCostShare"); if(companyCostShareEl) companyCostShareEl.innerText = money(f.companyCostShare);
       document.getElementById("kpiCommissionPaid").innerText = money(f.totalCommissionPaid);
       document.getElementById("kpiCommissionRemain").innerText = money(f.totalCommissionRemain);
+      const profitBeforeCustodyEl = document.getElementById("kpiProfitBeforeCustody"); if(profitBeforeCustodyEl) profitBeforeCustodyEl.innerText = money(f.profit);
       document.getElementById("kpiProfit").innerText = money(f.distributableProfit);
       document.getElementById("kpiCompanyFromPartners").innerText = money(f.companyShareProfit);
       document.getElementById("kpiInvestorAdmin").innerText = money(f.totalInvestorAdmin);
@@ -4424,6 +4949,7 @@
       document.getElementById("bkFinalPrice").value = num(u.finalPrice || u.price).toFixed(2);
       document.getElementById("bkCommission").value = calcCommission(num(u.finalPrice || u.price)).toFixed(2) + ' ر.س';
       document.getElementById("bkStatus").value = u.status || "محجوزة";
+      applyMarketerTemplate();
       updateBookingPrice();
 
       const pays = u.payments || [0,0,0,0,0];
@@ -4509,7 +5035,9 @@
       const client = document.getElementById("bkClient").value.trim();
       const clientPhone = document.getElementById("bkClientPhone").value.trim();
       const marketer = document.getElementById("bkMarketer").value.trim();
-      const marketerPhone = document.getElementById("bkMarketerPhone").value.trim();
+      let marketerPhone = document.getElementById("bkMarketerPhone").value.trim();
+      const masterMarketer = findMasterItemByName("marketers", marketer);
+      if(!marketerPhone && masterMarketer) marketerPhone = masterMarketer.phone || "";
       const price = num(document.getElementById("bkPrice").value);
       const paymentPlan = document.getElementById("bkPaymentPlan").value;
       const extraDiscount = num(document.getElementById("bkExtraDiscount").value);
@@ -4859,6 +5387,9 @@ function addPartner(){
       const p = getProject();
       const name = document.getElementById("partnerName").value.trim();
       const percent = num(document.getElementById("partnerPercent").value);
+      let adminRate = num(document.getElementById("partnerAdminRate").value);
+      const masterPartner = findMasterItemByName("partners", name);
+      if(!String(document.getElementById("partnerAdminRate").value || "").trim() && masterPartner) adminRate = num(masterPartner.adminRate);
       const date = document.getElementById("partnerDate").value || todayText();
 
       if(!name){
@@ -4869,6 +5400,10 @@ function addPartner(){
         alert("اكتب نسبة صحيحة");
         return;
       }
+      if(adminRate < 0){
+        alert("نسبة الإدارة لا يمكن أن تكون سالبة");
+        return;
+      }
 
       const currentSum = p.partners.reduce((s,x) => s + num(x.percent), 0);
       if(currentSum + percent > 100){
@@ -4876,11 +5411,12 @@ function addPartner(){
         return;
       }
 
-      p.partners.push({name, percent, date});
-      addMovement("إضافة شريك", name, percent, `نسبة الشريك ${percent}%`, date);
+      p.partners.push({name, percent, adminRate, date});
+      addMovement("إضافة شريك", name, percent, `نسبة الشريك ${percent}% | إدارة ${adminRate}%`, date);
 
       document.getElementById("partnerName").value = "";
       document.getElementById("partnerPercent").value = "";
+      document.getElementById("partnerAdminRate").value = "";
       document.getElementById("partnerDate").value = "";
 
       renderProject();
@@ -4895,18 +5431,22 @@ function addPartner(){
 
       rows.forEach((x) => {
         const i = x.auto ? -1 : getProject().partners.findIndex(p => p.name === x.name && String(p.date||'') === String(x.date||''));
-        const cls = !x.auto && num(x.remain) > 0 ? "warn-row" : "";
+        const cls = !x.auto && num(x.totalRemain) > 0 ? "warn-row" : "";
         body.innerHTML += `
           <tr class="${x.auto ? 'auto-row' : cls}" data-partner-name="${escapeHtml(String(x.name || '').trim().toLowerCase())}">
             <td>${x.name}${x.auto ? ' (تلقائي)' : ''}</td>
             <td>${num(x.percent).toFixed(2)}%</td>
-            <td>${money(x.share)}</td>
+            <td>${money(x.costShare)}</td>
+            <td>${money(x.grossShare)}</td>
+            <td>${x.auto ? money(0) : `${money(x.adminValue)} <div class="small">(${num(x.adminRate).toFixed(2)}%)</div>`}</td>
+            <td>${money(x.netShare)}</td>
+            <td>${money(x.totalEntitlement)}</td>
             <td>${money(x.paidAdvance || 0)}</td>
-            <td>${money(x.remain)}</td>
+            <td>${money(x.totalRemain)}</td>
             <td>${x.date || "-"}</td>
             <td class="no-print">${x.auto ? '-' : `<button class="btn-teal" onclick="printPartnerReport('${escapeQuotes(x.name)}')">طباعة</button>`}</td>
             <td class="no-print">
-              ${x.auto ? '-' : `<button class="btn-red" onclick="deletePartner(${i-1})">حذف</button>`}
+              ${x.auto ? '-' : `<button class="btn-red" onclick="deletePartner(${i})">حذف</button>`}
             </td>
           </tr>
         `;
@@ -4915,9 +5455,13 @@ function addPartner(){
 
     function deletePartner(i){
       if(!requireProjectOpen("حذف الشريك")) return;
+      if(i < 0 || i >= getProject().partners.length){
+        alert("تعذر تحديد الشريك المطلوب حذفه");
+        return;
+      }
       if(!confirm("هل تريد حذف الشريك؟")) return;
       const x = getProject().partners[i];
-      addMovement("حذف شريك", x.name, x.percent, `تم حذف شريك بنسبة ${x.percent}%`, todayText());
+      addMovement("حذف شريك", x.name, x.percent, `تم حذف شريك بنسبة ${x.percent}% | إدارة ${num(x.adminRate).toFixed(2)}%`, todayText());
       getProject().partners.splice(i,1);
       renderProject();
     }
@@ -4931,7 +5475,9 @@ function addPartner(){
 
       const name = document.getElementById("investorName").value.trim();
       const amount = num(document.getElementById("investorAmount").value);
-      const adminRate = num(document.getElementById("investorAdminRate").value);
+      let adminRate = num(document.getElementById("investorAdminRate").value);
+      const masterInvestor = findMasterItemByName("investors", name);
+      if(!String(document.getElementById("investorAdminRate").value || "").trim() && masterInvestor) adminRate = num(masterInvestor.adminRate);
       const date = document.getElementById("investorDate").value || todayText();
 
       if(!name){
@@ -4943,17 +5489,16 @@ function addPartner(){
         return;
       }
 
-      const companyPercent = Math.max(0, 100 - (p.partners || []).reduce((s, x) => s + num(x.percent), 0));
-      const companyCostBase = num(p.cost) * (companyPercent / 100);
+      const companyCostBase = num(f.companyCostShare);
       const currentTotal = (p.investors || []).reduce((s, x) => s + num(x.amount), 0);
 
       if(companyCostBase <= 0){
-        alert("لا يمكن إضافة مساهمين قبل وجود تكلفة فعلية على الشركة.");
+        alert("لا يمكن إضافة مساهمين قبل وجود قاعدة صحيحة للشركة من إجمالي التكلفة.");
         return;
       }
 
       if(currentTotal + amount > companyCostBase){
-        alert("مجموع مبالغ المساهمين لا يمكن أن يزيد عن تكلفة الشركة.");
+        alert("مجموع مساهمات المساهمين لا يمكن أن يزيد عن قاعدة مساهمات الشركة.");
         return;
       }
 
@@ -4986,12 +5531,13 @@ function addPartner(){
             <td>${money(x.grossShare)}</td>
             <td>${x.auto ? money(0) : `${money(x.adminValue)} <div class="small">(${num(x.adminRate).toFixed(2)}%)</div>`}</td>
             <td>${money(x.netShare)}</td>
+            <td>${money(x.totalEntitlement)}</td>
             <td>${money(x.paidAdvance || 0)}</td>
-            <td>${money(x.remain)}</td>
+            <td>${money(x.totalRemain ?? x.remain)}</td>
             <td>${x.date || "-"}</td>
             <td class="no-print">${x.auto ? '-' : `<button class="btn-teal" onclick="printInvestorReport('${escapeQuotes(x.name)}')">طباعة</button>`}</td>
             <td class="no-print">
-              ${x.auto ? '-' : `<button class="btn-red" onclick="deleteInvestor(${i-1})">حذف</button>`}
+              ${x.auto ? '-' : `<button class="btn-red" onclick="deleteInvestor(${i})">حذف</button>`}
             </td>
           </tr>
         `;
@@ -5000,6 +5546,10 @@ function addPartner(){
 
     function deleteInvestor(i){
       if(!requireProjectOpen("حذف المساهم")) return;
+      if(i < 0 || i >= getProject().investors.length){
+        alert("تعذر تحديد المساهم المطلوب حذفه");
+        return;
+      }
       if(!confirm("هل تريد حذف المساهم؟")) return;
       const x = getProject().investors[i];
       addMovement("حذف مساهم", x.name, x.amount, `تم حذف مساهم | إدارة ${x.adminRate || 0}%`, todayText());
@@ -5244,7 +5794,7 @@ function addPartner(){
       const filteredExpenses = getFilteredExpenses(p);
 
       const partnerLines = f.partnersFull.map(x => {
-        return `${x.name}: نسبة ${num(x.percent).toFixed(2)}% | نصيب ${money(x.share)} | صرف تحت الحساب ${money(x.paidAdvance || 0)} | متبقي ${money(x.remain)}`;
+        return `${x.name}: نسبة ${num(x.percent).toFixed(2)}% من إجمالي التكلفة | مبلغ ${money(x.costShare)} | ربح ${money(x.share)} | صرف تحت الحساب ${money(x.paidAdvance || 0)} | متبقي ${money(x.remain)}`;
       }).join("<br>");
 
       const investorLines = f.investorsFull.map(x => {
@@ -5261,6 +5811,11 @@ function addPartner(){
         <strong>التكلفة الأساسية:</strong> ${money(p.cost)}<br>
         <strong>إجمالي المصروفات:</strong> ${money(f.totalExpenses)}<br>
         <strong>إجمالي السعي المستحق:</strong> ${money(f.totalCommissionDue)}<br>
+        <strong>صافي المبيعات بعد خصم السعي:</strong> ${money(f.netSalesAfterCommission)}<br>
+        <strong>إجمالي التكلفة:</strong> ${money(f.totalProjectCost)}<br>
+        <strong>نسبة الشركة من إجمالي التكلفة:</strong> ${num(f.companyPercent).toFixed(2)}%<br>
+        <strong>نسبة الشركاء من إجمالي التكلفة:</strong> ${num(f.partnerPercentTotal).toFixed(2)}%<br>
+        <strong>مبلغ الشركة من إجمالي التكلفة:</strong> ${money(f.companyCostShare)}<br>
         <strong>المحجوز لعهدة الموقع:</strong> ${money(f.siteCustodyAdded)}<br>
         <strong>المصروف من عهدة الموقع:</strong> ${money(f.siteCustodySpent)}<br>
         <strong>رصيد عهدة الموقع:</strong> ${money(f.siteCustodyBalance)}<br>
@@ -5292,6 +5847,11 @@ function addPartner(){
         ["التكلفة الأساسية", p.cost],
         ["إجمالي المصروفات", f.totalExpenses],
         ["إجمالي السعي المستحق", f.totalCommissionDue],
+        ["صافي المبيعات بعد خصم السعي", f.netSalesAfterCommission],
+        ["إجمالي التكلفة", f.totalProjectCost],
+        ["نسبة الشركة من إجمالي التكلفة", f.companyPercent],
+        ["نسبة الشركاء من إجمالي التكلفة", f.partnerPercentTotal],
+        ["مبلغ الشركة من إجمالي التكلفة", f.companyCostShare],
         ["السعي المصروف", f.totalCommissionPaid],
         ["متبقي السعي", f.totalCommissionRemain],
         ["الربح قبل عهدة الموقع", f.profit],
@@ -5300,6 +5860,7 @@ function addPartner(){
         ["رصيد عهدة الموقع", f.siteCustodyBalance],
         ["الربح القابل للتوزيع", f.distributableProfit],
         ["نصيب الشركة من الشركاء", f.companyShareProfit],
+        ["إدارة الشركاء", f.totalPartnerAdmin],
         ["إدارة المساهمين", f.totalInvestorAdmin],
         ["ربح الشركة النهائي", f.companyFinalProfit],
         ["الوحدات المباعة", f.soldUnits],
@@ -5314,11 +5875,11 @@ function addPartner(){
       });
       XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(unitsRows), "الوحدات");
 
-      const partnersRows = [["الاسم","النسبة","النصيب","المصروف","المتبقي","التاريخ"]];
-      f.partnersFull.forEach(x => partnersRows.push([x.name,x.percent,x.share,x.paidAdvance || 0,x.remain || x.share,x.date]));
+      const partnersRows = [["الاسم","النسبة من إجمالي التكلفة","مبلغه من إجمالي التكلفة","الربح الإجمالي","الإدارة","صافي الربح","إجمالي حقه","المصروف له","المتبقي له","التاريخ"]];
+      f.partnersFull.forEach(x => partnersRows.push([x.name,x.percent,x.costShare,x.grossShare,x.adminValue,x.netShare,x.totalEntitlement,x.paidAdvance || 0,x.totalRemain,x.date]));
       XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(partnersRows), "الشركاء");
 
-      const investorsRows = [["الاسم","المبلغ","النسبة","قبل الإدارة","الإدارة","الصافي","المصروف","المتبقي","التاريخ"]];
+      const investorsRows = [["الاسم","مساهمة المساهم","نسبته من قاعدة الشركة","ربحه الإجمالي","الإدارة","الصافي","المصروف","المتبقي","التاريخ"]];
       f.investorsFull.forEach(x => investorsRows.push([x.name,x.amount,x.ratio,x.grossShare,x.adminValue,x.netShare,x.paidAdvance || 0,x.remain || x.netShare,x.date]));
       XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(investorsRows), "المساهمون");
 
@@ -5558,6 +6119,7 @@ function addPartner(){
       const topMeta = [
         printMetaCard("اسم المشروع", escapeHtml(p.name || '-')),
         printMetaCard("التكلفة الأساسية", money(p.cost)),
+        printMetaCard("إجمالي التكلفة", money(f.totalProjectCost)),
         printMetaCard("ملاحظات المشروع", escapeHtml(p.notes || '-')),
         printMetaCard("إجمالي عدد الوحدات", String((p.units || []).length)),
         printMetaCard("الوحدات المطبوعة", String(filteredUnits.length))
@@ -5567,6 +6129,10 @@ function addPartner(){
         printSummaryCard("إجمالي المبيعات", money(f.totalSales)),
         printSummaryCard("إجمالي المصروفات", money(f.totalExpenses)),
         printSummaryCard("إجمالي السعي المستحق", money(f.totalCommissionDue)),
+        printSummaryCard("صافي المبيعات بعد خصم السعي", money(f.netSalesAfterCommission)),
+        printSummaryCard("مبلغ الشركة من إجمالي التكلفة", money(f.companyCostShare)),
+        printSummaryCard("نسبة الشركة من إجمالي التكلفة", `${num(f.companyPercent).toFixed(2)}%`),
+        printSummaryCard("نسبة الشركاء من إجمالي التكلفة", `${num(f.partnerPercentTotal).toFixed(2)}%`),
         printSummaryCard("السعي المصروف", money(f.totalCommissionPaid)),
         printSummaryCard("متبقي السعي", money(f.totalCommissionRemain)),
         printSummaryCard("المحجوز لعهدة الموقع", money(f.siteCustodyAdded)),
@@ -5807,9 +6373,13 @@ function addPartner(){
         </div>
 
         <div class="summary-grid">
-          ${printSummaryCard("نصيبه من الربح", money(row.share))}
-          ${printSummaryCard("المصروف تحت الحساب", money(row.paidAdvance || 0))}
-          ${printSummaryCard("المتبقي", money(row.remain || row.share))}
+          ${printSummaryCard("مبلغه من إجمالي التكلفة", money(row.costShare))}
+          ${printSummaryCard("ربحه الإجمالي", money(row.grossShare))}
+          ${printSummaryCard("إدارة الشريك", money(row.adminValue))}
+          ${printSummaryCard("صافي ربحه", money(row.netShare))}
+          ${printSummaryCard("إجمالي حقه", money(row.totalEntitlement))}
+          ${printSummaryCard("المصروف له", money(row.paidAdvance || 0))}
+          ${printSummaryCard("المتبقي له", money(row.totalRemain))}
         </div>
       `;
       openPrintWindow(`تقرير شريك - ${name}`, html);
@@ -5822,16 +6392,23 @@ function addPartner(){
         <tr>
           <td>${escapeHtml(x.name)}</td>
           <td>${num(x.percent).toFixed(2)}%</td>
-          <td>${money(x.share)}</td>
+          <td>${money(x.costShare)}</td>
+          <td>${money(x.grossShare)}</td>
+          <td>${money(x.adminValue)}</td>
+          <td>${money(x.netShare)}</td>
+          <td>${money(x.totalEntitlement)}</td>
           <td>${money(x.paidAdvance || 0)}</td>
-          <td>${money(x.remain || x.share)}</td>
+          <td>${money(x.totalRemain)}</td>
           <td>${escapeHtml(x.date || '-')}</td>
         </tr>
       `).join("");
 
-      const totalShare = rowsData.reduce((s,x)=>s+num(x.share),0);
+      const totalShare = rowsData.reduce((s,x)=>s+num(x.grossShare),0);
+      const totalPartnerAdmin = rowsData.reduce((s,x)=>s+num(x.adminValue),0);
+      const totalNetShare = rowsData.reduce((s,x)=>s+num(x.netShare),0);
+      const totalEntitlement = rowsData.reduce((s,x)=>s+num(x.totalEntitlement),0);
       const totalPaid = rowsData.reduce((s,x)=>s+num(x.paidAdvance),0);
-      const totalRemain = rowsData.reduce((s,x)=>s+num(x.remain || x.share),0);
+      const totalRemain = rowsData.reduce((s,x)=>s+num(x.totalRemain),0);
 
       const html = `
         <div class="report-title">
@@ -5847,25 +6424,33 @@ function addPartner(){
         </div>
 
         <div class="summary-grid">
+          ${printSummaryCard("إجمالي تكلفة الشركاء", money(rowsData.reduce((s,x)=>s+num(x.costShare),0)))}
           ${printSummaryCard("إجمالي أرباح الشركاء", money(totalShare))}
-          ${printSummaryCard("إجمالي المصروف تحت الحساب", money(totalPaid))}
-          ${printSummaryCard("إجمالي المتبقي", money(totalRemain))}
+          ${printSummaryCard("إجمالي إدارة الشركاء", money(totalPartnerAdmin))}
+          ${printSummaryCard("صافي أرباح الشركاء", money(totalNetShare))}
+          ${printSummaryCard("إجمالي حق الشركاء", money(totalEntitlement))}
+          ${printSummaryCard("إجمالي المصروف لهم", money(totalPaid))}
+          ${printSummaryCard("إجمالي المتبقي لهم", money(totalRemain))}
         </div>
 
         <div class="section">
           <div class="section-header">
             <h3>بيانات الشركاء</h3>
-            <div class="section-note">تفصيل كل شريك بالنسبة والربح والمصروف والمتبقي</div>
+            <div class="section-note">تفصيل كل شريك بالنسبة والربح وإجمالي الحق والمصروف والمتبقي</div>
           </div>
           ${rows ? `
             <table>
               <thead>
                 <tr>
                   <th>الاسم</th>
-                  <th>النسبة</th>
-                  <th>نصيبه من الربح</th>
-                  <th>تم صرفه تحت الحساب</th>
-                  <th>المتبقي</th>
+                  <th>النسبة من إجمالي التكلفة</th>
+                  <th>مبلغه من إجمالي التكلفة</th>
+                  <th>ربحه الإجمالي</th>
+                  <th>الإدارة</th>
+                  <th>صافي الربح</th>
+                  <th>إجمالي حقه</th>
+                  <th>تم صرفه له</th>
+                  <th>المتبقي له</th>
                   <th>التاريخ</th>
                 </tr>
               </thead>
@@ -5894,15 +6479,16 @@ function addPartner(){
           ${printMetaCard("المشروع", escapeHtml(p.name || '-'))}
           ${printMetaCard("اسم المساهم", escapeHtml(row.name || '-'))}
           ${printMetaCard("مبلغ المساهمة", money(row.amount))}
-          ${printMetaCard("النسبة من التكلفة", `${num(row.ratio).toFixed(2)}%`)}
+          ${printMetaCard("نسبته من قاعدة الشركة", `${num(row.ratio).toFixed(2)}%`)}
         </div>
 
         <div class="summary-grid">
-          ${printSummaryCard("الربح قبل الإدارة", money(row.grossShare))}
+          ${printSummaryCard("الربح الإجمالي", money(row.grossShare))}
           ${printSummaryCard("الإدارة", money(row.adminValue))}
           ${printSummaryCard("الصافي", money(row.netShare))}
+          ${printSummaryCard("إجمالي حقه", money(row.totalEntitlement || (num(row.amount) + num(row.netShare))))}
           ${printSummaryCard("المصروف تحت الحساب", money(row.paidAdvance || 0))}
-          ${printSummaryCard("المتبقي", money(row.remain || row.netShare))}
+          ${printSummaryCard("المتبقي", money(row.totalRemain ?? row.remain ?? row.netShare))}
         </div>
       `;
       openPrintWindow(`تقرير مساهم - ${name}`, html);
@@ -5919,8 +6505,9 @@ function addPartner(){
           <td>${money(x.grossShare)}</td>
           <td>${money(x.adminValue)}</td>
           <td>${money(x.netShare)}</td>
+          <td>${money(x.totalEntitlement || (num(x.amount) + num(x.netShare)))}</td>
           <td>${money(x.paidAdvance || 0)}</td>
-          <td>${money(x.remain || x.netShare)}</td>
+          <td>${money(x.totalRemain ?? x.remain ?? x.netShare)}</td>
           <td>${escapeHtml(x.date || '-')}</td>
         </tr>
       `).join("");
@@ -5929,6 +6516,7 @@ function addPartner(){
       const totalGross = rowsData.reduce((s,x)=>s+num(x.grossShare),0);
       const totalAdmin = rowsData.reduce((s,x)=>s+num(x.adminValue),0);
       const totalNet = rowsData.reduce((s,x)=>s+num(x.netShare),0);
+      const totalEntitlement = rowsData.reduce((s,x)=>s+num(x.totalEntitlement || (num(x.amount) + num(x.netShare))),0);
 
       const html = `
         <div class="report-title">
@@ -5948,23 +6536,25 @@ function addPartner(){
           ${printSummaryCard("إجمالي الربح قبل الإدارة", money(totalGross))}
           ${printSummaryCard("إجمالي الإدارة", money(totalAdmin))}
           ${printSummaryCard("إجمالي الصافي", money(totalNet))}
+          ${printSummaryCard("إجمالي حق المساهمين", money(totalEntitlement))}
         </div>
 
         <div class="section">
           <div class="section-header">
             <h3>بيانات المساهمين</h3>
-            <div class="section-note">النسبة هنا محسوبة من تكلفة الشركة وليس من الربح</div>
+            <div class="section-note">النسبة هنا محسوبة من قاعدة مساهمات الشركة وليس من الربح</div>
           </div>
           ${rows ? `
             <table>
               <thead>
                 <tr>
                   <th>الاسم</th>
-                  <th>المبلغ</th>
-                  <th>النسبة من التكلفة</th>
-                  <th>قبل الإدارة</th>
+                  <th>مساهمة المساهم</th>
+                  <th>نسبته من قاعدة الشركة</th>
+                  <th>ربحه الإجمالي</th>
                   <th>الإدارة</th>
                   <th>الصافي</th>
+                  <th>إجمالي حقه</th>
                   <th>تم صرفه تحت الحساب</th>
                   <th>المتبقي</th>
                   <th>التاريخ</th>
