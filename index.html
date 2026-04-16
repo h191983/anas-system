@@ -947,6 +947,7 @@
               <button class="btn-green hidden" id="reopenProjectBtn" onclick="reopenProjectBySecret()">فتح المشروع</button>
               <button class="btn-teal" onclick="exportProjectExcel()">Excel</button>
               <button class="btn-teal" onclick="printProjectReport()">طباعة تقرير المشروع</button>
+              <button class="btn-purple" onclick="printCompanyReport()">تقرير الشركة</button>
               <button class="btn-teal" onclick="window.print()">طباعة</button>
             </div>
           </div>
@@ -1013,11 +1014,11 @@
           <div class="kpi"><div class="kpi-title">إجمالي السعي المستحق</div><div class="kpi-value" id="kpiCommissionDue">0</div></div>
           <div class="kpi"><div class="kpi-title">صافي المبيعات بعد خصم السعي</div><div class="kpi-value" id="kpiNetSales">0</div></div>
           <div class="kpi"><div class="kpi-title">التكلفة الأساسية</div><div class="kpi-value" id="kpiCost">0</div></div>
-          <div class="kpi"><div class="kpi-title">إجمالي المصروفات</div><div class="kpi-value" id="kpiExpenses">0</div></div>
+          <div class="kpi"><div class="kpi-title">إجمالي المصروفات شامل العهدة</div><div class="kpi-value" id="kpiExpenses">0</div></div>
           <div class="kpi"><div class="kpi-title">إجمالي التكلفة</div><div class="kpi-value" id="kpiTotalProjectCost">0</div></div>
-          <div class="kpi"><div class="kpi-title">الربح قبل عهدة الموقع</div><div class="kpi-value" id="kpiProfitBeforeCustody">0</div></div>
-          <div class="kpi"><div class="kpi-title">المحجوز لعهدة الموقع</div><div class="kpi-value" id="kpiSiteCustodyAdded">0</div></div>
-          <div class="kpi"><div class="kpi-title">الربح القابل للتوزيع</div><div class="kpi-value" id="kpiProfit">0</div></div>
+          <div class="kpi"><div class="kpi-title">الربح قبل إدراج العهدة</div><div class="kpi-value" id="kpiProfitBeforeCustody">0</div></div>
+          <div class="kpi"><div class="kpi-title">العهدة المضافة ضمن المصروفات</div><div class="kpi-value" id="kpiSiteCustodyAdded">0</div></div>
+          <div class="kpi"><div class="kpi-title">الربح القابل للتوزيع بعد احتساب العهدة</div><div class="kpi-value" id="kpiProfit">0</div></div>
           <div class="kpi"><div class="kpi-title">نسبة الشركة من إجمالي التكلفة</div><div class="kpi-value" id="kpiCompanyPercent">0</div></div>
           <div class="kpi"><div class="kpi-title">نسبة الشركاء من إجمالي التكلفة</div><div class="kpi-value" id="kpiPartnerPercent">0</div></div>
           <div class="kpi"><div class="kpi-title">مبلغ الشركة من إجمالي التكلفة</div><div class="kpi-value" id="kpiCompanyCostShare">0</div></div>
@@ -1026,8 +1027,10 @@
           <div class="kpi"><div class="kpi-title">المصروف من عهدة الموقع</div><div class="kpi-value" id="kpiSiteCustodySpent">0</div></div>
           <div class="kpi"><div class="kpi-title">رصيد عهدة الموقع</div><div class="kpi-value" id="kpiSiteCustodyBalance">0</div></div>
           <div class="kpi"><div class="kpi-title">نصيب الشركة من الشركاء</div><div class="kpi-value" id="kpiCompanyFromPartners">0</div></div>
+          <div class="kpi"><div class="kpi-title">ربح المساهمين</div><div class="kpi-value" id="kpiInvestorsProfit">0</div></div>
+          <div class="kpi"><div class="kpi-title">ربح الشركة بعد خصم المساهمين</div><div class="kpi-value" id="kpiCompanyAfterInvestors">0</div></div>
           <div class="kpi"><div class="kpi-title">إدارة المساهمين</div><div class="kpi-value" id="kpiInvestorAdmin">0</div></div>
-          <div class="kpi"><div class="kpi-title">ربح الشركة النهائي</div><div class="kpi-value" id="kpiCompanyFinal">0</div></div>
+          <div class="kpi"><div class="kpi-title">صافي الشركة النهائي</div><div class="kpi-value" id="kpiCompanyFinal">0</div></div>
           <div class="kpi"><div class="kpi-title">الوحدات المباعة</div><div class="kpi-value" id="kpiSold">0</div></div>
           <div class="kpi"><div class="kpi-title">الوحدات المحجوزة</div><div class="kpi-value" id="kpiBooked">0</div></div>
           <div class="kpi"><div class="kpi-title">الوحدات المتاحة</div><div class="kpi-value" id="kpiAvailable">0</div></div>
@@ -1390,7 +1393,7 @@
             <div class="custody-card">
               <div class="label">إجمالي ما حُجز للعهدة</div>
               <div class="value" id="siteCustodyAdded">0</div>
-              <div class="sub">يُخصم قبل توزيع الأرباح</div>
+              <div class="sub">يُحتسب ضمن المصروفات وإجمالي التكلفة</div>
             </div>
             <div class="custody-card">
               <div class="label">إجمالي المصروف من العهدة</div>
@@ -1430,6 +1433,47 @@
             </thead>
             <tbody id="siteCustodyBody"></tbody>
           </table>
+
+          <div class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:14px">
+            <div class="section-title">
+              <div>
+                <h4>توزيع الرصيد المتبقي من العهدة</h4>
+                <div class="section-kicker">جدول جاهز يوضح نصيب كل شريك ومساهم من رصيد العهدة الحالي دون إعادة حساب يدوي</div>
+              </div>
+              <div class="actions no-print">
+                <button class="btn-teal" onclick="printSiteCustodyReport()">طباعة توزيع العهدة</button>
+              </div>
+            </div>
+
+            <div class="grid grid-2" style="margin-top:12px">
+              <div>
+                <h4 style="margin-bottom:8px">نصيب الشركاء من رصيد العهدة</h4>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>الاسم</th>
+                      <th>النسبة</th>
+                      <th>نصيبه من المتبقي</th>
+                    </tr>
+                  </thead>
+                  <tbody id="siteCustodyPartnersBody"></tbody>
+                </table>
+              </div>
+              <div>
+                <h4 style="margin-bottom:8px">نصيب المساهمين من نصيب الشركة</h4>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>الاسم</th>
+                      <th>النسبة</th>
+                      <th>نصيبه من المتبقي</th>
+                    </tr>
+                  </thead>
+                  <tbody id="siteCustodyInvestorsBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div id="movementsTab" class="card tab-panel hidden">
@@ -1485,6 +1529,7 @@
             </div>
             <div class="actions no-print">
               <button class="btn-teal" onclick="printProjectReport()">طباعة تقرير المشروع</button>
+              <button class="btn-purple" onclick="printCompanyReport()">تقرير الشركة</button>
             </div>
           </div>
           <div id="reportFiltersNote" class="note no-print" style="margin-bottom:12px">لا توجد فلاتر مفعلة حالياً.</div>
@@ -3685,7 +3730,15 @@ let globalSettingsState = {
 
       const revenueStatuses = ["مباعة","تم السداد","تمت المراجعة النهائية","تم الافراغ"];
       const totalSales = units.filter(u => revenueStatuses.includes(u.status)).reduce((s,u) => s + num(u.finalPrice || u.price), 0);
-      const totalExpenses = expenses.reduce((s,e) => s + num(e.amount), 0);
+
+      const expensesOnly = expenses.reduce((s,e) => s + num(e.amount), 0);
+      const siteCustodyAdded = custodyTotals.added;
+      const siteCustodySpent = custodyTotals.spent;
+      const siteCustodyBalance = custodyTotals.balance;
+
+      // العهدة المضافة تُحتسب كبند ضمن المصروفات وإجمالي التكلفة
+      const totalExpenses = expensesOnly + siteCustodyAdded;
+
       const totalCommissionDue = units.reduce((s,u) => s + num(u.commissionDue), 0);
       const totalCommissionPaid = Object.values(advanceTotals.marketer || {}).reduce((s,v) => s + num(v), 0);
       const totalCommissionRemain = totalCommissionDue - totalCommissionPaid;
@@ -3695,12 +3748,13 @@ let globalSettingsState = {
 
       const netSalesAfterCommission = totalSales - totalCommissionDue;
       const totalProjectCost = num(project.cost) + totalExpenses;
-      const profit = netSalesAfterCommission - totalProjectCost;
 
-      const siteCustodyAdded = custodyTotals.added;
-      const siteCustodySpent = custodyTotals.spent;
-      const siteCustodyBalance = custodyTotals.balance;
-      const distributableProfit = profit - siteCustodyAdded;
+      // ربح قبل إدراج العهدة ضمن التكلفة (للمراجعة فقط)
+      const profitBeforeCustody = netSalesAfterCommission - (num(project.cost) + expensesOnly);
+
+      // بعد إدراج العهدة ضمن المصروفات/التكلفة
+      const profit = netSalesAfterCommission - totalProjectCost;
+      const distributableProfit = profit;
 
       const partnersFull = partnerRowsWithCompany(project, totalProjectCost).map(x => {
         const grossShare = distributableProfit * (num(x.percent) / 100);
@@ -3738,7 +3792,9 @@ let globalSettingsState = {
 
       const investorsFull = investorRowsWithCompany(project, companyCostShare, companyShareProfit).map(x => {
         const paidAdvance = num(advanceTotals.investor[x.name] || 0);
-        return {...x, paidAdvance, remain: x.netShare - paidAdvance};
+        const totalEntitlement = num(x.amount) + num(x.netShare);
+        const totalRemain = totalEntitlement - paidAdvance;
+        return {...x, paidAdvance, totalEntitlement, totalRemain, remain: totalRemain};
       });
 
       const totalInvestorAdmin = investorsFull
@@ -3761,6 +3817,7 @@ let globalSettingsState = {
 
       return {
         totalSales,
+        expensesOnly,
         totalExpenses,
         totalCommissionDue,
         totalCommissionPaid,
@@ -3770,6 +3827,7 @@ let globalSettingsState = {
         availableUnits,
         netSalesAfterCommission,
         totalProjectCost,
+        profitBeforeCustody,
         profit,
         siteCustodyAdded,
         siteCustodySpent,
@@ -4631,11 +4689,16 @@ let globalSettingsState = {
       const companyCostShareEl = document.getElementById("kpiCompanyCostShare"); if(companyCostShareEl) companyCostShareEl.innerText = money(f.companyCostShare);
       document.getElementById("kpiCommissionPaid").innerText = money(f.totalCommissionPaid);
       document.getElementById("kpiCommissionRemain").innerText = money(f.totalCommissionRemain);
-      const profitBeforeCustodyEl = document.getElementById("kpiProfitBeforeCustody"); if(profitBeforeCustodyEl) profitBeforeCustodyEl.innerText = money(f.profit);
+      const profitBeforeCustodyEl = document.getElementById("kpiProfitBeforeCustody"); if(profitBeforeCustodyEl) profitBeforeCustodyEl.innerText = money(f.profitBeforeCustody);
       document.getElementById("kpiProfit").innerText = money(f.distributableProfit);
       document.getElementById("kpiCompanyFromPartners").innerText = money(f.companyShareProfit);
+      const investorsProfitValue = (f.investorsFull || []).filter(x => !x.auto).reduce((s,x)=>s + num(x.grossShare), 0);
+      const companyAfterInvestorsValue = f.companyShareProfit - investorsProfitValue;
+      const companyNetFinalValue = companyAfterInvestorsValue + f.totalInvestorAdmin;
+      const investorsProfitEl = document.getElementById("kpiInvestorsProfit"); if(investorsProfitEl) investorsProfitEl.innerText = money(investorsProfitValue);
+      const companyAfterInvestorsEl = document.getElementById("kpiCompanyAfterInvestors"); if(companyAfterInvestorsEl) companyAfterInvestorsEl.innerText = money(companyAfterInvestorsValue);
       document.getElementById("kpiInvestorAdmin").innerText = money(f.totalInvestorAdmin);
-      document.getElementById("kpiCompanyFinal").innerText = money(f.companyFinalProfit);
+      document.getElementById("kpiCompanyFinal").innerText = money(companyNetFinalValue);
       const custodyAddedEl = document.getElementById("kpiSiteCustodyAdded"); if(custodyAddedEl) custodyAddedEl.innerText = money(f.siteCustodyAdded);
       const custodySpentEl = document.getElementById("kpiSiteCustodySpent"); if(custodySpentEl) custodySpentEl.innerText = money(f.siteCustodySpent);
       const custodyBalanceEl = document.getElementById("kpiSiteCustodyBalance"); if(custodyBalanceEl) custodyBalanceEl.innerText = money(f.siteCustodyBalance);
@@ -5729,37 +5792,102 @@ function addPartner(){
       renderProject();
     }
 
-    function renderSiteCustody(){
+    
+    function calcCustodyDistribution(project){
+      const f = calcProjectFinancials(project);
+      const balance = num(f.siteCustodyBalance);
+      const partnersRows = (f.partnersFull || []).map(x => ({
+        name: x.name,
+        percent: num(x.percent),
+        amount: balance * (num(x.percent) / 100),
+        auto: !!x.auto
+      }));
+
+      const companyPartnerAmount = partnersRows.find(x => x.name === "الشركة")?.amount || 0;
+      const investorsRows = (f.investorsFull || []).map(x => ({
+        name: x.name,
+        percent: num(x.ratio),
+        amount: companyPartnerAmount * (num(x.ratio) / 100),
+        auto: !!x.auto
+      }));
+
+      return {
+        balance,
+        companyPartnerAmount,
+        partnersRows,
+        investorsRows
+      };
+    }
+
+function renderSiteCustody(){
       const p = getProject();
       const body = document.getElementById("siteCustodyBody");
       const countBox = document.getElementById("siteCustodyCount");
+      const partnersBody = document.getElementById("siteCustodyPartnersBody");
+      const investorsBody = document.getElementById("siteCustodyInvestorsBody");
       if(!body || !p) return;
       const rows = p.siteCustody || [];
       const totals = calcSiteCustodyTotals(p);
+      const dist = calcCustodyDistribution(p);
       if(countBox) countBox.textContent = `${rows.length} حركة`;
       const setText = (id, value) => { const el = document.getElementById(id); if(el) el.textContent = value; };
       setText("siteCustodyAdded", money(totals.added));
       setText("siteCustodySpent", money(totals.spent));
       setText("siteCustodyBalance", money(totals.balance));
+
       body.innerHTML = "";
       if(!rows.length){
         body.innerHTML = '<tr><td colspan="6">لا توجد حركات عهدة موقع</td></tr>';
-        return;
+      }else{
+        rows.forEach((row, idx) => {
+          const typeLabel = row.type === "add" ? "إضافة للعهدة" : "صرف من العهدة";
+          const effect = row.type === "add" ? "يُحتسب ضمن المصروفات وإجمالي التكلفة" : "يخصم من رصيد العهدة";
+          body.innerHTML += `
+            <tr class="${row.type === 'spend' ? 'warn-row' : ''}">
+              <td>${row.date || '-'}</td>
+              <td>${typeLabel}</td>
+              <td>${money(row.amount)}</td>
+              <td>${escapeHtml(row.note || '-')}</td>
+              <td>${effect}</td>
+              <td class="no-print"><div class="actions"><button class="btn-orange" onclick="editSiteCustodyEntry(${idx})">تعديل</button><button class="btn-red" onclick="deleteSiteCustodyEntry(${idx})">حذف</button></div></td>
+            </tr>
+          `;
+        });
       }
-      rows.forEach((row, idx) => {
-        const typeLabel = row.type === "add" ? "إضافة للعهدة" : "صرف من العهدة";
-        const effect = row.type === "add" ? "يخصم من الربح قبل التوزيع" : "يخصم من رصيد العهدة";
-        body.innerHTML += `
-          <tr class="${row.type === 'spend' ? 'warn-row' : ''}">
-            <td>${row.date || '-'}</td>
-            <td>${typeLabel}</td>
-            <td>${money(row.amount)}</td>
-            <td>${escapeHtml(row.note || '-')}</td>
-            <td>${effect}</td>
-            <td class="no-print"><div class="actions"><button class="btn-orange" onclick="editSiteCustodyEntry(${idx})">تعديل</button><button class="btn-red" onclick="deleteSiteCustodyEntry(${idx})">حذف</button></div></td>
-          </tr>
-        `;
-      });
+
+      if(partnersBody){
+        partnersBody.innerHTML = "";
+        if(!(dist.partnersRows || []).length){
+          partnersBody.innerHTML = '<tr><td colspan="3">لا توجد نسب شركاء حالياً</td></tr>';
+        }else{
+          dist.partnersRows.forEach(row => {
+            partnersBody.innerHTML += `
+              <tr class="${row.auto ? 'auto-row' : ''}">
+                <td>${escapeHtml(row.name)}${row.auto ? ' (تلقائي)' : ''}</td>
+                <td>${num(row.percent).toFixed(2)}%</td>
+                <td>${money(row.amount)}</td>
+              </tr>
+            `;
+          });
+        }
+      }
+
+      if(investorsBody){
+        investorsBody.innerHTML = "";
+        if(!(dist.investorsRows || []).length){
+          investorsBody.innerHTML = '<tr><td colspan="3">لا توجد مساهمات داخل الشركة حالياً</td></tr>';
+        }else{
+          dist.investorsRows.forEach(row => {
+            investorsBody.innerHTML += `
+              <tr class="${row.auto ? 'auto-row' : ''}">
+                <td>${escapeHtml(row.name)}${row.auto ? ' (تلقائي)' : ''}</td>
+                <td>${num(row.percent).toFixed(2)}%</td>
+                <td>${money(row.amount)}</td>
+              </tr>
+            `;
+          });
+        }
+      }
     }
 
     function renderMovements(){
@@ -5809,23 +5937,25 @@ function addPartner(){
         <strong>اسم المشروع:</strong> ${p.name}<br>
         <strong>إجمالي المبيعات:</strong> ${money(f.totalSales)}<br>
         <strong>التكلفة الأساسية:</strong> ${money(p.cost)}<br>
-        <strong>إجمالي المصروفات:</strong> ${money(f.totalExpenses)}<br>
+        <strong>إجمالي المصروفات شامل العهدة:</strong> ${money(f.totalExpenses)}<br>
         <strong>إجمالي السعي المستحق:</strong> ${money(f.totalCommissionDue)}<br>
         <strong>صافي المبيعات بعد خصم السعي:</strong> ${money(f.netSalesAfterCommission)}<br>
         <strong>إجمالي التكلفة:</strong> ${money(f.totalProjectCost)}<br>
         <strong>نسبة الشركة من إجمالي التكلفة:</strong> ${num(f.companyPercent).toFixed(2)}%<br>
         <strong>نسبة الشركاء من إجمالي التكلفة:</strong> ${num(f.partnerPercentTotal).toFixed(2)}%<br>
         <strong>مبلغ الشركة من إجمالي التكلفة:</strong> ${money(f.companyCostShare)}<br>
-        <strong>المحجوز لعهدة الموقع:</strong> ${money(f.siteCustodyAdded)}<br>
+        <strong>العهدة المضافة ضمن المصروفات:</strong> ${money(f.siteCustodyAdded)}<br>
         <strong>المصروف من عهدة الموقع:</strong> ${money(f.siteCustodySpent)}<br>
         <strong>رصيد عهدة الموقع:</strong> ${money(f.siteCustodyBalance)}<br>
         <strong>السعي المصروف فعليًا:</strong> ${money(f.totalCommissionPaid)}<br>
         <strong>متبقي السعي:</strong> ${money(f.totalCommissionRemain)}<br>
-        <strong>الربح قبل عهدة الموقع:</strong> ${money(f.profit)}<br>
-        <strong>الربح القابل للتوزيع:</strong> ${money(f.distributableProfit)}<br>
+        <strong>الربح قبل إدراج العهدة:</strong> ${money(f.profitBeforeCustody)}<br>
+        <strong>الربح القابل للتوزيع بعد احتساب العهدة:</strong> ${money(f.distributableProfit)}<br>
         <strong>نصيب الشركة من الشركاء:</strong> ${money(f.companyShareProfit)}<br>
+        <strong>ربح المساهمين:</strong> ${money((f.investorsFull || []).filter(x => !x.auto).reduce((s,x)=>s + num(x.grossShare), 0))}<br>
+        <strong>ربح الشركة بعد خصم المساهمين:</strong> ${money(f.companyShareProfit - (f.investorsFull || []).filter(x => !x.auto).reduce((s,x)=>s + num(x.grossShare), 0))}<br>
         <strong>إجمالي إدارة المساهمين:</strong> ${money(f.totalInvestorAdmin)}<br>
-        <strong>ربح الشركة النهائي:</strong> ${money(f.companyFinalProfit)}<br>
+        <strong>صافي الشركة النهائي:</strong> ${money((f.companyShareProfit - (f.investorsFull || []).filter(x => !x.auto).reduce((s,x)=>s + num(x.grossShare), 0)) + f.totalInvestorAdmin)}<br>
         <strong>الوحدات المطابقة للفلاتر الحالية:</strong> ${filteredUnits.length}<br>
         <strong>المصروفات المطابقة للفلاتر الحالية:</strong> ${filteredExpenses.length}<hr>
         <strong>الشركاء:</strong><br>${partnerLines}<hr>
@@ -5845,7 +5975,7 @@ function addPartner(){
         ["اسم المشروع", p.name],
         ["إجمالي المبيعات", f.totalSales],
         ["التكلفة الأساسية", p.cost],
-        ["إجمالي المصروفات", f.totalExpenses],
+        ["إجمالي المصروفات شامل العهدة", f.totalExpenses],
         ["إجمالي السعي المستحق", f.totalCommissionDue],
         ["صافي المبيعات بعد خصم السعي", f.netSalesAfterCommission],
         ["إجمالي التكلفة", f.totalProjectCost],
@@ -5854,11 +5984,11 @@ function addPartner(){
         ["مبلغ الشركة من إجمالي التكلفة", f.companyCostShare],
         ["السعي المصروف", f.totalCommissionPaid],
         ["متبقي السعي", f.totalCommissionRemain],
-        ["الربح قبل عهدة الموقع", f.profit],
-        ["المحجوز لعهدة الموقع", f.siteCustodyAdded],
+        ["الربح قبل إدراج العهدة", f.profitBeforeCustody],
+        ["العهدة المضافة ضمن المصروفات", f.siteCustodyAdded],
         ["المصروف من عهدة الموقع", f.siteCustodySpent],
         ["رصيد عهدة الموقع", f.siteCustodyBalance],
-        ["الربح القابل للتوزيع", f.distributableProfit],
+        ["الربح القابل للتوزيع بعد احتساب العهدة", f.distributableProfit],
         ["نصيب الشركة من الشركاء", f.companyShareProfit],
         ["إدارة الشركاء", f.totalPartnerAdmin],
         ["إدارة المساهمين", f.totalInvestorAdmin],
@@ -6127,7 +6257,7 @@ function addPartner(){
 
       const summaryCards = [
         printSummaryCard("إجمالي المبيعات", money(f.totalSales)),
-        printSummaryCard("إجمالي المصروفات", money(f.totalExpenses)),
+        printSummaryCard("إجمالي المصروفات شامل العهدة", money(f.totalExpenses)),
         printSummaryCard("إجمالي السعي المستحق", money(f.totalCommissionDue)),
         printSummaryCard("صافي المبيعات بعد خصم السعي", money(f.netSalesAfterCommission)),
         printSummaryCard("مبلغ الشركة من إجمالي التكلفة", money(f.companyCostShare)),
@@ -6135,9 +6265,9 @@ function addPartner(){
         printSummaryCard("نسبة الشركاء من إجمالي التكلفة", `${num(f.partnerPercentTotal).toFixed(2)}%`),
         printSummaryCard("السعي المصروف", money(f.totalCommissionPaid)),
         printSummaryCard("متبقي السعي", money(f.totalCommissionRemain)),
-        printSummaryCard("المحجوز لعهدة الموقع", money(f.siteCustodyAdded)),
+        printSummaryCard("العهدة المضافة ضمن المصروفات", money(f.siteCustodyAdded)),
         printSummaryCard("رصيد عهدة الموقع", money(f.siteCustodyBalance)),
-        printSummaryCard("الربح القابل للتوزيع", money(f.distributableProfit)),
+        printSummaryCard("الربح القابل للتوزيع بعد احتساب العهدة", money(f.distributableProfit)),
         printSummaryCard("نصيب الشركة من الشركاء", money(f.companyShareProfit)),
         printSummaryCard("ربح الشركة النهائي", money(f.companyFinalProfit))
       ].join("");
@@ -6184,9 +6314,10 @@ function addPartner(){
     function buildSiteCustodyReportHtml(){
       const p = getProject();
       const totals = calcSiteCustodyTotals(p);
+      const dist = calcCustodyDistribution(p);
       const rows = (p.siteCustody || []).slice().sort((a,b) => String(a.date||'').localeCompare(String(b.date||''))).map((row, idx) => {
         const typeLabel = row.type === "add" ? "إضافة للعهدة" : "صرف من العهدة";
-        const effect = row.type === "add" ? "يخصم من الربح قبل التوزيع" : "يخصم من رصيد العهدة";
+        const effect = row.type === "add" ? "يُحتسب ضمن المصروفات وإجمالي التكلفة" : "يخصم من رصيد العهدة";
         return `
           <tr>
             <td>${idx + 1}</td>
@@ -6199,6 +6330,24 @@ function addPartner(){
         `;
       }).join("");
 
+      const partnerRows = (dist.partnersRows || []).map((row, idx) => `
+        <tr>
+          <td>${idx + 1}</td>
+          <td>${escapeHtml(row.name)}${row.auto ? ' (تلقائي)' : ''}</td>
+          <td>${num(row.percent).toFixed(2)}%</td>
+          <td>${money(row.amount)}</td>
+        </tr>
+      `).join("");
+
+      const investorRows = (dist.investorsRows || []).map((row, idx) => `
+        <tr>
+          <td>${idx + 1}</td>
+          <td>${escapeHtml(row.name)}${row.auto ? ' (تلقائي)' : ''}</td>
+          <td>${num(row.percent).toFixed(2)}%</td>
+          <td>${money(row.amount)}</td>
+        </tr>
+      `).join("");
+
       const topMeta = [
         printMetaCard("المشروع", escapeHtml(p.name || '-')),
         printMetaCard("حالة المشروع", p.closed ? "مقفل" : "مفتوح"),
@@ -6210,54 +6359,65 @@ function addPartner(){
         printSummaryCard("إجمالي ما حُجز للعهدة", money(totals.added)),
         printSummaryCard("إجمالي المصروف من العهدة", money(totals.spent)),
         printSummaryCard("رصيد عهدة الموقع", money(totals.balance)),
-        printSummaryCard("طريقة الأثر", "الحجز قبل التوزيع")
+        printSummaryCard("طريقة الأثر", "الإضافة تُحتسب ضمن المصروفات")
       ].join("");
 
       return `
         <div class="report-title">
           <div>
             <h2>تقرير عهدة الموقع</h2>
-            <div class="report-sub">تقرير مستقل يوضح ما تم حجزه من أرباح المشروع وما تم صرفه من رصيد العهدة</div>
+            <div class="small">${escapeHtml(p.name || '-')}</div>
           </div>
         </div>
-
         <div class="meta-grid">${topMeta}</div>
         <div class="summary-grid">${summaryCards}</div>
 
-        <div class="section">
-          <div class="section-header">
-            <h3>ملخص محاسبي</h3>
-            <div class="section-note">إضافة للعهدة = تخصم من ربح المشروع قبل التوزيع | صرف من العهدة = يخصم من الرصيد فقط</div>
-          </div>
-          <div class="info-grid">
-            ${printInfoItem("إجمالي المبالغ المحجوزة للعهدة", money(totals.added))}
-            ${printInfoItem("إجمالي ما تم صرفه من العهدة", money(totals.spent))}
-            ${printInfoItem("الرصيد الحالي المتاح", money(totals.balance))}
-            ${printInfoItem("ملاحظة", "العهدة تظل متاحة للصرف حتى بعد إقفال المشروع")}
-          </div>
-        </div>
+        <h3>حركات عهدة الموقع</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>التاريخ</th>
+              <th>النوع</th>
+              <th>المبلغ</th>
+              <th>البيان</th>
+              <th>الأثر</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows || '<tr><td colspan="6">لا توجد حركات عهدة موقع</td></tr>'}
+          </tbody>
+        </table>
 
-        <div class="section">
-          <div class="section-header">
-            <h3>تفاصيل حركات عهدة الموقع</h3>
-            <div class="section-note">كل الحركات المسجلة داخل صفحة عهدة الموقع</div>
-          </div>
-          ${rows ? `
-            <table>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>التاريخ</th>
-                  <th>النوع</th>
-                  <th>المبلغ</th>
-                  <th>البيان</th>
-                  <th>الأثر</th>
-                </tr>
-              </thead>
-              <tbody>${rows}</tbody>
-            </table>
-          ` : `<div class="empty-box">لا توجد حركات عهدة موقع مسجلة حتى الآن.</div>`}
-        </div>
+        <h3 style="margin-top:18px">توزيع رصيد العهدة المتبقي على الشركاء</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>الاسم</th>
+              <th>النسبة</th>
+              <th>نصيبه من المتبقي</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${partnerRows || '<tr><td colspan="4">لا توجد نسب شركاء حالياً</td></tr>'}
+          </tbody>
+        </table>
+
+        <h3 style="margin-top:18px">توزيع نصيب الشركة من العهدة على المساهمين</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>الاسم</th>
+              <th>النسبة</th>
+              <th>نصيبه من المتبقي</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${investorRows || '<tr><td colspan="4">لا توجد مساهمات داخل الشركة حالياً</td></tr>'}
+          </tbody>
+        </table>
       `;
     }
 
@@ -6350,6 +6510,59 @@ function addPartner(){
         </div>
       `;
       openPrintWindow(`تقرير وحدة - ${u.number}`, html);
+    }
+
+    function printCompanyReport(){
+      const p = getProject();
+      const f = projectFinancials();
+      const investorsProfitValue = (f.investorsFull || []).filter(x => !x.auto).reduce((s,x)=>s + num(x.grossShare), 0);
+      const companyAfterInvestorsValue = f.companyShareProfit - investorsProfitValue;
+      const companyNetFinalValue = companyAfterInvestorsValue + f.totalInvestorAdmin;
+      const companyCustodyShare = (num(f.companyPercent) / 100) * num(f.siteCustodyBalance || 0);
+      const investorRows = (f.investorsFull || []).filter(x => !x.auto).map(x => `
+        <tr>
+          <td>${x.name}</td>
+          <td>${money(x.amount)}</td>
+          <td>${money(x.grossShare)}</td>
+          <td>${money(x.adminValue)}</td>
+          <td>${money(x.netShare)}</td>
+          <td>${money(x.totalEntitlement || (num(x.amount)+num(x.netShare)))}</td>
+          <td>${money(x.paidAdvance || 0)}</td>
+          <td>${money(x.totalRemain || x.remain || x.netShare)}</td>
+        </tr>`).join('');
+      const html = `
+        <div class="pdf-sheet">
+          <div class="pdf-brand">
+            <img src="${appState.logoDataUrl || ''}" alt="logo" />
+            <div class="pdf-brand-text">
+              <div class="title">تقرير الشركة</div>
+              <div class="sub">${escapeHtml(p.name || '')}</div>
+            </div>
+          </div>
+          <div class="line"><strong>نصيب الشركة من الشركاء:</strong> ${money(f.companyShareProfit)}</div>
+          <div class="line"><strong>ربح المساهمين:</strong> ${money(investorsProfitValue)}</div>
+          <div class="line"><strong>ربح الشركة بعد خصم المساهمين:</strong> ${money(companyAfterInvestorsValue)}</div>
+          <div class="line"><strong>إدارة المساهمين:</strong> ${money(f.totalInvestorAdmin)}</div>
+          <div class="line"><strong>صافي الشركة النهائي:</strong> ${money(companyNetFinalValue)}</div>
+          <div class="line"><strong>نصيب الشركة من رصيد العهدة المتبقي:</strong> ${money(companyCustodyShare)}</div>
+          <h3 style="margin-top:16px">تفاصيل المساهمين</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>الاسم</th>
+                <th>مبلغ المساهمة</th>
+                <th>الربح</th>
+                <th>الإدارة</th>
+                <th>الصافي</th>
+                <th>إجمالي حقه</th>
+                <th>المصروف له</th>
+                <th>المتبقي له</th>
+              </tr>
+            </thead>
+            <tbody>${investorRows || '<tr><td colspan="8">لا يوجد مساهمون</td></tr>'}</tbody>
+          </table>
+        </div>`;
+      openPrintWindow('تقرير الشركة', html);
     }
 
     function printPartnerReport(name){
