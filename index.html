@@ -943,7 +943,7 @@
               <button class="btn-gray" onclick="backToProjects()">رجوع للمشاريع</button>
               <button class="btn-orange" onclick="editProjectBasics()">تعديل بيانات المشروع</button>
               <button class="btn-orange" onclick="toggleArchiveProject()">أرشفة / استرجاع</button>
-              <button class="btn-red" id="closeProjectBtn" onclick="closeProjectBySecret()">إغلاق المشروع</button>
+              <button type="button" class="btn-red" id="closeProjectBtn" onclick="closeProjectBySecret()">إغلاق المشروع</button>
               <button class="btn-green hidden" id="reopenProjectBtn" onclick="reopenProjectBySecret()">فتح المشروع</button>
               <button class="btn-teal" onclick="exportProjectExcel()">Excel</button>
               <button class="btn-teal" onclick="printProjectReport()">طباعة تقرير المشروع</button>
@@ -1046,6 +1046,7 @@
           <button class="tab" onclick="showTab('expensesTab', this)">المصروفات</button>
           <button class="tab" onclick="showTab('partnersTab', this)">الشركاء</button>
           <button class="tab" onclick="showTab('investorsTab', this)">المساهمون</button>
+          <button class="tab" onclick="showTab('adminTab', this)">الإدارة</button>
           <button class="tab" onclick="showTab('advancesTab', this)">الدفعات تحت الحساب</button>
           <button class="tab" onclick="showTab('siteCustodyTab', this)">عهدة الموقع</button>
           <button class="tab" onclick="showTab('movementsTab', this)">دفتر الحركة</button>
@@ -1205,8 +1206,15 @@
             <input class="lockable-input" id="expenseDesc" placeholder="البيان" />
             <input class="lockable-input" id="expenseAmount" type="number" placeholder="المبلغ (يسمح بالسالب)" />
           </div>
-          <div style="margin-top:12px" class="no-print">
-            <button class="btn-orange" onclick="addExpense()">إضافة مصروف</button>
+          <div class="grid grid-3 no-print" style="margin-top:12px">
+            <select class="lockable-input" id="expenseMethod" onchange="toggleTransactionBankFields()">
+              <option value="cash">نقدًا</option>
+              <option value="bank">بنك</option>
+            </select>
+            <select class="lockable-input hidden" id="expenseBank"></select>
+            <div style="display:flex;align-items:end">
+              <button class="btn-orange" onclick="addExpense()" style="width:100%">إضافة مصروف</button>
+            </div>
           </div>
 
           <table>
@@ -1216,6 +1224,8 @@
                 <th>التصنيف</th>
                 <th>البيان</th>
                 <th>المبلغ</th>
+                <th>طريقة الحركة</th>
+                <th>البنك</th>
                 <th class="no-print">إجراء</th>
               </tr>
             </thead>
@@ -1312,6 +1322,11 @@
             <input class="lockable-input" id="investorAdminRate" type="number" placeholder="نسبة الإدارة %" />
             <input class="lockable-input" id="investorDate" type="date" />
           </div>
+          <div class="grid grid-3 no-print" style="margin-top:12px">
+            <input class="lockable-input" id="companyInvestorAdminRate" type="number" placeholder="نسبة إدارة الشركة داخل المساهمين %" />
+            <div class="note" style="margin:0">الشركة تظل تلقائيًا داخل المساهمين، والمطلوب هنا فقط تحديد نسبة إدارتها يدويًا.</div>
+            <button class="btn-orange" onclick="saveCompanyInvestorAdminRate()">حفظ نسبة إدارة الشركة</button>
+          </div>
           <div style="margin-top:12px" class="no-print">
             <button class="btn-green" onclick="addInvestor()">إضافة مساهم</button>
           </div>
@@ -1322,6 +1337,7 @@
                 <th>الاسم</th>
                 <th>مساهمة المساهم</th>
                 <th>نسبته من قاعدة الشركة</th>
+                <th>نسبة الإدارة</th>
                 <th>ربحه الإجمالي</th>
                 <th>الإدارة</th>
                 <th>الصافي</th>
@@ -1337,6 +1353,69 @@
           </table>
         </div>
 
+        
+        <div id="adminTab" class="card tab-panel hidden">
+          <div class="section-title">
+            <div>
+              <h3>الإدارة</h3>
+              <div class="section-kicker">تجميع الإدارة التلقائية من الشركاء والمساهمين مع توزيعها بين الشركة وأبوفارس الغامدي</div>
+            </div>
+          </div>
+
+          <div class="note">
+            <strong>آلية التوزيع:</strong> أي إدارة عادية تُقسم تلقائيًا 50٪ للشركة و50٪ لأبوفارس الغامدي، أما <strong>إدارة الشركة</strong> فتذهب كاملة إلى أبوفارس الغامدي.
+          </div>
+
+          <div class="kpis">
+            <div class="kpi"><div class="kpi-title">إدارة الشركاء</div><div class="kpi-value" id="kpiPartnerAdminTotal">0</div></div>
+            <div class="kpi"><div class="kpi-title">إدارة المساهمين</div><div class="kpi-value" id="kpiInvestorAdminTotal">0</div></div>
+            <div class="kpi"><div class="kpi-title">إدارة يدوية عادية</div><div class="kpi-value" id="kpiManualRegularAdmin">0</div></div>
+            <div class="kpi"><div class="kpi-title">إدارة الشركة اليدوية</div><div class="kpi-value" id="kpiManualCompanyAdmin">0</div></div>
+            <div class="kpi"><div class="kpi-title">إجمالي الإدارة المحصلة</div><div class="kpi-value" id="kpiAdminCollectedTotal">0</div></div>
+            <div class="kpi"><div class="kpi-title">نصيب الشركة من الإدارة</div><div class="kpi-value" id="kpiCompanyAdminShare">0</div></div>
+            <div class="kpi"><div class="kpi-title">نصيب أبوفارس الغامدي</div><div class="kpi-value" id="kpiAbuFarisAdminShare">0</div></div>
+          </div>
+
+          <div class="grid grid-4 no-print">
+            <select class="lockable-input" id="adminEntryType">
+              <option value="regular">إدارة عادية</option>
+              <option value="company">إدارة الشركة</option>
+            </select>
+            <input class="lockable-input" id="adminEntryAmount" type="number" placeholder="مبلغ الإدارة" />
+            <input class="lockable-input" id="adminEntryDate" type="date" />
+            <input class="lockable-input" id="adminEntryNote" placeholder="بيان / ملاحظة" />
+          </div>
+          <div class="grid grid-3 no-print" style="margin-top:12px">
+            <select class="lockable-input" id="adminEntryMethod" onchange="toggleTransactionBankFields()">
+              <option value="cash">نقدًا</option>
+              <option value="bank">بنك</option>
+            </select>
+            <select class="lockable-input hidden" id="adminEntryBank"></select>
+            <div style="display:flex;align-items:end">
+              <button class="btn-purple" onclick="addAdminEntry()" style="width:100%">تسجيل حركة إدارة</button>
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>المصدر</th>
+                <th>الاسم</th>
+                <th>النوع</th>
+                <th>نسبة الإدارة</th>
+                <th>التاريخ</th>
+                <th>المبلغ</th>
+                <th>طريقة الحركة</th>
+                <th>البنك</th>
+                <th>البيان</th>
+                <th class="no-print">إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="adminBody"></tbody>
+          </table>
+        </div>
+
+
         <div id="advancesTab" class="card tab-panel hidden">
           <h3>الدفعات تحت الحساب</h3>
 
@@ -1351,8 +1430,13 @@
             <input class="lockable-input" id="advanceAmount" type="number" placeholder="المبلغ المصروف (يسمح بالسالب)" />
             <input class="lockable-input" id="advanceDate" type="date" />
           </div>
-          <div class="grid grid-2 no-print">
+          <div class="grid grid-4 no-print">
             <input class="lockable-input" id="advanceNote" placeholder="ملاحظة" />
+            <select class="lockable-input" id="advanceMethod" onchange="toggleTransactionBankFields()">
+              <option value="cash">نقدًا</option>
+              <option value="bank">بنك</option>
+            </select>
+            <select class="lockable-input hidden" id="advanceBank"></select>
             <div style="display:flex;align-items:end">
               <button class="btn-purple" onclick="addAdvance()" style="width:100%">تسجيل دفعة تحت الحساب</button>
             </div>
@@ -1365,6 +1449,8 @@
                 <th>النوع</th>
                 <th>الاسم</th>
                 <th>المبلغ</th>
+                <th>طريقة الحركة</th>
+                <th>البنك</th>
                 <th>ملاحظة</th>
                 <th class="no-print">إجراء</th>
               </tr>
@@ -1416,8 +1502,15 @@
             <input id="siteCustodyDate" type="date" />
             <input id="siteCustodyNote" placeholder="ملاحظة / البيان" />
           </div>
-          <div style="margin-top:12px" class="no-print">
-            <button class="btn-purple" onclick="addSiteCustodyEntry()">تسجيل حركة العهدة</button>
+          <div class="grid grid-3 no-print" style="margin-top:12px">
+            <select class="lockable-input" id="siteCustodyMethod" onchange="toggleTransactionBankFields()">
+              <option value="cash">نقدًا</option>
+              <option value="bank">بنك</option>
+            </select>
+            <select class="lockable-input hidden" id="siteCustodyBank"></select>
+            <div style="display:flex;align-items:end">
+              <button class="btn-purple" onclick="addSiteCustodyEntry()" style="width:100%">تسجيل حركة العهدة</button>
+            </div>
           </div>
 
           <table>
@@ -1426,6 +1519,8 @@
                 <th>التاريخ</th>
                 <th>النوع</th>
                 <th>المبلغ</th>
+                <th>طريقة الحركة</th>
+                <th>البنك</th>
                 <th>البيان</th>
                 <th>الأثر</th>
                 <th class="no-print">إجراء</th>
@@ -1745,7 +1840,7 @@
           <button class="btn" onclick="testCloudConnection()">اختبار الاتصال</button>
           <button class="btn-orange" onclick="pullCloudNow()">سحب من السحابة</button>
           <button class="btn-purple" onclick="pushCloudNow()">رفع إلى السحابة</button>
-          <button class="btn-red" onclick="clearCloudSettings()">مسح الإعدادات</button>
+          <button type="button" class="btn-red" onclick="clearCloudSettings()">مسح الإعدادات</button>
         </div>
       </div>
 
@@ -1913,6 +2008,23 @@
       const secretSettings = loadSecretSettings();
       return String(secretSettings.closeProjectSecret || "8844");
     }
+
+    function requireDeletionSecret(actionLabel="الحذف"){
+      const entered = prompt(`أدخل الرقم السري لتأكيد ${actionLabel}`, "");
+      if(entered === null) return false;
+      if(String(entered).trim() !== getProjectSecret()){
+        alert("الرقم السري غير صحيح");
+        return false;
+      }
+      return true;
+    }
+
+    function confirmSecureDelete(actionLabel, confirmText){
+      if(!requireDeletionSecret(actionLabel)) return false;
+      if(!confirm(confirmText || "هل تريد الحذف؟")) return false;
+      return true;
+    }
+
 
     const STORAGE_KEY = "anas_projects_excel_pdf_v2";
     const CLOUD_SETTINGS_KEY = "anas_cloud_firebase_settings_v1";
@@ -2209,6 +2321,34 @@ let globalSettingsState = {
       updateDatalistOptions("bankMasterNames", getMasterList("banks"), item => item.name);
     }
 
+    function populateBankSelectOptions(){
+      const banks = getMasterList("banks");
+      const options = [`<option value="">اختر البنك</option>`].concat(
+        banks.map(item => `<option value="${escapeHtml(item.name || "")}">${escapeHtml(item.name || "")}</option>`)
+      ).join("");
+      ["expenseBank","advanceBank","siteCustodyBank","adminEntryBank"].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.innerHTML = options;
+      });
+    }
+
+    function toggleTransactionBankFields(){
+      [
+        ["expenseMethod","expenseBank"],
+        ["advanceMethod","advanceBank"],
+        ["siteCustodyMethod","siteCustodyBank"],
+        ["adminEntryMethod","adminEntryBank"]
+      ].forEach(([methodId, bankId]) => {
+        const methodEl = document.getElementById(methodId);
+        const bankEl = document.getElementById(bankId);
+        if(!methodEl || !bankEl) return;
+        const isBank = methodEl.value === "bank";
+        bankEl.classList.toggle("hidden", !isBank);
+        if(!isBank) bankEl.value = "";
+      });
+    }
+
+
     function applyPartnerTemplate(){
       const item = findMasterItemByName("partners", document.getElementById("partnerName")?.value);
       const adminInput = document.getElementById("partnerAdminRate");
@@ -2341,6 +2481,8 @@ let globalSettingsState = {
       saveApp("global-settings");
       renderGlobalSettings();
       populateGlobalSelectors();
+      populateBankSelectOptions();
+      toggleTransactionBankFields();
       resetGlobalForm(type);
     }
 
@@ -2379,11 +2521,13 @@ let globalSettingsState = {
       const list = getMasterList(type);
       const item = list.find(x => x.id === id);
       if(!item) return;
-      if(!confirm("هل تريد حذف هذا العنصر من القائمة العامة؟")) return;
+      if(!confirmSecureDelete("حذف من الإضافات العامة", "هل تريد حذف هذا العنصر من القائمة العامة؟")) return;
       appData.masterLists[type] = list.filter(x => x.id !== id);
       saveApp("global-settings-delete");
       renderGlobalSettings();
       populateGlobalSelectors();
+      populateBankSelectOptions();
+      toggleTransactionBankFields();
       resetGlobalForm(type);
     }
 
@@ -2402,7 +2546,7 @@ let globalSettingsState = {
             <td class="no-print">
               <div class="actions">
                 <button class="btn-orange" onclick="editGlobalListItem('partners','${item.id}')">تعديل</button>
-                <button class="btn-red" onclick="deleteGlobalListItem('partners','${item.id}')">حذف</button>
+                <button type="button" class="btn-red" onclick="deleteGlobalListItem('partners','${item.id}')">حذف</button>
               </div>
             </td>
           </tr>
@@ -2420,7 +2564,7 @@ let globalSettingsState = {
             <td class="no-print">
               <div class="actions">
                 <button class="btn-orange" onclick="editGlobalListItem('marketers','${item.id}')">تعديل</button>
-                <button class="btn-red" onclick="deleteGlobalListItem('marketers','${item.id}')">حذف</button>
+                <button type="button" class="btn-red" onclick="deleteGlobalListItem('marketers','${item.id}')">حذف</button>
               </div>
             </td>
           </tr>
@@ -2438,7 +2582,7 @@ let globalSettingsState = {
             <td class="no-print">
               <div class="actions">
                 <button class="btn-orange" onclick="editGlobalListItem('investors','${item.id}')">تعديل</button>
-                <button class="btn-red" onclick="deleteGlobalListItem('investors','${item.id}')">حذف</button>
+                <button type="button" class="btn-red" onclick="deleteGlobalListItem('investors','${item.id}')">حذف</button>
               </div>
             </td>
           </tr>
@@ -2455,7 +2599,7 @@ let globalSettingsState = {
             <td class="no-print">
               <div class="actions">
                 <button class="btn-orange" onclick="editGlobalListItem('banks','${item.id}')">تعديل</button>
-                <button class="btn-red" onclick="deleteGlobalListItem('banks','${item.id}')">حذف</button>
+                <button type="button" class="btn-red" onclick="deleteGlobalListItem('banks','${item.id}')">حذف</button>
               </div>
             </td>
           </tr>
@@ -2804,7 +2948,7 @@ let globalSettingsState = {
           </div>
           <div class="actions">
             <button class="btn-green" onclick="restoreBackupSnapshot('${item.id}')">استرجاع</button>
-            <button class="btn-red" onclick="deleteBackupSnapshot('${item.id}')">حذف</button>
+            <button type="button" class="btn-red" onclick="deleteBackupSnapshot('${item.id}')">حذف</button>
           </div>
         </div>
       `).join("");
@@ -3116,7 +3260,9 @@ let globalSettingsState = {
       if(!project.investors) project.investors = [];
       if(!project.advances) project.advances = [];
       if(!project.siteCustody) project.siteCustody = [];
+      if(!project.adminEntries) project.adminEntries = [];
       if(!project.movements) project.movements = [];
+      if(typeof project.companyInvestorAdminRate === "undefined") project.companyInvestorAdminRate = 0;
       (project.units || []).forEach(unit => {
         if(!unit.paymentDueAmounts) unit.paymentDueAmounts = [0,0,0,0,0];
         if(!unit.paymentDueDates) unit.paymentDueDates = ["","","","",""];
@@ -3312,6 +3458,7 @@ let globalSettingsState = {
         investors: [],
         advances: [],
         siteCustody: [],
+        adminEntries: [],
         movements: []
       });
 
@@ -3514,9 +3661,9 @@ let globalSettingsState = {
             </div>
             <div class="actions">
               <button class="btn" onclick="openProject('${p.id}')">فتح المشروع</button>
-              ${p.closed ? `<button class="btn-green" onclick="reopenProjectBySecret('${p.id}')">فتح بكود</button>` : `<button class="btn-red" onclick="closeProjectBySecret('${p.id}')">إغلاق المشروع</button>`}
+              ${p.closed ? `<button class="btn-green" onclick="reopenProjectBySecret('${p.id}')">فتح بكود</button>` : `<button type="button" class="btn-red" onclick="closeProjectBySecret('${p.id}')">إغلاق المشروع</button>`}
               <button class="${p.archived ? 'btn-teal' : 'btn-orange'}" onclick="toggleArchiveProject('${p.id}')">${p.archived ? 'استرجاع' : 'أرشفة'}</button>
-              <button class="btn-red" onclick="deleteProject('${p.id}')">حذف</button>
+              <button type="button" class="btn-red" onclick="deleteProject('${p.id}')">حذف</button>
             </div>
           </div>
         `;
@@ -3546,13 +3693,7 @@ let globalSettingsState = {
 
       const project = appData.projects.find(p => p.id === id);
       if(!project) return;
-      if(!confirm(`هل تريد حذف المشروع "${project.name}"؟`)) return;
-      const code = prompt("أدخل الكود السري لحذف المشروع:");
-      if(code === null) return;
-      if(code !== getProjectSecret()){
-        alert("الكود السري غير صحيح");
-        return;
-      }
+      if(!confirmSecureDelete("حذف المشروع", `هل تريد حذف المشروع "${project.name}"؟`)) return;
       appData.projects = appData.projects.filter(p => p.id !== id);
       saveApp("delete_project");
       renderProjects();
@@ -3648,15 +3789,19 @@ let globalSettingsState = {
       const investorsGrossTotal = rows.reduce((s,x) => s + num(x.grossShare), 0);
       const companyOwnGrossProfit = companyShareProfit - investorsGrossTotal;
 
+      const companyAdminRate = num(project.companyInvestorAdminRate);
+      const companyAdminValue = companyOwnGrossProfit * companyAdminRate / 100;
+      const companyNetShare = companyOwnGrossProfit - companyAdminValue;
+
       rows.unshift({
         name: "الشركة",
         amount: companyOwnAmount,
         ratio: companyOwnRatio,
         grossShare: companyOwnGrossProfit,
-        adminRate: 0,
-        adminValue: 0,
-        netShare: companyOwnGrossProfit,
-        totalEntitlement: companyOwnAmount + companyOwnGrossProfit,
+        adminRate: companyAdminRate,
+        adminValue: companyAdminValue,
+        netShare: companyNetShare,
+        totalEntitlement: companyOwnAmount + companyNetShare,
         date: "-",
         auto: true
       });
@@ -4677,6 +4822,8 @@ let globalSettingsState = {
 
       document.getElementById("projectTitle").innerText = p.name;
       document.getElementById("projectMeta").innerText = `التكلفة الأساسية: ${money(p.cost)}${p.notes ? " | " + p.notes : ""}`;
+      const companyInvestorAdminRateInput = document.getElementById("companyInvestorAdminRate");
+      if(companyInvestorAdminRateInput) companyInvestorAdminRateInput.value = num(p.companyInvestorAdminRate);
 
       document.getElementById("kpiSales").innerText = money(f.totalSales);
       document.getElementById("kpiCost").innerText = money(p.cost);
@@ -4717,10 +4864,13 @@ let globalSettingsState = {
       renderInvestors();
       renderAdvances();
       renderSiteCustody();
+      renderAdminTab();
       renderMovements();
       renderPaymentAlerts();
       renderReport();
       refreshAdvanceNames();
+      populateBankSelectOptions();
+      toggleTransactionBankFields();
       applyMobileTableWrappers();
 
       saveApp();
@@ -4930,7 +5080,7 @@ let globalSettingsState = {
                 <button class="btn-purple" onclick="forceSold(${i})">بيع</button>
                 <button class="btn-teal" onclick="printUnitReport(${i})">طباعة</button>
                 <button class="btn-green" onclick="sendUnitWhatsApp(${i})">واتساب</button>
-                <button class="btn-red" onclick="deleteUnit(${i})">حذف</button>
+                <button type="button" class="btn-red" onclick="deleteUnit(${i})">حذف</button>
               </div>
             </td>
           </tr>
@@ -5227,7 +5377,7 @@ let globalSettingsState = {
 
     function deleteUnit(i){
       if(!requireProjectOpen("حذف الوحدة")) return;
-      if(!confirm("هل تريد حذف الوحدة؟")) return;
+      if(!confirmSecureDelete("حذف الوحدة", "هل تريد حذف الوحدة؟")) return;
       const u = getProject().units[i];
       addMovement("حذف وحدة", `${u.number} - ${u.building}`, u.price, "تم حذف الوحدة", todayText());
       getProject().units.splice(i,1);
@@ -5273,19 +5423,24 @@ let globalSettingsState = {
       const category = document.getElementById("expenseCategory").value.trim();
       const description = document.getElementById("expenseDesc").value.trim();
       const amount = num(document.getElementById("expenseAmount").value);
+      const method = document.getElementById("expenseMethod") ? document.getElementById("expenseMethod").value : "cash";
+      const bank = method === "bank" ? ((document.getElementById("expenseBank") ? document.getElementById("expenseBank").value : "") || "").trim() : "";
 
       if(!category || !description || Number.isNaN(amount) || amount === 0){
         alert("اكمل بيانات المصروف، ويُسمح بالمبلغ السالب أو الموجب بشرط ألا يكون صفرًا");
         return;
       }
+      if(method === "bank" && !bank){
+        alert("اختر البنك");
+        return;
+      }
 
-      p.expenses.push({date, category, description, amount});
-      addMovement("مصروف", `${category} - ${description}`, amount, "إضافة مصروف", date);
+      p.expenses.push({ date, category, description, amount, method, bank });
+      addMovement("إضافة مصروف", `${category} - ${description}`, amount, `${method === "bank" ? "بنك" : "نقدًا"}${bank ? " - " + bank : ""}`, date);
 
-      document.getElementById("expenseDate").value = "";
-      document.getElementById("expenseCategory").value = "";
-      document.getElementById("expenseDesc").value = "";
-      document.getElementById("expenseAmount").value = "";
+      ["expenseDate","expenseCategory","expenseDesc","expenseAmount","expenseBank"].forEach(id => { const el = document.getElementById(id); if(el) el.value = ""; });
+      const methodEl = document.getElementById("expenseMethod"); if(methodEl) methodEl.value = "cash";
+      toggleTransactionBankFields();
 
       renderProject();
     }
@@ -5299,7 +5454,7 @@ let globalSettingsState = {
       body.innerHTML = "";
 
       if(!rows.length){
-        body.innerHTML = '<tr><td colspan="5">لا توجد مصروفات مطابقة للفلاتر الحالية</td></tr>';
+        body.innerHTML = '<tr><td colspan="7">لا توجد مصروفات مطابقة للفلاتر الحالية</td></tr>';
         renderFilterSummaryNote();
         return;
       }
@@ -5312,7 +5467,9 @@ let globalSettingsState = {
             <td>${e.category}</td>
             <td>${e.description}</td>
             <td>${money(e.amount)}</td>
-            <td class="no-print"><div class="actions"><button class="btn-orange" onclick="editExpense(${i})">تعديل</button><button class="btn-red" onclick="deleteExpense(${i})">حذف</button></div></td>
+            <td>${(e.method || "cash") === "bank" ? "بنك" : "نقدًا"}</td>
+            <td>${escapeHtml(e.bank || "-")}</td>
+            <td class="no-print"><div class="actions"><button class="btn-orange" onclick="editExpense(${i})">تعديل</button><button type="button" class="btn-red" onclick="deleteExpense(${i})">حذف</button></div></td>
           </tr>
         `;
       });
@@ -5320,7 +5477,7 @@ let globalSettingsState = {
 
     function deleteExpense(i){
       if(!requireProjectOpen("حذف المصروف")) return;
-      if(!confirm("هل تريد حذف المصروف؟")) return;
+      if(!confirmSecureDelete("حذف المصروف", "هل تريد حذف المصروف؟")) return;
       const e = getProject().expenses[i];
       addMovement("حذف مصروف", `${e.category} - ${e.description}`, e.amount, "تم حذف المصروف", todayText());
       getProject().expenses.splice(i,1);
@@ -5434,7 +5591,7 @@ let globalSettingsState = {
 
     function deleteAdvance(i){
       if(!requireProjectOpen("حذف الدفعة")) return;
-      if(!confirm("هل تريد حذف الدفعة تحت الحساب؟")) return;
+      if(!confirmSecureDelete("حذف الدفعة تحت الحساب", "هل تريد حذف الدفعة تحت الحساب؟")) return;
       const p = getProject();
       const a = p.advances[i];
       if(!a) return;
@@ -5501,7 +5658,7 @@ function addPartner(){
             <td>${num(x.percent).toFixed(2)}%</td>
             <td>${money(x.costShare)}</td>
             <td>${money(x.grossShare)}</td>
-            <td>${x.auto ? money(0) : `${money(x.adminValue)} <div class="small">(${num(x.adminRate).toFixed(2)}%)</div>`}</td>
+            <td>${money(x.adminValue)} <div class="small">(${num(x.adminRate).toFixed(2)}%)</div></td>
             <td>${money(x.netShare)}</td>
             <td>${money(x.totalEntitlement)}</td>
             <td>${money(x.paidAdvance || 0)}</td>
@@ -5509,7 +5666,7 @@ function addPartner(){
             <td>${x.date || "-"}</td>
             <td class="no-print">${x.auto ? '-' : `<button class="btn-teal" onclick="printPartnerReport('${escapeQuotes(x.name)}')">طباعة</button>`}</td>
             <td class="no-print">
-              ${x.auto ? '-' : `<button class="btn-red" onclick="deletePartner(${i})">حذف</button>`}
+              ${x.auto ? '-' : `<button type="button" class="btn-red" onclick="deletePartner(${i})">حذف</button>`}
             </td>
           </tr>
         `;
@@ -5522,11 +5679,22 @@ function addPartner(){
         alert("تعذر تحديد الشريك المطلوب حذفه");
         return;
       }
-      if(!confirm("هل تريد حذف الشريك؟")) return;
+      if(!confirmSecureDelete("حذف الشريك", "هل تريد حذف الشريك؟")) return;
       const x = getProject().partners[i];
       addMovement("حذف شريك", x.name, x.percent, `تم حذف شريك بنسبة ${x.percent}% | إدارة ${num(x.adminRate).toFixed(2)}%`, todayText());
       getProject().partners.splice(i,1);
       renderProject();
+    }
+
+    function saveCompanyInvestorAdminRate(){
+      if(!requireProjectOpen("تعديل إدارة الشركة في المساهمين")) return;
+      const p = getProject();
+      ensureArrays(p);
+      const rate = num(document.getElementById("companyInvestorAdminRate")?.value);
+      p.companyInvestorAdminRate = rate;
+      addMovement("تعديل إدارة الشركة", "الشركة", 0, `تم ضبط نسبة إدارة الشركة في المساهمين على ${rate}%`, todayText());
+      renderProject();
+      alert("تم حفظ نسبة إدارة الشركة");
     }
 
     function addInvestor(){
@@ -5586,13 +5754,15 @@ function addPartner(){
       rows.forEach((x) => {
         const i = x.auto ? -1 : getProject().investors.findIndex(p => p.name === x.name && String(p.date||'') === String(x.date||''));
         const cls = !x.auto && num(x.remain) > 0 ? "warn-row" : "";
+        const adminRateText = `${num(x.adminRate || 0).toFixed(2)}%`;
         body.innerHTML += `
           <tr class="${x.auto ? 'auto-row' : cls}" data-partner-name="${escapeHtml(String(x.name || '').trim().toLowerCase())}">
             <td>${x.name}${x.auto ? ' (تلقائي)' : ''}</td>
             <td>${money(x.amount)}</td>
             <td>${num(x.ratio).toFixed(2)}%</td>
+            <td>${adminRateText}</td>
             <td>${money(x.grossShare)}</td>
-            <td>${x.auto ? money(0) : `${money(x.adminValue)} <div class="small">(${num(x.adminRate).toFixed(2)}%)</div>`}</td>
+            <td>${money(x.adminValue)}</td>
             <td>${money(x.netShare)}</td>
             <td>${money(x.totalEntitlement)}</td>
             <td>${money(x.paidAdvance || 0)}</td>
@@ -5600,7 +5770,7 @@ function addPartner(){
             <td>${x.date || "-"}</td>
             <td class="no-print">${x.auto ? '-' : `<button class="btn-teal" onclick="printInvestorReport('${escapeQuotes(x.name)}')">طباعة</button>`}</td>
             <td class="no-print">
-              ${x.auto ? '-' : `<button class="btn-red" onclick="deleteInvestor(${i})">حذف</button>`}
+              ${x.auto ? '-' : `<button type="button" class="btn-red" onclick="deleteInvestor(${i})">حذف</button>`}
             </td>
           </tr>
         `;
@@ -5613,7 +5783,7 @@ function addPartner(){
         alert("تعذر تحديد المساهم المطلوب حذفه");
         return;
       }
-      if(!confirm("هل تريد حذف المساهم؟")) return;
+      if(!confirmSecureDelete("حذف المساهم", "هل تريد حذف المساهم؟")) return;
       const x = getProject().investors[i];
       addMovement("حذف مساهم", x.name, x.amount, `تم حذف مساهم | إدارة ${x.adminRate || 0}%`, todayText());
       getProject().investors.splice(i,1);
@@ -5645,34 +5815,34 @@ function addPartner(){
     }
 
     function addAdvance(){
-      if(!requirePermission("addAdvance", "هذه الصلاحية غير متاحة لك")) return;
-
-      if(!requireProjectOpen("إضافة دفعة تحت الحساب")) return;
+      if(!requireProjectOpen("تسجيل دفعة")) return;
       const p = getProject();
       const entityType = document.getElementById("advanceType").value;
       const entityName = document.getElementById("advanceName").value;
       const amount = num(document.getElementById("advanceAmount").value);
       const date = document.getElementById("advanceDate").value || todayText();
       const note = document.getElementById("advanceNote").value.trim();
+      const method = document.getElementById("advanceMethod") ? document.getElementById("advanceMethod").value : "cash";
+      const bank = method === "bank" ? ((document.getElementById("advanceBank") ? document.getElementById("advanceBank").value : "") || "").trim() : "";
 
-      if(!entityName){
-        alert("اختر اسمًا");
+      if(!entityName || Number.isNaN(amount) || amount === 0){
+        alert("اكمل بيانات الدفعة تحت الحساب");
         return;
       }
-      if(Number.isNaN(amount) || amount === 0){
-        alert("اكتب مبلغًا صحيحًا، ويُسمح بالسالب أو الموجب بشرط ألا يكون صفرًا");
+      if(method === "bank" && !bank){
+        alert("اختر البنك");
         return;
       }
 
-      p.advances.unshift({entityType, entityName, amount, date, note});
-
-      const typeLabel = entityType === "partner" ? "دفعة شريك" : entityType === "investor" ? "دفعة مساهم" : entityType === "company" ? "دفعة شركة" : "دفعة مسوق";
-      addMovement(typeLabel, entityName, amount, note || "دفعة تحت الحساب", date);
+      p.advances.push({entityType, entityName, amount, date, note, method, bank});
+      addMovement("دفعة تحت الحساب", entityName, amount, `${entityType} | ${method === "bank" ? "بنك" : "نقدًا"}${bank ? " - " + bank : ""}${note ? " | " + note : ""}`, date);
 
       document.getElementById("advanceAmount").value = "";
       document.getElementById("advanceDate").value = "";
       document.getElementById("advanceNote").value = "";
-
+      const bankEl = document.getElementById("advanceBank"); if(bankEl) bankEl.value = "";
+      const methodEl = document.getElementById("advanceMethod"); if(methodEl) methodEl.value = "cash";
+      toggleTransactionBankFields();
       renderProject();
     }
 
@@ -5682,7 +5852,7 @@ function addPartner(){
       body.innerHTML = "";
 
       if(!p.advances.length){
-        body.innerHTML = '<tr><td colspan="6">لا توجد دفعات تحت الحساب</td></tr>';
+        body.innerHTML = '<tr><td colspan="8">لا توجد دفعات تحت الحساب</td></tr>';
         return;
       }
 
@@ -5695,7 +5865,7 @@ function addPartner(){
             <td>${a.entityName}</td>
             <td>${money(a.amount)}</td>
             <td>${a.note || "-"}</td>
-            <td class="no-print"><div class="actions"><button class="btn-orange" onclick="editAdvance(${p.advances.indexOf(a)})">تعديل</button><button class="btn-red" onclick="deleteAdvance(${p.advances.indexOf(a)})">حذف</button></div></td>
+            <td class="no-print"><div class="actions"><button class="btn-orange" onclick="editAdvance(${p.advances.indexOf(a)})">تعديل</button><button type="button" class="btn-red" onclick="deleteAdvance(${p.advances.indexOf(a)})">حذف</button></div></td>
           </tr>
         `;
       });
@@ -5709,30 +5879,44 @@ function addPartner(){
     }
 
     function addSiteCustodyEntry(){
-      if(!requirePermission("addSiteCustody", "هذه الصلاحية غير متاحة لك")) return;
+      if(!requireProjectOpen("تسجيل حركة العهدة")) return;
       const p = getProject();
-      if(!p) return;
       const type = document.getElementById("siteCustodyType").value;
       const amount = num(document.getElementById("siteCustodyAmount").value);
       const date = document.getElementById("siteCustodyDate").value || todayText();
       const note = document.getElementById("siteCustodyNote").value.trim();
-      if(!canModifySiteCustody(type)) return;
-      if(Number.isNaN(amount) || amount <= 0){
+      const method = document.getElementById("siteCustodyMethod") ? document.getElementById("siteCustodyMethod").value : "cash";
+      const bank = method === "bank" ? ((document.getElementById("siteCustodyBank") ? document.getElementById("siteCustodyBank").value : "") || "").trim() : "";
+
+      if(amount <= 0){
         alert("اكتب مبلغًا صحيحًا أكبر من صفر");
         return;
       }
-      const current = calcSiteCustodyTotals(p);
-      if(type === "spend" && amount > current.balance){
-        alert("المبلغ أكبر من رصيد عهدة الموقع الحالي");
+      if(method === "bank" && !bank){
+        alert("اختر البنك");
         return;
       }
-      p.siteCustody.unshift({type, amount, date, note});
-      const moveType = type === "add" ? "إضافة عهدة موقع" : "صرف من عهدة الموقع";
-      const moveAmount = type === "add" ? amount : -amount;
-      addMovement(moveType, "عهدة الموقع", moveAmount, note || moveType, date);
+
+      p.siteCustody = p.siteCustody || [];
+      p.siteCustody.unshift({type, amount, date, note, method, bank});
+
+      const totals = calcSiteCustodyTotals(p);
+      if(totals.balance < 0){
+        p.siteCustody.shift();
+        alert("لا يمكن صرف مبلغ أكبر من رصيد العهدة الحالي");
+        return;
+      }
+
+      const movementAmount = type === "add" ? amount : -amount;
+      addMovement("حركة عهدة الموقع", type === "add" ? "إضافة للعهدة" : "صرف من العهدة", movementAmount, `${method === "bank" ? "بنك" : "نقدًا"}${bank ? " - " + bank : ""}${note ? " | " + note : ""}`, date);
+
       document.getElementById("siteCustodyAmount").value = "";
       document.getElementById("siteCustodyDate").value = "";
       document.getElementById("siteCustodyNote").value = "";
+      const bankEl = document.getElementById("siteCustodyBank"); if(bankEl) bankEl.value = "";
+      const methodEl = document.getElementById("siteCustodyMethod"); if(methodEl) methodEl.value = "cash";
+      toggleTransactionBankFields();
+
       renderProject();
     }
 
@@ -5779,7 +5963,7 @@ function addPartner(){
       const row = (p.siteCustody || [])[i];
       if(!row) return;
       if(row.type === "add" && !canModifySiteCustody("add", true)) return;
-      if(!confirm("هل تريد حذف حركة عهدة الموقع؟")) return;
+      if(!confirmSecureDelete("حذف حركة عهدة الموقع", "هل تريد حذف حركة عهدة الموقع؟")) return;
       const signedAmount = row.type === "add" ? -num(row.amount) : num(row.amount);
       p.siteCustody.splice(i,1);
       const totals = calcSiteCustodyTotals(p);
@@ -5793,7 +5977,170 @@ function addPartner(){
     }
 
     
-    function calcCustodyDistribution(project){
+    
+    function calcAdminDistribution(project){
+      const f = calcProjectFinancials(project);
+      const adminEntries = (project.adminEntries || []).map(x => ({
+        ...x,
+        amount: num(x.amount)
+      }));
+      const manualRegularAdmin = adminEntries.filter(x => x.type === "regular").reduce((s,x)=>s + num(x.amount), 0);
+      const manualCompanyAdmin = adminEntries.filter(x => x.type === "company").reduce((s,x)=>s + num(x.amount), 0);
+      const totalRegularAdmin = num(f.totalPartnerAdmin) + num(f.totalInvestorAdmin) + manualRegularAdmin;
+      const companyShare = totalRegularAdmin / 2;
+      const abuFarisShare = totalRegularAdmin / 2 + manualCompanyAdmin;
+      const totalCollectedAdmin = num(f.totalPartnerAdmin) + num(f.totalInvestorAdmin) + manualRegularAdmin + manualCompanyAdmin;
+
+      const rows = [];
+      (f.partnersFull || []).filter(x => !x.auto && num(x.adminValue) > 0).forEach(x => {
+        rows.push({
+          source: "الشركاء",
+          name: x.name,
+          type: "إدارة عادية",
+          adminRate: num(x.adminRate),
+          date: x.date || "-",
+          amount: num(x.adminValue),
+          method: "-",
+          bank: "",
+          note: `إدارة مستخرجة تلقائيًا من الشريك ${x.name}`,
+          auto: true
+        });
+      });
+      (f.investorsFull || []).filter(x => num(x.adminValue) > 0).forEach(x => {
+        rows.push({
+          source: x.auto ? "المساهمون / الشركة" : "المساهمون",
+          name: x.name,
+          type: x.auto ? "إدارة الشركة" : "إدارة عادية",
+          adminRate: num(x.adminRate),
+          date: x.date || "-",
+          amount: num(x.adminValue),
+          method: "-",
+          bank: "",
+          note: x.auto ? "إدارة الشركة داخل المساهمين" : `إدارة مستخرجة تلقائيًا من المساهم ${x.name}`,
+          auto: true
+        });
+      });
+      adminEntries.forEach((x, sourceIndex) => {
+        rows.push({
+          source: "إدخال يدوي",
+          name: x.type === "company" ? "أبوفارس الغامدي" : "-",
+          type: x.type === "company" ? "إدارة الشركة" : "إدارة عادية",
+          adminRate: 0,
+          date: x.date || "-",
+          amount: num(x.amount),
+          method: x.method === "bank" ? "بنك" : "نقدًا",
+          bank: x.bank || "",
+          note: x.note || "",
+          sourceIndex,
+          auto: false
+        });
+      });
+
+      return {
+        partnerAdmin: num(f.totalPartnerAdmin),
+        investorAdmin: num(f.totalInvestorAdmin),
+        manualRegularAdmin,
+        manualCompanyAdmin,
+        totalRegularAdmin,
+        totalCollectedAdmin,
+        companyShare,
+        abuFarisShare,
+        rows
+      };
+    }
+
+    function addAdminEntry(){
+      if(!requireProjectOpen("إضافة حركة إدارة")) return;
+      const p = getProject();
+      const type = (document.getElementById("adminEntryType")?.value || "regular");
+      const amount = num(document.getElementById("adminEntryAmount")?.value);
+      const date = document.getElementById("adminEntryDate")?.value || todayText();
+      const note = document.getElementById("adminEntryNote")?.value.trim() || "";
+      const method = document.getElementById("adminEntryMethod")?.value || "cash";
+      const bank = method === "bank" ? ((document.getElementById("adminEntryBank")?.value || "").trim()) : "";
+      if(amount <= 0){
+        alert("اكتب مبلغ إدارة صحيح");
+        return;
+      }
+      if(method === "bank" && !bank){
+        alert("اختر البنك");
+        return;
+      }
+      p.adminEntries = p.adminEntries || [];
+      p.adminEntries.unshift({ type, amount, date, note, method, bank });
+      addMovement("إضافة حركة إدارة", type === "company" ? "إدارة الشركة" : "إدارة عادية", amount, `${method === "bank" ? "بنك" : "نقدًا"}${bank ? " - " + bank : ""} ${note ? "| " + note : ""}`, date);
+      ["adminEntryAmount","adminEntryDate","adminEntryNote","adminEntryBank"].forEach(id => { const el = document.getElementById(id); if(el) el.value = ""; });
+      const methodEl = document.getElementById("adminEntryMethod"); if(methodEl) methodEl.value = "cash";
+      toggleTransactionBankFields();
+      renderProject();
+    }
+
+    function renderAdminTab(){
+      const p = getProject();
+      if(!p) return;
+      p.adminEntries = p.adminEntries || [];
+      const d = calcAdminDistribution(p);
+      const set = (id,val) => { const el = document.getElementById(id); if(el) el.innerText = money(val); };
+      set("kpiPartnerAdminTotal", d.partnerAdmin);
+      set("kpiInvestorAdminTotal", d.investorAdmin);
+      set("kpiManualRegularAdmin", d.manualRegularAdmin);
+      set("kpiManualCompanyAdmin", d.manualCompanyAdmin);
+      set("kpiAdminCollectedTotal", d.totalCollectedAdmin);
+      set("kpiCompanyAdminShare", d.companyShare);
+      set("kpiAbuFarisAdminShare", d.abuFarisShare);
+
+      const body = document.getElementById("adminBody");
+      if(!body) return;
+      body.innerHTML = "";
+      if(!(d.rows || []).length){
+        body.innerHTML = '<tr><td colspan="10">لا توجد حركات إدارة حالياً</td></tr>';
+        return;
+      }
+
+      d.rows.forEach((row) => {
+        body.innerHTML += `
+          <tr class="${row.auto ? 'auto-row' : ''}">
+            <td>${escapeHtml(row.source || "-")}</td>
+            <td>${escapeHtml(row.name || "-")}</td>
+            <td>${escapeHtml(row.type || "-")}</td>
+            <td>${row.adminRate ? `${num(row.adminRate).toFixed(2)}%` : "-"}</td>
+            <td>${escapeHtml(row.date || "-")}</td>
+            <td>${money(row.amount)}</td>
+            <td>${escapeHtml(row.method || "-")}</td>
+            <td>${escapeHtml(row.bank || "-")}</td>
+            <td>${escapeHtml(row.note || "-")}</td>
+            <td class="no-print">${row.auto ? "-" : `<button type="button" class="btn-red admin-delete-row-btn" data-admin-index="${row.sourceIndex}">حذف</button>`}</td>
+          </tr>
+        `;
+      });
+
+      body.querySelectorAll(".admin-delete-row-btn").forEach(btn => {
+        btn.addEventListener("click", function(ev){
+          ev.preventDefault();
+          ev.stopPropagation();
+          deleteAdminEntry(this.getAttribute("data-admin-index"));
+        });
+      });
+    }
+
+    function deleteAdminEntry(index){
+      const p = getProject();
+      if(!p) return;
+      p.adminEntries = p.adminEntries || [];
+      index = Number(index);
+      if(Number.isNaN(index) || index < 0 || index >= p.adminEntries.length){
+        alert("تعذر تحديد حركة الإدارة المطلوب حذفها");
+        return;
+      }
+      const row = p.adminEntries[index];
+      const label = row && row.type === "company" ? "حذف حركة إدارة الشركة" : "حذف حركة الإدارة";
+      secureDeleteAction(label, () => {
+        p.adminEntries.splice(index, 1);
+        renderProject();
+      });
+    }
+
+function calcCustodyDistribution(project){
       const f = calcProjectFinancials(project);
       const balance = num(f.siteCustodyBalance);
       const partnersRows = (f.partnersFull || []).map(x => ({
@@ -5837,7 +6184,7 @@ function renderSiteCustody(){
 
       body.innerHTML = "";
       if(!rows.length){
-        body.innerHTML = '<tr><td colspan="6">لا توجد حركات عهدة موقع</td></tr>';
+        body.innerHTML = '<tr><td colspan="8">لا توجد حركات عهدة موقع</td></tr>';
       }else{
         rows.forEach((row, idx) => {
           const typeLabel = row.type === "add" ? "إضافة للعهدة" : "صرف من العهدة";
@@ -5847,9 +6194,11 @@ function renderSiteCustody(){
               <td>${row.date || '-'}</td>
               <td>${typeLabel}</td>
               <td>${money(row.amount)}</td>
+              <td>${(row.method || "cash") === "bank" ? "بنك" : "نقدًا"}</td>
+              <td>${escapeHtml(row.bank || "-")}</td>
               <td>${escapeHtml(row.note || '-')}</td>
               <td>${effect}</td>
-              <td class="no-print"><div class="actions"><button class="btn-orange" onclick="editSiteCustodyEntry(${idx})">تعديل</button><button class="btn-red" onclick="deleteSiteCustodyEntry(${idx})">حذف</button></div></td>
+              <td class="no-print"><div class="actions"><button class="btn-orange" onclick="editSiteCustodyEntry(${idx})">تعديل</button><button type="button" class="btn-red" onclick="deleteSiteCustodyEntry(${idx})">حذف</button></div></td>
             </tr>
           `;
         });
