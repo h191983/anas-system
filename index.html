@@ -1367,7 +1367,7 @@
           </div>
 
           <div class="kpis">
-            <div class="kpi"><div class="kpi-title">إدارة الشركاء</div><div class="kpi-value" id="kpiPartnerAdminTotal">0</div></div>
+            <div class="kpi" id="kpiPartnerAdminCard"><div class="kpi-title">إدارة الشركاء</div><div class="kpi-value" id="kpiPartnerAdminTotal">0</div></div>
             <div class="kpi"><div class="kpi-title">إدارة المساهمين</div><div class="kpi-value" id="kpiInvestorAdminTotal">0</div></div>
             <div class="kpi"><div class="kpi-title">إدارة يدوية عادية</div><div class="kpi-value" id="kpiManualRegularAdmin">0</div></div>
             <div class="kpi"><div class="kpi-title">إدارة الشركة اليدوية</div><div class="kpi-value" id="kpiManualCompanyAdmin">0</div></div>
@@ -6082,6 +6082,10 @@ function addPartner(){
       const d = calcAdminDistribution(p);
       const set = (id,val) => { const el = document.getElementById(id); if(el) el.innerText = money(val); };
       set("kpiPartnerAdminTotal", d.partnerAdmin);
+      const partnerAdminCard = document.getElementById("kpiPartnerAdminCard");
+      if(partnerAdminCard){
+        partnerAdminCard.style.display = num(d.partnerAdmin) > 0 ? "" : "none";
+      }
       set("kpiInvestorAdminTotal", d.investorAdmin);
       set("kpiManualRegularAdmin", d.manualRegularAdmin);
       set("kpiManualCompanyAdmin", d.manualCompanyAdmin);
@@ -6092,6 +6096,8 @@ function addPartner(){
       const body = document.getElementById("adminBody");
       if(!body) return;
       body.innerHTML = "";
+      body.onclick = null;
+
       if(!(d.rows || []).length){
         body.innerHTML = '<tr><td colspan="10">لا توجد حركات إدارة حالياً</td></tr>';
         return;
@@ -6109,18 +6115,23 @@ function addPartner(){
             <td>${escapeHtml(row.method || "-")}</td>
             <td>${escapeHtml(row.bank || "-")}</td>
             <td>${escapeHtml(row.note || "-")}</td>
-            <td class="no-print">${row.auto ? "-" : `<button type="button" class="btn-red admin-delete-row-btn" data-admin-index="${row.sourceIndex}">حذف</button>`}</td>
+            <td class="no-print">${
+              row.auto
+                ? "-"
+                : `<button type="button" class="btn-red" data-admin-delete="1" data-admin-index="${Number.isFinite(row.sourceIndex) ? row.sourceIndex : -1}" style="position:relative;z-index:2;pointer-events:auto;">حذف</button>`
+            }</td>
           </tr>
         `;
       });
 
-      body.querySelectorAll(".admin-delete-row-btn").forEach(btn => {
-        btn.addEventListener("click", function(ev){
-          ev.preventDefault();
-          ev.stopPropagation();
-          deleteAdminEntry(this.getAttribute("data-admin-index"));
-        });
-      });
+      body.onclick = function(ev){
+        const btn = ev.target.closest('button[data-admin-delete="1"]');
+        if(!btn) return;
+        ev.preventDefault();
+        ev.stopPropagation();
+        const idx = Number(btn.getAttribute("data-admin-index"));
+        deleteAdminEntry(idx);
+      };
     }
 
     function deleteAdminEntry(index){
@@ -6133,11 +6144,10 @@ function addPartner(){
         return;
       }
       const row = p.adminEntries[index];
-      const label = row && row.type === "company" ? "حذف حركة إدارة الشركة" : "حذف حركة الإدارة";
-      secureDeleteAction(label, () => {
-        p.adminEntries.splice(index, 1);
-        renderProject();
-      });
+      const actionLabel = row && row.type === "company" ? "حذف حركة إدارة الشركة" : "حذف حركة الإدارة";
+      if(!confirmSecureDelete(actionLabel, "هل تريد حذف حركة الإدارة المحددة؟")) return;
+      p.adminEntries.splice(index, 1);
+      renderProject();
     }
 
 function calcCustodyDistribution(project){
