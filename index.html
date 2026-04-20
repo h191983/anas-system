@@ -1375,6 +1375,244 @@ tr:hover td{background:rgba(37,99,235,.035)}
   }
 }
 
+
+
+/* LUXURY DASHBOARD THEME APR-2026 */
+:root{
+  --lux-navy-1:#03152d;
+  --lux-navy-2:#092a52;
+  --lux-navy-3:#113d73;
+  --lux-cyan:#30a5ff;
+  --lux-panel:#f7f9fd;
+  --lux-border:#d7e1ee;
+  --lux-shadow:0 18px 40px rgba(2,18,40,.12);
+}
+html,body{min-height:100%}
+body{
+  background:linear-gradient(180deg,#f4f7fb 0%,#edf2f8 100%) !important;
+}
+.header{
+  background:linear-gradient(135deg,var(--lux-navy-1) 0%, var(--lux-navy-2) 52%, #07182f 100%) !important;
+  color:#fff !important;
+  border-bottom:1px solid rgba(255,255,255,.08) !important;
+  box-shadow:0 14px 38px rgba(2,18,40,.24) !important;
+  min-height:82px;
+  justify-content:center;
+  position:sticky;
+  top:0;
+  z-index:3000;
+}
+.header::before{
+  content:"☰";
+  position:absolute;
+  left:18px;
+  top:50%;
+  transform:translateY(-50%);
+  width:44px;
+  height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:14px;
+  color:#fff;
+  font-size:24px;
+  background:rgba(255,255,255,.05);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18), 0 8px 18px rgba(0,0,0,.18);
+}
+.header-title{align-items:center;text-align:center}
+.header-title span,.header-title small{color:#fff !important}
+.header-title span{font-size:clamp(24px,2vw,34px);font-weight:900}
+.header-title small{opacity:.9;font-size:14px}
+.brand-logo{height:58px;filter:drop-shadow(0 12px 18px rgba(0,0,0,.24))}
+
+.alert-bell{
+  left:48px !important;
+  right:auto !important;
+  top:10px !important;
+  min-width:72px;
+  min-height:54px;
+  padding:0 16px !important;
+  border-radius:18px !important;
+  background:linear-gradient(180deg,#163b69 0%, #0a2241 100%) !important;
+  color:#fff !important;
+  border:1px solid rgba(255,255,255,.18) !important;
+  box-shadow:0 16px 28px rgba(2,18,40,.28), inset 0 2px 0 rgba(255,255,255,.18), inset 0 -5px 12px rgba(0,0,0,.18) !important;
+  z-index:4000;
+}
+.alert-bell::after{
+  content:"";
+  position:absolute;
+  inset:2px;
+  border-radius:16px;
+  pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,0));
+}
+#alertBellCount{
+  position:absolute;
+  top:-7px;
+  right:-8px;
+  min-width:26px;
+  height:26px;
+  padding:0 7px;
+  border-radius:999px;
+  background:linear-gradient(180deg,#ff5858 0%, #d81414 100%);
+  color:#fff;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 10px 20px rgba(220,38,38,.35), inset 0 2px 0 rgba(255,255,255,.3);
+  font-size:13px;
+}
+.alert-bell span:last-child{font-size:28px;line-height:1}
+
+button,.btn,.btn-green,.btn-red,.btn-orange,.btn-gray,.btn-purple,.btn-teal,.btn-link,.btn-wa,.tab,.dashboard-collapse-toggle,.manager-alert-tab,.collection-subtab,.home-settings-toggle{
+  border-radius:18px !important;
+  box-shadow:0 10px 18px rgba(15,23,42,.10), inset 0 2px 0 rgba(255,255,255,.26), inset 0 -4px 10px rgba(0,0,0,.06) !important;
+}
+.btn,.btn-green,.btn-red,.btn-orange,.btn-gray,.btn-purple,.btn-teal{
+  border:1px solid rgba(255,255,255,.14) !important;
+  font-weight:800;
+}
+.card,.kpi,.chart-card,.project-item,.alert-center-section,.modal-content{
+  border-radius:24px !important;
+  box-shadow:var(--lux-shadow) !important;
+  border:1px solid var(--lux-border) !important;
+}
+.kpi{
+  background:linear-gradient(180deg,#ffffff 0%, #f3f6fb 100%) !important;
+}
+.kpi-value,.dashboard-value{font-weight:900}
+
+.alert-center-overlay{
+  background:rgba(3,15,31,.55) !important;
+  backdrop-filter:blur(5px);
+}
+.alert-center-card{
+  background:linear-gradient(180deg,#fdfefe 0%, #f3f7fc 100%) !important;
+  border:1px solid #d7e1ee !important;
+}
+.alert-center-head{
+  padding-bottom:12px;
+  border-bottom:1px solid #e4ebf3;
+}
+.alert-center-title{color:#0b2344;font-size:29px}
+.alert-center-home-filters{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0 16px}
+.alert-center-filter{
+  min-width:150px;
+  padding:14px 18px;
+  background:linear-gradient(180deg,#ffffff 0%, #edf2f8 100%);
+  border:1px solid #d3dceb;
+  color:#1f3552;
+  font-weight:900;
+}
+.alert-center-filter.active{
+  background:linear-gradient(180deg,#163a67 0%, #081b36 100%) !important;
+  color:#fff !important;
+  border-color:#274e7e !important;
+  box-shadow:0 14px 26px rgba(8,27,54,.28), inset 0 1px 0 rgba(255,255,255,.18), inset 0 -5px 10px rgba(0,0,0,.18) !important;
+}
+.alert-center-item{
+  background:linear-gradient(180deg,#fff8f8 0%, #fff1f1 100%);
+  border:1px solid #f2c8c8 !important;
+  border-radius:20px !important;
+  padding:16px 18px !important;
+  box-shadow:0 10px 22px rgba(184,28,28,.06);
+}
+.alert-center-item strong{font-size:15px}
+.alert-center-item-meta{opacity:.85}
+
+.workspace-mode #workspaceView{position:relative}
+@media (min-width:1101px){
+  .workspace-mode .container{
+    max-width:none;
+    padding-inline-start:18px;
+    padding-inline-end:18px;
+  }
+  .workspace-mode .tabs.no-print{
+    position:fixed;
+    top:95px;
+    right:12px;
+    width:174px;
+    z-index:2500;
+    display:flex !important;
+    flex-direction:column;
+    gap:10px;
+    margin:0;
+  }
+  .workspace-mode .tab{
+    width:100%;
+    min-width:0;
+    min-height:56px;
+    justify-content:flex-start;
+    padding:15px 18px 15px 16px !important;
+    background:linear-gradient(180deg,#102b4c 0%, #071b35 100%) !important;
+    color:#fff !important;
+    border:1px solid rgba(255,255,255,.08) !important;
+    text-align:right;
+    position:relative;
+    overflow:hidden;
+  }
+  .workspace-mode .tab::before{
+    content:attr(data-icon);
+    font-size:21px;
+    margin-left:10px;
+    display:inline-block;
+    width:22px;
+    text-align:center;
+  }
+  .workspace-mode .tab.active{
+    background:linear-gradient(180deg,#2f82ff 0%, #1f58d3 100%) !important;
+  }
+  .workspace-mode .tab.active::after{
+    content:"";
+    position:absolute;
+    left:24px;
+    right:24px;
+    bottom:6px;
+    height:4px;
+    border-radius:999px;
+    background:#67d4ff;
+    box-shadow:0 0 12px rgba(103,212,255,.9);
+  }
+  .workspace-mode #workspaceView > .card:first-child,
+  .workspace-mode #dashboardSection,
+  .workspace-mode #projectChartsSection,
+  .workspace-mode .kpis,
+  .workspace-mode #alertsBox,
+  .workspace-mode #issuesBox,
+  .workspace-mode .tab-panel,
+  .workspace-mode .lock-note{
+    margin-right:196px;
+  }
+  .workspace-mode .tab-panel{
+    background:linear-gradient(180deg,#fbfcfe 0%, #f4f7fb 100%) !important;
+  }
+}
+.table-scroll,table{border-radius:18px;overflow:hidden}
+table{box-shadow:0 8px 20px rgba(15,23,42,.05)}
+th{background:linear-gradient(180deg,#f9fbfe 0%, #edf3f8 100%) !important;color:#17314f;font-weight:900}
+tr:hover td{background:#f8fbff}
+
+.home-dashboard-grid .dashboard-card,
+#dashboardSection .dashboard-card{
+  background:linear-gradient(180deg,#ffffff 0%,#f3f6fb 100%) !important;
+  border-radius:22px !important;
+}
+.workspace-mode .section-title h2,
+.workspace-mode .section-title h3{color:#0e2847}
+.workspace-mode #workspaceView > .card:first-child{
+  background:linear-gradient(180deg,#ffffff 0%,#f5f8fc 100%) !important;
+}
+.workspace-mode #projectTitle{font-size:32px;font-weight:900}
+
+@media (max-width:1100px){
+  .alert-bell{left:14px !important;top:14px !important;min-width:60px;min-height:48px;padding:0 12px !important}
+  .header::before{width:38px;height:38px;font-size:20px;left:10px}
+  .header{padding-inline:64px 16px !important;min-height:74px}
+  .workspace-mode .tabs.no-print{position:static;width:auto;display:flex;flex-direction:row;overflow:auto;padding-bottom:8px}
+  .workspace-mode .tab::before{content:none}
+}
+
 </style>
 </head>
 <body>
@@ -5981,7 +6219,223 @@ ${party}
         headers = '<tr><th>الفئة</th><th>الاسم</th><th>التفصيل</th><th>الحالة</th><th>إجمالي المستحق</th><th>تم صرفه / تحصيله</th><th>المتبقي</th></tr>';
         bodyRows = rows.map(r => `<tr><td>${escapeHtml(r.category)}</td><td>${escapeHtml(r.name)}</td><td>${escapeHtml(r.detail1)}<div class="muted">${escapeHtml(r.detail2)}</div></td><td>${escapeHtml(r.statusText)}</td><td>${money(r.dueAmount)}</td><td>${money(r.paidAmount)}</td><td>${money(r.remain)}</td></tr>`).join('');
       }
-      const html = `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>لوحة التحصيل</title><style>body{font-family:Tahoma,Arial,sans-serif;padding:20px;color:#111}h2{margin:0 0 8px}table{width:100%;border-collapse:collapse;margin-top:14px;font-size:12px}th,td{border:1px solid #999;padding:6px;text-align:center}th{background:#f3f4f6}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}.card{border:1px solid #ccc;padding:10px;border-radius:8px}.muted{color:#666;font-size:12px}</style></head><body><h2>لوحة التحصيل - ${escapeHtml(p.name || '-')}</h2><div class="muted">القسم: ${escapeHtml(data.section === 'all' ? 'الكل' : data.section === 'units' ? 'الوحدات' : data.section === 'marketers' ? 'المسوقون' : data.section === 'partners' ? 'الشركاء' : 'المساهمون')}</div><div class="muted">تاريخ الطباعة: ${escapeHtml(todayText())}</div><div class="grid"><div class="card"><strong>${money(totalRequired)}</strong><div>إجمالي المستحق</div></div><div class="card"><strong>${money(totalCollected)}</strong><div>إجمالي المصروف / المحصل</div></div><div class="card"><strong>${money(totalRemaining)}</strong><div>إجمالي المتبقي</div></div><div class="card"><strong>${money(totalOverdue)}</strong><div>المحتاج متابعة / المتبقي</div></div></div><table><thead>${headers}</thead><tbody>${bodyRows || '<tr><td colspan="10">لا توجد بيانات مطابقة</td></tr>'}</tbody></table></body></html>`;
+      const html = `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>لوحة التحصيل</title><style>body{font-family:Tahoma,Arial,sans-serif;padding:20px;color:#111}h2{margin:0 0 8px}table{width:100%;border-collapse:collapse;margin-top:14px;font-size:12px}th,td{border:1px solid #999;padding:6px;text-align:center}th{background:#f3f4f6}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}.card{border:1px solid #ccc;padding:10px;border-radius:8px}.muted{color:#666;font-size:12px}</style></head><body><h2>لوحة التحصيل - ${escapeHtml(p.name || '-')}</h2><div class="muted">القسم: ${escapeHtml(data.section === 'all' ? 'الكل' : data.section === 'units' ? 'الوحدات' : data.section === 'marketers' ? 'المسوقون' : data.section === 'partners' ? 'الشركاء' : 'المساهمون')}</div><div class="muted">تاريخ الطباعة: ${escapeHtml(todayText())}</div><div class="grid"><div class="card"><strong>${money(totalRequired)}</strong><div>إجمالي المستحق</div></div><div class="card"><strong>${money(totalCollected)}</strong><div>إجمالي المصروف / المحصل</div></div><div class="card"><strong>${money(totalRemaining)}</strong><div>إجمالي المتبقي</div></div><div class="card"><strong>${money(totalOverdue)}</strong><div>المحتاج متابعة / المتبقي</div></div></div><table><thead>${headers}</thead><tbody>${bodyRows || '<tr><td colspan="10">لا توجد بيانات مطابقة</td></tr>'}</tbody></table>
+<script>
+(function(){
+  function setWorkspaceMode(){
+    try{
+      const workspace = document.getElementById('workspaceView');
+      document.body.classList.toggle('workspace-mode', !!(workspace && !workspace.classList.contains('hidden')));
+    }catch(e){}
+  }
+
+  function decorateTabs(){
+    const iconMap = {
+      'الوحدات':'🔑', 'المسوقون':'👥', 'المصروفات':'💵', 'الشركاء':'🤝', 'المساهمون':'👥', 'الإدارة':'⚙️',
+      'الدفعات تحت الحساب':'💳', 'عهدة الموقع':'🧾', 'دفتر الحركة':'📒', 'لوحة التحصيل':'💰',
+      'تنبيه الدفعات':'🔔', 'التنبيهات':'🚨', 'ملخص المشروع':'🏠'
+    };
+    document.querySelectorAll('.tabs .tab').forEach(btn=>{
+      if(btn.dataset.iconDone === '1') return;
+      const raw = (btn.childNodes[0] && btn.childNodes[0].nodeType === 3 ? btn.childNodes[0].textContent : btn.textContent || '').trim();
+      const key = Object.keys(iconMap).find(k => raw.includes(k)) || raw;
+      btn.setAttribute('data-icon', iconMap[key] || '•');
+      btn.dataset.iconDone = '1';
+    });
+  }
+
+  function runStoredAction(el){
+    const run = el.dataset.originalOnclick || el.dataset.run || '';
+    if(!run) return;
+    setTimeout(function(){ try{ new Function(run)(); }catch(err){ console.error(err); } }, 80);
+  }
+
+  function bindAlertCenter(){
+    const overlay = document.getElementById('alertCenterOverlay');
+    if(!overlay) return;
+    overlay.querySelectorAll('.alert-center-filter').forEach(btn=>{
+      if(btn.dataset.bound === '1') return;
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', function(ev){
+        ev.preventDefault();
+        ev.stopPropagation();
+        const mode = this.getAttribute('data-mode') || 'home';
+        const filter = this.getAttribute('data-filter') || 'all';
+        if(mode === 'home'){
+          filterAlertCenterHome(filter);
+        }else{
+          filterAlertCenterProject(filter);
+        }
+      });
+    });
+
+    overlay.querySelectorAll('.alert-item,[data-run]').forEach(el=>{
+      if(el.classList.contains('alert-center-filter')) return;
+      if(el.dataset.smartBound === '1') return;
+      el.dataset.smartBound = '1';
+      const original = el.getAttribute('onclick') || '';
+      if(original){
+        el.dataset.originalOnclick = original;
+        el.removeAttribute('onclick');
+      }
+      el.addEventListener('click', function(ev){
+        if(this.classList.contains('alert-center-filter')) return;
+        ev.preventDefault();
+        ev.stopPropagation();
+        closeAlertCenterSafe();
+        runStoredAction(this);
+      });
+    });
+  }
+
+  window.renderAlertCenterHome = function(filter){
+    const rows = window.__alertCenterHomeRows || (typeof collectMainManagerAlerts === 'function' ? collectMainManagerAlerts() : []);
+    const groups = {
+      all: rows,
+      payment: rows.filter(x => x.type === 'payment'),
+      admin: rows.filter(x => x.type === 'admin'),
+      issue: rows.filter(x => x.type === 'issue')
+    };
+    const defs = [
+      ['all','الكل',groups.all.length],
+      ['payment','الدفعات',groups.payment.length],
+      ['admin','الإدارة',groups.admin.length],
+      ['issue','الملاحظات',groups.issue.length]
+    ];
+    const filtered = groups[filter] || groups.all;
+    return `
+      <div class="alert-center-sections">
+        <div class="alert-center-section alert-center-home">
+          <h3>تنبيهات الصفحة الرئيسية</h3>
+          <div class="alert-center-sub">اختر القسم المطلوب، وسيتم تصفية التنبيهات داخل النافذة نفسها.</div>
+          <div class="alert-center-home-filters">
+            ${defs.map(([key,label,count])=>`<button type="button" class="alert-center-filter ${filter===key?'active':''}" data-mode="home" data-filter="${key}">${label} (${count})</button>`).join('')}
+          </div>
+          <div class="alert-list alert-center-cloned">
+            ${filtered.length ? filtered.map(item=>`<div class="alert-item ${item.severity === 'issue' ? 'issue' : 'warn'} clickable" data-run="openMainProjectAlert('${String(item.projectId).replace(/'/g, "\\'")}', '${String(item.tab||'').replace(/'/g, "\\'")}', '${String(item.searchValue||'').replace(/'/g, "\\'")}', '${String(item.targetType||'').replace(/'/g, "\\'")}', '${String(item.targetValue||'').replace(/'/g, "\\'")}', '${String(item.targetExtra||'').replace(/'/g, "\\'")}')"><strong>${escapeHtml(item.projectName)}</strong><br>${escapeHtml(item.label)}</div>`).join('') : '<div class="alert-center-empty">لا توجد تنبيهات في هذا القسم حالياً.</div>'}
+          </div>
+        </div>
+      </div>`;
+  };
+
+  window.filterAlertCenterHome = function(filter){
+    const content = document.getElementById('alertCenterContentSafe');
+    if(!content) return;
+    content.innerHTML = window.renderAlertCenterHome(filter || 'all');
+    sortAlertCenterItems();
+    bindAlertCenter();
+  };
+
+  window.buildAlertCenterFromHome = function(){
+    window.__alertCenterHomeRows = typeof collectMainManagerAlerts === 'function' ? collectMainManagerAlerts() : [];
+    return window.renderAlertCenterHome('all');
+  };
+
+  window.renderAlertCenterProject = function(filter){
+    const p = typeof getProject === 'function' ? getProject() : null;
+    const alerts = p && typeof buildAlerts === 'function' ? buildAlerts(p) : [];
+    const issues = p && typeof buildIssues === 'function' ? buildIssues(p) : [];
+    const rows = {
+      all:[...alerts,...issues],
+      payment:alerts.filter(x => /دفع|سداد|قسط|تحصيل/.test((x.category||'') + ' ' + (x.message||''))),
+      admin:alerts.filter(x => /إدار|شركة|الغامدي/.test((x.category||'') + ' ' + (x.message||''))),
+      issue:issues
+    };
+    const defs = [
+      ['all','الكل',rows.all.length],
+      ['payment','الدفعات',rows.payment.length],
+      ['admin','الإدارة',rows.admin.length],
+      ['issue','الملاحظات',rows.issue.length]
+    ];
+    const filtered = rows[filter] || rows.all;
+    return `
+      <div class="alert-center-sections">
+        <div class="alert-center-section">
+          <h3>تنبيهات المشروع الحالي</h3>
+          <div class="alert-center-sub">تصفية سريعة داخل مركز التنبيهات.</div>
+          <div class="alert-center-home-filters">
+            ${defs.map(([key,label,count])=>`<button type="button" class="alert-center-filter ${filter===key?'active':''}" data-mode="project" data-filter="${key}">${label} (${count})</button>`).join('')}
+          </div>
+          <div class="alert-list alert-center-cloned">
+            ${filtered.length ? filtered.map(item=>`<div class="alert-item ${issues.includes(item) ? 'issue' : 'warn'} clickable" data-run="openAlertTarget(${JSON.stringify(item.tab || '')}, ${JSON.stringify(item.search || '')}, ${JSON.stringify(item.targetType || '')}, ${JSON.stringify(item.targetValue || '')}, ${JSON.stringify(item.targetExtra || '')})"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><span>${escapeHtml(item.message || '')}</span><span class="btn-link">${escapeHtml(item.actionLabel || 'فتح')}</span></div></div>`).join('') : '<div class="alert-center-empty">لا توجد تنبيهات في هذا القسم حالياً.</div>'}
+          </div>
+        </div>
+      </div>`;
+  };
+
+  window.filterAlertCenterProject = function(filter){
+    const content = document.getElementById('alertCenterContentSafe');
+    if(!content) return;
+    content.innerHTML = window.renderAlertCenterProject(filter || 'all');
+    sortAlertCenterItems();
+    bindAlertCenter();
+  };
+
+  window.buildAlertCenterFromProject = function(){
+    return window.renderAlertCenterProject('all');
+  };
+
+  const legacyOpen = window.openAlertCenterSafe;
+  window.openAlertCenterSafe = function(){
+    if(typeof legacyOpen === 'function') legacyOpen();
+    setTimeout(function(){
+      bindAlertCenter();
+    }, 60);
+  };
+
+  const legacySort = window.sortAlertCenterItems;
+  window.sortAlertCenterItems = function(){
+    if(typeof legacySort === 'function') legacySort();
+    const overlay = document.getElementById('alertCenterOverlay');
+    if(!overlay) return;
+    overlay.querySelectorAll('.alert-item').forEach(item=>{
+      if(item.querySelector('.alert-center-item-meta')) return;
+      const text = (item.textContent || '').trim();
+      const amount = text.match(/([\d,]+\s*ر\.س)/);
+      const date = text.match(/(\d+\s*يوم|اليوم|هذا الأسبوع|يومين|منذ\s*\d+\s*يوم)/);
+      const metaText = [amount ? amount[1] : '', date ? date[1] : ''].filter(Boolean).join(' - ');
+      if(metaText){
+        const meta = document.createElement('div');
+        meta.className = 'alert-center-item-meta';
+        meta.textContent = metaText;
+        item.appendChild(meta);
+      }
+    });
+  };
+
+  const legacyShowTab = window.showTab;
+  window.showTab = function(){
+    const r = legacyShowTab && legacyShowTab.apply(this, arguments);
+    setTimeout(function(){ setWorkspaceMode(); decorateTabs(); }, 30);
+    return r;
+  };
+  const legacyOpenProject = window.openProject;
+  if(typeof legacyOpenProject === 'function'){
+    window.openProject = function(){
+      const r = legacyOpenProject.apply(this, arguments);
+      setTimeout(function(){ setWorkspaceMode(); decorateTabs(); }, 30);
+      return r;
+    };
+  }
+  const legacyBackToProjects = window.backToProjects;
+  if(typeof legacyBackToProjects === 'function'){
+    window.backToProjects = function(){
+      const r = legacyBackToProjects.apply(this, arguments);
+      setTimeout(function(){ setWorkspaceMode(); decorateTabs(); }, 30);
+      return r;
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    setWorkspaceMode();
+    decorateTabs();
+    setTimeout(function(){ setWorkspaceMode(); decorateTabs(); }, 120);
+  });
+  setInterval(function(){ decorateTabs(); setWorkspaceMode(); }, 1800);
+})();
+</script>
+
+</body></html>`;
       const win = window.open('', '_blank');
       if(!win) return;
       win.document.write(html);
@@ -8566,7 +9020,223 @@ function renderSiteCustody(){
           <script>
             window.onload = function(){ window.print(); };
           <\/script>
-        </body>
+        
+<script>
+(function(){
+  function setWorkspaceMode(){
+    try{
+      const workspace = document.getElementById('workspaceView');
+      document.body.classList.toggle('workspace-mode', !!(workspace && !workspace.classList.contains('hidden')));
+    }catch(e){}
+  }
+
+  function decorateTabs(){
+    const iconMap = {
+      'الوحدات':'🔑', 'المسوقون':'👥', 'المصروفات':'💵', 'الشركاء':'🤝', 'المساهمون':'👥', 'الإدارة':'⚙️',
+      'الدفعات تحت الحساب':'💳', 'عهدة الموقع':'🧾', 'دفتر الحركة':'📒', 'لوحة التحصيل':'💰',
+      'تنبيه الدفعات':'🔔', 'التنبيهات':'🚨', 'ملخص المشروع':'🏠'
+    };
+    document.querySelectorAll('.tabs .tab').forEach(btn=>{
+      if(btn.dataset.iconDone === '1') return;
+      const raw = (btn.childNodes[0] && btn.childNodes[0].nodeType === 3 ? btn.childNodes[0].textContent : btn.textContent || '').trim();
+      const key = Object.keys(iconMap).find(k => raw.includes(k)) || raw;
+      btn.setAttribute('data-icon', iconMap[key] || '•');
+      btn.dataset.iconDone = '1';
+    });
+  }
+
+  function runStoredAction(el){
+    const run = el.dataset.originalOnclick || el.dataset.run || '';
+    if(!run) return;
+    setTimeout(function(){ try{ new Function(run)(); }catch(err){ console.error(err); } }, 80);
+  }
+
+  function bindAlertCenter(){
+    const overlay = document.getElementById('alertCenterOverlay');
+    if(!overlay) return;
+    overlay.querySelectorAll('.alert-center-filter').forEach(btn=>{
+      if(btn.dataset.bound === '1') return;
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', function(ev){
+        ev.preventDefault();
+        ev.stopPropagation();
+        const mode = this.getAttribute('data-mode') || 'home';
+        const filter = this.getAttribute('data-filter') || 'all';
+        if(mode === 'home'){
+          filterAlertCenterHome(filter);
+        }else{
+          filterAlertCenterProject(filter);
+        }
+      });
+    });
+
+    overlay.querySelectorAll('.alert-item,[data-run]').forEach(el=>{
+      if(el.classList.contains('alert-center-filter')) return;
+      if(el.dataset.smartBound === '1') return;
+      el.dataset.smartBound = '1';
+      const original = el.getAttribute('onclick') || '';
+      if(original){
+        el.dataset.originalOnclick = original;
+        el.removeAttribute('onclick');
+      }
+      el.addEventListener('click', function(ev){
+        if(this.classList.contains('alert-center-filter')) return;
+        ev.preventDefault();
+        ev.stopPropagation();
+        closeAlertCenterSafe();
+        runStoredAction(this);
+      });
+    });
+  }
+
+  window.renderAlertCenterHome = function(filter){
+    const rows = window.__alertCenterHomeRows || (typeof collectMainManagerAlerts === 'function' ? collectMainManagerAlerts() : []);
+    const groups = {
+      all: rows,
+      payment: rows.filter(x => x.type === 'payment'),
+      admin: rows.filter(x => x.type === 'admin'),
+      issue: rows.filter(x => x.type === 'issue')
+    };
+    const defs = [
+      ['all','الكل',groups.all.length],
+      ['payment','الدفعات',groups.payment.length],
+      ['admin','الإدارة',groups.admin.length],
+      ['issue','الملاحظات',groups.issue.length]
+    ];
+    const filtered = groups[filter] || groups.all;
+    return `
+      <div class="alert-center-sections">
+        <div class="alert-center-section alert-center-home">
+          <h3>تنبيهات الصفحة الرئيسية</h3>
+          <div class="alert-center-sub">اختر القسم المطلوب، وسيتم تصفية التنبيهات داخل النافذة نفسها.</div>
+          <div class="alert-center-home-filters">
+            ${defs.map(([key,label,count])=>`<button type="button" class="alert-center-filter ${filter===key?'active':''}" data-mode="home" data-filter="${key}">${label} (${count})</button>`).join('')}
+          </div>
+          <div class="alert-list alert-center-cloned">
+            ${filtered.length ? filtered.map(item=>`<div class="alert-item ${item.severity === 'issue' ? 'issue' : 'warn'} clickable" data-run="openMainProjectAlert('${String(item.projectId).replace(/'/g, "\\'")}', '${String(item.tab||'').replace(/'/g, "\\'")}', '${String(item.searchValue||'').replace(/'/g, "\\'")}', '${String(item.targetType||'').replace(/'/g, "\\'")}', '${String(item.targetValue||'').replace(/'/g, "\\'")}', '${String(item.targetExtra||'').replace(/'/g, "\\'")}')"><strong>${escapeHtml(item.projectName)}</strong><br>${escapeHtml(item.label)}</div>`).join('') : '<div class="alert-center-empty">لا توجد تنبيهات في هذا القسم حالياً.</div>'}
+          </div>
+        </div>
+      </div>`;
+  };
+
+  window.filterAlertCenterHome = function(filter){
+    const content = document.getElementById('alertCenterContentSafe');
+    if(!content) return;
+    content.innerHTML = window.renderAlertCenterHome(filter || 'all');
+    sortAlertCenterItems();
+    bindAlertCenter();
+  };
+
+  window.buildAlertCenterFromHome = function(){
+    window.__alertCenterHomeRows = typeof collectMainManagerAlerts === 'function' ? collectMainManagerAlerts() : [];
+    return window.renderAlertCenterHome('all');
+  };
+
+  window.renderAlertCenterProject = function(filter){
+    const p = typeof getProject === 'function' ? getProject() : null;
+    const alerts = p && typeof buildAlerts === 'function' ? buildAlerts(p) : [];
+    const issues = p && typeof buildIssues === 'function' ? buildIssues(p) : [];
+    const rows = {
+      all:[...alerts,...issues],
+      payment:alerts.filter(x => /دفع|سداد|قسط|تحصيل/.test((x.category||'') + ' ' + (x.message||''))),
+      admin:alerts.filter(x => /إدار|شركة|الغامدي/.test((x.category||'') + ' ' + (x.message||''))),
+      issue:issues
+    };
+    const defs = [
+      ['all','الكل',rows.all.length],
+      ['payment','الدفعات',rows.payment.length],
+      ['admin','الإدارة',rows.admin.length],
+      ['issue','الملاحظات',rows.issue.length]
+    ];
+    const filtered = rows[filter] || rows.all;
+    return `
+      <div class="alert-center-sections">
+        <div class="alert-center-section">
+          <h3>تنبيهات المشروع الحالي</h3>
+          <div class="alert-center-sub">تصفية سريعة داخل مركز التنبيهات.</div>
+          <div class="alert-center-home-filters">
+            ${defs.map(([key,label,count])=>`<button type="button" class="alert-center-filter ${filter===key?'active':''}" data-mode="project" data-filter="${key}">${label} (${count})</button>`).join('')}
+          </div>
+          <div class="alert-list alert-center-cloned">
+            ${filtered.length ? filtered.map(item=>`<div class="alert-item ${issues.includes(item) ? 'issue' : 'warn'} clickable" data-run="openAlertTarget(${JSON.stringify(item.tab || '')}, ${JSON.stringify(item.search || '')}, ${JSON.stringify(item.targetType || '')}, ${JSON.stringify(item.targetValue || '')}, ${JSON.stringify(item.targetExtra || '')})"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><span>${escapeHtml(item.message || '')}</span><span class="btn-link">${escapeHtml(item.actionLabel || 'فتح')}</span></div></div>`).join('') : '<div class="alert-center-empty">لا توجد تنبيهات في هذا القسم حالياً.</div>'}
+          </div>
+        </div>
+      </div>`;
+  };
+
+  window.filterAlertCenterProject = function(filter){
+    const content = document.getElementById('alertCenterContentSafe');
+    if(!content) return;
+    content.innerHTML = window.renderAlertCenterProject(filter || 'all');
+    sortAlertCenterItems();
+    bindAlertCenter();
+  };
+
+  window.buildAlertCenterFromProject = function(){
+    return window.renderAlertCenterProject('all');
+  };
+
+  const legacyOpen = window.openAlertCenterSafe;
+  window.openAlertCenterSafe = function(){
+    if(typeof legacyOpen === 'function') legacyOpen();
+    setTimeout(function(){
+      bindAlertCenter();
+    }, 60);
+  };
+
+  const legacySort = window.sortAlertCenterItems;
+  window.sortAlertCenterItems = function(){
+    if(typeof legacySort === 'function') legacySort();
+    const overlay = document.getElementById('alertCenterOverlay');
+    if(!overlay) return;
+    overlay.querySelectorAll('.alert-item').forEach(item=>{
+      if(item.querySelector('.alert-center-item-meta')) return;
+      const text = (item.textContent || '').trim();
+      const amount = text.match(/([\d,]+\s*ر\.س)/);
+      const date = text.match(/(\d+\s*يوم|اليوم|هذا الأسبوع|يومين|منذ\s*\d+\s*يوم)/);
+      const metaText = [amount ? amount[1] : '', date ? date[1] : ''].filter(Boolean).join(' - ');
+      if(metaText){
+        const meta = document.createElement('div');
+        meta.className = 'alert-center-item-meta';
+        meta.textContent = metaText;
+        item.appendChild(meta);
+      }
+    });
+  };
+
+  const legacyShowTab = window.showTab;
+  window.showTab = function(){
+    const r = legacyShowTab && legacyShowTab.apply(this, arguments);
+    setTimeout(function(){ setWorkspaceMode(); decorateTabs(); }, 30);
+    return r;
+  };
+  const legacyOpenProject = window.openProject;
+  if(typeof legacyOpenProject === 'function'){
+    window.openProject = function(){
+      const r = legacyOpenProject.apply(this, arguments);
+      setTimeout(function(){ setWorkspaceMode(); decorateTabs(); }, 30);
+      return r;
+    };
+  }
+  const legacyBackToProjects = window.backToProjects;
+  if(typeof legacyBackToProjects === 'function'){
+    window.backToProjects = function(){
+      const r = legacyBackToProjects.apply(this, arguments);
+      setTimeout(function(){ setWorkspaceMode(); decorateTabs(); }, 30);
+      return r;
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    setWorkspaceMode();
+    decorateTabs();
+    setTimeout(function(){ setWorkspaceMode(); decorateTabs(); }, 120);
+  });
+  setInterval(function(){ decorateTabs(); setWorkspaceMode(); }, 1800);
+})();
+</script>
+
+</body>
         </html>
       `);
       doc.close();
@@ -9690,7 +10360,223 @@ function renderSiteCustody(){
       const content = document.getElementById('entityStatementContent')?.innerHTML || '';
       const win = window.open('', '_blank');
       if(!win){ alert('اسمح بالنوافذ المنبثقة للطباعة'); return; }
-      win.document.write(`<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><title>${title}</title><style>body{font-family:Tahoma,Arial,sans-serif;padding:24px;direction:rtl}table{width:100%;border-collapse:collapse;margin-top:12px}th,td{border:1px solid #999;padding:6px;text-align:center}h2,h4{margin:0 0 12px} .small{color:#555}</style></head><body><h2>${title}</h2><div class="small">${sub}</div>${content}</body></html>`);
+      win.document.write(`<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><title>${title}</title><style>body{font-family:Tahoma,Arial,sans-serif;padding:24px;direction:rtl}table{width:100%;border-collapse:collapse;margin-top:12px}th,td{border:1px solid #999;padding:6px;text-align:center}h2,h4{margin:0 0 12px} .small{color:#555}</style></head><body><h2>${title}</h2><div class="small">${sub}</div>${content}
+<script>
+(function(){
+  function setWorkspaceMode(){
+    try{
+      const workspace = document.getElementById('workspaceView');
+      document.body.classList.toggle('workspace-mode', !!(workspace && !workspace.classList.contains('hidden')));
+    }catch(e){}
+  }
+
+  function decorateTabs(){
+    const iconMap = {
+      'الوحدات':'🔑', 'المسوقون':'👥', 'المصروفات':'💵', 'الشركاء':'🤝', 'المساهمون':'👥', 'الإدارة':'⚙️',
+      'الدفعات تحت الحساب':'💳', 'عهدة الموقع':'🧾', 'دفتر الحركة':'📒', 'لوحة التحصيل':'💰',
+      'تنبيه الدفعات':'🔔', 'التنبيهات':'🚨', 'ملخص المشروع':'🏠'
+    };
+    document.querySelectorAll('.tabs .tab').forEach(btn=>{
+      if(btn.dataset.iconDone === '1') return;
+      const raw = (btn.childNodes[0] && btn.childNodes[0].nodeType === 3 ? btn.childNodes[0].textContent : btn.textContent || '').trim();
+      const key = Object.keys(iconMap).find(k => raw.includes(k)) || raw;
+      btn.setAttribute('data-icon', iconMap[key] || '•');
+      btn.dataset.iconDone = '1';
+    });
+  }
+
+  function runStoredAction(el){
+    const run = el.dataset.originalOnclick || el.dataset.run || '';
+    if(!run) return;
+    setTimeout(function(){ try{ new Function(run)(); }catch(err){ console.error(err); } }, 80);
+  }
+
+  function bindAlertCenter(){
+    const overlay = document.getElementById('alertCenterOverlay');
+    if(!overlay) return;
+    overlay.querySelectorAll('.alert-center-filter').forEach(btn=>{
+      if(btn.dataset.bound === '1') return;
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', function(ev){
+        ev.preventDefault();
+        ev.stopPropagation();
+        const mode = this.getAttribute('data-mode') || 'home';
+        const filter = this.getAttribute('data-filter') || 'all';
+        if(mode === 'home'){
+          filterAlertCenterHome(filter);
+        }else{
+          filterAlertCenterProject(filter);
+        }
+      });
+    });
+
+    overlay.querySelectorAll('.alert-item,[data-run]').forEach(el=>{
+      if(el.classList.contains('alert-center-filter')) return;
+      if(el.dataset.smartBound === '1') return;
+      el.dataset.smartBound = '1';
+      const original = el.getAttribute('onclick') || '';
+      if(original){
+        el.dataset.originalOnclick = original;
+        el.removeAttribute('onclick');
+      }
+      el.addEventListener('click', function(ev){
+        if(this.classList.contains('alert-center-filter')) return;
+        ev.preventDefault();
+        ev.stopPropagation();
+        closeAlertCenterSafe();
+        runStoredAction(this);
+      });
+    });
+  }
+
+  window.renderAlertCenterHome = function(filter){
+    const rows = window.__alertCenterHomeRows || (typeof collectMainManagerAlerts === 'function' ? collectMainManagerAlerts() : []);
+    const groups = {
+      all: rows,
+      payment: rows.filter(x => x.type === 'payment'),
+      admin: rows.filter(x => x.type === 'admin'),
+      issue: rows.filter(x => x.type === 'issue')
+    };
+    const defs = [
+      ['all','الكل',groups.all.length],
+      ['payment','الدفعات',groups.payment.length],
+      ['admin','الإدارة',groups.admin.length],
+      ['issue','الملاحظات',groups.issue.length]
+    ];
+    const filtered = groups[filter] || groups.all;
+    return `
+      <div class="alert-center-sections">
+        <div class="alert-center-section alert-center-home">
+          <h3>تنبيهات الصفحة الرئيسية</h3>
+          <div class="alert-center-sub">اختر القسم المطلوب، وسيتم تصفية التنبيهات داخل النافذة نفسها.</div>
+          <div class="alert-center-home-filters">
+            ${defs.map(([key,label,count])=>`<button type="button" class="alert-center-filter ${filter===key?'active':''}" data-mode="home" data-filter="${key}">${label} (${count})</button>`).join('')}
+          </div>
+          <div class="alert-list alert-center-cloned">
+            ${filtered.length ? filtered.map(item=>`<div class="alert-item ${item.severity === 'issue' ? 'issue' : 'warn'} clickable" data-run="openMainProjectAlert('${String(item.projectId).replace(/'/g, "\\'")}', '${String(item.tab||'').replace(/'/g, "\\'")}', '${String(item.searchValue||'').replace(/'/g, "\\'")}', '${String(item.targetType||'').replace(/'/g, "\\'")}', '${String(item.targetValue||'').replace(/'/g, "\\'")}', '${String(item.targetExtra||'').replace(/'/g, "\\'")}')"><strong>${escapeHtml(item.projectName)}</strong><br>${escapeHtml(item.label)}</div>`).join('') : '<div class="alert-center-empty">لا توجد تنبيهات في هذا القسم حالياً.</div>'}
+          </div>
+        </div>
+      </div>`;
+  };
+
+  window.filterAlertCenterHome = function(filter){
+    const content = document.getElementById('alertCenterContentSafe');
+    if(!content) return;
+    content.innerHTML = window.renderAlertCenterHome(filter || 'all');
+    sortAlertCenterItems();
+    bindAlertCenter();
+  };
+
+  window.buildAlertCenterFromHome = function(){
+    window.__alertCenterHomeRows = typeof collectMainManagerAlerts === 'function' ? collectMainManagerAlerts() : [];
+    return window.renderAlertCenterHome('all');
+  };
+
+  window.renderAlertCenterProject = function(filter){
+    const p = typeof getProject === 'function' ? getProject() : null;
+    const alerts = p && typeof buildAlerts === 'function' ? buildAlerts(p) : [];
+    const issues = p && typeof buildIssues === 'function' ? buildIssues(p) : [];
+    const rows = {
+      all:[...alerts,...issues],
+      payment:alerts.filter(x => /دفع|سداد|قسط|تحصيل/.test((x.category||'') + ' ' + (x.message||''))),
+      admin:alerts.filter(x => /إدار|شركة|الغامدي/.test((x.category||'') + ' ' + (x.message||''))),
+      issue:issues
+    };
+    const defs = [
+      ['all','الكل',rows.all.length],
+      ['payment','الدفعات',rows.payment.length],
+      ['admin','الإدارة',rows.admin.length],
+      ['issue','الملاحظات',rows.issue.length]
+    ];
+    const filtered = rows[filter] || rows.all;
+    return `
+      <div class="alert-center-sections">
+        <div class="alert-center-section">
+          <h3>تنبيهات المشروع الحالي</h3>
+          <div class="alert-center-sub">تصفية سريعة داخل مركز التنبيهات.</div>
+          <div class="alert-center-home-filters">
+            ${defs.map(([key,label,count])=>`<button type="button" class="alert-center-filter ${filter===key?'active':''}" data-mode="project" data-filter="${key}">${label} (${count})</button>`).join('')}
+          </div>
+          <div class="alert-list alert-center-cloned">
+            ${filtered.length ? filtered.map(item=>`<div class="alert-item ${issues.includes(item) ? 'issue' : 'warn'} clickable" data-run="openAlertTarget(${JSON.stringify(item.tab || '')}, ${JSON.stringify(item.search || '')}, ${JSON.stringify(item.targetType || '')}, ${JSON.stringify(item.targetValue || '')}, ${JSON.stringify(item.targetExtra || '')})"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><span>${escapeHtml(item.message || '')}</span><span class="btn-link">${escapeHtml(item.actionLabel || 'فتح')}</span></div></div>`).join('') : '<div class="alert-center-empty">لا توجد تنبيهات في هذا القسم حالياً.</div>'}
+          </div>
+        </div>
+      </div>`;
+  };
+
+  window.filterAlertCenterProject = function(filter){
+    const content = document.getElementById('alertCenterContentSafe');
+    if(!content) return;
+    content.innerHTML = window.renderAlertCenterProject(filter || 'all');
+    sortAlertCenterItems();
+    bindAlertCenter();
+  };
+
+  window.buildAlertCenterFromProject = function(){
+    return window.renderAlertCenterProject('all');
+  };
+
+  const legacyOpen = window.openAlertCenterSafe;
+  window.openAlertCenterSafe = function(){
+    if(typeof legacyOpen === 'function') legacyOpen();
+    setTimeout(function(){
+      bindAlertCenter();
+    }, 60);
+  };
+
+  const legacySort = window.sortAlertCenterItems;
+  window.sortAlertCenterItems = function(){
+    if(typeof legacySort === 'function') legacySort();
+    const overlay = document.getElementById('alertCenterOverlay');
+    if(!overlay) return;
+    overlay.querySelectorAll('.alert-item').forEach(item=>{
+      if(item.querySelector('.alert-center-item-meta')) return;
+      const text = (item.textContent || '').trim();
+      const amount = text.match(/([\d,]+\s*ر\.س)/);
+      const date = text.match(/(\d+\s*يوم|اليوم|هذا الأسبوع|يومين|منذ\s*\d+\s*يوم)/);
+      const metaText = [amount ? amount[1] : '', date ? date[1] : ''].filter(Boolean).join(' - ');
+      if(metaText){
+        const meta = document.createElement('div');
+        meta.className = 'alert-center-item-meta';
+        meta.textContent = metaText;
+        item.appendChild(meta);
+      }
+    });
+  };
+
+  const legacyShowTab = window.showTab;
+  window.showTab = function(){
+    const r = legacyShowTab && legacyShowTab.apply(this, arguments);
+    setTimeout(function(){ setWorkspaceMode(); decorateTabs(); }, 30);
+    return r;
+  };
+  const legacyOpenProject = window.openProject;
+  if(typeof legacyOpenProject === 'function'){
+    window.openProject = function(){
+      const r = legacyOpenProject.apply(this, arguments);
+      setTimeout(function(){ setWorkspaceMode(); decorateTabs(); }, 30);
+      return r;
+    };
+  }
+  const legacyBackToProjects = window.backToProjects;
+  if(typeof legacyBackToProjects === 'function'){
+    window.backToProjects = function(){
+      const r = legacyBackToProjects.apply(this, arguments);
+      setTimeout(function(){ setWorkspaceMode(); decorateTabs(); }, 30);
+      return r;
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    setWorkspaceMode();
+    decorateTabs();
+    setTimeout(function(){ setWorkspaceMode(); decorateTabs(); }, 120);
+  });
+  setInterval(function(){ decorateTabs(); setWorkspaceMode(); }, 1800);
+})();
+</script>
+
+</body></html>`);
       win.document.close();
       const closePrintWindow = () => {
         try { win.close(); } catch(err) {}
@@ -9981,6 +10867,222 @@ document.addEventListener('DOMContentLoaded', refreshAlertBellSafe);
   }, true);
 })();
 
+</script>
+
+
+<script>
+(function(){
+  function setWorkspaceMode(){
+    try{
+      const workspace = document.getElementById('workspaceView');
+      document.body.classList.toggle('workspace-mode', !!(workspace && !workspace.classList.contains('hidden')));
+    }catch(e){}
+  }
+
+  function decorateTabs(){
+    const iconMap = {
+      'الوحدات':'🔑', 'المسوقون':'👥', 'المصروفات':'💵', 'الشركاء':'🤝', 'المساهمون':'👥', 'الإدارة':'⚙️',
+      'الدفعات تحت الحساب':'💳', 'عهدة الموقع':'🧾', 'دفتر الحركة':'📒', 'لوحة التحصيل':'💰',
+      'تنبيه الدفعات':'🔔', 'التنبيهات':'🚨', 'ملخص المشروع':'🏠'
+    };
+    document.querySelectorAll('.tabs .tab').forEach(btn=>{
+      if(btn.dataset.iconDone === '1') return;
+      const raw = (btn.childNodes[0] && btn.childNodes[0].nodeType === 3 ? btn.childNodes[0].textContent : btn.textContent || '').trim();
+      const key = Object.keys(iconMap).find(k => raw.includes(k)) || raw;
+      btn.setAttribute('data-icon', iconMap[key] || '•');
+      btn.dataset.iconDone = '1';
+    });
+  }
+
+  function runStoredAction(el){
+    const run = el.dataset.originalOnclick || el.dataset.run || '';
+    if(!run) return;
+    setTimeout(function(){ try{ new Function(run)(); }catch(err){ console.error(err); } }, 80);
+  }
+
+  function bindAlertCenter(){
+    const overlay = document.getElementById('alertCenterOverlay');
+    if(!overlay) return;
+    overlay.querySelectorAll('.alert-center-filter').forEach(btn=>{
+      if(btn.dataset.bound === '1') return;
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', function(ev){
+        ev.preventDefault();
+        ev.stopPropagation();
+        const mode = this.getAttribute('data-mode') || 'home';
+        const filter = this.getAttribute('data-filter') || 'all';
+        if(mode === 'home'){
+          filterAlertCenterHome(filter);
+        }else{
+          filterAlertCenterProject(filter);
+        }
+      });
+    });
+
+    overlay.querySelectorAll('.alert-item,[data-run]').forEach(el=>{
+      if(el.classList.contains('alert-center-filter')) return;
+      if(el.dataset.smartBound === '1') return;
+      el.dataset.smartBound = '1';
+      const original = el.getAttribute('onclick') || '';
+      if(original){
+        el.dataset.originalOnclick = original;
+        el.removeAttribute('onclick');
+      }
+      el.addEventListener('click', function(ev){
+        if(this.classList.contains('alert-center-filter')) return;
+        ev.preventDefault();
+        ev.stopPropagation();
+        closeAlertCenterSafe();
+        runStoredAction(this);
+      });
+    });
+  }
+
+  window.renderAlertCenterHome = function(filter){
+    const rows = window.__alertCenterHomeRows || (typeof collectMainManagerAlerts === 'function' ? collectMainManagerAlerts() : []);
+    const groups = {
+      all: rows,
+      payment: rows.filter(x => x.type === 'payment'),
+      admin: rows.filter(x => x.type === 'admin'),
+      issue: rows.filter(x => x.type === 'issue')
+    };
+    const defs = [
+      ['all','الكل',groups.all.length],
+      ['payment','الدفعات',groups.payment.length],
+      ['admin','الإدارة',groups.admin.length],
+      ['issue','الملاحظات',groups.issue.length]
+    ];
+    const filtered = groups[filter] || groups.all;
+    return `
+      <div class="alert-center-sections">
+        <div class="alert-center-section alert-center-home">
+          <h3>تنبيهات الصفحة الرئيسية</h3>
+          <div class="alert-center-sub">اختر القسم المطلوب، وسيتم تصفية التنبيهات داخل النافذة نفسها.</div>
+          <div class="alert-center-home-filters">
+            ${defs.map(([key,label,count])=>`<button type="button" class="alert-center-filter ${filter===key?'active':''}" data-mode="home" data-filter="${key}">${label} (${count})</button>`).join('')}
+          </div>
+          <div class="alert-list alert-center-cloned">
+            ${filtered.length ? filtered.map(item=>`<div class="alert-item ${item.severity === 'issue' ? 'issue' : 'warn'} clickable" data-run="openMainProjectAlert('${String(item.projectId).replace(/'/g, "\\'")}', '${String(item.tab||'').replace(/'/g, "\\'")}', '${String(item.searchValue||'').replace(/'/g, "\\'")}', '${String(item.targetType||'').replace(/'/g, "\\'")}', '${String(item.targetValue||'').replace(/'/g, "\\'")}', '${String(item.targetExtra||'').replace(/'/g, "\\'")}')"><strong>${escapeHtml(item.projectName)}</strong><br>${escapeHtml(item.label)}</div>`).join('') : '<div class="alert-center-empty">لا توجد تنبيهات في هذا القسم حالياً.</div>'}
+          </div>
+        </div>
+      </div>`;
+  };
+
+  window.filterAlertCenterHome = function(filter){
+    const content = document.getElementById('alertCenterContentSafe');
+    if(!content) return;
+    content.innerHTML = window.renderAlertCenterHome(filter || 'all');
+    sortAlertCenterItems();
+    bindAlertCenter();
+  };
+
+  window.buildAlertCenterFromHome = function(){
+    window.__alertCenterHomeRows = typeof collectMainManagerAlerts === 'function' ? collectMainManagerAlerts() : [];
+    return window.renderAlertCenterHome('all');
+  };
+
+  window.renderAlertCenterProject = function(filter){
+    const p = typeof getProject === 'function' ? getProject() : null;
+    const alerts = p && typeof buildAlerts === 'function' ? buildAlerts(p) : [];
+    const issues = p && typeof buildIssues === 'function' ? buildIssues(p) : [];
+    const rows = {
+      all:[...alerts,...issues],
+      payment:alerts.filter(x => /دفع|سداد|قسط|تحصيل/.test((x.category||'') + ' ' + (x.message||''))),
+      admin:alerts.filter(x => /إدار|شركة|الغامدي/.test((x.category||'') + ' ' + (x.message||''))),
+      issue:issues
+    };
+    const defs = [
+      ['all','الكل',rows.all.length],
+      ['payment','الدفعات',rows.payment.length],
+      ['admin','الإدارة',rows.admin.length],
+      ['issue','الملاحظات',rows.issue.length]
+    ];
+    const filtered = rows[filter] || rows.all;
+    return `
+      <div class="alert-center-sections">
+        <div class="alert-center-section">
+          <h3>تنبيهات المشروع الحالي</h3>
+          <div class="alert-center-sub">تصفية سريعة داخل مركز التنبيهات.</div>
+          <div class="alert-center-home-filters">
+            ${defs.map(([key,label,count])=>`<button type="button" class="alert-center-filter ${filter===key?'active':''}" data-mode="project" data-filter="${key}">${label} (${count})</button>`).join('')}
+          </div>
+          <div class="alert-list alert-center-cloned">
+            ${filtered.length ? filtered.map(item=>`<div class="alert-item ${issues.includes(item) ? 'issue' : 'warn'} clickable" data-run="openAlertTarget(${JSON.stringify(item.tab || '')}, ${JSON.stringify(item.search || '')}, ${JSON.stringify(item.targetType || '')}, ${JSON.stringify(item.targetValue || '')}, ${JSON.stringify(item.targetExtra || '')})"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><span>${escapeHtml(item.message || '')}</span><span class="btn-link">${escapeHtml(item.actionLabel || 'فتح')}</span></div></div>`).join('') : '<div class="alert-center-empty">لا توجد تنبيهات في هذا القسم حالياً.</div>'}
+          </div>
+        </div>
+      </div>`;
+  };
+
+  window.filterAlertCenterProject = function(filter){
+    const content = document.getElementById('alertCenterContentSafe');
+    if(!content) return;
+    content.innerHTML = window.renderAlertCenterProject(filter || 'all');
+    sortAlertCenterItems();
+    bindAlertCenter();
+  };
+
+  window.buildAlertCenterFromProject = function(){
+    return window.renderAlertCenterProject('all');
+  };
+
+  const legacyOpen = window.openAlertCenterSafe;
+  window.openAlertCenterSafe = function(){
+    if(typeof legacyOpen === 'function') legacyOpen();
+    setTimeout(function(){
+      bindAlertCenter();
+    }, 60);
+  };
+
+  const legacySort = window.sortAlertCenterItems;
+  window.sortAlertCenterItems = function(){
+    if(typeof legacySort === 'function') legacySort();
+    const overlay = document.getElementById('alertCenterOverlay');
+    if(!overlay) return;
+    overlay.querySelectorAll('.alert-item').forEach(item=>{
+      if(item.querySelector('.alert-center-item-meta')) return;
+      const text = (item.textContent || '').trim();
+      const amount = text.match(/([\d,]+\s*ر\.س)/);
+      const date = text.match(/(\d+\s*يوم|اليوم|هذا الأسبوع|يومين|منذ\s*\d+\s*يوم)/);
+      const metaText = [amount ? amount[1] : '', date ? date[1] : ''].filter(Boolean).join(' - ');
+      if(metaText){
+        const meta = document.createElement('div');
+        meta.className = 'alert-center-item-meta';
+        meta.textContent = metaText;
+        item.appendChild(meta);
+      }
+    });
+  };
+
+  const legacyShowTab = window.showTab;
+  window.showTab = function(){
+    const r = legacyShowTab && legacyShowTab.apply(this, arguments);
+    setTimeout(function(){ setWorkspaceMode(); decorateTabs(); }, 30);
+    return r;
+  };
+  const legacyOpenProject = window.openProject;
+  if(typeof legacyOpenProject === 'function'){
+    window.openProject = function(){
+      const r = legacyOpenProject.apply(this, arguments);
+      setTimeout(function(){ setWorkspaceMode(); decorateTabs(); }, 30);
+      return r;
+    };
+  }
+  const legacyBackToProjects = window.backToProjects;
+  if(typeof legacyBackToProjects === 'function'){
+    window.backToProjects = function(){
+      const r = legacyBackToProjects.apply(this, arguments);
+      setTimeout(function(){ setWorkspaceMode(); decorateTabs(); }, 30);
+      return r;
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    setWorkspaceMode();
+    decorateTabs();
+    setTimeout(function(){ setWorkspaceMode(); decorateTabs(); }, 120);
+  });
+  setInterval(function(){ decorateTabs(); setWorkspaceMode(); }, 1800);
+})();
 </script>
 
 </body>
