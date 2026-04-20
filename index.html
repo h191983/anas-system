@@ -946,6 +946,11 @@
 }
 .alert-center-cloned .alert-item{cursor:pointer}
 
+
+.alert-center-item-meta{font-size:12px;color:#6b7280;margin-top:4px}
+.alert-center-item{transition:all .18s ease}
+.alert-center-item:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,0,0,.08)}
+
 </style>
 </head>
 <body>
@@ -9374,6 +9379,61 @@ function buildAlertCenterFromProject(){
   return html;
 }
 
+function enrichAlertCenterLinks(){
+  const overlay = document.getElementById('alertCenterOverlay');
+  if(!overlay) return;
+  overlay.querySelectorAll('.alert-item,.manager-alert-tab,[onclick*="openMainProjectAlert"],[onclick*="openAlertTarget"]').forEach(el=>{
+    if(el.dataset.smartBound === '1') return;
+    el.dataset.smartBound = '1';
+    const original = el.getAttribute('onclick') || '';
+    if(original){
+      el.dataset.originalOnclick = original;
+      el.removeAttribute('onclick');
+    }
+    el.addEventListener('click', function(ev){
+      ev.preventDefault();
+      ev.stopPropagation();
+      closeAlertCenterSafe();
+      const run = this.dataset.originalOnclick || '';
+      if(run){
+        setTimeout(function(){
+          try{ new Function(run)(); }catch(e){ console.error(e); }
+        }, 120);
+      }
+    });
+  });
+}
+
+function sortAlertCenterItems(){
+  const overlay = document.getElementById('alertCenterOverlay');
+  if(!overlay) return;
+  overlay.querySelectorAll('.alert-center-cloned').forEach(box=>{
+    const items = Array.from(box.querySelectorAll('.alert-item'));
+    if(!items.length) return;
+    const score = (el)=>{
+      const t = (el.textContent || '').trim();
+      let s = 0;
+      if(/30\s*يوم|متأخر 30|صرف زائد|مراجعة محاسبية|مصروف له زيادة/.test(t)) s += 100;
+      if(/15\s*يوم|7\s*يوم|متأخر/.test(t)) s += 70;
+      if(/3\s*يوم|اليوم|هذا الأسبوع|مستحق/.test(t)) s += 40;
+      const m = t.match(/([\d,]+)\s*ر\.س/);
+      if(m){ s += Math.min(50, Math.floor(parseFloat(m[1].replace(/,/g,'')) / 1000)); }
+      return s;
+    };
+    items.sort((a,b)=>score(b)-score(a));
+    items.forEach(item=>{
+      const text = (item.textContent || '').trim();
+      const amount = text.match(/([\d,]+\s*ر\.س)/);
+      const date = text.match(/(\d+\s*يوم|اليوم|هذا الأسبوع)/);
+      const meta = document.createElement('div');
+      meta.className = 'alert-center-item-meta';
+      meta.textContent = [amount ? amount[1] : '', date ? date[1] : ''].filter(Boolean).join(' - ');
+      if(meta.textContent) item.appendChild(meta);
+      box.appendChild(item);
+    });
+  });
+}
+
 function openAlertCenterSafe(){
   const overlay = document.getElementById('alertCenterOverlay');
   const content = document.getElementById('alertCenterContentSafe');
@@ -9391,6 +9451,10 @@ function openAlertCenterSafe(){
   }
 
   overlay.classList.add('open');
+  setTimeout(function(){
+    sortAlertCenterItems();
+    enrichAlertCenterLinks();
+  }, 80);
 }
 
 function closeAlertCenterSafe(){
