@@ -858,6 +858,28 @@
       text-align:center;
     }
 
+
+    .collection-subtabs{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin:10px 0 14px;
+    }
+    .collection-subtab{
+      min-width:auto;
+      padding:8px 14px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:#f8fafc;
+      color:#334155;
+      font-weight:bold;
+    }
+    .collection-subtab.active{
+      background:var(--primary);
+      color:#fff;
+      border-color:var(--primary);
+    }
+
     @media print{
       .tabs,.no-print,.modal{display:none !important}
       .card,.kpi{box-shadow:none}
@@ -865,7 +887,29 @@
       .header{position:static;box-shadow:none}
       .print-brand{display:block !important}
     }
-  </style>
+  
+    .collection-row-paid{background:#f0fdf4}
+    .collection-row-due-small{background:#fffbeb}
+    .collection-row-due-big{background:#fef2f2}
+    .collection-row-overpaid{background:#faf5ff}
+    .collection-status-paid{
+      display:inline-block;padding:4px 8px;border-radius:999px;
+      background:#dcfce7;color:#166534;font-weight:bold
+    }
+    .collection-status-due-small{
+      display:inline-block;padding:4px 8px;border-radius:999px;
+      background:#fef3c7;color:#92400e;font-weight:bold
+    }
+    .collection-status-due-big{
+      display:inline-block;padding:4px 8px;border-radius:999px;
+      background:#fee2e2;color:#991b1b;font-weight:bold
+    }
+    .collection-status-overpaid{
+      display:inline-block;padding:4px 8px;border-radius:999px;
+      background:#ede9fe;color:#6d28d9;font-weight:bold
+    }
+
+</style>
 </head>
 <body>
   <div class="header">
@@ -1174,6 +1218,7 @@
           <button class="tab" onclick="showTab('advancesTab', this)">الدفعات تحت الحساب</button>
           <button class="tab" onclick="showTab('siteCustodyTab', this)">عهدة الموقع</button>
           <button class="tab" onclick="showTab('movementsTab', this)">دفتر الحركة</button>
+          <button class="tab" onclick="showTab('collectionTab', this)">لوحة التحصيل</button>
           <button id="paymentAlertsTabButton" class="tab" onclick="showTab('paymentAlertsTab', this)">تنبيه الدفعات <span id="paymentAlertsTabCount" class="tab-badge">0</span></button>
           <button id="alertsTabButton" class="tab" onclick="showTab('alertsTab', this)">التنبيهات <span id="alertsTabCount" class="tab-badge">0</span></button>
           <button class="tab" onclick="showTab('reportTab', this)">ملخص المشروع</button>
@@ -1804,6 +1849,50 @@
             </thead>
             <tbody id="movementsBody"></tbody>
           </table>
+        </div>
+
+
+        <div id="collectionTab" class="card tab-panel hidden">
+          <div class="section-title">
+            <div>
+              <h3>لوحة التحصيل</h3>
+              <div class="section-kicker">متابعة التحصيل على الوحدات والمسوقين والشركاء والمساهمين داخل المشروع الحالي</div>
+            </div>
+            <div class="actions no-print">
+              <span class="mini-stat" id="collectionRowsCount">0 صف</span>
+              <button class="btn-teal" onclick="printCollectionBoard()">طباعة لوحة التحصيل</button>
+            </div>
+          </div>
+          <div class="collection-subtabs no-print">
+            <button id="collectionSubtabAll" class="collection-subtab active" onclick="setCollectionSection('all', this)">الكل</button>
+            <button id="collectionSubtabUnits" class="collection-subtab" onclick="setCollectionSection('units', this)">الوحدات</button>
+            <button id="collectionSubtabMarketers" class="collection-subtab" onclick="setCollectionSection('marketers', this)">المسوقون</button>
+            <button id="collectionSubtabPartners" class="collection-subtab" onclick="setCollectionSection('partners', this)">الشركاء</button>
+            <button id="collectionSubtabInvestors" class="collection-subtab" onclick="setCollectionSection('investors', this)">المساهمون</button>
+          </div>
+          <div class="alert-summary">
+            <div class="alert-card"><strong id="collectionKpiRequired">0</strong><span>إجمالي المستحق</span></div>
+            <div class="alert-card"><strong id="collectionKpiCollected">0</strong><span>إجمالي المصروف / المحصل</span></div>
+            <div class="alert-card"><strong id="collectionKpiRemaining">0</strong><span>إجمالي المتبقي</span></div>
+            <div class="alert-card"><strong id="collectionKpiOverdue">0</strong><span>المتبقي المحتاج متابعة</span></div>
+          </div>
+          <div class="filter-bar no-print">
+            <input id="collectionSearch" placeholder="بحث: الشقة / العميل / المسوق / الشريك / المساهم / المبنى" oninput="renderCollectionBoard()" />
+            <select id="collectionSeverityFilter" onchange="renderCollectionBoard()">
+              <option value="">كل الحالات</option>
+              <option value="late">متأخر / يحتاج متابعة</option>
+              <option value="today">مستحق اليوم</option>
+              <option value="soon">قريب</option>
+              <option value="future">لاحق</option>
+              <option value="paid">مسدد / مصفى</option>
+              <option value="overpaid">مصروف له زيادة</option>
+              <option value="due">متبقي له</option>
+            </select>
+            <div class="filter-actions">
+              <button class="btn-gray" onclick="resetCollectionFilters()">تصفير الفلاتر</button>
+            </div>
+          </div>
+          <div id="collectionContent"></div>
         </div>
 
         <div id="paymentAlertsTab" class="card tab-panel hidden">
@@ -4154,6 +4243,7 @@ let globalSettingsState = {
       document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
       btn.classList.add("active");
       if(id === "advancesTab") refreshAdvanceNames();
+      if(id === "collectionTab") renderCollectionBoard();
     }
 
     function partnerRowsWithCompany(project, totalProjectCost){
@@ -5075,7 +5165,7 @@ let globalSettingsState = {
           </thead>
           <tbody>
             ${rows.map(row => `
-              <tr class="${row.severity === 'late' ? 'warn-row' : ''}">
+              <tr class="${collectionRowClass(row)}">
                 <td>${severityBadge(row.severity)}<div class="small">${escapeHtml(row.message)}</div></td>
                 <td>${escapeHtml(row.unitNumber)}</td>
                 <td>${escapeHtml(row.building)}</td>
@@ -5086,6 +5176,452 @@ let globalSettingsState = {
                 <td>${money(row.paidAmount)}</td>
                 <td>${money(row.remain)}</td>
                 <td class="no-print"><button class="btn-orange" onclick="openPaymentAlertUnit(${row.unitIndex})">فتح الوحدة</button></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+
+    function getCollectionRows(project = getProject()){
+      if(!project) return [];
+      const today = getTodayIso();
+      const upcomingWindow = 7;
+      const rows = [];
+      const activeStatuses = ['محجوزة','مباعة','تم السداد','تم الافراغ','تمت المراجعة النهائية'];
+      (project.units || []).forEach((u, unitIndex) => {
+        const dueAmounts = u.paymentDueAmounts || [0,0,0,0,0];
+        const dueDates = u.paymentDueDates || ["","","","",""];
+        const dueLabels = u.paymentDueLabels || ["الدفعة ١","الدفعة ٢","الدفعة ٣","الدفعة ٤","الدفعة ٥"];
+        const actualPayments = u.payments || [0,0,0,0,0];
+        let hasStructuredRows = false;
+
+        dueAmounts.forEach((dueAmount, idx) => {
+          const amount = num(dueAmount);
+          const dueDate = String(dueDates[idx] || '').trim();
+          if(amount <= 0 || !dueDate) return;
+          hasStructuredRows = true;
+          const paidAmount = num(actualPayments[idx] || 0);
+          const remain = Math.max(0, amount - paidAmount);
+          const diff = daysBetweenIso(today, dueDate);
+          let severity = 'future';
+          let statusText = 'لاحق';
+          if(remain <= 0){
+            severity = 'paid';
+            statusText = 'مسدد';
+          }else if(dueDate < today){
+            severity = 'late';
+            statusText = `متأخر ${Math.abs(diff)} يوم`;
+          }else if(dueDate === today){
+            severity = 'today';
+            statusText = 'مستحق اليوم';
+          }else if(diff <= upcomingWindow){
+            severity = 'soon';
+            statusText = `خلال ${diff} يوم`;
+          }else{
+            severity = 'future';
+            statusText = `لاحق بعد ${diff} يوم`;
+          }
+          rows.push({
+            unitIndex,
+            unitNumber: u.number || '-',
+            building: u.building || '-',
+            client: u.client || '-',
+            clientPhone: u.clientPhone || '',
+            marketer: u.marketer || '-',
+            marketerPhone: u.marketerPhone || '',
+            label: dueLabels[idx] || `الدفعة ${idx+1}`,
+            dueDate,
+            dueAmount: amount,
+            paidAmount,
+            remain,
+            severity,
+            statusText,
+            sourceType: 'schedule'
+          });
+        });
+
+        const remaining = Math.max(0, num(u.remaining));
+        const finalPrice = num(u.finalPrice || u.price);
+        const paid = num(u.paid);
+        const status = String(u.status || '').trim();
+        const rawFallbackDate = String(u.bookingDate || u.contractDate || u.updatedAt || '').trim();
+        const fallbackDate = /^\d{4}-\d{2}-\d{2}$/.test(rawFallbackDate) ? rawFallbackDate : today;
+
+        if(!hasStructuredRows && remaining > 0 && activeStatuses.includes(status)){
+          const diff = daysBetweenIso(today, fallbackDate);
+          let severity = 'future';
+          let statusText = 'رصيد قائم';
+          if(fallbackDate < today){
+            severity = 'late';
+            statusText = rawFallbackDate ? `متأخر ${Math.abs(diff)} يوم` : 'متأخر يحتاج متابعة';
+          }else if(fallbackDate === today){
+            severity = 'today';
+            statusText = 'مستحق اليوم';
+          }else if(diff <= upcomingWindow){
+            severity = 'soon';
+            statusText = `خلال ${diff} يوم`;
+          }else{
+            severity = 'future';
+            statusText = rawFallbackDate ? `لاحق بعد ${diff} يوم` : 'متبقي بدون جدول';
+          }
+          rows.push({
+            unitIndex,
+            unitNumber: u.number || '-',
+            building: u.building || '-',
+            client: u.client || '-',
+            clientPhone: u.clientPhone || '',
+            marketer: u.marketer || '-',
+            marketerPhone: u.marketerPhone || '',
+            label: 'الرصيد المتبقي',
+            dueDate: rawFallbackDate || 'غير محدد',
+            dueAmount: finalPrice,
+            paidAmount: paid,
+            remain: remaining,
+            severity,
+            statusText,
+            sourceType: 'balance'
+          });
+        }
+      });
+      const order = {late:0, today:1, soon:2, future:3, paid:4};
+      rows.sort((a,b) => (order[a.severity]-order[b.severity]) || String(a.dueDate).localeCompare(String(b.dueDate)) || String(a.unitNumber).localeCompare(String(b.unitNumber)));
+      return rows;
+    }
+
+    let currentCollectionSection = 'all';
+
+    function normalizeCollectionRemain(value, epsilon = 1){
+      const n = num(value);
+      return Math.abs(n) <= epsilon ? 0 : n;
+    }
+
+    function getCollectionBalanceState(value, labels = {}, epsilon = 1){
+      const remain = normalizeCollectionRemain(value, epsilon);
+      const positiveLabel = labels.positive || 'متبقي له';
+      const zeroLabel = labels.zero || 'تمت التصفية';
+      const negativeLabel = labels.negative || 'مصروف له زيادة';
+      return {
+        remain,
+        severity: remain > 0 ? 'due' : (remain < 0 ? 'overpaid' : 'paid'),
+        statusText: remain > 0 ? positiveLabel : (remain < 0 ? negativeLabel : zeroLabel)
+      };
+    }
+
+
+    function collectionRowClass(row){
+      const remain = normalizeCollectionRemain(row && row.remain, 1);
+      if(remain < 0) return 'collection-row-overpaid';
+      if(remain === 0) return 'collection-row-paid';
+      return remain <= 1000 ? 'collection-row-due-small' : 'collection-row-due-big';
+    }
+
+    function collectionStatusBadgeByRemain(row){
+      const remain = normalizeCollectionRemain(row && row.remain, 1);
+      if(remain < 0) return '<span class="collection-status-overpaid">مصروف زيادة</span>';
+      if(remain === 0) return '<span class="collection-status-paid">تم</span>';
+      return remain <= 1000
+        ? '<span class="collection-status-due-small">متبقي بسيط</span>'
+        : '<span class="collection-status-due-big">متبقي كبير</span>';
+    }
+
+    function collectionSeverityBadge(sev){
+      if(sev === 'late') return '<span class="badge" style="background:#fee2e2;color:#991b1b">متأخر</span>';
+      if(sev === 'due') return '<span class="badge" style="background:#fffbeb;color:#92400e">متبقي له</span>';
+      if(sev === 'overpaid') return '<span class="badge" style="background:#ede9fe;color:#6d28d9">مصروف زيادة</span>';
+      if(sev === 'today') return '<span class="badge" style="background:#fef3c7;color:#92400e">اليوم</span>';
+      if(sev === 'soon') return '<span class="badge" style="background:#dbeafe;color:#1d4ed8">قريب</span>';
+      if(sev === 'future') return '<span class="badge" style="background:#e5e7eb;color:#374151">لاحق</span>';
+      return '<span class="badge" style="background:#dcfce7;color:#166534">مسدد</span>';
+    }
+
+    function setCollectionSection(section, btn){
+      currentCollectionSection = section || 'all';
+      document.querySelectorAll('.collection-subtab').forEach(x => x.classList.remove('active'));
+      if(btn) btn.classList.add('active');
+      renderCollectionBoard();
+    }
+
+    function resetCollectionFilters(){
+      const search = document.getElementById('collectionSearch');
+      const sev = document.getElementById('collectionSeverityFilter');
+      if(search) search.value = '';
+      if(sev) sev.value = '';
+      renderCollectionBoard();
+    }
+
+    function openCollectionWa(type, unitIndex){
+      const p = getProject();
+      if(!p || !p.units || !p.units[unitIndex]) return;
+      const u = p.units[unitIndex];
+      let phone = String(type === 'client' ? (u.clientPhone || '') : (u.marketerPhone || '')).trim();
+      if(!phone){
+        phone = prompt(type === 'client' ? 'رقم العميل غير موجود. أدخل رقم واتساب:' : 'رقم المسوق غير موجود. أدخل رقم واتساب:');
+      }
+      if(!phone) return;
+      const cleanedPhone = String(phone).replace(/[^\d]/g, '');
+      if(!cleanedPhone){ alert('رقم الواتساب غير صحيح'); return; }
+      const rows = getCollectionRows(p).filter(x => x.unitIndex === unitIndex && x.remain > 0);
+      const first = rows[0] || null;
+      const party = type === 'client' ? (u.client || 'عميلنا العزيز') : (u.marketer || 'المسوق');
+      const message = type === 'client'
+        ? `السلام عليكم ورحمة الله وبركاته
+${party}
+نذكركم بوجود مبلغ مستحق على الوحدة رقم ${u.number || '-'}${first ? `
+أقرب دفعة: ${first.label} بتاريخ ${first.dueDate} بمبلغ ${money(first.remain)}` : ''}
+شاكرين تعاونكم.`
+        : `السلام عليكم ورحمة الله وبركاته
+${party}
+للتذكير: توجد دفعات تحتاج متابعة على الوحدة رقم ${u.number || '-'} باسم العميل ${u.client || '-'}${first ? `
+أقرب دفعة: ${first.label} بتاريخ ${first.dueDate} والمتبقي ${money(first.remain)}` : ''}`;
+      window.open(`https://wa.me/${cleanedPhone}?text=${encodeURIComponent(message)}`, '_blank');
+    }
+
+    function getCollectionEntityRows(section, project){
+      const f = calcProjectFinancials(project || getProject() || {});
+      const rows = [];
+      if(section === 'marketers' || section === 'all'){
+        (f.marketerRows || []).forEach(x => {
+          const balanceState = getCollectionBalanceState(x.remainAfterAdvance, {
+            positive: 'متبقي له سعي',
+            zero: 'تم الصرف كامل',
+            negative: 'مصروف له زيادة'
+          });
+          rows.push({
+            section: 'marketers',
+            category: 'مسوق',
+            entityType: 'marketer',
+            name: x.name || '-',
+            phone: x.phone || '',
+            detail1: `${num(x.units)} وحدة`,
+            detail2: 'سعي المشروع',
+            dueAmount: num(x.commissionDue),
+            paidAmount: num(x.paidAdvance),
+            remain: balanceState.remain,
+            severity: balanceState.severity,
+            statusText: balanceState.statusText
+          });
+        });
+      }
+      if(section === 'partners' || section === 'all'){
+        (f.partnersFull || []).filter(x => !x.auto).forEach(x => {
+          const balanceState = getCollectionBalanceState(x.totalRemain ?? x.remain, {
+            positive: 'متبقي له',
+            zero: 'تمت التصفية',
+            negative: 'مصروف له زيادة'
+          });
+          rows.push({
+            section: 'partners',
+            category: 'شريك',
+            entityType: 'partner',
+            name: x.name || '-',
+            phone: '',
+            detail1: `${num(x.percent).toFixed(2)}%`,
+            detail2: 'نسبة الشريك',
+            dueAmount: num(x.totalEntitlement),
+            paidAmount: num(x.paidAdvance),
+            remain: balanceState.remain,
+            severity: balanceState.severity,
+            statusText: balanceState.statusText
+          });
+        });
+      }
+      if(section === 'investors' || section === 'all'){
+        (f.investorsFull || []).filter(x => !x.auto).forEach(x => {
+          const balanceState = getCollectionBalanceState(x.totalRemain ?? x.remain, {
+            positive: 'متبقي له',
+            zero: 'تمت التصفية',
+            negative: 'مصروف له زيادة'
+          });
+          rows.push({
+            section: 'investors',
+            category: 'مساهم',
+            entityType: 'investor',
+            name: x.name || '-',
+            phone: '',
+            detail1: `${num(x.ratio).toFixed(2)}%`,
+            detail2: 'نسبة داخل الشركة',
+            dueAmount: num(x.totalEntitlement),
+            paidAmount: num(x.paidAdvance),
+            remain: balanceState.remain,
+            severity: balanceState.severity,
+            statusText: balanceState.statusText
+          });
+        });
+      }
+      return rows;
+    }
+
+    function getCollectionBoardData(){
+      const p = getProject();
+      const search = String((document.getElementById('collectionSearch') || {}).value || '').trim().toLowerCase();
+      const sev = String((document.getElementById('collectionSeverityFilter') || {}).value || '').trim();
+      const section = currentCollectionSection || 'all';
+      let rows = [];
+      if(section === 'units'){
+        rows = getCollectionRows(p).map(row => ({...row, section:'units', category:'وحدة'}));
+      }else if(section === 'marketers' || section === 'partners' || section === 'investors'){
+        rows = getCollectionEntityRows(section, p);
+      }else{
+        const unitRows = getCollectionRows(p).map(row => ({...row, section:'units', category:'وحدة'}));
+        const entityRows = getCollectionEntityRows('all', p);
+        rows = [...unitRows, ...entityRows];
+      }
+      const filtered = rows.filter(row => {
+        if(sev && row.severity !== sev) return false;
+        if(search){
+          const hay = [row.category, row.unitNumber, row.building, row.client, row.marketer, row.label, row.dueDate, row.name, row.detail1, row.detail2].join(' ').toLowerCase();
+          if(!hay.includes(search)) return false;
+        }
+        return true;
+      });
+      return {section, allRows: rows, filtered};
+    }
+
+    function printCollectionBoard(){
+      const p = getProject();
+      if(!p) return;
+      const data = getCollectionBoardData();
+      const rows = data.filtered;
+      const totalRequired = rows.reduce((s,r) => s + num(r.dueAmount), 0);
+      const totalCollected = rows.reduce((s,r) => s + num(r.paidAmount), 0);
+      const totalRemaining = rows.reduce((s,r) => s + num(r.remain), 0);
+      const totalOverdue = rows.filter(r => r.severity === 'late' || r.severity === 'due').reduce((s,r) => s + Math.max(0, num(r.remain)), 0);
+      let headers = '';
+      let bodyRows = '';
+      if(data.section === 'units'){
+        headers = '<tr><th>الحالة</th><th>الشقة</th><th>المبنى</th><th>العميل</th><th>المسوق</th><th>البيان</th><th>تاريخ الاستحقاق</th><th>المطلوب</th><th>المحصل</th><th>المتبقي</th></tr>';
+        bodyRows = rows.map(r => `<tr><td>${escapeHtml(r.statusText)}</td><td>${escapeHtml(r.unitNumber)}</td><td>${escapeHtml(r.building)}</td><td>${escapeHtml(r.client)}</td><td>${escapeHtml(r.marketer)}</td><td>${escapeHtml(r.label)}</td><td>${escapeHtml(r.dueDate)}</td><td>${money(r.dueAmount)}</td><td>${money(r.paidAmount)}</td><td>${money(r.remain)}</td></tr>`).join('');
+      }else{
+        headers = '<tr><th>الفئة</th><th>الاسم</th><th>التفصيل</th><th>الحالة</th><th>إجمالي المستحق</th><th>تم صرفه / تحصيله</th><th>المتبقي</th></tr>';
+        bodyRows = rows.map(r => `<tr><td>${escapeHtml(r.category)}</td><td>${escapeHtml(r.name)}</td><td>${escapeHtml(r.detail1)}<div class="muted">${escapeHtml(r.detail2)}</div></td><td>${escapeHtml(r.statusText)}</td><td>${money(r.dueAmount)}</td><td>${money(r.paidAmount)}</td><td>${money(r.remain)}</td></tr>`).join('');
+      }
+      const html = `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>لوحة التحصيل</title><style>body{font-family:Tahoma,Arial,sans-serif;padding:20px;color:#111}h2{margin:0 0 8px}table{width:100%;border-collapse:collapse;margin-top:14px;font-size:12px}th,td{border:1px solid #999;padding:6px;text-align:center}th{background:#f3f4f6}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}.card{border:1px solid #ccc;padding:10px;border-radius:8px}.muted{color:#666;font-size:12px}</style></head><body><h2>لوحة التحصيل - ${escapeHtml(p.name || '-')}</h2><div class="muted">القسم: ${escapeHtml(data.section === 'all' ? 'الكل' : data.section === 'units' ? 'الوحدات' : data.section === 'marketers' ? 'المسوقون' : data.section === 'partners' ? 'الشركاء' : 'المساهمون')}</div><div class="muted">تاريخ الطباعة: ${escapeHtml(todayText())}</div><div class="grid"><div class="card"><strong>${money(totalRequired)}</strong><div>إجمالي المستحق</div></div><div class="card"><strong>${money(totalCollected)}</strong><div>إجمالي المصروف / المحصل</div></div><div class="card"><strong>${money(totalRemaining)}</strong><div>إجمالي المتبقي</div></div><div class="card"><strong>${money(totalOverdue)}</strong><div>المحتاج متابعة / المتبقي</div></div></div><table><thead>${headers}</thead><tbody>${bodyRows || '<tr><td colspan="10">لا توجد بيانات مطابقة</td></tr>'}</tbody></table></body></html>`;
+      const win = window.open('', '_blank');
+      if(!win) return;
+      win.document.write(html);
+      win.document.close();
+      win.focus();
+      setTimeout(() => win.print(), 250);
+    }
+
+    function renderCollectionBoard(){
+      const p = getProject();
+      const box = document.getElementById('collectionContent');
+      if(!box || !p) return;
+      const data = getCollectionBoardData();
+      const allRows = data.allRows;
+      const filtered = data.filtered;
+      const setText = (id, value) => { const el = document.getElementById(id); if(el) el.textContent = value; };
+      const totalRequired = allRows.reduce((s,r) => s + num(r.dueAmount), 0);
+      const totalCollected = allRows.reduce((s,r) => s + num(r.paidAmount), 0);
+      const totalRemaining = allRows.reduce((s,r) => s + num(r.remain), 0);
+      const totalOverdue = allRows.filter(r => r.severity === 'late' || r.severity === 'due').reduce((s,r) => s + Math.max(0, num(r.remain)), 0);
+      setText('collectionKpiRequired', money(totalRequired));
+      setText('collectionKpiCollected', money(totalCollected));
+      setText('collectionKpiRemaining', money(totalRemaining));
+      setText('collectionKpiOverdue', money(totalOverdue));
+      setText('collectionRowsCount', `${filtered.length} صف`);
+      if(!filtered.length){
+        box.innerHTML = `<div class="success">لا توجد نتائج مطابقة في لوحة التحصيل.</div>`;
+        return;
+      }
+      if(data.section === 'units'){
+        box.innerHTML = `
+          <table>
+            <thead>
+              <tr>
+                <th>الحالة</th>
+                <th>الشقة</th>
+                <th>المبنى</th>
+                <th>العميل</th>
+                <th>المسوق</th>
+                <th>الدفعة</th>
+                <th>تاريخ الاستحقاق</th>
+                <th>المطلوب</th>
+                <th>المحصل</th>
+                <th>المتبقي</th>
+                <th class="no-print">إجراءات</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${filtered.map(row => `
+                <tr class="${collectionRowClass(row)}">
+                  <td>${collectionStatusBadgeByRemain(row)}<div class="small">${escapeHtml(row.statusText)}</div></td>
+                  <td>${escapeHtml(row.unitNumber)}</td>
+                  <td>${escapeHtml(row.building)}</td>
+                  <td>${escapeHtml(row.client)}</td>
+                  <td>${escapeHtml(row.marketer)}</td>
+                  <td>${escapeHtml(row.label)}</td>
+                  <td>${escapeHtml(row.dueDate)}</td>
+                  <td>${money(row.dueAmount)}</td>
+                  <td>${money(row.paidAmount)}</td>
+                  <td>${money(row.remain)}</td>
+                  <td class="no-print"><div class="mini-actions"><button class="btn-orange" onclick="openPaymentAlertUnit(${row.unitIndex})">تحصيل سريع</button><button class="btn-green" onclick="openCollectionWa('client', ${row.unitIndex})">واتساب عميل</button><button class="btn-teal" onclick="openCollectionWa('marketer', ${row.unitIndex})">واتساب مسوق</button></div></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+        return;
+      }
+      if(data.section === 'all'){
+        box.innerHTML = `
+          <table>
+            <thead>
+              <tr>
+                <th>الفئة</th>
+                <th>الحالة</th>
+                <th>الاسم / الوحدة</th>
+                <th>التفاصيل</th>
+                <th>إجمالي المستحق</th>
+                <th>تم صرفه / تحصيله</th>
+                <th>المتبقي</th>
+                <th class="no-print">إجراءات</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${filtered.map(row => {
+                const actions = row.section === 'units'
+                  ? `<div class="mini-actions"><button class="btn-orange" onclick="openPaymentAlertUnit(${row.unitIndex})">تحصيل سريع</button><button class="btn-green" onclick="openCollectionWa('client', ${row.unitIndex})">واتساب عميل</button><button class="btn-teal" onclick="openCollectionWa('marketer', ${row.unitIndex})">واتساب مسوق</button></div>`
+                  : `<div class="mini-actions"><button class="btn-link" onclick="openEntityStatementModal('${row.entityType}','${escapeQuotes(row.name)}')">كشف</button><button class="btn-green" onclick="openQuickAdvanceModal('${row.entityType}','${escapeQuotes(row.name)}')">صرف</button></div>`;
+                const nameCell = row.section === 'units'
+                  ? `${escapeHtml(row.unitNumber)}<div class="small">${escapeHtml(row.client)}</div>`
+                  : `${escapeHtml(row.name)}<div class="small">${escapeHtml(row.category)}</div>`;
+                const detailCell = row.section === 'units'
+                  ? `${escapeHtml(row.building)}<div class="small">${escapeHtml(row.marketer)} | ${escapeHtml(row.label)} | ${escapeHtml(row.dueDate)}</div>`
+                  : `${escapeHtml(row.detail1)}<div class="small">${escapeHtml(row.detail2)}</div>`;
+                return `<tr class="${collectionRowClass(row)}"><td>${escapeHtml(row.category)}</td><td>${collectionStatusBadgeByRemain(row)}<div class="small">${escapeHtml(row.statusText)}</div></td><td>${nameCell}</td><td>${detailCell}</td><td>${money(row.dueAmount)}</td><td>${money(row.paidAmount)}</td><td>${money(row.remain)}</td><td class="no-print">${actions}</td></tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        `;
+        return;
+      }
+      box.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>الحالة</th>
+              <th>الاسم</th>
+              <th>التفصيل</th>
+              <th>إجمالي المستحق</th>
+              <th>تم صرفه</th>
+              <th>المتبقي</th>
+              <th class="no-print">إجراءات</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${filtered.map(row => `
+              <tr class="${collectionRowClass(row)}">
+                <td>${collectionStatusBadgeByRemain(row)}<div class="small">${escapeHtml(row.statusText)}</div></td>
+                <td>${escapeHtml(row.name)}<div class="small">${escapeHtml(row.category)}</div></td>
+                <td>${escapeHtml(row.detail1)}<div class="small">${escapeHtml(row.detail2)}</div></td>
+                <td>${money(row.dueAmount)}</td>
+                <td>${money(row.paidAmount)}</td>
+                <td>${money(row.remain)}</td>
+                <td class="no-print"><div class="mini-actions"><button class="btn-link" onclick="openEntityStatementModal('${row.entityType}','${escapeQuotes(row.name)}')">كشف</button><button class="btn-green" onclick="openQuickAdvanceModal('${row.entityType}','${escapeQuotes(row.name)}')">صرف</button></div></td>
               </tr>
             `).join('')}
           </tbody>
@@ -5292,6 +5828,7 @@ let globalSettingsState = {
       renderSiteCustody();
       renderAdminTab();
       renderMovements();
+      renderCollectionBoard();
       renderPaymentAlerts();
       renderReport();
       refreshAdvanceNames();
