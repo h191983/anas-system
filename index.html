@@ -909,9 +909,64 @@
       background:#ede9fe;color:#6d28d9;font-weight:bold
     }
 
+
+.alert-bell{
+  position:fixed; top:14px; left:14px; z-index:9999;
+  background:#fff; border:1px solid #e5e7eb; border-radius:999px;
+  padding:10px 14px; box-shadow:0 4px 16px rgba(0,0,0,.12);
+  cursor:pointer; font-weight:bold; display:flex; align-items:center; gap:8px;
+}
+.alert-bell.red{background:#fee2e2;color:#991b1b}
+.alert-bell.yellow{background:#fef3c7;color:#92400e}
+.alert-bell.green{background:#dcfce7;color:#166534}
+
+.alert-center-overlay{
+  position:fixed; inset:0; background:rgba(15,23,42,.45);
+  z-index:10000; display:none; padding:18px; overflow:auto;
+}
+.alert-center-overlay.open{display:block}
+.alert-center-card{
+  max-width:1100px; margin:18px auto; background:#fff;
+  border-radius:20px; padding:18px; box-shadow:0 20px 50px rgba(0,0,0,.18);
+}
+.alert-center-head{
+  display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
+  margin-bottom:12px;
+}
+.alert-center-title{font-size:24px; font-weight:800}
+.alert-center-sub{font-size:12px; color:#6b7280}
+.alert-center-toolbar{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+.alert-center-sections{display:grid; gap:14px; margin-top:12px}
+.alert-center-section{
+  border:1px solid #e5e7eb; border-radius:16px; padding:14px; background:#f8fafc;
+}
+.alert-center-section h3{margin:0 0 10px 0}
+.alert-center-empty{
+  background:#ecfdf5; border:1px solid #86efac; border-radius:10px; padding:12px;
+}
+.alert-center-cloned .alert-item{cursor:pointer}
+
 </style>
 </head>
 <body>
+
+<div id="alertBell" class="alert-bell green" onclick="openAlertCenterSafe()"><span id="alertBellCount">0</span><span>🔔</span></div>
+
+<div id="alertCenterOverlay" class="alert-center-overlay" onclick="if(event.target===this) closeAlertCenterSafe()">
+  <div class="alert-center-card">
+    <div class="alert-center-head">
+      <div>
+        <div class="alert-center-title">🚨 مركز التنبيهات</div>
+        <div class="alert-center-sub">اضغط على أي تنبيه للانتقال مباشرة إلى مكانه</div>
+      </div>
+      <div class="alert-center-toolbar">
+        <button class="btn-gray" onclick="closeAlertCenterSafe()">إغلاق</button>
+      </div>
+    </div>
+    <div id="alertCenterContentSafe"></div>
+  </div>
+</div>
+
   <div class="header">
     <img class="brand-logo" id="headerLogo" alt="شعار النظام" />
     <div class="header-title">
@@ -9256,5 +9311,96 @@ function renderSiteCustody(){
       reader.readAsText(file, "utf-8");
     }
   </script>
+
+<script>
+function getBellCountSafe(){
+  const main = document.getElementById('mainManagerAlertsCount');
+  const project = document.getElementById('alertsTabCount');
+  let n = 0;
+  if(main){
+    const m = (main.textContent || '').match(/\d+/);
+    if(m) n += parseInt(m[0],10) || 0;
+  }
+  if(project && !document.getElementById('workspaceView')?.classList.contains('hidden')){
+    const m = (project.textContent || '').match(/\d+/);
+    if(m) n = Math.max(n, parseInt(m[0],10) || 0);
+  }
+  return n;
+}
+
+function refreshAlertBellSafe(){
+  const bell = document.getElementById('alertBell');
+  const countNode = document.getElementById('alertBellCount');
+  if(!bell || !countNode) return;
+  const n = getBellCountSafe();
+  countNode.textContent = n;
+  bell.className = 'alert-bell ' + (n===0 ? 'green' : (n<5 ? 'yellow' : 'red'));
+}
+
+function buildAlertCenterFromHome(){
+  try{
+    if(typeof toggleMainManagerAlerts === 'function'){
+      const body = document.getElementById('mainManagerAlertsBody');
+      if(body && body.classList.contains('hidden')) toggleMainManagerAlerts();
+    }
+  }catch(e){}
+  const tabs = document.getElementById('mainManagerAlertsTabs');
+  const list = document.getElementById('mainManagerAlertsList');
+  let html = '<div class="alert-center-sections">';
+  if(tabs && (tabs.innerHTML || '').trim()){
+    html += '<div class="alert-center-section"><h3>تنبيهات الصفحة الرئيسية</h3><div class="alert-center-cloned">' + tabs.outerHTML + (list ? list.outerHTML : '') + '</div></div>';
+  }else if(list && (list.innerHTML || '').trim()){
+    html += '<div class="alert-center-section"><h3>تنبيهات الصفحة الرئيسية</h3><div class="alert-center-cloned">' + list.outerHTML + '</div></div>';
+  }else{
+    html += '<div class="alert-center-empty">لا توجد تنبيهات حالياً في الصفحة الرئيسية.</div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function buildAlertCenterFromProject(){
+  try{
+    const alertsBtn = document.getElementById('alertsTabButton');
+    if(alertsBtn) alertsBtn.click();
+  }catch(e){}
+  const content = document.getElementById('alertsTabContent');
+  let html = '<div class="alert-center-sections">';
+  if(content && (content.innerHTML || '').trim()){
+    html += '<div class="alert-center-section"><h3>تنبيهات المشروع الحالي</h3><div class="alert-center-cloned">' + content.innerHTML + '</div></div>';
+  }else{
+    html += '<div class="alert-center-empty">لا توجد تنبيهات حالياً في هذا المشروع.</div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function openAlertCenterSafe(){
+  const overlay = document.getElementById('alertCenterOverlay');
+  const content = document.getElementById('alertCenterContentSafe');
+  if(!overlay || !content) return;
+
+  const onProjectsPage = document.getElementById('projectsView') && !document.getElementById('projectsView').classList.contains('hidden');
+  const onWorkspacePage = document.getElementById('workspaceView') && !document.getElementById('workspaceView').classList.contains('hidden');
+
+  if(onProjectsPage){
+    content.innerHTML = buildAlertCenterFromHome();
+  }else if(onWorkspacePage){
+    content.innerHTML = buildAlertCenterFromProject();
+  }else{
+    content.innerHTML = '<div class="alert-center-empty">افتح النظام أولاً ثم استخدم الجرس.</div>';
+  }
+
+  overlay.classList.add('open');
+}
+
+function closeAlertCenterSafe(){
+  const overlay = document.getElementById('alertCenterOverlay');
+  if(overlay) overlay.classList.remove('open');
+}
+
+setInterval(refreshAlertBellSafe, 1200);
+document.addEventListener('DOMContentLoaded', refreshAlertBellSafe);
+</script>
+
 </body>
 </html>
