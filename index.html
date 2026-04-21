@@ -35,61 +35,112 @@
     body{
       margin:0;
       font-family:Tahoma, Arial, sans-serif;
-      background:var(--bg);
+      background:radial-gradient(circle at top right,#e8f3ff 0%,#f5f8fc 34%,#eef4f9 68%,#edf2f7 100%);
       color:var(--text);
       max-width:100%;
       overflow-x:hidden;
     }
 
-    .container{padding:18px;max-width:100%;overflow-x:hidden}
+    .container{padding:22px;max-width:100%;overflow-x:hidden}
     .card{
-      background:#fff;
-      border-radius:12px;
-      padding:16px;
-      box-shadow:var(--shadow);
-      margin-bottom:16px;
+      background:linear-gradient(180deg,#ffffff 0%,#f7fbff 100%);
+      border-radius:22px;
+      padding:18px;
+      box-shadow:0 18px 38px rgba(15,23,42,.08);
+      margin-bottom:18px;
+      border:1px solid #dbe7f3;
+      position:relative;
+      overflow:hidden;
+    }
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:0 0 auto 0;
+      height:4px;
+      background:linear-gradient(90deg,#1f3b57 0%,#2563eb 45%,#60a5fa 100%);
+      opacity:.95;
     }
     h2,h3,h4{margin-top:0}
     input,select,button,textarea{
       font-family:inherit;
       font-size:14px;
-      padding:10px;
-      border-radius:8px;
-      border:1px solid #d0d7de;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid #cfdeec;
       width:100%;
+      background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);
+      color:#13324c;
+      transition:border-color .18s ease, box-shadow .18s ease, transform .18s ease, background .18s ease;
     }
-    textarea{min-height:110px;resize:vertical}
+    input:hover,select:hover,textarea:hover{border-color:#9fc2e3;background:#ffffff}
+    input:focus,select:focus,textarea:focus{
+      outline:none;
+      border-color:#60a5fa;
+      box-shadow:0 0 0 4px rgba(96,165,250,.18), 0 12px 20px rgba(15,23,42,.06);
+      background:#ffffff;
+      transform:translateY(-1px);
+    }
+    textarea{min-height:110px;resize:vertical;line-height:1.8}
     button{
       border:none;
       cursor:pointer;
       width:auto;
       min-width:110px;
+      position:relative;
+      overflow:hidden;
+      font-weight:700;
+      letter-spacing:.2px;
+      transform:translateY(0);
+      transition:transform .14s ease, box-shadow .14s ease, filter .14s ease, background .2s ease;
+      box-shadow:0 4px 0 rgba(15,23,42,.18), 0 10px 18px rgba(15,23,42,.12);
     }
-    .btn{background:var(--blue);color:#fff}
-    .btn-green{background:var(--green);color:#fff}
-    .btn-red{background:var(--red);color:#fff}
-    .btn-orange{background:var(--orange);color:#fff}
-    .btn-gray{background:var(--gray);color:#fff}
-    .btn-purple{background:var(--purple);color:#fff}
-    .btn-teal{background:var(--teal);color:#fff}
-    .btn-link{
-      background:#eef2ff;
-      color:#1d4ed8;
+    button::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(180deg, rgba(255,255,255,.34), rgba(255,255,255,0) 55%);
+      pointer-events:none;
+    }
+    button:hover{transform:translateY(-2px);filter:brightness(1.03);box-shadow:0 6px 0 rgba(15,23,42,.18), 0 14px 24px rgba(15,23,42,.16)}
+    button:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(15,23,42,.18), 0 4px 8px rgba(15,23,42,.14)}
+    button:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(96,165,250,.22), 0 4px 0 rgba(15,23,42,.18), 0 10px 18px rgba(15,23,42,.12)}
+    .btn,.btn-green,.btn-red,.btn-orange,.btn-gray,.btn-purple,.btn-teal{
+      color:#fff;
+      border:1px solid rgba(255,255,255,.18);
+      text-shadow:0 1px 0 rgba(0,0,0,.18);
+    }
+    .btn{background:linear-gradient(180deg,#3b82f6 0%,#2563eb 52%,#1d4ed8 100%)}
+    .btn-green{background:linear-gradient(180deg,#22c55e 0%,#16a34a 52%,#15803d 100%)}
+    .btn-red{background:linear-gradient(180deg,#ef4444 0%,#dc2626 52%,#b91c1c 100%)}
+    .btn-orange{background:linear-gradient(180deg,#fb923c 0%,#ea580c 52%,#c2410c 100%)}
+    .btn-gray{background:linear-gradient(180deg,#94a3b8 0%,#64748b 52%,#475569 100%)}
+    .btn-purple{background:linear-gradient(180deg,#8b5cf6 0%,#7c3aed 52%,#6d28d9 100%)}
+    .btn-teal{background:linear-gradient(180deg,#14b8a6 0%,#0f766e 52%,#115e59 100%)}
+    .btn-link,
+    .btn-wa{
       min-width:auto;
-      padding:6px 10px;
-      border:1px solid #c7d2fe;
+      padding:8px 12px;
       text-decoration:none;
       display:inline-block;
+      border-radius:12px;
+      font-weight:700;
+      box-shadow:0 3px 0 rgba(15,23,42,.12), 0 8px 14px rgba(15,23,42,.08);
+      transition:transform .14s ease, box-shadow .14s ease, filter .14s ease;
+      position:relative;
+      overflow:hidden;
+    }
+    .btn-link{
+      background:linear-gradient(180deg,#f8faff 0%,#eef2ff 55%,#dbeafe 100%);
+      color:#1d4ed8;
+      border:1px solid #c7d2fe;
     }
     .btn-wa{
-      background:#dcfce7;
+      background:linear-gradient(180deg,#f0fdf4 0%,#dcfce7 55%,#bbf7d0 100%);
       color:#166534;
-      min-width:auto;
-      padding:6px 10px;
       border:1px solid #86efac;
-      text-decoration:none;
-      display:inline-block;
     }
+    .btn-link:hover,.btn-wa:hover{transform:translateY(-2px);filter:brightness(1.02);box-shadow:0 5px 0 rgba(15,23,42,.12), 0 12px 18px rgba(15,23,42,.11)}
+    .btn-link:active,.btn-wa:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(15,23,42,.12), 0 4px 8px rgba(15,23,42,.09)}
     .grid{display:grid;gap:12px}
     .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
     .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -119,25 +170,33 @@
     .small{font-size:12px;color:var(--muted)}
     .login-wrap{max-width:430px;margin:60px auto}
 
-    .brand-logo{height:48px;width:auto;object-fit:contain;display:block}
-    .brand-logo-lg{height:90px;width:auto;object-fit:contain;display:block;margin:0 auto 12px}
+    .brand-logo{height:52px;width:auto;object-fit:contain;display:block;position:relative;z-index:1;filter:drop-shadow(0 8px 16px rgba(0,0,0,.18))}
+    .brand-logo-lg{height:96px;width:auto;object-fit:contain;display:block;margin:0 auto 12px;filter:drop-shadow(0 10px 20px rgba(15,23,42,.18))}
     .header{
-      background:#ffffff;
-      color:var(--text);
-      padding:14px 20px;
+      background:linear-gradient(135deg,#0f2236 0%,#16324f 42%,#1f4f7a 100%);
+      color:#fff;
+      padding:16px 22px;
       font-size:22px;
       font-weight:bold;
       display:flex;
       align-items:center;
-      gap:14px;
-      border-bottom:1px solid var(--border);
-      box-shadow:0 1px 8px rgba(0,0,0,.05);
+      gap:16px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      box-shadow:0 12px 30px rgba(15,23,42,.22);
       position:sticky;
       top:0;
       z-index:100;
     }
-    .header-title{display:flex;flex-direction:column;gap:2px}
-    .header-title small{font-size:12px;color:var(--muted);font-weight:normal}
+    .header::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,0) 55%);
+      pointer-events:none;
+    }
+    .header-title{display:flex;flex-direction:column;gap:4px;position:relative;z-index:1}
+    .header-title span{letter-spacing:.2px}
+    .header-title small{font-size:12px;color:rgba(255,255,255,.78);font-weight:normal}
     .login-card{padding-top:24px}
     .login-logo-wrap{text-align:center;margin-bottom:12px}
     .print-brand{display:none;text-align:center;margin:0 0 14px 0}
@@ -152,73 +211,125 @@
       display:flex;
       justify-content:space-between;
       align-items:center;
-      gap:10px;
+      gap:12px;
       flex-wrap:wrap;
     }
-    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .section-title h2,.section-title h3,.section-title h4{color:#0f2236}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     .project-item{
       display:flex;
       justify-content:space-between;
       align-items:center;
-      gap:10px;
-      padding:12px;
-      border:1px solid var(--border);
-      border-radius:10px;
-      margin-top:10px;
+      gap:12px;
+      padding:16px;
+      border:1px solid #dbe7f3;
+      border-radius:18px;
+      margin-top:12px;
       flex-wrap:wrap;
+      background:linear-gradient(135deg,#ffffff 0%,#f7fbff 100%);
+      box-shadow:0 12px 28px rgba(15,23,42,.06);
     }
     .kpis{
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-      gap:12px;
-      margin-bottom:16px;
+      grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+      gap:14px;
+      margin-bottom:18px;
     }
     .kpi{
-      background:#fff;
-      padding:14px;
-      border-radius:12px;
-      box-shadow:var(--shadow);
+      background:linear-gradient(160deg,#ffffff 0%,#f2f8ff 100%);
+      padding:16px;
+      border-radius:20px;
+      box-shadow:0 16px 32px rgba(15,23,42,.08);
+      border:1px solid #dbe7f3;
+      position:relative;
+      overflow:hidden;
+    }
+    .kpi::after{
+      content:"";
+      position:absolute;
+      top:0;
+      inset-inline-start:0;
+      width:7px;
+      height:100%;
+      background:linear-gradient(180deg,#1f3b57 0%,#2563eb 55%,#60a5fa 100%);
+      opacity:.95;
     }
     .kpi-title{
-      color:#555;
+      color:#64748b;
       font-size:13px;
-      margin-bottom:6px;
+      margin-bottom:8px;
+      position:relative;
+      z-index:1;
     }
     .kpi-value{
-      font-size:21px;
-      font-weight:bold;
+      font-size:24px;
+      font-weight:800;
+      color:#0f172a;
+      line-height:1.5;
+      position:relative;
+      z-index:1;
     }
     .tabs{
       display:flex;
-      gap:8px;
+      gap:10px;
       flex-wrap:wrap;
-      margin-bottom:14px;
+      margin-bottom:16px;
+      padding:12px;
+      border-radius:22px;
+      background:linear-gradient(135deg,#0f2236 0%,#14304c 100%);
+      box-shadow:0 16px 32px rgba(15,23,42,.18);
+      border:1px solid rgba(255,255,255,.06);
     }
     .tab{
-      background:#e5e7eb;
-      color:#111;
-      padding:10px 12px;
-      border-radius:8px;
+      background:linear-gradient(180deg,#ffffff 0%,#eef4fb 55%,#dce8f5 100%);
+      color:#15314d;
+      padding:11px 15px;
+      border-radius:14px;
       min-width:auto;
+      border:1px solid #c9d9ea;
+      box-shadow:0 4px 0 rgba(148,163,184,.75), 0 12px 18px rgba(15,23,42,.12);
+      font-weight:800;
     }
     .tab.active{
-      background:var(--primary);
+      background:linear-gradient(180deg,#2c6fb1 0%,#1f4f7a 55%,#16324f 100%);
       color:#fff;
+      border-color:#15314d;
+      box-shadow:0 4px 0 #102538, 0 16px 24px rgba(15,23,42,.24);
     }
     table{
       width:100%;
-      border-collapse:collapse;
-      background:#fff;
+      border-collapse:separate;
+      border-spacing:0;
+      background:linear-gradient(180deg,#ffffff 0%,#fbfdff 100%);
       font-size:13px;
-      margin-top:12px;
+      margin-top:14px;
+      border:1px solid #dbe7f3;
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow:0 14px 30px rgba(15,23,42,.06);
     }
     th,td{
-      border:1px solid var(--border);
-      padding:8px;
+      border-bottom:1px solid #e6eef7;
+      padding:11px 10px;
       text-align:center;
       vertical-align:middle;
     }
-    th{background:#f8fafc}
+    th{
+      background:linear-gradient(180deg,#17324d 0%,#10283f 100%);
+      color:#fff;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.2px;
+      border-bottom:1px solid #284766;
+      position:sticky;
+      top:0;
+      z-index:1;
+    }
+    tbody tr{transition:background .16s ease, transform .16s ease, box-shadow .16s ease}
+    tbody tr:nth-child(even){background:#f8fbff}
+    tbody tr:hover{background:#eef6ff;box-shadow:inset 0 0 0 9999px rgba(59,130,246,.04)}
+    tbody tr:last-child td{border-bottom:none}
+    td{color:#1f2937}
     .badge{
       padding:4px 8px;
       border-radius:999px;
@@ -287,10 +398,20 @@
     .modal-content{
       max-width:1200px;
       margin:20px auto;
-      background:#fff;
-      border-radius:12px;
-      padding:18px;
-      box-shadow:var(--shadow);
+      background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);
+      border-radius:26px;
+      padding:22px;
+      box-shadow:0 28px 60px rgba(15,23,42,.18);
+      border:1px solid #dbe7f3;
+      position:relative;
+      overflow:hidden;
+    }
+    .modal-content::before{
+      content:"";
+      position:absolute;
+      inset:0 0 auto 0;
+      height:6px;
+      background:linear-gradient(90deg,#1f4f7a 0%,#2c6fb1 50%,#67a7e3 100%);
     }
     .report-box{
       background:#fff;
@@ -370,16 +491,22 @@
     .filter-bar{
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-      gap:10px;
-      margin:12px 0 16px;
+      gap:12px;
+      margin:14px 0 18px;
       align-items:end;
+      padding:14px;
+      border-radius:20px;
+      background:linear-gradient(135deg,#f8fbff 0%,#eef6ff 100%);
+      border:1px solid #dbe7f3;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.8);
     }
     .filter-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:end}
     .section-kicker{font-size:12px;color:var(--muted)}
     .mini-stat{
       display:inline-flex;align-items:center;gap:6px;
-      padding:6px 10px;border-radius:999px;border:1px solid var(--border);
-      background:#f8fafc;font-size:12px;font-weight:bold;color:#334155;
+      padding:8px 12px;border-radius:999px;border:1px solid #cfe0f1;
+      background:linear-gradient(180deg,#ffffff 0%,#eef6ff 100%);font-size:12px;font-weight:800;color:#21476a;
+      box-shadow:0 8px 16px rgba(15,23,42,.06);
     }
     .alert-list{margin-top:8px;display:grid;gap:8px}
     .alert-item{padding:10px 12px;border-radius:8px;line-height:1.8}
@@ -447,11 +574,11 @@
       margin-bottom:16px;
     }
     .dashboard-card{
-      background:linear-gradient(135deg,#ffffff 0%,#f8fbff 100%);
-      border:1px solid var(--border);
-      border-radius:14px;
-      padding:14px;
-      box-shadow:var(--shadow);
+      background:linear-gradient(160deg,#ffffff 0%,#f3f8ff 55%,#edf5ff 100%);
+      border:1px solid #dbe7f3;
+      border-radius:22px;
+      padding:16px;
+      box-shadow:0 18px 38px rgba(15,23,42,.08);
       position:relative;
       overflow:hidden;
     }
@@ -500,11 +627,11 @@
       margin:12px 0 18px;
     }
     .chart-card{
-      background:#fff;
-      border:1px solid var(--border);
-      border-radius:14px;
-      padding:14px;
-      box-shadow:var(--shadow);
+      background:linear-gradient(180deg,#ffffff 0%,#f7fbff 100%);
+      border:1px solid #dbe7f3;
+      border-radius:22px;
+      padding:16px;
+      box-shadow:0 18px 38px rgba(15,23,42,.08);
     }
     .chart-card h4{margin:0 0 10px 0}
     .chart-wrap{
@@ -833,12 +960,13 @@
     }
     .manager-alert-tab{
       min-width:auto;
-      padding:8px 12px;
+      padding:10px 14px;
       border-radius:999px;
-      background:#f8fafc;
-      border:1px solid var(--border);
-      color:#334155;
-      font-weight:bold;
+      background:linear-gradient(180deg,#ffffff 0%,#edf5ff 100%);
+      border:1px solid #cfe0f1;
+      color:#24486a;
+      font-weight:800;
+      box-shadow:0 6px 14px rgba(15,23,42,.06);
     }
     .manager-alert-tab.active{
       background:var(--primary);
@@ -867,12 +995,13 @@
     }
     .collection-subtab{
       min-width:auto;
-      padding:8px 14px;
+      padding:10px 16px;
       border-radius:999px;
-      border:1px solid var(--border);
-      background:#f8fafc;
-      color:#334155;
-      font-weight:bold;
+      border:1px solid #cfe0f1;
+      background:linear-gradient(180deg,#ffffff 0%,#edf5ff 100%);
+      color:#24486a;
+      font-weight:800;
+      box-shadow:0 6px 14px rgba(15,23,42,.06);
     }
     .collection-subtab.active{
       background:var(--primary);
@@ -880,7 +1009,13 @@
       border-color:var(--primary);
     }
 
-    @media print{
+    
+    @media (max-width:768px){
+      .tabs{padding:10px;border-radius:18px}
+      .tab{padding:10px 12px;font-size:13px}
+      .card,.kpi,.dashboard-card,.chart-card{border-radius:18px}
+    }
+@media print{
       .tabs,.no-print,.modal{display:none !important}
       .card,.kpi{box-shadow:none}
       body{background:#fff}
@@ -912,44 +1047,650 @@
 
 .alert-bell{
   position:fixed; top:14px; left:14px; z-index:9999;
-  background:#fff; border:1px solid #e5e7eb; border-radius:999px;
-  padding:10px 14px; box-shadow:0 4px 16px rgba(0,0,0,.12);
-  cursor:pointer; font-weight:bold; display:flex; align-items:center; gap:8px;
+  border:1px solid rgba(255,255,255,.45); border-radius:999px;
+  padding:11px 16px; cursor:pointer; font-weight:800; display:flex; align-items:center; gap:8px;
+  box-shadow:0 5px 0 rgba(15,23,42,.18), 0 14px 24px rgba(0,0,0,.16);
+  transform:translateY(0);
+  transition:transform .14s ease, box-shadow .14s ease, filter .14s ease;
 }
-.alert-bell.red{background:#fee2e2;color:#991b1b}
-.alert-bell.yellow{background:#fef3c7;color:#92400e}
-.alert-bell.green{background:#dcfce7;color:#166534}
+.alert-bell:hover{transform:translateY(-2px);filter:brightness(1.03);box-shadow:0 7px 0 rgba(15,23,42,.18), 0 18px 28px rgba(0,0,0,.18)}
+.alert-bell:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(15,23,42,.18), 0 6px 10px rgba(0,0,0,.14)}
+.alert-bell.red{background:linear-gradient(180deg,#fecaca 0%,#fee2e2 55%,#fca5a5 100%);color:#991b1b}
+.alert-bell.yellow{background:linear-gradient(180deg,#fde68a 0%,#fef3c7 55%,#fcd34d 100%);color:#92400e}
+.alert-bell.green{background:linear-gradient(180deg,#bbf7d0 0%,#dcfce7 55%,#86efac 100%);color:#166534}
+
 
 .alert-center-overlay{
-  position:fixed; inset:0; background:rgba(15,23,42,.45);
-  z-index:10000; display:none; padding:18px; overflow:auto;
+  position:fixed;
+  inset:0;
+  background:rgba(2,14,34,.58);
+  backdrop-filter:blur(4px);
+  z-index:10000;
+  display:none;
+  padding:20px;
+  overflow:auto;
 }
 .alert-center-overlay.open{display:block}
 .alert-center-card{
-  max-width:1100px; margin:18px auto; background:#fff;
-  border-radius:20px; padding:18px; box-shadow:0 20px 50px rgba(0,0,0,.18);
+  max-width:1180px;
+  margin:12px auto;
+  background:linear-gradient(180deg,#f8fbff 0%,#edf3fa 100%);
+  border-radius:28px;
+  padding:0;
+  box-shadow:0 28px 70px rgba(2,14,34,.28);
+  border:1px solid rgba(148,163,184,.28);
+  overflow:hidden;
 }
 .alert-center-head{
-  display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
-  margin-bottom:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  flex-wrap:wrap;
+  padding:24px 28px 20px;
+  background:linear-gradient(135deg,#02162f 0%,#08284f 58%,#103b70 100%);
+  color:#fff;
 }
-.alert-center-title{font-size:24px; font-weight:800}
-.alert-center-sub{font-size:12px; color:#6b7280}
-.alert-center-toolbar{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
-.alert-center-sections{display:grid; gap:14px; margin-top:12px}
+.alert-center-head-main{display:flex;flex-direction:column;gap:6px}
+.alert-center-eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  width:max-content;
+  padding:8px 14px;
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.14);
+  color:#dbeafe;
+  font-size:12px;
+  font-weight:700;
+}
+.alert-center-title{
+  font-size:36px;
+  font-weight:900;
+  line-height:1.15;
+  margin:0;
+}
+.alert-center-sub{
+  font-size:14px;
+  color:#d6e4f5;
+  margin:0;
+}
+.alert-center-toolbar{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+.alert-center-close{
+  min-width:auto;
+  padding:10px 16px;
+  border-radius:14px;
+}
+.alert-center-shell{
+  padding:22px;
+}
+.alert-center-topstats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:14px;
+  margin-bottom:18px;
+}
+.alert-center-stat{
+  background:#fff;
+  border:1px solid #d7e3f0;
+  border-radius:22px;
+  padding:16px 18px;
+  box-shadow:0 10px 30px rgba(15,23,42,.08);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.alert-center-stat-label{
+  font-size:13px;
+  color:#64748b;
+  margin-bottom:6px;
+  font-weight:700;
+}
+.alert-center-stat-value{
+  font-size:18px;
+  font-weight:900;
+  color:#0f172a;
+}
+.alert-center-stat-icon{
+  width:54px;
+  height:54px;
+  border-radius:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+  font-weight:900;
+  flex:0 0 auto;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.65),0 8px 18px rgba(15,23,42,.08);
+}
+.alert-center-stat.all .alert-center-stat-icon{background:linear-gradient(180deg,#dbeafe 0%,#93c5fd 100%);color:#1d4ed8}
+.alert-center-stat.payment .alert-center-stat-icon{background:linear-gradient(180deg,#ffedd5 0%,#fdba74 100%);color:#c2410c}
+.alert-center-stat.admin .alert-center-stat-icon{background:linear-gradient(180deg,#dbeafe 0%,#a5b4fc 100%);color:#3730a3}
+.alert-center-stat.issue .alert-center-stat-icon{background:linear-gradient(180deg,#fee2e2 0%,#fca5a5 100%);color:#b91c1c}
+
+.alert-center-sections{display:grid;gap:14px}
 .alert-center-section{
-  border:1px solid #e5e7eb; border-radius:16px; padding:14px; background:#f8fafc;
+  border:1px solid #d7e3f0;
+  border-radius:26px;
+  padding:16px;
+  background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);
+  box-shadow:0 16px 38px rgba(15,23,42,.08);
 }
-.alert-center-section h3{margin:0 0 10px 0}
+.alert-center-section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:14px;
+}
+.alert-center-section-title{
+  font-size:28px;
+  font-weight:900;
+  color:#0f172a;
+  margin:0;
+}
+.alert-center-section-sub{
+  font-size:13px;
+  color:#64748b;
+  margin:0;
+}
+.alert-center-filter-tabs{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;
+  margin:0 0 18px 0;
+}
+.alert-center-filter-tab{
+  min-width:auto;
+  width:100%;
+  border-radius:20px;
+  padding:16px 18px;
+  border:1px solid #d5dee8;
+  background:linear-gradient(180deg,#ffffff 0%,#f1f5f9 100%);
+  box-shadow:0 6px 0 rgba(203,213,225,.95), 0 14px 24px rgba(15,23,42,.08);
+  color:#334155;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.alert-center-filter-tab .icon{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#eef2ff;
+  color:#1e3a8a;
+  font-size:18px;
+  flex:0 0 auto;
+}
+.alert-center-filter-tab .text{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:4px;
+  text-align:right;
+}
+.alert-center-filter-tab .label{
+  font-size:14px;
+  font-weight:800;
+}
+.alert-center-filter-tab .count{
+  font-size:15px;
+  font-weight:900;
+}
+.alert-center-filter-tab.active{
+  background:linear-gradient(180deg,#123867 0%,#0a2342 58%,#08182d 100%);
+  color:#fff;
+  border-color:#0b2446;
+  box-shadow:0 6px 0 #081425, 0 18px 28px rgba(2,14,34,.28);
+}
+.alert-center-filter-tab.active .icon{
+  background:rgba(59,130,246,.18);
+  color:#93c5fd;
+}
+.alert-center-filter-tab.payment .icon{background:#fff7ed;color:#ea580c}
+.alert-center-filter-tab.admin .icon{background:#eef2ff;color:#4f46e5}
+.alert-center-filter-tab.issue .icon{background:#fef2f2;color:#dc2626}
+.alert-center-filter-tab.active.payment .icon,
+.alert-center-filter-tab.active.admin .icon,
+.alert-center-filter-tab.active.issue .icon{background:rgba(255,255,255,.12);color:#fff}
 .alert-center-empty{
-  background:#ecfdf5; border:1px solid #86efac; border-radius:10px; padding:12px;
+  background:linear-gradient(180deg,#f8fafc 0%,#eef2ff 100%);
+  border:1px solid #cbd5e1;
+  border-radius:18px;
+  padding:20px;
+  text-align:center;
+  color:#475569;
+  font-weight:700;
+}
+.alert-center-list{
+  display:grid;
+  gap:14px;
+}
+.alert-center-item{
+  position:relative;
+  border-radius:22px;
+  padding:18px 22px;
+  background:linear-gradient(180deg,#fff7f7 0%,#fff1f1 100%);
+  border:1px solid #f6b7b7;
+  box-shadow:0 12px 26px rgba(239,68,68,.08);
+  cursor:pointer;
+  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.alert-center-item:hover{
+  transform:translateY(-2px);
+  box-shadow:0 18px 34px rgba(15,23,42,.10);
+}
+.alert-center-item::before{
+  content:"";
+  position:absolute;
+  inset-inline-start:0;
+  top:0;
+  width:6px;
+  height:100%;
+  border-radius:22px 0 0 22px;
+  background:linear-gradient(180deg,#ef4444 0%,#f97316 100%);
+}
+.alert-center-item.issue{
+  background:linear-gradient(180deg,#fff5f5 0%,#feecec 100%);
+  border-color:#f7a8a8;
+}
+.alert-center-item.warn{
+  background:linear-gradient(180deg,#fff7f1 0%,#fff1e6 100%);
+  border-color:#fdc6a5;
+}
+.alert-center-item-grid{
+  display:grid;
+  grid-template-columns:150px 1fr 78px;
+  gap:16px;
+  align-items:center;
+}
+.alert-center-side{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  color:#334155;
+}
+.alert-center-side-line{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:15px;
+}
+.alert-center-side-line .mini{
+  width:22px;
+  text-align:center;
+  color:#475569;
+}
+.alert-center-main{
+  min-width:0;
+}
+.alert-center-project{
+  font-size:17px;
+  font-weight:900;
+  color:#0f172a;
+  margin-bottom:8px;
+}
+.alert-center-label{
+  font-size:15px;
+  line-height:1.9;
+  color:#334155;
+}
+.alert-center-badgeicon{
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  font-weight:900;
+  background:linear-gradient(180deg,#fee2e2 0%,#fecaca 100%);
+  color:#dc2626;
+  border:1px solid #fca5a5;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 12px 22px rgba(239,68,68,.12);
+}
+.alert-center-item.warn .alert-center-badgeicon{
+  background:linear-gradient(180deg,#ffedd5 0%,#fed7aa 100%);
+  color:#ea580c;
+  border-color:#fdba74;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 12px 22px rgba(249,115,22,.12);
+}
+.alert-center-item-meta{
+  font-size:12px;
+  color:#64748b;
+  margin-top:8px;
 }
 .alert-center-cloned .alert-item{cursor:pointer}
 
+@media (max-width:900px){
+  .alert-center-head{padding:18px}
+  .alert-center-title{font-size:28px}
+  .alert-center-shell{padding:14px}
+  .alert-center-filter-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .alert-center-item-grid{grid-template-columns:1fr}
+  .alert-center-badgeicon{order:-1}
+}
+@media (max-width:560px){
+  .alert-center-filter-tabs{grid-template-columns:1fr}
+  .alert-center-topstats{grid-template-columns:1fr}
+}
 
-.alert-center-item-meta{font-size:12px;color:#6b7280;margin-top:4px}
-.alert-center-item{transition:all .18s ease}
-.alert-center-item:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,0,0,.08)}
+
+
+
+
+/* ===== Premium Metrics Panels ===== */
+.metrics-panel{
+  padding:0;
+  overflow:hidden;
+  border-radius:28px;
+  border:1px solid #d7e5f3;
+  box-shadow:0 24px 48px rgba(15,23,42,.10);
+  background:linear-gradient(180deg,#ffffff 0%,#f6faff 100%);
+}
+.metrics-panel::before{
+  height:5px;
+  background:linear-gradient(90deg,#12304d 0%,#2563eb 48%,#7dd3fc 100%);
+}
+.metrics-panel-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  flex-wrap:wrap;
+  padding:22px 24px 16px;
+  background:linear-gradient(135deg,#f8fbff 0%,#eef5ff 48%,#f9fcff 100%);
+  border-bottom:1px solid #dce9f5;
+}
+.metrics-panel-head h3{
+  margin:0;
+  font-size:26px;
+  font-weight:900;
+  color:#0f2236;
+}
+.metrics-panel-sub{
+  margin-top:8px;
+  color:#64748b;
+  font-size:13px;
+  line-height:1.9;
+}
+.metrics-panel-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.metrics-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 14px;
+  border-radius:999px;
+  background:linear-gradient(180deg,#ffffff 0%,#eef6ff 100%);
+  border:1px solid #cfe0f1;
+  color:#21476a;
+  font-size:13px;
+  font-weight:900;
+  box-shadow:0 10px 18px rgba(15,23,42,.06);
+}
+.metrics-toggle{
+  min-width:auto;
+  padding:11px 16px;
+  border-radius:16px;
+}
+.metrics-panel-body{
+  padding:18px 20px 20px;
+}
+.metrics-panel-body.hidden{display:none !important;}
+.metrics-hero-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:14px;
+  margin-bottom:16px;
+}
+.metrics-hero-card{
+  position:relative;
+  overflow:hidden;
+  border-radius:24px;
+  padding:18px 18px 16px;
+  background:linear-gradient(135deg,#12304d 0%,#1d4f7a 52%,#2563eb 100%);
+  color:#fff;
+  box-shadow:0 20px 34px rgba(29,78,216,.20);
+}
+.metrics-hero-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,0) 58%);
+  pointer-events:none;
+}
+.metrics-hero-card.secondary{background:linear-gradient(135deg,#0f766e 0%,#14b8a6 55%,#5eead4 100%);box-shadow:0 20px 34px rgba(13,148,136,.18)}
+.metrics-hero-card.warn{background:linear-gradient(135deg,#9a3412 0%,#ea580c 55%,#fb923c 100%);box-shadow:0 20px 34px rgba(234,88,12,.18)}
+.metrics-hero-label{position:relative;z-index:1;font-size:13px;color:rgba(255,255,255,.88);margin-bottom:8px;font-weight:700}
+.metrics-hero-value{position:relative;z-index:1;font-size:28px;font-weight:900;line-height:1.35}
+.metrics-hero-sub{position:relative;z-index:1;font-size:12px;color:rgba(255,255,255,.88);margin-top:8px;line-height:1.8}
+.kpis.kpis-premium{
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:16px;
+  margin-bottom:0;
+}
+.kpis-premium .kpi{
+  border-radius:22px;
+  padding:18px 16px;
+  min-height:126px;
+  box-shadow:0 18px 30px rgba(15,23,42,.08);
+  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.kpis-premium .kpi:hover{
+  transform:translateY(-3px);
+  box-shadow:0 24px 36px rgba(15,23,42,.12);
+  border-color:#bfd7ef;
+}
+.kpis-premium .kpi::after{width:8px;}
+.kpis-premium .kpi-title{font-size:12px;font-weight:800;color:#64748b;line-height:1.8;}
+.kpis-premium .kpi-value{font-size:25px;margin-top:6px;}
+@media (max-width:768px){
+  .metrics-panel-head{padding:18px 16px 14px}
+  .metrics-panel-body{padding:14px}
+  .metrics-panel-head h3{font-size:22px}
+  .metrics-hero-grid{grid-template-columns:1fr}
+  .kpis.kpis-premium{grid-template-columns:1fr}
+}
+
+/* ===== Sidebar Layout ===== */
+.app-shell{
+  display:flex;
+  flex-direction:row;
+  align-items:flex-start;
+  gap:18px;
+  margin-top:10px;
+}
+.app-content{
+  flex:1;
+  min-width:0;
+}
+.app-sidebar{
+  width:260px;
+  position:sticky;
+  top:92px;
+  background:linear-gradient(180deg,#1b3654 0%,#24496f 45%,#1f4266 100%);
+  border:1px solid rgba(96,165,250,.14);
+  border-radius:28px;
+  box-shadow:0 24px 44px rgba(2,14,34,.28);
+  overflow:hidden;
+}
+.sidebar-profile{
+  padding:20px 18px 16px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  color:#fff;
+  background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,0));
+}
+.sidebar-profile-text{
+  min-width:0;
+}
+.sidebar-profile-name{
+  font-size:24px;
+  font-weight:900;
+  line-height:1.2;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.sidebar-profile-role{
+  font-size:13px;
+  color:#dbeafe;
+  margin-top:6px;
+  font-weight:700;
+}
+.sidebar-profile-avatar{
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  border:2px solid rgba(147,197,253,.55);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  box-shadow:0 0 0 6px rgba(255,255,255,.04);
+  position:relative;
+  flex:0 0 auto;
+}
+.sidebar-profile-avatar::after{
+  content:"";
+  position:absolute;
+  inset:auto 2px 2px auto;
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:#22c55e;
+  border:2px solid #071a31;
+}
+.sidebar-nav{
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.sidebar-link{
+  width:100%;
+  min-width:0;
+  border-radius:18px;
+  padding:14px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.04) 0%,rgba(255,255,255,.02) 100%);
+  border:1px solid rgba(255,255,255,.06);
+  box-shadow:none;
+  color:#f8fafc;
+}
+.sidebar-link .label{
+  font-size:15px;
+  font-weight:900;
+}
+.sidebar-link .icon{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  background:rgba(255,255,255,.06);
+  color:#fff;
+  flex:0 0 auto;
+}
+.sidebar-link.active{
+  background:linear-gradient(180deg,#3b82f6 0%,#2563eb 55%,#1d4ed8 100%);
+  border-color:rgba(147,197,253,.35);
+  box-shadow:0 6px 0 rgba(30,64,175,.9), 0 18px 30px rgba(37,99,235,.28);
+}
+.sidebar-link.active .icon{
+  background:rgba(255,255,255,.14);
+}
+.sidebar-link.danger-link{
+  margin-top:10px;
+  background:linear-gradient(180deg,#ef4444 0%,#dc2626 55%,#b91c1c 100%);
+  border-color:rgba(255,255,255,.08);
+  box-shadow:0 6px 0 rgba(127,29,29,.9), 0 18px 30px rgba(220,38,38,.24);
+}
+.sidebar-link.danger-link .icon{
+  background:rgba(255,255,255,.12);
+}
+.sidebar-quick-note{
+  padding:0 18px 18px;
+  color:#cbd5e1;
+  font-size:12px;
+  line-height:1.8;
+}
+.header.compact-with-sidebar{
+  border-radius:0 0 24px 24px;
+}
+.tabs.no-print{
+  position:sticky;
+  top:86px;
+  z-index:20;
+}
+@media (max-width:1100px){
+  .app-sidebar{width:220px}
+  .sidebar-profile-name{font-size:20px}
+}
+@media (max-width:860px){
+  .app-shell{
+    gap:10px;
+  }
+  .app-sidebar{
+    width:172px;
+    border-radius:22px;
+    top:78px;
+  }
+  .sidebar-profile{
+    padding:14px 12px;
+    flex-direction:column-reverse;
+    text-align:center;
+  }
+  .sidebar-profile-name{
+    font-size:18px;
+    white-space:normal;
+  }
+  .sidebar-profile-role{
+    font-size:11px;
+  }
+  .sidebar-profile-avatar{
+    width:54px;
+    height:54px;
+    font-size:22px;
+  }
+  .sidebar-link{
+    padding:12px;
+    border-radius:16px;
+  }
+  .sidebar-link .label{
+    font-size:13px;
+  }
+  .sidebar-link .icon{
+    width:36px;
+    height:36px;
+    font-size:18px;
+  }
+}
 
 </style>
 </head>
@@ -960,19 +1701,20 @@
 <div id="alertCenterOverlay" class="alert-center-overlay" onclick="if(event.target===this) closeAlertCenterSafe()">
   <div class="alert-center-card">
     <div class="alert-center-head">
-      <div>
-        <div class="alert-center-title">🚨 مركز التنبيهات</div>
-        <div class="alert-center-sub">اضغط على أي تنبيه للانتقال مباشرة إلى مكانه</div>
+      <div class="alert-center-head-main">
+        <div class="alert-center-eyebrow">🔔 مركز التنبيهات</div>
+        <div class="alert-center-title">تنبيهات الصفحة الرئيسية</div>
+        <div class="alert-center-sub">اضغط على أي تنبيه للانتقال مباشرة إلى مكانه داخل النظام</div>
       </div>
       <div class="alert-center-toolbar">
-        <button class="btn-gray" onclick="closeAlertCenterSafe()">إغلاق</button>
+        <button class="btn-gray alert-center-close" onclick="closeAlertCenterSafe()">إغلاق</button>
       </div>
     </div>
     <div id="alertCenterContentSafe"></div>
   </div>
 </div>
 
-  <div class="header">
+  <div class="header compact-with-sidebar">
     <img class="brand-logo" id="headerLogo" alt="شعار النظام" />
     <div class="header-title">
       <span>نظام أنس - النسخة المطورة</span>
@@ -997,6 +1739,73 @@
     </div>
 
     <div id="appView" class="hidden">
+      <div class="app-shell">
+        <aside class="app-sidebar">
+          <div class="sidebar-profile">
+            <div class="sidebar-profile-text">
+              <div id="sidebarUserName" class="sidebar-profile-name">أبو أنس</div>
+              <div id="sidebarUserRole" class="sidebar-profile-role">المدير العام</div>
+            </div>
+            <div class="sidebar-profile-avatar">👤</div>
+          </div>
+
+          <div class="sidebar-nav">
+            <button type="button" class="sidebar-link active" data-section="home" onclick="handleSidebarNav('home', this)">
+              <span class="label">الرئيسية</span>
+              <span class="icon">⌂</span>
+            </button>
+            <button type="button" class="sidebar-link" data-section="projects" onclick="handleSidebarNav('projects', this)">
+              <span class="label">المشاريع</span>
+              <span class="icon">🏢</span>
+            </button>
+            <button type="button" class="sidebar-link" data-section="units" onclick="handleSidebarNav('units', this)">
+              <span class="label">الوحدات</span>
+              <span class="icon">🔑</span>
+            </button>
+            <button type="button" class="sidebar-link" data-section="marketers" onclick="handleSidebarNav('marketers', this)">
+              <span class="label">المسوقين</span>
+              <span class="icon">👥</span>
+            </button>
+            <button type="button" class="sidebar-link" data-section="expenses" onclick="handleSidebarNav('expenses', this)">
+              <span class="label">المصروفات</span>
+              <span class="icon">🧾</span>
+            </button>
+            <button type="button" class="sidebar-link" data-section="partners" onclick="handleSidebarNav('partners', this)">
+              <span class="label">الشركاء</span>
+              <span class="icon">🤝</span>
+            </button>
+            <button type="button" class="sidebar-link" data-section="investors" onclick="handleSidebarNav('investors', this)">
+              <span class="label">المساهمين</span>
+              <span class="icon">👥</span>
+            </button>
+            <button type="button" class="sidebar-link" data-section="collection" onclick="handleSidebarNav('collection', this)">
+              <span class="label">التحصيل</span>
+              <span class="icon">💼</span>
+            </button>
+            <button type="button" class="sidebar-link" data-section="paymentAlerts" onclick="handleSidebarNav('paymentAlerts', this)">
+              <span class="label">تنبيه الدفعات</span>
+              <span class="icon">🔔</span>
+            </button>
+            <button type="button" class="sidebar-link" data-section="reports" onclick="handleSidebarNav('reports', this)">
+              <span class="label">التقارير</span>
+              <span class="icon">📊</span>
+            </button>
+            <button type="button" class="sidebar-link" data-section="backups" onclick="handleSidebarNav('backups', this)">
+              <span class="label">النسخ الاحتياطي</span>
+              <span class="icon">☁️</span>
+            </button>
+            <button type="button" class="sidebar-link" data-section="settings" onclick="handleSidebarNav('settings', this)">
+              <span class="label">الإعدادات</span>
+              <span class="icon">⚙️</span>
+            </button>
+            <button type="button" class="sidebar-link danger-link" data-section="logout" onclick="handleSidebarNav('logout', this)">
+              <span class="label">تسجيل الخروج</span>
+              <span class="icon">⇥</span>
+            </button>
+          </div>
+          <div class="sidebar-quick-note">القائمة الجانبية مرتبطة مباشرة بنفس أقسام النظام الحالية، بدون تغيير في البيانات أو المنطق.</div>
+        </aside>
+        <div class="app-content">
       <datalist id="partnerMasterNames"></datalist>
       <datalist id="investorMasterNames"></datalist>
       <datalist id="marketerMasterNames"></datalist>
@@ -1018,17 +1827,19 @@
           </div>
         </div>
 
-        <div id="mainDashboardCard" class="card" style="box-shadow:none;border:1px solid #e5e7eb">
-          <div class="section-title">
+        <div id="mainDashboardCard" class="card metrics-panel" style="box-shadow:none;border:1px solid #e5e7eb">
+          <div class="metrics-panel-head">
             <div>
               <h3>الإجمالي العام لكل المشاريع</h3>
-              <div class="section-kicker">لوحة متابعة عامة من الصفحة الرئيسية فقط</div>
+              <div class="metrics-panel-sub">لوحة متابعة أشيك وأكثر ترتيبًا، ويمكن طيها عند الحاجة لتخفيف الصفحة الرئيسية.</div>
             </div>
-            <div class="actions">
-              <span class="mini-stat" id="mainDashboardProjectsCount">0 مشروع</span>
+            <div class="metrics-panel-actions">
+              <span class="metrics-pill" id="mainDashboardProjectsCount">0 مشروع</span>
+              <button type="button" id="mainDashboardToggle" class="btn-gray metrics-toggle" onclick="toggleMetricsPanel('mainDashboardBody','mainDashboardToggle','إخفاء الملخص','إظهار الملخص')">إخفاء الملخص</button>
             </div>
           </div>
-          <div id="mainDashboardGrid" class="home-dashboard-grid"></div>
+          <div id="mainDashboardBody" class="metrics-panel-body">
+            <div id="mainDashboardGrid" class="home-dashboard-grid metrics-hero-grid"></div>
           <div id="mainManagerAlerts" class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:12px">
             <div class="dashboard-collapsible-head" onclick="toggleMainManagerAlerts()">
               <div>
@@ -1047,6 +1858,7 @@
             </div>
           </div>
           <div class="home-dashboard-note" id="mainDashboardNote">يتم التحديث تلقائيًا حسب البيانات الحالية.</div>
+          </div>
         </div>
 
         
@@ -1237,7 +2049,19 @@
           </div>
         </div>
 
-        <div class="kpis">
+        <div class="card metrics-panel workspace-metrics-panel" style="margin-bottom:18px">
+          <div class="metrics-panel-head">
+            <div>
+              <h3>مؤشرات المشروع المالية</h3>
+              <div class="metrics-panel-sub">إجمالي المبيعات وإجمالي السعي والتكلفة والربح بشكل منظم وأشيك، مع إمكانية طي القسم وقت الحاجة.</div>
+            </div>
+            <div class="metrics-panel-actions">
+              <span class="metrics-pill">ملخص ذكي للمشروع</span>
+              <button type="button" id="projectMetricsToggle" class="btn-gray metrics-toggle" onclick="toggleMetricsPanel('projectMetricsBody','projectMetricsToggle','إخفاء المؤشرات','إظهار المؤشرات')">إخفاء المؤشرات</button>
+            </div>
+          </div>
+          <div id="projectMetricsBody" class="metrics-panel-body">
+            <div class="kpis kpis-premium">
           <div class="kpi"><div class="kpi-title">إجمالي المبيعات</div><div class="kpi-value" id="kpiSales">0</div></div>
           <div class="kpi"><div class="kpi-title">إجمالي السعي المستحق</div><div class="kpi-value" id="kpiCommissionDue">0</div></div>
           <div class="kpi"><div class="kpi-title">صافي المبيعات بعد خصم السعي</div><div class="kpi-value" id="kpiNetSales">0</div></div>
@@ -1262,6 +2086,8 @@
           <div class="kpi"><div class="kpi-title">الوحدات المباعة</div><div class="kpi-value" id="kpiSold">0</div></div>
           <div class="kpi"><div class="kpi-title">الوحدات المحجوزة</div><div class="kpi-value" id="kpiBooked">0</div></div>
           <div class="kpi"><div class="kpi-title">الوحدات المتاحة</div><div class="kpi-value" id="kpiAvailable">0</div></div>
+            </div>
+          </div>
         </div>
 
         <div id="alertsBox"></div>
@@ -2103,6 +2929,8 @@
     </div>
   </div>
 
+    </div>
+  </div>
 
   <div id="cloudModal" class="modal hidden">
     <div class="modal-content cloud-modal-content">
@@ -2353,11 +3181,141 @@
 
     function updateCurrentUserBadge(){
       const box = document.getElementById("currentUserBadge");
-      if(!box) return;
       const u = getCurrentUser();
       const name = u.username || "غير مسجل";
       const role = roleLabel(u.role || "");
-      box.innerHTML = `<span class="cloud-dot online"></span><span>${name}${role ? " - " + role : ""}</span>`;
+      if(box){
+        box.innerHTML = `<span class="cloud-dot online"></span><span>${name}${role ? " - " + role : ""}</span>`;
+      }
+      updateSidebarProfile();
+    }
+
+    function updateSidebarProfile(){
+      const u = getCurrentUser();
+      const nameEl = document.getElementById("sidebarUserName");
+      const roleEl = document.getElementById("sidebarUserRole");
+      if(nameEl) nameEl.textContent = u.username || "أبو أنس";
+      if(roleEl) roleEl.textContent = roleLabel(u.role || "manager") || "المدير العام";
+    }
+
+    function detectCurrentSidebarSection(){
+      const projectsView = document.getElementById("projectsView");
+      const workspaceView = document.getElementById("workspaceView");
+
+      if(projectsView && !projectsView.classList.contains("hidden")) return "home";
+      if(workspaceView && !workspaceView.classList.contains("hidden")){
+        const visibleTab = Array.from(document.querySelectorAll(".tab-panel")).find(x => !x.classList.contains("hidden"));
+        const map = {
+          unitsTab: "units",
+          marketersTab: "marketers",
+          expensesTab: "expenses",
+          partnersTab: "partners",
+          investorsTab: "investors",
+          collectionTab: "collection",
+          paymentAlertsTab: "paymentAlerts",
+          reportTab: "reports"
+        };
+        return map[visibleTab?.id] || "units";
+      }
+      return "home";
+    }
+
+    function updateSidebarActive(section){
+      const target = section || detectCurrentSidebarSection();
+      document.querySelectorAll(".sidebar-link").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.section === target);
+      });
+    }
+
+    function getSidebarProjectId(){
+      if(currentProjectId){
+        const found = (appData.projects || []).find(p => String(p.id) === String(currentProjectId));
+        if(found) return String(found.id);
+      }
+      if(lastOpenedProjectId){
+        const found = (appData.projects || []).find(p => String(p.id) === String(lastOpenedProjectId));
+        if(found) return String(found.id);
+      }
+      const first = (appData.projects || [])[0];
+      return first ? String(first.id) : null;
+    }
+
+    function openProjectFromSidebar(targetTabId, sectionKey){
+      const pid = getSidebarProjectId();
+      if(!pid){
+        alert("لا يوجد مشروع متاح. أنشئ مشروعًا أو افتح مشروعًا أولاً.");
+        return;
+      }
+      openProject(pid, true);
+      setTimeout(() => {
+        if(targetTabId){
+          const tabButton = document.querySelector(`.tab[onclick*="${targetTabId}"]`);
+          if(tabButton) showTab(targetTabId, tabButton);
+        }
+        updateSidebarActive(sectionKey);
+      }, 30);
+    }
+
+    function openSettingsFromSidebar(){
+      const projectsView = document.getElementById("projectsView");
+      if(projectsView && projectsView.classList.contains("hidden")) backToProjects();
+      setTimeout(() => {
+        const wrap = document.getElementById("homeSettingsContent");
+        const chevron = document.getElementById("homeSettingsChevron");
+        if(wrap && wrap.classList.contains("hidden")){
+          wrap.classList.remove("hidden");
+        }
+        if(chevron) chevron.classList.add("open");
+        document.querySelector(".home-settings-card")?.scrollIntoView({behavior:"smooth", block:"start"});
+        updateSidebarActive("settings");
+      }, 40);
+    }
+
+    function handleSidebarNav(section){
+      if(section === "logout"){
+        logout();
+        return;
+      }
+      if(section === "home"){
+        backToProjects();
+        setTimeout(() => {
+          window.scrollTo({top:0, behavior:"smooth"});
+          updateSidebarActive("home");
+        }, 40);
+        return;
+      }
+      if(section === "projects"){
+        backToProjects();
+        setTimeout(() => {
+          document.getElementById("projectsList")?.scrollIntoView({behavior:"smooth", block:"start"});
+          updateSidebarActive("projects");
+        }, 40);
+        return;
+      }
+      if(section === "backups"){
+        backToProjects();
+        setTimeout(() => {
+          openBackupsModal();
+          updateSidebarActive("backups");
+        }, 40);
+        return;
+      }
+      if(section === "settings"){
+        openSettingsFromSidebar();
+        return;
+      }
+
+      const tabMap = {
+        units: "unitsTab",
+        marketers: "marketersTab",
+        expenses: "expensesTab",
+        partners: "partnersTab",
+        investors: "investorsTab",
+        collection: "collectionTab",
+        paymentAlerts: "paymentAlertsTab",
+        reports: "reportTab"
+      };
+      openProjectFromSidebar(tabMap[section], section);
     }
 
     function canAccess(action){
@@ -2645,6 +3603,7 @@
 
     let appData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"projects":[],"masterLists":{"partners":[],"marketers":[],"investors":[],"banks":[]}}');
     let currentProjectId = null;
+    let lastOpenedProjectId = null;
     let bookingUnitIndex = null;
 
     let cloudConfig = loadCloudSettings();
@@ -3755,6 +4714,8 @@ let globalSettingsState = {
       updateBiometricUI();
       registerHardwareBackHandler();
       await pullCloudData();
+      updateSidebarProfile();
+      updateSidebarActive();
       const remembered = getRememberedUser();
       if(sessionStorage.getItem("anasLoggedExcelPdf") === "1" || (remembered && remembered.username)){
         if(remembered && remembered.username && sessionStorage.getItem("anasLoggedExcelPdf") !== "1"){
@@ -4120,6 +5081,28 @@ let globalSettingsState = {
       toggleMainManagerAlerts(mainManagerAlertsExpanded || shouldOpen);
     }
 
+    function toggleMetricsPanel(bodyId, buttonId, hideText = "إخفاء", showText = "إظهار"){
+      const body = document.getElementById(bodyId);
+      const btn = document.getElementById(buttonId);
+      if(!body || !btn) return;
+      const isHidden = body.classList.toggle("hidden");
+      btn.textContent = isHidden ? showText : hideText;
+      btn.classList.toggle("open", !isHidden);
+      try{ localStorage.setItem(`metrics:${bodyId}`, isHidden ? "hidden" : "shown"); }catch(e){}
+    }
+
+    function restoreMetricsPanel(bodyId, buttonId, hideText = "إخفاء", showText = "إظهار"){
+      const body = document.getElementById(bodyId);
+      const btn = document.getElementById(buttonId);
+      if(!body || !btn) return;
+      let state = null;
+      try{ state = localStorage.getItem(`metrics:${bodyId}`); }catch(e){}
+      const isHidden = state === "hidden";
+      body.classList.toggle("hidden", isHidden);
+      btn.textContent = isHidden ? showText : hideText;
+      btn.classList.toggle("open", !isHidden);
+    }
+
     function renderMainDashboard(){
       const container = document.getElementById("mainDashboardGrid");
       const note = document.getElementById("mainDashboardNote");
@@ -4133,18 +5116,18 @@ let globalSettingsState = {
         return sum + Math.max(0, num(d.companyRemain)) + Math.max(0, num(d.abuFarisRemain));
       }, 0);
       const cards = [
-        ["عدد المشاريع", String(agg.projectsCount), "النشطة والمؤرشفة معًا"],
-        ["إجمالي المبيعات", money(agg.totalSales), "لكل المشاريع الحالية"],
-        ["إجمالي الربح", money(agg.totalProfit), "بعد خصم التكلفة والسعي"],
-        ["صافي الشركة", money(agg.totalCompanyFinal), "النتيجة النهائية للشركة"],
-        ["مستحقات الإدارة المتبقية", money(adminRemain), "الشركة + الغامدي"],
-        ["متبقي السعي", money(agg.totalCommissionRemain), `مستحق ${money(agg.totalCommissionDue)} | مصروف ${money(agg.totalCommissionPaid)}`]
+        ["عدد المشاريع", String(agg.projectsCount), "النشطة والمؤرشفة معًا", ""],
+        ["إجمالي المبيعات", money(agg.totalSales), "لكل المشاريع الحالية", "secondary"],
+        ["إجمالي الربح", money(agg.totalProfit), "بعد خصم التكلفة والسعي", "warn"],
+        ["صافي الشركة", money(agg.totalCompanyFinal), "النتيجة النهائية للشركة", ""],
+        ["مستحقات الإدارة المتبقية", money(adminRemain), "الشركة + الغامدي", "secondary"],
+        ["متبقي السعي", money(agg.totalCommissionRemain), `مستحق ${money(agg.totalCommissionDue)} | مصروف ${money(agg.totalCommissionPaid)}`, "warn"]
       ];
-      container.innerHTML = cards.map((card, idx) => `
-        <div class="dashboard-card ${idx === 3 ? 'success' : ''}">
-          <div class="dashboard-label">${card[0]}</div>
-          <div class="dashboard-value">${card[1]}</div>
-          <div class="dashboard-sub">${card[2]}</div>
+      container.innerHTML = cards.map(card => `
+        <div class="metrics-hero-card ${card[3] || ''}">
+          <div class="metrics-hero-label">${card[0]}</div>
+          <div class="metrics-hero-value">${card[1]}</div>
+          <div class="metrics-hero-sub">${card[2]}</div>
         </div>
       `).join("");
       if(note){
@@ -4153,6 +5136,7 @@ let globalSettingsState = {
           : "أضف مشروعًا جديدًا ليظهر الملخص هنا.";
       }
       renderMainManagerAlerts();
+      restoreMetricsPanel("mainDashboardBody","mainDashboardToggle","إخفاء الملخص","إظهار الملخص");
     }
 
     function renderProjectCharts(){
@@ -4225,16 +5209,30 @@ let globalSettingsState = {
       }
 
       visibleProjects.forEach(p => {
+        const units = Array.isArray(p.units) ? p.units : [];
+        const bookedCount = units.filter(u => String((u && u.status) || '') === 'محجوزة').length;
+        const availableCount = units.filter(u => !u || !u.status || String(u.status) === 'متاحة').length;
+        const salesValue = units.reduce((s,u)=> s + num((u && (u.finalPrice || u.price)) || 0), 0);
+        const statusBadges = `
+          ${p.closed ? '<span class="badge" style="background:#fee2e2;color:#991b1b">🔒 مقفل</span>' : '<span class="badge" style="background:#dcfce7;color:#166534">✅ نشط</span>'}
+          ${p.archived ? '<span class="badge" style="background:#e0f2fe;color:#075985">📁 مؤرشف</span>' : ''}
+        `;
         box.innerHTML += `
           <div class="project-item">
-            <div>
-              <strong>${p.name}
-                ${p.closed ? '<span class="badge" style="background:#fee2e2;color:#991b1b">🔒 مقفل</span>' : ''}
-                ${p.archived ? '<span class="badge" style="background:#e0f2fe;color:#075985">📁 مؤرشف</span>' : ''}
-              </strong><br>
-              <span class="small">التكلفة الأساسية: ${money(p.cost)} ${p.notes ? " | " + p.notes : ""}${p.closedAt ? " | تاريخ الإغلاق: " + p.closedAt : ""}${p.archivedAt ? " | تاريخ الأرشفة: " + p.archivedAt : ""}</span>
+            <div class="project-item-main">
+              <div class="project-title-row">
+                <span class="project-name">${p.name}</span>
+                ${statusBadges}
+              </div>
+              <div class="project-meta-line">التكلفة الأساسية: ${money(p.cost)}${p.notes ? ` | ${p.notes}` : ''}${p.closedAt ? ` | تاريخ الإغلاق: ${p.closedAt}` : ''}${p.archivedAt ? ` | تاريخ الأرشفة: ${p.archivedAt}` : ''}</div>
+              <div class="project-mini-stats">
+                <span class="project-stat-chip">🏠 <span>الوحدات</span> <span class="value">${units.length}</span></span>
+                <span class="project-stat-chip">💰 <span>المبيعات</span> <span class="value">${money(salesValue)}</span></span>
+                <span class="project-stat-chip">📌 <span>محجوز</span> <span class="value">${bookedCount}</span></span>
+                <span class="project-stat-chip">🟢 <span>متاح</span> <span class="value">${availableCount}</span></span>
+              </div>
             </div>
-            <div class="actions">
+            <div class="project-item-actions actions">
               <button class="btn" onclick="openProject('${p.id}')">فتح المشروع</button>
               ${p.closed ? `<button class="btn-green" onclick="reopenProjectBySecret('${p.id}')">فتح بكود</button>` : `<button type="button" class="btn-red" onclick="closeProjectBySecret('${p.id}')">إغلاق المشروع</button>`}
               <button class="${p.archived ? 'btn-teal' : 'btn-orange'}" onclick="toggleArchiveProject('${p.id}')">${p.archived ? 'استرجاع' : 'أرشفة'}</button>
@@ -4276,6 +5274,7 @@ let globalSettingsState = {
 
     function openProject(id, pushHistoryState=true){
       currentProjectId = String(id);
+      lastOpenedProjectId = String(id);
       const project = getProject();
       if(!project){
         alert("تعذر فتح المشروع. حدّث الصفحة ثم حاول مرة أخرى.");
@@ -4287,6 +5286,7 @@ let globalSettingsState = {
       document.getElementById("workspaceView").classList.remove("hidden");
       if(pushHistoryState !== false) pushAppHistory("project", currentProjectId);
       renderProject();
+      updateSidebarActive();
     }
 
     function backToProjects(pushHistoryState=true){
@@ -4295,6 +5295,7 @@ let globalSettingsState = {
       document.getElementById("projectsView").classList.remove("hidden");
       if(pushHistoryState !== false) pushAppHistory("projects", null);
       renderProjects();
+      updateSidebarActive("home");
     }
 
     function showTab(id, btn){
@@ -4304,6 +5305,7 @@ let globalSettingsState = {
       btn.classList.add("active");
       if(id === "advancesTab") refreshAdvanceNames();
       if(id === "collectionTab") renderCollectionBoard();
+      updateSidebarActive();
     }
 
     function partnerRowsWithCompany(project, totalProjectCost){
@@ -5891,6 +6893,7 @@ ${party}
       renderCollectionBoard();
       renderPaymentAlerts();
       renderReport();
+      restoreMetricsPanel("projectMetricsBody","projectMetricsToggle","إخفاء المؤشرات","إظهار المؤشرات");
       refreshAdvanceNames();
       populateBankSelectOptions();
       toggleTransactionBankFields();
@@ -7807,33 +8810,52 @@ function renderSiteCustody(){
         : "لا يوجد مسوقون";
 
       document.getElementById("reportBox").innerHTML = `
-        <strong>اسم المشروع:</strong> ${p.name}<br>
-        <strong>إجمالي المبيعات:</strong> ${money(f.totalSales)}<br>
-        <strong>التكلفة الأساسية:</strong> ${money(p.cost)}<br>
-        <strong>إجمالي المصروفات شامل العهدة:</strong> ${money(f.totalExpenses)}<br>
-        <strong>إجمالي السعي المستحق:</strong> ${money(f.totalCommissionDue)}<br>
-        <strong>صافي المبيعات بعد خصم السعي:</strong> ${money(f.netSalesAfterCommission)}<br>
-        <strong>إجمالي التكلفة:</strong> ${money(f.totalProjectCost)}<br>
-        <strong>نسبة الشركة من إجمالي التكلفة:</strong> ${num(f.companyPercent).toFixed(2)}%<br>
-        <strong>نسبة الشركاء من إجمالي التكلفة:</strong> ${num(f.partnerPercentTotal).toFixed(2)}%<br>
-        <strong>مبلغ الشركة من إجمالي التكلفة:</strong> ${money(f.companyCostShare)}<br>
-        <strong>العهدة المضافة ضمن المصروفات:</strong> ${money(f.siteCustodyAdded)}<br>
-        <strong>المصروف من عهدة الموقع:</strong> ${money(f.siteCustodySpent)}<br>
-        <strong>رصيد عهدة الموقع:</strong> ${money(f.siteCustodyBalance)}<br>
-        <strong>السعي المصروف فعليًا:</strong> ${money(f.totalCommissionPaid)}<br>
-        <strong>متبقي السعي:</strong> ${money(f.totalCommissionRemain)}<br>
-        <strong>الربح قبل إدراج العهدة:</strong> ${money(f.profitBeforeCustody)}<br>
-        <strong>الربح القابل للتوزيع بعد احتساب العهدة:</strong> ${money(f.distributableProfit)}<br>
-        <strong>نصيب الشركة من الشركاء:</strong> ${money(f.companyShareProfit)}<br>
-        <strong>ربح المساهمين:</strong> ${money((f.investorsFull || []).filter(x => !x.auto).reduce((s,x)=>s + num(x.grossShare), 0))}<br>
-        <strong>ربح الشركة بعد خصم المساهمين:</strong> ${money(f.companyShareProfit - (f.investorsFull || []).filter(x => !x.auto).reduce((s,x)=>s + num(x.grossShare), 0))}<br>
-        <strong>إجمالي إدارة المساهمين:</strong> ${money(f.totalInvestorAdmin)}<br>
-        <strong>صافي الشركة النهائي:</strong> ${money((f.companyShareProfit - (f.investorsFull || []).filter(x => !x.auto).reduce((s,x)=>s + num(x.grossShare), 0)) + f.totalInvestorAdmin)}<br>
-        <strong>الوحدات المطابقة للفلاتر الحالية:</strong> ${filteredUnits.length}<br>
-        <strong>المصروفات المطابقة للفلاتر الحالية:</strong> ${filteredExpenses.length}<hr>
-        <strong>الشركاء:</strong><br>${partnerLines}<hr>
-        <strong>المساهمون:</strong><br>${investorLines}<hr>
-        <strong>المسوقون:</strong><br>${marketerLines}
+        <div class="report-hero">
+          <div>
+            <h4>${p.name}</h4>
+            <p>ملخص مالي وتشغيلي احترافي للمشروع مع عكس الفلاتر النشطة الحالية.</p>
+          </div>
+          <div class="report-badge">الوحدات الظاهرة: ${filteredUnits.length} | المصروفات الظاهرة: ${filteredExpenses.length}</div>
+        </div>
+
+        <div class="report-grid">
+          <div class="report-card"><span class="label">إجمالي المبيعات</span><span class="value">${money(f.totalSales)}</span></div>
+          <div class="report-card"><span class="label">إجمالي التكلفة</span><span class="value">${money(f.totalProjectCost)}</span></div>
+          <div class="report-card"><span class="label">الربح القابل للتوزيع</span><span class="value">${money(f.distributableProfit)}</span></div>
+          <div class="report-card"><span class="label">صافي الشركة النهائي</span><span class="value">${money((f.companyShareProfit - (f.investorsFull || []).filter(x=>!x.auto).reduce((s,x)=>s + num(x.grossShare), 0)) + f.totalInvestorAdmin)}</span></div>
+          <div class="report-card"><span class="label">إجمالي السعي المستحق</span><span class="value">${money(f.totalCommissionDue)}</span></div>
+          <div class="report-card"><span class="label">متبقي السعي</span><span class="value">${money(f.totalCommissionRemain)}</span></div>
+          <div class="report-card"><span class="label">رصيد عهدة الموقع</span><span class="value">${money(f.siteCustodyBalance)}</span></div>
+          <div class="report-card"><span class="label">مبلغ الشركة من إجمالي التكلفة</span><span class="value">${money(f.companyCostShare)}</span></div>
+        </div>
+
+        <div class="report-sections">
+          <div class="report-section">
+            <h5>المؤشرات الأساسية</h5>
+            <div class="report-list">
+              <div class="report-line"><strong>التكلفة الأساسية:</strong> ${money(p.cost)} | <strong>إجمالي المصروفات شامل العهدة:</strong> ${money(f.totalExpenses)}</div>
+              <div class="report-line"><strong>صافي المبيعات بعد خصم السعي:</strong> ${money(f.netSalesAfterCommission)} | <strong>السعي المصروف فعليًا:</strong> ${money(f.totalCommissionPaid)}</div>
+              <div class="report-line"><strong>الربح قبل إدراج العهدة:</strong> ${money(f.profitBeforeCustody)} | <strong>العهدة المضافة ضمن المصروفات:</strong> ${money(f.siteCustodyAdded)}</div>
+              <div class="report-line"><strong>نسبة الشركة من إجمالي التكلفة:</strong> ${num(f.companyPercent).toFixed(2)}% | <strong>نسبة الشركاء:</strong> ${num(f.partnerPercentTotal).toFixed(2)}%</div>
+              <div class="report-line"><strong>نصيب الشركة من الشركاء:</strong> ${money(f.companyShareProfit)} | <strong>إجمالي إدارة المساهمين:</strong> ${money(f.totalInvestorAdmin)}</div>
+            </div>
+          </div>
+
+          <div class="report-section">
+            <h5>الشركاء</h5>
+            <div class="report-list">${partnerLines ? partnerLines.split('<br>').map(line => `<div class="report-line">${line}</div>`).join('') : '<div class="report-line">لا يوجد شركاء</div>'}</div>
+          </div>
+
+          <div class="report-section">
+            <h5>المساهمون</h5>
+            <div class="report-list">${investorLines ? investorLines.split('<br>').map(line => `<div class="report-line">${line}</div>`).join('') : '<div class="report-line">لا يوجد مساهمون</div>'}</div>
+          </div>
+
+          <div class="report-section">
+            <h5>المسوقون</h5>
+            <div class="report-list">${marketerLines === 'لا يوجد مسوقون' ? '<div class="report-line">لا يوجد مسوقون</div>' : marketerLines.split('<br>').map(line => `<div class="report-line">${line}</div>`).join('')}</div>
+          </div>
+        </div>
       `;
       renderFilterSummaryNote();
     }
@@ -7998,11 +9020,11 @@ function renderSiteCustody(){
       margin-bottom:16px;
     }
     .dashboard-card{
-      background:linear-gradient(135deg,#ffffff 0%,#f8fbff 100%);
-      border:1px solid var(--border);
-      border-radius:14px;
-      padding:14px;
-      box-shadow:var(--shadow);
+      background:linear-gradient(160deg,#ffffff 0%,#f3f8ff 55%,#edf5ff 100%);
+      border:1px solid #dbe7f3;
+      border-radius:22px;
+      padding:16px;
+      box-shadow:0 18px 38px rgba(15,23,42,.08);
       position:relative;
       overflow:hidden;
     }
@@ -8086,12 +9108,13 @@ function renderSiteCustody(){
     }
     .manager-alert-tab{
       min-width:auto;
-      padding:8px 12px;
+      padding:10px 14px;
       border-radius:999px;
-      background:#f8fafc;
-      border:1px solid var(--border);
-      color:#334155;
-      font-weight:bold;
+      background:linear-gradient(180deg,#ffffff 0%,#edf5ff 100%);
+      border:1px solid #cfe0f1;
+      color:#24486a;
+      font-weight:800;
+      box-shadow:0 6px 14px rgba(15,23,42,.06);
     }
     .manager-alert-tab.active{
       background:var(--primary);
@@ -9342,6 +10365,115 @@ function refreshAlertBellSafe(){
   bell.className = 'alert-bell ' + (n===0 ? 'green' : (n<5 ? 'yellow' : 'red'));
 }
 
+let alertCenterFilterSafe = 'all';
+let alertCenterRowsSafe = [];
+
+function renderAlertCenterHomeSafe(){
+  const defs = [
+    {key:'all', label:'الكل', icon:'☰', stat:'📋', cardClass:'all'},
+    {key:'payment', label:'الدفعات', icon:'💳', stat:'💳', cardClass:'payment'},
+    {key:'admin', label:'الإدارة', icon:'⚙️', stat:'⚙️', cardClass:'admin'},
+    {key:'issue', label:'الملاحظات', icon:'📝', stat:'📝', cardClass:'issue'}
+  ];
+  const groups = {
+    all: alertCenterRowsSafe,
+    payment: alertCenterRowsSafe.filter(x => x.type === 'payment'),
+    admin: alertCenterRowsSafe.filter(x => x.type === 'admin'),
+    issue: alertCenterRowsSafe.filter(x => x.type === 'issue')
+  };
+  if(!groups[alertCenterFilterSafe]) alertCenterFilterSafe = 'all';
+  const rows = groups[alertCenterFilterSafe] || [];
+
+  const topStatsHtml = `
+    <div class="alert-center-topstats">
+      ${defs.map(tab => `
+        <div class="alert-center-stat ${tab.cardClass}">
+          <div>
+            <div class="alert-center-stat-label">${tab.label}</div>
+            <div class="alert-center-stat-value">${(groups[tab.key] || []).length} ${tab.key === 'all' ? 'تنبيه' : ''}</div>
+          </div>
+          <div class="alert-center-stat-icon">${tab.stat}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  const tabsHtml = `
+    <div class="alert-center-filter-tabs">
+      ${defs.map(tab => `
+        <button type="button" class="alert-center-filter-tab ${tab.cardClass} ${alertCenterFilterSafe === tab.key ? 'active' : ''}" onclick="setAlertCenterFilterSafe('${tab.key}')">
+          <span class="icon">${tab.icon}</span>
+          <span class="text">
+            <span class="label">${tab.label}</span>
+            <span class="count">(${(groups[tab.key] || []).length})</span>
+          </span>
+        </button>
+      `).join('')}
+    </div>
+  `;
+
+  const listHtml = rows.length
+    ? `<div class="alert-center-list">${rows.map(item => {
+        const safeProjectId = String(item.projectId || '').replace(/'/g, "\\'");
+        const safeTab = String(item.tab || '').replace(/'/g, "\\'");
+        const safeSearchValue = String(item.searchValue || '').replace(/'/g, "\\'");
+        const safeTargetType = String(item.targetType || '').replace(/'/g, "\\'");
+        const safeTargetValue = String(item.targetValue || '').replace(/'/g, "\\'");
+        const safeTargetExtra = String(item.targetExtra || '').replace(/'/g, "\\'");
+        const severityClass = item.severity === 'issue' ? 'issue' : 'warn';
+        const icon = item.severity === 'issue' ? '!' : '!';
+        const ageText = escapeHtml(item.ageLabel || item.whenLabel || '');
+        const dateText = escapeHtml(item.dateLabel || item.date || '');
+        return `
+        <div class="alert-center-item ${severityClass}" onclick="openMainProjectAlert('${safeProjectId}', '${safeTab}', '${safeSearchValue}', '${safeTargetType}', '${safeTargetValue}', '${safeTargetExtra}')">
+          <div class="alert-center-item-grid">
+            <div class="alert-center-side">
+              ${ageText ? `<div class="alert-center-side-line"><span class="mini">🕘</span><span>${ageText}</span></div>` : ''}
+              ${dateText ? `<div class="alert-center-side-line"><span class="mini">📅</span><span>${dateText}</span></div>` : ''}
+            </div>
+            <div class="alert-center-main">
+              <div class="alert-center-project">${escapeHtml(item.projectName || '')}</div>
+              <div class="alert-center-label">${escapeHtml(item.label || '')}</div>
+            </div>
+            <div class="alert-center-badgeicon">${icon}</div>
+          </div>
+        </div>`;
+      }).join('')}</div>`
+    : '<div class="alert-center-empty">لا توجد تنبيهات في هذا القسم حالياً.</div>';
+
+  return `
+    <div class="alert-center-shell">
+      ${topStatsHtml}
+      <div class="alert-center-sections">
+        <div class="alert-center-section">
+          <div class="alert-center-section-head">
+            <div>
+              <h3 class="alert-center-section-title">تنبيهات الصفحة الرئيسية</h3>
+              <div class="alert-center-section-sub">اختر القسم الذي تريد عرضه ثم اضغط على التنبيه للانتقال إلى مكانه</div>
+            </div>
+          </div>
+          <div class="alert-center-cloned">
+            ${tabsHtml}
+            <div id="alertCenterListSafe">${listHtml}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function setAlertCenterFilterSafe(filterKey){
+  alertCenterFilterSafe = filterKey || 'all';
+  const content = document.getElementById('alertCenterContentSafe');
+  const overlay = document.getElementById('alertCenterOverlay');
+  if(!content || !overlay || !overlay.classList.contains('open')) return;
+  content.innerHTML = renderAlertCenterHomeSafe();
+  setTimeout(function(){
+    sortAlertCenterItems();
+    enrichAlertCenterLinks();
+  }, 0);
+}
+
 function buildAlertCenterFromHome(){
   try{
     if(typeof toggleMainManagerAlerts === 'function'){
@@ -9349,18 +10481,11 @@ function buildAlertCenterFromHome(){
       if(body && body.classList.contains('hidden')) toggleMainManagerAlerts();
     }
   }catch(e){}
-  const tabs = document.getElementById('mainManagerAlertsTabs');
-  const list = document.getElementById('mainManagerAlertsList');
-  let html = '<div class="alert-center-sections">';
-  if(tabs && (tabs.innerHTML || '').trim()){
-    html += '<div class="alert-center-section"><h3>تنبيهات الصفحة الرئيسية</h3><div class="alert-center-cloned">' + tabs.outerHTML + (list ? list.outerHTML : '') + '</div></div>';
-  }else if(list && (list.innerHTML || '').trim()){
-    html += '<div class="alert-center-section"><h3>تنبيهات الصفحة الرئيسية</h3><div class="alert-center-cloned">' + list.outerHTML + '</div></div>';
-  }else{
-    html += '<div class="alert-center-empty">لا توجد تنبيهات حالياً في الصفحة الرئيسية.</div>';
+  alertCenterRowsSafe = typeof collectMainManagerAlerts === 'function' ? (collectMainManagerAlerts() || []) : [];
+  if(!alertCenterRowsSafe.length){
+    return '<div class="alert-center-shell"><div class="alert-center-empty">لا توجد تنبيهات حالياً في الصفحة الرئيسية.</div></div>';
   }
-  html += '</div>';
-  return html;
+  return renderAlertCenterHomeSafe();
 }
 
 function buildAlertCenterFromProject(){
@@ -9382,7 +10507,7 @@ function buildAlertCenterFromProject(){
 function enrichAlertCenterLinks(){
   const overlay = document.getElementById('alertCenterOverlay');
   if(!overlay) return;
-  overlay.querySelectorAll('.alert-item,.manager-alert-tab,[onclick*="openMainProjectAlert"],[onclick*="openAlertTarget"]').forEach(el=>{
+  overlay.querySelectorAll('.alert-item,[onclick*="openMainProjectAlert"],[onclick*="openAlertTarget"]').forEach(el=>{
     if(el.dataset.smartBound === '1') return;
     el.dataset.smartBound = '1';
     const original = el.getAttribute('onclick') || '';
@@ -9447,7 +10572,7 @@ function openAlertCenterSafe(){
   }else if(onWorkspacePage){
     content.innerHTML = buildAlertCenterFromProject();
   }else{
-    content.innerHTML = '<div class="alert-center-empty">افتح النظام أولاً ثم استخدم الجرس.</div>';
+    content.innerHTML = '<div class="alert-center-shell"><div class="alert-center-empty">افتح النظام أولاً ثم استخدم الجرس.</div></div>';
   }
 
   overlay.classList.add('open');
