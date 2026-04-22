@@ -638,7 +638,352 @@
       position:relative;
       height:280px;
     }
-    .home-dashboard-note{
+
+        .project-cylinder-grid{
+      display:grid;
+      grid-template-columns:1.18fr .82fr;
+      gap:14px;
+      align-items:stretch;
+    }
+    .cylinder-chart-card.compact{padding:14px 16px}
+    .cylinder-card-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .cylinder-card-head h4{margin:0 0 4px 0}
+    .cylinder-stage{
+      min-height:338px;
+      border-radius:28px;
+      border:1px solid #d9e6f3;
+      background:
+        radial-gradient(circle at top center, rgba(255,255,255,.96) 0%, rgba(255,255,255,.72) 18%, rgba(246,250,255,.35) 36%, transparent 54%),
+        linear-gradient(180deg,#f8fbff 0%,#eef3f8 60%,#e9eff6 100%);
+      padding:24px 22px 26px;
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-evenly;
+      gap:22px;
+      overflow:hidden;
+      position:relative;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.95);
+    }
+    .cylinder-stage::before{
+      content:"";
+      position:absolute;
+      inset:16px;
+      border-radius:24px;
+      background:linear-gradient(180deg, rgba(255,255,255,.42), rgba(255,255,255,0) 42%);
+      pointer-events:none;
+    }
+    .cylinder-stage::after{
+      content:"";
+      position:absolute;
+      left:18px;
+      right:18px;
+      bottom:26px;
+      height:24px;
+      border-radius:999px;
+      background:radial-gradient(circle, rgba(148,163,184,.18) 0%, rgba(148,163,184,.08) 42%, rgba(148,163,184,0) 76%);
+      filter:blur(2px);
+      pointer-events:none;
+    }
+    .cylinder-stage.single-only{justify-content:center}
+    .cylinder-item{
+      position:relative;
+      z-index:1;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-end;
+      gap:10px;
+      min-width:140px;
+      flex:1;
+      max-width:210px;
+      padding-bottom:0;
+    }
+    .cylinder-figure{
+      position:relative;
+      width:146px;
+      height:258px;
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+      filter:drop-shadow(0 22px 18px rgba(15,23,42,.10));
+    }
+    .cylinder-shell{
+      width:96px;
+      height:214px;
+      position:relative;
+      border-radius:48px 48px 20px 20px / 18px 18px 20px 20px;
+      background:
+        linear-gradient(90deg,
+          rgba(122,145,183,.46) 0%,
+          rgba(255,255,255,.98) 10%,
+          rgba(255,255,255,.52) 18%,
+          rgba(233,241,249,.28) 28%,
+          rgba(255,255,255,.12) 38%,
+          rgba(255,255,255,.02) 50%,
+          rgba(255,255,255,.16) 62%,
+          rgba(255,255,255,.76) 78%,
+          rgba(165,184,210,.54) 100%);
+      border:2px solid rgba(165,186,220,.98);
+      box-shadow:
+        inset 16px 0 18px rgba(255,255,255,.70),
+        inset -12px 0 14px rgba(148,163,184,.16),
+        inset 0 -16px 18px rgba(148,163,184,.10),
+        inset 0 0 0 1px rgba(255,255,255,.55),
+        0 16px 24px rgba(15,23,42,.08);
+      overflow:visible;
+      z-index:2;
+    }
+    .cylinder-shell::before{
+      content:"";
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      top:-12px;
+      width:100px;
+      height:25px;
+      border-radius:50%;
+      background:
+        radial-gradient(circle at 50% 24%, rgba(255,255,255,.98) 0%, rgba(251,253,255,.96) 36%, rgba(212,223,238,.98) 100%);
+      border:2px solid rgba(156,179,214,.98);
+      box-shadow:
+        inset 0 3px 6px rgba(255,255,255,.98),
+        inset 0 -3px 6px rgba(148,163,184,.12),
+        0 3px 7px rgba(148,163,184,.18);
+      z-index:7;
+    }
+    .cylinder-shell::after{
+      content:"";
+      position:absolute;
+      inset:4px;
+      border-radius:44px 44px 16px 16px / 16px 16px 16px 16px;
+      border:1px solid rgba(255,255,255,.52);
+      pointer-events:none;
+      z-index:6;
+    }
+    .cylinder-glass-highlight{
+      position:absolute;
+      top:12px;
+      bottom:14px;
+      left:11px;
+      width:18px;
+      border-radius:999px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(255,255,255,.72) 18%, rgba(255,255,255,.26) 55%, rgba(255,255,255,0) 100%);
+      z-index:8;
+      pointer-events:none;
+      opacity:.95;
+      box-shadow:0 0 8px rgba(255,255,255,.18);
+    }
+    .cylinder-glass-highlight::after{
+      content:"";
+      position:absolute;
+      top:22px;
+      bottom:20px;
+      right:-54px;
+      width:10px;
+      border-radius:999px;
+      background:linear-gradient(180deg, rgba(255,255,255,.30), rgba(255,255,255,0));
+      opacity:.7;
+    }
+    .cylinder-liquid{
+      position:absolute;
+      left:6px;
+      right:6px;
+      bottom:6px;
+      height:0%;
+      min-height:0;
+      border-radius:0 0 40px 40px;
+      overflow:visible;
+      z-index:3;
+      transition:height 1.18s cubic-bezier(.22,.61,.36,1);
+      box-shadow:
+        inset 0 12px 10px rgba(255,255,255,.14),
+        inset 0 -14px 16px rgba(0,0,0,.16),
+        0 0 18px rgba(37,99,235,.10);
+    }
+    .cylinder-liquid::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:inherit;
+      background:
+        linear-gradient(90deg,
+          rgba(124,181,255,.78) 0%,
+          rgba(85,147,255,.95) 16%,
+          rgba(58,121,245,.98) 34%,
+          rgba(38,95,225,.99) 54%,
+          rgba(18,62,177,.98) 100%);
+      z-index:1;
+    }
+    .cylinder-liquid::after{
+      content:"";
+      position:absolute;
+      top:11%;
+      left:13%;
+      width:15%;
+      height:72%;
+      border-radius:999px;
+      background:linear-gradient(180deg, rgba(255,255,255,.46), rgba(255,255,255,.04));
+      z-index:2;
+      filter:blur(.2px);
+    }
+    .cylinder-liquid-top{
+      position:absolute;
+      left:2px;
+      right:2px;
+      top:-9px;
+      height:18px;
+      border-radius:50%;
+      background:
+        linear-gradient(180deg, rgba(161,208,255,.98) 0%, rgba(79,138,249,.98) 48%, rgba(18,63,176,.98) 100%);
+      box-shadow:
+        inset 0 2px 3px rgba(255,255,255,.54),
+        0 0 0 1px rgba(163,201,255,.52),
+        0 0 16px rgba(147,197,253,.16);
+      z-index:4;
+    }
+    .cylinder-wave{
+      position:absolute;
+      left:-6%;
+      width:112%;
+      top:-4px;
+      height:10px;
+      border-radius:50%;
+      background:rgba(255,255,255,.24);
+      filter:blur(.5px);
+      animation:cylinderWave 2.8s ease-in-out infinite;
+      z-index:5;
+      opacity:.92;
+    }
+    .cylinder-wave.wave-2{
+      top:-1px;
+      height:6px;
+      opacity:.5;
+      animation-duration:3.6s;
+      animation-delay:.4s;
+    }
+    .cylinder-liquid.blue::before,
+    .cylinder-liquid.blue .cylinder-liquid-top{
+      background:linear-gradient(180deg,#82c0ff 0%, #4e8ef8 34%, #2a67e5 66%, #123eaf 100%);
+    }
+    .cylinder-liquid.red::before,
+    .cylinder-liquid.red .cylinder-liquid-top{
+      background:linear-gradient(180deg,#fdb2bb 0%, #fb7185 34%, #ef476f 66%, #be123c 100%);
+    }
+    .cylinder-liquid.green::before,
+    .cylinder-liquid.green .cylinder-liquid-top{
+      background:linear-gradient(180deg,#9bf3be 0%, #34d399 34%, #10b981 66%, #047857 100%);
+    }
+    .cylinder-liquid.orange::before,
+    .cylinder-liquid.orange .cylinder-liquid-top{
+      background:linear-gradient(180deg,#fde68a 0%, #fbbf24 34%, #f59e0b 66%, #d97706 100%);
+    }
+    .cylinder-percent{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:9;
+      font-size:15px;
+      font-weight:900;
+      color:#ffffff;
+      text-shadow:0 2px 8px rgba(0,0,0,.30);
+      letter-spacing:.2px;
+      pointer-events:none;
+    }
+    .cylinder-base{
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:0;
+      width:124px;
+      height:38px;
+      border-radius:50%;
+      background:
+        linear-gradient(180deg,#ffffff 0%, #d6dde8 24%, #bcc6d4 46%, #eef2f8 70%, #8794a6 100%);
+      border:2px solid rgba(140,154,174,.92);
+      box-shadow:
+        inset 0 3px 6px rgba(255,255,255,.95),
+        inset 0 -4px 8px rgba(94,108,132,.24),
+        0 10px 16px rgba(15,23,42,.14);
+      z-index:1;
+    }
+    .cylinder-base::before{
+      content:"";
+      position:absolute;
+      inset:7px 12px;
+      border-radius:50%;
+      background:
+        linear-gradient(180deg,#c9e6ff 0%, #68adff 40%, #2b6fea 72%, #c1d7ff 100%);
+      box-shadow:
+        inset 0 2px 3px rgba(255,255,255,.75),
+        0 0 0 3px rgba(233,238,246,.96);
+      opacity:.96;
+    }
+    .cylinder-base::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:-10px;
+      width:106px;
+      height:16px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(60,78,107,.24) 0%, rgba(60,78,107,.10) 48%, rgba(60,78,107,0) 76%);
+      filter:blur(1.2px);
+    }
+    .cylinder-text{
+      margin-top:4px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:2px;
+    }
+    .cylinder-label{
+      font-size:15px;
+      font-weight:900;
+      color:#17324d;
+      text-align:center;
+      line-height:1.5;
+      text-shadow:0 1px 0 rgba(255,255,255,.72);
+    }
+    .cylinder-value{
+      font-size:14px;
+      font-weight:900;
+      color:#2563eb;
+      text-align:center;
+      line-height:1.6;
+      word-break:break-word;
+      direction:ltr;
+      unicode-bidi:plaintext;
+      text-shadow:0 1px 0 rgba(255,255,255,.65);
+    }
+    @keyframes cylinderWave{
+      0%,100%{transform:translateX(0) scaleX(1)}
+      50%{transform:translateX(4px) scaleX(1.03)}
+    }
+    @media (max-width:980px){
+      .project-cylinder-grid{grid-template-columns:1fr}
+    }
+    @media (max-width:768px){
+      .cylinder-stage{min-height:276px;padding:16px 12px 20px;gap:12px}
+      .cylinder-item{min-width:110px;max-width:156px}
+      .cylinder-figure{width:118px;height:220px}
+      .cylinder-shell{width:78px;height:176px}
+      .cylinder-shell::before{width:82px;height:21px}
+      .cylinder-base{width:102px;height:31px}
+      .cylinder-percent{font-size:13px}
+      .cylinder-label{font-size:13px}
+      .cylinder-value{font-size:12px}
+    }
+.home-dashboard-note{
       margin-top:8px;
       font-size:12px;
       color:var(--muted);
@@ -1389,126 +1734,6 @@
 
 
 
-
-
-/* ===== Premium Metrics Panels ===== */
-.metrics-panel{
-  padding:0;
-  overflow:hidden;
-  border-radius:28px;
-  border:1px solid #d7e5f3;
-  box-shadow:0 24px 48px rgba(15,23,42,.10);
-  background:linear-gradient(180deg,#ffffff 0%,#f6faff 100%);
-}
-.metrics-panel::before{
-  height:5px;
-  background:linear-gradient(90deg,#12304d 0%,#2563eb 48%,#7dd3fc 100%);
-}
-.metrics-panel-head{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:16px;
-  flex-wrap:wrap;
-  padding:22px 24px 16px;
-  background:linear-gradient(135deg,#f8fbff 0%,#eef5ff 48%,#f9fcff 100%);
-  border-bottom:1px solid #dce9f5;
-}
-.metrics-panel-head h3{
-  margin:0;
-  font-size:26px;
-  font-weight:900;
-  color:#0f2236;
-}
-.metrics-panel-sub{
-  margin-top:8px;
-  color:#64748b;
-  font-size:13px;
-  line-height:1.9;
-}
-.metrics-panel-actions{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
-}
-.metrics-pill{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:10px 14px;
-  border-radius:999px;
-  background:linear-gradient(180deg,#ffffff 0%,#eef6ff 100%);
-  border:1px solid #cfe0f1;
-  color:#21476a;
-  font-size:13px;
-  font-weight:900;
-  box-shadow:0 10px 18px rgba(15,23,42,.06);
-}
-.metrics-toggle{
-  min-width:auto;
-  padding:11px 16px;
-  border-radius:16px;
-}
-.metrics-panel-body{
-  padding:18px 20px 20px;
-}
-.metrics-panel-body.hidden{display:none !important;}
-.metrics-hero-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:14px;
-  margin-bottom:16px;
-}
-.metrics-hero-card{
-  position:relative;
-  overflow:hidden;
-  border-radius:24px;
-  padding:18px 18px 16px;
-  background:linear-gradient(135deg,#12304d 0%,#1d4f7a 52%,#2563eb 100%);
-  color:#fff;
-  box-shadow:0 20px 34px rgba(29,78,216,.20);
-}
-.metrics-hero-card::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,0) 58%);
-  pointer-events:none;
-}
-.metrics-hero-card.secondary{background:linear-gradient(135deg,#0f766e 0%,#14b8a6 55%,#5eead4 100%);box-shadow:0 20px 34px rgba(13,148,136,.18)}
-.metrics-hero-card.warn{background:linear-gradient(135deg,#9a3412 0%,#ea580c 55%,#fb923c 100%);box-shadow:0 20px 34px rgba(234,88,12,.18)}
-.metrics-hero-label{position:relative;z-index:1;font-size:13px;color:rgba(255,255,255,.88);margin-bottom:8px;font-weight:700}
-.metrics-hero-value{position:relative;z-index:1;font-size:28px;font-weight:900;line-height:1.35}
-.metrics-hero-sub{position:relative;z-index:1;font-size:12px;color:rgba(255,255,255,.88);margin-top:8px;line-height:1.8}
-.kpis.kpis-premium{
-  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-  gap:16px;
-  margin-bottom:0;
-}
-.kpis-premium .kpi{
-  border-radius:22px;
-  padding:18px 16px;
-  min-height:126px;
-  box-shadow:0 18px 30px rgba(15,23,42,.08);
-  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-}
-.kpis-premium .kpi:hover{
-  transform:translateY(-3px);
-  box-shadow:0 24px 36px rgba(15,23,42,.12);
-  border-color:#bfd7ef;
-}
-.kpis-premium .kpi::after{width:8px;}
-.kpis-premium .kpi-title{font-size:12px;font-weight:800;color:#64748b;line-height:1.8;}
-.kpis-premium .kpi-value{font-size:25px;margin-top:6px;}
-@media (max-width:768px){
-  .metrics-panel-head{padding:18px 16px 14px}
-  .metrics-panel-body{padding:14px}
-  .metrics-panel-head h3{font-size:22px}
-  .metrics-hero-grid{grid-template-columns:1fr}
-  .kpis.kpis-premium{grid-template-columns:1fr}
-}
-
 /* ===== Sidebar Layout ===== */
 .app-shell{
   display:flex;
@@ -1692,6 +1917,250 @@
   }
 }
 
+
+/* ===== Project Summary Premium ===== */
+.report-box{
+  background:transparent;
+  border:none;
+  padding:0;
+}
+.report-hero{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:16px;
+  flex-wrap:wrap;
+  padding:22px 24px;
+  margin-bottom:18px;
+  border-radius:28px;
+  background:linear-gradient(135deg,#0f2236 0%,#143a61 52%,#1d5f9b 100%);
+  color:#fff;
+  box-shadow:0 22px 50px rgba(15,23,42,.20);
+}
+.report-hero h4{
+  margin:0 0 8px 0;
+  font-size:30px;
+  font-weight:900;
+  color:#fff;
+}
+.report-hero p{
+  margin:0;
+  color:rgba(255,255,255,.84);
+  line-height:1.9;
+}
+.report-badge{
+  padding:10px 16px;
+  border-radius:999px;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.18);
+  font-weight:800;
+  color:#fff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.15);
+}
+.report-top-cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:16px;
+  margin-bottom:20px;
+}
+.report-top-card{
+  position:relative;
+  overflow:hidden;
+  border-radius:26px;
+  padding:20px 22px;
+  color:#fff;
+  box-shadow:0 20px 36px rgba(15,23,42,.14);
+}
+.report-top-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,0) 55%);
+  pointer-events:none;
+}
+.report-top-card .label,
+.report-top-card .value,
+.report-top-card .sub{position:relative;z-index:1;display:block}
+.report-top-card .label{font-size:14px;font-weight:800;margin-bottom:14px;color:rgba(255,255,255,.9)}
+.report-top-card .value{font-size:24px;font-weight:900;line-height:1.45}
+.report-top-card .sub{margin-top:10px;font-size:12px;color:rgba(255,255,255,.85);line-height:1.8}
+.report-top-card.sales{background:linear-gradient(135deg,#0f766e 0%,#14b8a6 55%,#5eead4 100%)}
+.report-top-card.profit{background:linear-gradient(135deg,#c2410c 0%,#f97316 55%,#fb923c 100%)}
+.report-top-card.company{background:linear-gradient(135deg,#163b66 0%,#2563eb 55%,#60a5fa 100%)}
+.report-top-card.commission{background:linear-gradient(135deg,#9a3412 0%,#ea580c 55%,#fdba74 100%)}
+.report-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:14px;
+  margin-bottom:22px;
+}
+.report-card{
+  background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);
+  border:1px solid #dbe7f3;
+  border-radius:22px;
+  padding:18px;
+  box-shadow:0 12px 24px rgba(15,23,42,.07);
+  min-height:124px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.report-card .label{font-size:13px;color:#64748b;font-weight:800;display:block;line-height:1.8}
+.report-card .value{font-size:26px;color:#0f172a;font-weight:900;display:block;line-height:1.45;margin-top:10px}
+.report-card .sub{font-size:12px;color:#475569;display:block;line-height:1.8;margin-top:8px}
+.report-section-wrap{margin-bottom:18px}
+.report-section{
+  background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);
+  border:1px solid #dbe7f3;
+  border-radius:26px;
+  overflow:hidden;
+  box-shadow:0 14px 30px rgba(15,23,42,.07);
+}
+.report-section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+  padding:18px 20px;
+  background:linear-gradient(135deg,#eff6ff 0%,#f8fbff 100%);
+  border-bottom:1px solid #dbe7f3;
+}
+.report-section-titlebox h5{
+  margin:0;
+  font-size:22px;
+  font-weight:900;
+  color:#0f2236;
+}
+.report-section-titlebox .hint{
+  margin-top:6px;
+  font-size:12px;
+  color:#64748b;
+}
+.report-section-toggle{
+  min-width:auto;
+  padding:10px 16px;
+  border-radius:999px;
+  background:linear-gradient(180deg,#ffffff 0%,#eef4fb 100%);
+  border:1px solid #c9d9ea;
+  color:#15314d;
+  font-weight:900;
+  box-shadow:0 4px 0 rgba(148,163,184,.55), 0 10px 16px rgba(15,23,42,.08);
+}
+.report-section-body{
+  padding:18px;
+}
+.report-section-body.hidden{display:none}
+.report-list{
+  display:grid;
+  gap:12px;
+}
+.report-line{
+  padding:14px 16px;
+  border-radius:18px;
+  background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);
+  border:1px solid #e1ebf5;
+  color:#1f2937;
+  line-height:2;
+  box-shadow:0 8px 18px rgba(15,23,42,.04);
+}
+.report-line strong{color:#0f2236}
+@media (max-width:768px){
+  .report-hero{padding:18px;border-radius:22px}
+  .report-hero h4{font-size:24px}
+  .report-top-card .value,.report-card .value{font-size:22px}
+  .report-section-titlebox h5{font-size:18px}
+}
+
+/* ===== Home Summary Collapsible ===== */
+.home-summary-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:14px;
+}
+.home-summary-toggle{
+  min-width:auto;
+  padding:10px 16px;
+  border-radius:999px;
+  background:linear-gradient(180deg,#ffffff 0%,#eef4fb 100%);
+  border:1px solid #c9d9ea;
+  color:#15314d;
+  font-weight:900;
+  box-shadow:0 4px 0 rgba(148,163,184,.55), 0 10px 16px rgba(15,23,42,.08);
+}
+.home-summary-toggle.open{
+  background:linear-gradient(180deg,#2c6fb1 0%,#1f4f7a 55%,#16324f 100%);
+  color:#fff;
+  border-color:#15314d;
+}
+.home-summary-body.hidden{display:none !important}
+
+/* ===== Sidebar Projects Dropdown ===== */
+.sidebar-link.has-dropdown{
+  align-items:center;
+}
+.sidebar-link .sidebar-end{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.sidebar-link .caret{
+  font-size:14px;
+  opacity:.9;
+  transition:transform .2s ease;
+}
+.sidebar-link.open .caret{transform:rotate(180deg)}
+.sidebar-submenu{
+  display:grid;
+  gap:8px;
+  margin:-2px 0 4px;
+  padding:0 6px 6px 0;
+}
+.sidebar-submenu.hidden{display:none !important}
+.sidebar-subitem{
+  width:100%;
+  min-width:0;
+  border-radius:14px;
+  padding:12px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  background:linear-gradient(180deg,rgba(255,255,255,.10) 0%,rgba(255,255,255,.04) 100%);
+  border:1px solid rgba(255,255,255,.10);
+  color:#eaf3ff;
+  box-shadow:none;
+}
+.sidebar-subitem .name{
+  font-size:13px;
+  font-weight:800;
+  text-align:right;
+  flex:1;
+}
+.sidebar-subitem .mini{
+  width:30px;
+  height:30px;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(255,255,255,.10);
+  font-size:14px;
+  flex:0 0 auto;
+}
+.sidebar-subitem:hover{
+  transform:translateY(-1px);
+  filter:brightness(1.04);
+}
+.sidebar-subitem.empty{
+  justify-content:center;
+  color:#dbeafe;
+  font-size:12px;
+}
+
 </style>
 </head>
 <body>
@@ -1754,10 +2223,14 @@
               <span class="label">الرئيسية</span>
               <span class="icon">⌂</span>
             </button>
-            <button type="button" class="sidebar-link" data-section="projects" onclick="handleSidebarNav('projects', this)">
+            <button type="button" id="sidebarProjectsToggle" class="sidebar-link has-dropdown" data-section="projects" onclick="toggleSidebarProjectsDropdown(this)">
               <span class="label">المشاريع</span>
-              <span class="icon">🏢</span>
+              <span class="sidebar-end">
+                <span class="caret">▾</span>
+                <span class="icon">🏢</span>
+              </span>
             </button>
+            <div id="sidebarProjectsDropdown" class="sidebar-submenu hidden"></div>
             <button type="button" class="sidebar-link" data-section="units" onclick="handleSidebarNav('units', this)">
               <span class="label">الوحدات</span>
               <span class="icon">🔑</span>
@@ -1827,20 +2300,20 @@
           </div>
         </div>
 
-        <div id="mainDashboardCard" class="card metrics-panel" style="box-shadow:none;border:1px solid #e5e7eb">
-          <div class="metrics-panel-head">
+        <div id="mainDashboardCard" class="card" style="box-shadow:none;border:1px solid #e5e7eb">
+          <div class="home-summary-head">
             <div>
-              <h3>الإجمالي العام لكل المشاريع</h3>
-              <div class="metrics-panel-sub">لوحة متابعة أشيك وأكثر ترتيبًا، ويمكن طيها عند الحاجة لتخفيف الصفحة الرئيسية.</div>
+              <h3 style="margin:0 0 6px 0">الإجمالي العام لكل المشاريع</h3>
+              <div class="section-kicker">لوحة متابعة عامة من الصفحة الرئيسية فقط</div>
             </div>
-            <div class="metrics-panel-actions">
-              <span class="metrics-pill" id="mainDashboardProjectsCount">0 مشروع</span>
-              <button type="button" id="mainDashboardToggle" class="btn-gray metrics-toggle" onclick="toggleMetricsPanel('mainDashboardBody','mainDashboardToggle','إخفاء الملخص','إظهار الملخص')">إخفاء الملخص</button>
+            <div class="actions">
+              <span class="mini-stat" id="mainDashboardProjectsCount">0 مشروع</span>
+              <button type="button" id="mainDashboardToggleBtn" class="home-summary-toggle" onclick="toggleMainHomeSummary()">طي الملخص</button>
             </div>
           </div>
-          <div id="mainDashboardBody" class="metrics-panel-body">
-            <div id="mainDashboardGrid" class="home-dashboard-grid metrics-hero-grid"></div>
-          <div id="mainManagerAlerts" class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:12px">
+          <div id="mainDashboardBody" class="home-summary-body">
+            <div id="mainDashboardGrid" class="home-dashboard-grid"></div>
+            <div id="mainManagerAlerts" class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:12px">
             <div class="dashboard-collapsible-head" onclick="toggleMainManagerAlerts()">
               <div>
                 <h4 style="margin:0">تنبيهات المتابعة المباشرة</h4>
@@ -2038,54 +2511,69 @@
           </div>
         </div>
 
-        <div id="projectChartsSection" class="project-charts-grid">
-          <div class="chart-card">
-            <h4>حالات وحدات المشروع</h4>
-            <div class="chart-wrap"><canvas id="projectUnitsChart"></canvas></div>
+        <div class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-bottom:18px">
+          <div class="home-summary-head">
+            <div>
+              <h3 style="margin:0 0 6px 0">الرسوم البيانية</h3>
+              <div class="section-kicker">عرض مختصر للمبيعات والتكلفة ونسبة ربح المشروع بشكل اسطواني متحرك</div>
+            </div>
+            <div class="actions">
+              <span class="mini-stat">رسمان فقط</span>
+              <button type="button" id="projectChartsToggleBtn" class="home-summary-toggle" onclick="toggleProjectChartsSection()">طي الرسوم</button>
+            </div>
           </div>
-          <div class="chart-card">
-            <h4>المبيعات والمصروفات والربح</h4>
-            <div class="chart-wrap"><canvas id="projectFinanceChart"></canvas></div>
+          <div id="projectChartsSection" class="home-summary-body">
+            <div class="project-cylinder-grid">
+              <div class="chart-card cylinder-chart-card compact">
+                <div class="cylinder-card-head">
+                  <div>
+                    <h4>المبيعات والتكلفة</h4>
+                    <div class="small">مقارنة مباشرة بين إجمالي المبيعات وإجمالي التكلفة داخل المشروع</div>
+                  </div>
+                </div>
+                <div class="cylinder-stage two-only" id="projectFinanceCylinders"></div>
+              </div>
+              <div class="chart-card cylinder-chart-card compact">
+                <div class="cylinder-card-head">
+                  <div>
+                    <h4>نسبة ربح المشروع</h4>
+                    <div class="small">نسبة الربح من إجمالي التكلفة داخل المشروع</div>
+                  </div>
+                </div>
+                <div class="cylinder-stage single-only" id="projectProfitCylinder"></div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="card metrics-panel workspace-metrics-panel" style="margin-bottom:18px">
-          <div class="metrics-panel-head">
+        <div class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-bottom:18px">
+          <div class="home-summary-head">
             <div>
-              <h3>مؤشرات المشروع المالية</h3>
-              <div class="metrics-panel-sub">إجمالي المبيعات وإجمالي السعي والتكلفة والربح بشكل منظم وأشيك، مع إمكانية طي القسم وقت الحاجة.</div>
+              <h3 style="margin:0 0 6px 0">ملخص بطاقات المشروع</h3>
+              <div class="section-kicker">بطاقات سريعة ومركزة داخل المشروع مع إمكانية الطي والإظهار</div>
             </div>
-            <div class="metrics-panel-actions">
-              <span class="metrics-pill">ملخص ذكي للمشروع</span>
-              <button type="button" id="projectMetricsToggle" class="btn-gray metrics-toggle" onclick="toggleMetricsPanel('projectMetricsBody','projectMetricsToggle','إخفاء المؤشرات','إظهار المؤشرات')">إخفاء المؤشرات</button>
+            <div class="actions">
+              <span class="mini-stat" id="projectSummaryCardsCount">15 بطاقة</span>
+              <button type="button" id="projectSummaryToggleBtn" class="home-summary-toggle" onclick="toggleProjectSummaryCards()">طي البطاقات</button>
             </div>
           </div>
-          <div id="projectMetricsBody" class="metrics-panel-body">
-            <div class="kpis kpis-premium">
-          <div class="kpi"><div class="kpi-title">إجمالي المبيعات</div><div class="kpi-value" id="kpiSales">0</div></div>
-          <div class="kpi"><div class="kpi-title">إجمالي السعي المستحق</div><div class="kpi-value" id="kpiCommissionDue">0</div></div>
-          <div class="kpi"><div class="kpi-title">صافي المبيعات بعد خصم السعي</div><div class="kpi-value" id="kpiNetSales">0</div></div>
-          <div class="kpi"><div class="kpi-title">التكلفة الأساسية</div><div class="kpi-value" id="kpiCost">0</div></div>
-          <div class="kpi"><div class="kpi-title">إجمالي المصروفات شامل العهدة</div><div class="kpi-value" id="kpiExpenses">0</div></div>
-          <div class="kpi"><div class="kpi-title">إجمالي التكلفة</div><div class="kpi-value" id="kpiTotalProjectCost">0</div></div>
-          <div class="kpi"><div class="kpi-title">الربح قبل إدراج العهدة</div><div class="kpi-value" id="kpiProfitBeforeCustody">0</div></div>
-          <div class="kpi"><div class="kpi-title">العهدة المضافة ضمن المصروفات</div><div class="kpi-value" id="kpiSiteCustodyAdded">0</div></div>
-          <div class="kpi"><div class="kpi-title">الربح القابل للتوزيع بعد احتساب العهدة</div><div class="kpi-value" id="kpiProfit">0</div></div>
-          <div class="kpi"><div class="kpi-title">نسبة الشركة من إجمالي التكلفة</div><div class="kpi-value" id="kpiCompanyPercent">0</div></div>
-          <div class="kpi"><div class="kpi-title">نسبة الشركاء من إجمالي التكلفة</div><div class="kpi-value" id="kpiPartnerPercent">0</div></div>
-          <div class="kpi"><div class="kpi-title">مبلغ الشركة من إجمالي التكلفة</div><div class="kpi-value" id="kpiCompanyCostShare">0</div></div>
-          <div class="kpi"><div class="kpi-title">السعي المصروف فعليًا</div><div class="kpi-value" id="kpiCommissionPaid">0</div></div>
-          <div class="kpi"><div class="kpi-title">متبقي السعي</div><div class="kpi-value" id="kpiCommissionRemain">0</div></div>
-          <div class="kpi"><div class="kpi-title">المصروف من عهدة الموقع</div><div class="kpi-value" id="kpiSiteCustodySpent">0</div></div>
-          <div class="kpi"><div class="kpi-title">رصيد عهدة الموقع</div><div class="kpi-value" id="kpiSiteCustodyBalance">0</div></div>
-          <div class="kpi"><div class="kpi-title">نصيب الشركة من الشركاء</div><div class="kpi-value" id="kpiCompanyFromPartners">0</div></div>
-          <div class="kpi"><div class="kpi-title">ربح المساهمين</div><div class="kpi-value" id="kpiInvestorsProfit">0</div></div>
-          <div class="kpi"><div class="kpi-title">ربح الشركة بعد خصم المساهمين</div><div class="kpi-value" id="kpiCompanyAfterInvestors">0</div></div>
-          <div class="kpi"><div class="kpi-title">إدارة المساهمين</div><div class="kpi-value" id="kpiInvestorAdmin">0</div></div>
-          <div class="kpi"><div class="kpi-title">صافي الشركة النهائي</div><div class="kpi-value" id="kpiCompanyFinal">0</div></div>
-          <div class="kpi"><div class="kpi-title">الوحدات المباعة</div><div class="kpi-value" id="kpiSold">0</div></div>
-          <div class="kpi"><div class="kpi-title">الوحدات المحجوزة</div><div class="kpi-value" id="kpiBooked">0</div></div>
-          <div class="kpi"><div class="kpi-title">الوحدات المتاحة</div><div class="kpi-value" id="kpiAvailable">0</div></div>
+          <div id="projectSummaryCardsBody" class="home-summary-body">
+            <div class="kpis">
+              <div class="kpi"><div class="kpi-title">إجمالي سعر الوحدات</div><div class="kpi-value" id="kpiUnitPricesTotal">0</div></div>
+              <div class="kpi"><div class="kpi-title">إجمالي المبيعات</div><div class="kpi-value" id="kpiSales">0</div></div>
+              <div class="kpi"><div class="kpi-title">التحصيل</div><div class="kpi-value" id="kpiCollected">0</div></div>
+              <div class="kpi"><div class="kpi-title">إجمالي المتبقي</div><div class="kpi-value" id="kpiRemaining">0</div></div>
+              <div class="kpi"><div class="kpi-title">إجمالي التكلفة</div><div class="kpi-value" id="kpiTotalProjectCost">0</div></div>
+              <div class="kpi"><div class="kpi-title">نسبة الشركة</div><div class="kpi-value" id="kpiCompanyPercent">0</div></div>
+              <div class="kpi"><div class="kpi-title">نسبة الشركاء</div><div class="kpi-value" id="kpiPartnerPercent">0</div></div>
+              <div class="kpi"><div class="kpi-title">نسبة المساهمين</div><div class="kpi-value" id="kpiInvestorPercent">0</div></div>
+              <div class="kpi"><div class="kpi-title">نسبة ربح المشروع</div><div class="kpi-value" id="kpiProjectProfitPercent">0</div></div>
+              <div class="kpi"><div class="kpi-title">إجمالي السعي المستحق</div><div class="kpi-value" id="kpiCommissionDue">0</div></div>
+              <div class="kpi"><div class="kpi-title">إجمالي السعي المصروف</div><div class="kpi-value" id="kpiCommissionPaid">0</div></div>
+              <div class="kpi"><div class="kpi-title">إجمالي السعي المتبقي</div><div class="kpi-value" id="kpiCommissionRemain">0</div></div>
+              <div class="kpi"><div class="kpi-title">عدد الوحدات في المشروع</div><div class="kpi-value" id="kpiUnitsCount">0</div></div>
+              <div class="kpi"><div class="kpi-title">عدد الوحدات غير المتاحة</div><div class="kpi-value" id="kpiUnavailableUnits">0</div></div>
+              <div class="kpi"><div class="kpi-title">عدد الوحدات المتاحة</div><div class="kpi-value" id="kpiAvailable">0</div></div>
             </div>
           </div>
         </div>
@@ -3287,8 +3775,8 @@
       if(section === "projects"){
         backToProjects();
         setTimeout(() => {
+          toggleSidebarProjectsDropdown();
           document.getElementById("projectsList")?.scrollIntoView({behavior:"smooth", block:"start"});
-          updateSidebarActive("projects");
         }, 40);
         return;
       }
@@ -3316,6 +3804,78 @@
         reports: "reportTab"
       };
       openProjectFromSidebar(tabMap[section], section);
+    }
+
+
+    function getHomeSummaryCollapsed(){
+      return localStorage.getItem("anas_home_summary_collapsed") === "1";
+    }
+
+    function applyHomeSummaryCollapse(){
+      const body = document.getElementById("mainDashboardBody");
+      const btn = document.getElementById("mainDashboardToggleBtn");
+      if(!body || !btn) return;
+      const collapsed = getHomeSummaryCollapsed();
+      body.classList.toggle("hidden", collapsed);
+      btn.classList.toggle("open", !collapsed);
+      btn.textContent = collapsed ? "إظهار الملخص" : "طي الملخص";
+    }
+
+    function toggleMainHomeSummary(){
+      const collapsed = getHomeSummaryCollapsed();
+      localStorage.setItem("anas_home_summary_collapsed", collapsed ? "0" : "1");
+      applyHomeSummaryCollapse();
+    }
+
+
+    function toggleProjectSummaryCards(){
+      const body = document.getElementById("projectSummaryCardsBody");
+      const btn = document.getElementById("projectSummaryToggleBtn");
+      if(!body || !btn) return;
+      body.classList.toggle("hidden");
+      const hidden = body.classList.contains("hidden");
+      btn.textContent = hidden ? "إظهار البطاقات" : "طي البطاقات";
+      btn.classList.toggle("open", !hidden);
+    }
+
+    function renderSidebarProjectsDropdown(){
+      const box = document.getElementById("sidebarProjectsDropdown");
+      if(!box) return;
+      const projects = (appData.projects || []).filter(Boolean);
+      if(!projects.length){
+        box.innerHTML = '<button type="button" class="sidebar-subitem empty">لا توجد مشاريع بعد</button>';
+        return;
+      }
+      box.innerHTML = projects.map(p => `
+        <button type="button" class="sidebar-subitem" onclick="openProjectFromSidebarMenu('${String(p.id).replace(/'/g,"\'")}')">
+          <span class="name">${escapeHtml(p.name || 'بدون اسم')}</span>
+          <span class="mini">🏢</span>
+        </button>
+      `).join('');
+    }
+
+    function toggleSidebarProjectsDropdown(btn=null){
+      const dropdown = document.getElementById("sidebarProjectsDropdown");
+      const toggle = btn || document.getElementById("sidebarProjectsToggle");
+      if(!dropdown || !toggle) return;
+      renderSidebarProjectsDropdown();
+      const willOpen = dropdown.classList.contains("hidden");
+      dropdown.classList.toggle("hidden", !willOpen);
+      toggle.classList.toggle("open", willOpen);
+      updateSidebarActive("projects");
+    }
+
+    function closeSidebarProjectsDropdown(){
+      const dropdown = document.getElementById("sidebarProjectsDropdown");
+      const toggle = document.getElementById("sidebarProjectsToggle");
+      if(dropdown) dropdown.classList.add("hidden");
+      if(toggle) toggle.classList.remove("open");
+    }
+
+    function openProjectFromSidebarMenu(projectId){
+      closeSidebarProjectsDropdown();
+      openProject(projectId);
+      setTimeout(() => updateSidebarActive("projects"), 50);
     }
 
     function canAccess(action){
@@ -4863,6 +5423,9 @@ let globalSettingsState = {
       const base = {
         projectsCount: 0,
         totalSales: 0,
+        totalCollected: 0,
+        totalRemaining: 0,
+        totalUnitPrices: 0,
         totalExpenses: 0,
         totalProfit: 0,
         totalCompanyFinal: 0,
@@ -4879,15 +5442,19 @@ let globalSettingsState = {
       (appData.projects || []).forEach(project => {
         ensureArrays(project);
         const f = calcProjectFinancials(project);
+        const units = project.units || [];
         base.projectsCount += 1;
         base.totalSales += num(f.totalSales);
+        base.totalCollected += units.reduce((sum, u) => sum + num(u && u.paid), 0);
+        base.totalRemaining += units.reduce((sum, u) => sum + Math.max(0, num(u && u.remaining)), 0);
+        base.totalUnitPrices += units.reduce((sum, u) => sum + num((u && u.price) || 0), 0);
         base.totalExpenses += num(f.totalExpenses);
         base.totalProfit += num(f.profit);
         base.totalCompanyFinal += num(f.companyFinalProfit);
         base.totalCommissionDue += num(f.totalCommissionDue);
         base.totalCommissionPaid += num(f.totalCommissionPaid);
         base.totalCommissionRemain += num(f.totalCommissionRemain);
-        base.totalUnits += (project.units || []).length;
+        base.totalUnits += units.length;
         base.availableUnits += num(f.availableUnits);
         base.bookedUnits += num(f.bookedUnits);
         base.soldUnits += num(f.soldUnits);
@@ -5081,28 +5648,6 @@ let globalSettingsState = {
       toggleMainManagerAlerts(mainManagerAlertsExpanded || shouldOpen);
     }
 
-    function toggleMetricsPanel(bodyId, buttonId, hideText = "إخفاء", showText = "إظهار"){
-      const body = document.getElementById(bodyId);
-      const btn = document.getElementById(buttonId);
-      if(!body || !btn) return;
-      const isHidden = body.classList.toggle("hidden");
-      btn.textContent = isHidden ? showText : hideText;
-      btn.classList.toggle("open", !isHidden);
-      try{ localStorage.setItem(`metrics:${bodyId}`, isHidden ? "hidden" : "shown"); }catch(e){}
-    }
-
-    function restoreMetricsPanel(bodyId, buttonId, hideText = "إخفاء", showText = "إظهار"){
-      const body = document.getElementById(bodyId);
-      const btn = document.getElementById(buttonId);
-      if(!body || !btn) return;
-      let state = null;
-      try{ state = localStorage.getItem(`metrics:${bodyId}`); }catch(e){}
-      const isHidden = state === "hidden";
-      body.classList.toggle("hidden", isHidden);
-      btn.textContent = isHidden ? showText : hideText;
-      btn.classList.toggle("open", !isHidden);
-    }
-
     function renderMainDashboard(){
       const container = document.getElementById("mainDashboardGrid");
       const note = document.getElementById("mainDashboardNote");
@@ -5110,69 +5655,138 @@ let globalSettingsState = {
       if(!container) return;
       const agg = aggregateAllProjects();
       if(countEl) countEl.textContent = `${agg.projectsCount} مشروع`;
-      const adminRemain = (appData.projects || []).reduce((sum, project) => {
-        ensureArrays(project);
-        const d = calcAdminDistribution(project);
-        return sum + Math.max(0, num(d.companyRemain)) + Math.max(0, num(d.abuFarisRemain));
-      }, 0);
       const cards = [
-        ["عدد المشاريع", String(agg.projectsCount), "النشطة والمؤرشفة معًا", ""],
-        ["إجمالي المبيعات", money(agg.totalSales), "لكل المشاريع الحالية", "secondary"],
-        ["إجمالي الربح", money(agg.totalProfit), "بعد خصم التكلفة والسعي", "warn"],
-        ["صافي الشركة", money(agg.totalCompanyFinal), "النتيجة النهائية للشركة", ""],
-        ["مستحقات الإدارة المتبقية", money(adminRemain), "الشركة + الغامدي", "secondary"],
-        ["متبقي السعي", money(agg.totalCommissionRemain), `مستحق ${money(agg.totalCommissionDue)} | مصروف ${money(agg.totalCommissionPaid)}`, "warn"]
+        ["إجمالي أسعار الوحدات", money(agg.totalUnitPrices), `إجمالي ${agg.totalUnits} وحدة بجميع المشاريع`, ""],
+        ["إجمالي المبيعات", money(agg.totalSales), `الوحدات المباعة فعليًا في ${agg.projectsCount} مشروع`, "success"],
+        ["إجمالي المحصل", money(agg.totalCollected), "كل المبالغ المحصلة على الوحدات", "warn"],
+        ["إجمالي المتبقي", money(agg.totalRemaining), "إجمالي المتبقي المطلوب تحصيله", "danger"]
       ];
       container.innerHTML = cards.map(card => `
-        <div class="metrics-hero-card ${card[3] || ''}">
-          <div class="metrics-hero-label">${card[0]}</div>
-          <div class="metrics-hero-value">${card[1]}</div>
-          <div class="metrics-hero-sub">${card[2]}</div>
+        <div class="dashboard-card ${card[3] || ''}">
+          <div class="dashboard-label">${card[0]}</div>
+          <div class="dashboard-value">${card[1]}</div>
+          <div class="dashboard-sub">${card[2]}</div>
         </div>
       `).join("");
       if(note){
         note.textContent = agg.projectsCount
-          ? `آخر تحديث: ${new Date().toLocaleString('ar-SA')} | لوحة عملية خفيفة للمتابعة المباشرة`
+          ? `لوحة مختصرة ومنظمة للمتابعة السريعة | آخر تحديث: ${new Date().toLocaleString('ar-SA')}`
           : "أضف مشروعًا جديدًا ليظهر الملخص هنا.";
       }
       renderMainManagerAlerts();
-      restoreMetricsPanel("mainDashboardBody","mainDashboardToggle","إخفاء الملخص","إظهار الملخص");
     }
 
     function renderProjectCharts(){
-      if(typeof Chart === "undefined") return;
       const p = getProject();
       if(!p) return;
       const f = projectFinancials();
-      const unitsCanvas = document.getElementById("projectUnitsChart");
-      const financeCanvas = document.getElementById("projectFinanceChart");
-      const revenueStatuses = ["مباعة","تم السداد","تمت المراجعة النهائية","تم الافراغ"];
-      const availableCount = (p.units || []).filter(u => ["متاحة","شقة العرض"].includes(u.status)).length;
-      const bookedCount = (p.units || []).filter(u => u.status === "محجوزة").length;
-      const soldCount = (p.units || []).filter(u => revenueStatuses.includes(u.status)).length;
+      const financeWrap = document.getElementById("projectFinanceCylinders");
+      const profitWrap = document.getElementById("projectProfitCylinder");
 
-      if(unitsCanvas){
-        projectUnitsChart = destroyChartSafe(projectUnitsChart);
-        projectUnitsChart = new Chart(unitsCanvas, {
-          type: 'pie',
-          data: {
-            labels: ['متاحة', 'محجوزة', 'مباعة'],
-            datasets: [{ data: [availableCount, bookedCount, soldCount], borderWidth: 1 }]
-          },
-          options: { responsive: true, maintainAspectRatio: false }
-        });
+      const salesValue = num(f.totalSales);
+      const costValue = num(f.totalProjectCost);
+      const maxCompare = Math.max(salesValue, costValue, 1);
+      const salesPercent = Math.max(0, Math.min(100, (salesValue / maxCompare) * 100));
+      const costPercent = Math.max(0, Math.min(100, (costValue / maxCompare) * 100));
+      const projectProfitPercent = num(f.projectProfitPercent);
+      const profitPercent = Math.max(0, Math.min(100, projectProfitPercent));
+      const formatFill = (v) => {
+        const n = Number(v) || 0;
+        if(n <= 0) return '0%';
+        return `${Math.max(8, Math.min(100, n)).toFixed(2)}%`;
+      };
+
+      if(financeWrap){
+        financeWrap.innerHTML = `
+          <div class="cylinder-item">
+            <div class="cylinder-figure">
+              <div class="cylinder-shell">
+              <div class="cylinder-liquid blue" data-target-height="${formatFill(salesPercent)}">
+                <div class="cylinder-liquid-top"></div>
+                <div class="cylinder-wave"></div>
+                <div class="cylinder-wave wave-2"></div>
+              </div>
+              <div class="cylinder-glass-highlight"></div>
+              <div class="cylinder-percent">${salesPercent.toFixed(0)}%</div>
+              </div>
+              <div class="cylinder-base"></div>
+            </div>
+            <div class="cylinder-text"><div class="cylinder-label">إجمالي المبيعات</div>
+            <div class="cylinder-value">${money(salesValue)}</div></div>
+          </div>
+          <div class="cylinder-item">
+            <div class="cylinder-figure">
+              <div class="cylinder-shell">
+              <div class="cylinder-liquid red" data-target-height="${formatFill(costPercent)}">
+                <div class="cylinder-liquid-top"></div>
+                <div class="cylinder-wave"></div>
+                <div class="cylinder-wave wave-2"></div>
+              </div>
+              <div class="cylinder-glass-highlight"></div>
+              <div class="cylinder-percent">${costPercent.toFixed(0)}%</div>
+              </div>
+              <div class="cylinder-base"></div>
+            </div>
+            <div class="cylinder-text"><div class="cylinder-label">إجمالي التكلفة</div>
+            <div class="cylinder-value">${money(costValue)}</div></div>
+          </div>
+        `;
       }
-      if(financeCanvas){
-        projectFinanceChart = destroyChartSafe(projectFinanceChart);
-        projectFinanceChart = new Chart(financeCanvas, {
-          type: 'doughnut',
-          data: {
-            labels: ['إجمالي المبيعات', 'صافي المبيعات بعد السعي', 'إجمالي التكلفة', 'العهدة المحجوزة', 'الربح القابل للتوزيع'],
-            datasets: [{ data: [f.totalSales, f.netSalesAfterCommission, f.totalProjectCost, f.siteCustodyAdded, f.distributableProfit], borderWidth: 1 }]
-          },
-          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, position: 'bottom' } } }
-        });
+
+      if(profitWrap){
+        profitWrap.innerHTML = `
+          <div class="cylinder-item">
+            <div class="cylinder-figure">
+              <div class="cylinder-shell">
+              <div class="cylinder-liquid green" data-target-height="${formatFill(profitPercent)}">
+                <div class="cylinder-liquid-top"></div>
+                <div class="cylinder-wave"></div>
+                <div class="cylinder-wave wave-2"></div>
+              </div>
+              <div class="cylinder-glass-highlight"></div>
+              <div class="cylinder-percent">${projectProfitPercent.toFixed(2)}%</div>
+              </div>
+              <div class="cylinder-base"></div>
+            </div>
+            <div class="cylinder-text"><div class="cylinder-label">نسبة ربح المشروع</div>
+            <div class="cylinder-value">${money(f.distributableProfit)}</div></div>
+          </div>
+        `;
       }
+
+      animateCylinderFills();
+      applyProjectChartsCollapse();
+    }
+
+    function animateCylinderFills(){
+      const fills = document.querySelectorAll('.cylinder-liquid[data-target-height]');
+      fills.forEach(fill => {
+        fill.style.height = '0%';
+        const target = fill.getAttribute('data-target-height') || '0%';
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            fill.style.height = target;
+          });
+        });
+      });
+    }
+
+    function toggleProjectChartsSection(forceState){
+      const body = document.getElementById('projectChartsSection');
+      const btn = document.getElementById('projectChartsToggleBtn');
+      if(!body || !btn) return;
+      const shouldCollapse = typeof forceState === 'boolean' ? forceState : !body.classList.contains('hidden');
+      body.classList.toggle('hidden', shouldCollapse);
+      btn.classList.toggle('open', !shouldCollapse);
+      btn.textContent = shouldCollapse ? 'إظهار الرسوم' : 'طي الرسوم';
+    }
+
+    function applyProjectChartsCollapse(){
+      const body = document.getElementById('projectChartsSection');
+      const btn = document.getElementById('projectChartsToggleBtn');
+      if(!body || !btn) return;
+      btn.classList.toggle('open', !body.classList.contains('hidden'));
+      btn.textContent = body.classList.contains('hidden') ? 'إظهار الرسوم' : 'طي الرسوم';
     }
 
     function renderProjects(){
@@ -5181,6 +5795,8 @@ let globalSettingsState = {
       const box = document.getElementById("projectsList");
       box.innerHTML = "";
       renderMainDashboard();
+      renderSidebarProjectsDropdown();
+      applyHomeSummaryCollapse();
 
       const filterEl = document.getElementById("projectArchiveFilter");
       if(filterEl) projectArchiveFilter = filterEl.value || "active";
@@ -5468,6 +6084,11 @@ let globalSettingsState = {
       const soldUnits = units.filter(u => u.status === "مباعة").length;
       const bookedUnits = units.filter(u => u.status === "محجوزة").length;
       const availableUnits = units.filter(u => u.status === "متاحة").length;
+      const totalUnits = units.length;
+      const unavailableUnits = units.filter(u => (u.status || "متاحة") !== "متاحة").length;
+      const unitPricesTotal = units.reduce((s,u) => s + num(u.price), 0);
+      const totalCollected = units.reduce((s,u) => s + num(u.paid), 0);
+      const totalRemaining = units.reduce((s,u) => s + num(u.remaining), 0);
 
       const netSalesAfterCommission = totalSales - totalCommissionDue;
       const totalProjectCost = num(project.cost) + totalExpenses;
@@ -5523,6 +6144,10 @@ let globalSettingsState = {
       const totalInvestorAdmin = investorsFull
         .filter(x => !x.auto)
         .reduce((s,x) => s + num(x.adminValue), 0);
+      const investorPercentTotal = investorsFull
+        .filter(x => !x.auto)
+        .reduce((s,x) => s + num(x.ratio), 0);
+      const projectProfitPercent = totalProjectCost > 0 ? (distributableProfit / totalProjectCost) * 100 : 0;
 
       const companyInvestorRow = investorsFull.find(x => x.name === "الشركة");
       const companyFinalProfit = (companyInvestorRow ? num(companyInvestorRow.netShare) : 0) + totalInvestorAdmin;
@@ -5548,6 +6173,11 @@ let globalSettingsState = {
         soldUnits,
         bookedUnits,
         availableUnits,
+        totalUnits,
+        unavailableUnits,
+        unitPricesTotal,
+        totalCollected,
+        totalRemaining,
         netSalesAfterCommission,
         totalProjectCost,
         profitBeforeCustody,
@@ -5556,8 +6186,10 @@ let globalSettingsState = {
         siteCustodySpent,
         siteCustodyBalance,
         distributableProfit,
+        projectProfitPercent,
         companyPercent,
         partnerPercentTotal,
+        investorPercentTotal,
         companyCostShare,
         companyShareProfit,
         partnersFull,
@@ -6849,32 +7481,21 @@ ${party}
       const companyInvestorAdminRateInput = document.getElementById("companyInvestorAdminRate");
       if(companyInvestorAdminRateInput) companyInvestorAdminRateInput.value = num(p.companyInvestorAdminRate);
 
+      const summaryCountEl = document.getElementById("projectSummaryCardsCount"); if(summaryCountEl) summaryCountEl.innerText = "15 بطاقة";
+      const unitPricesTotalEl = document.getElementById("kpiUnitPricesTotal"); if(unitPricesTotalEl) unitPricesTotalEl.innerText = money(f.unitPricesTotal);
       document.getElementById("kpiSales").innerText = money(f.totalSales);
-      document.getElementById("kpiCost").innerText = money(p.cost);
-      document.getElementById("kpiExpenses").innerText = money(f.totalExpenses);
+      const collectedEl = document.getElementById("kpiCollected"); if(collectedEl) collectedEl.innerText = money(f.totalCollected);
+      const remainingEl = document.getElementById("kpiRemaining"); if(remainingEl) remainingEl.innerText = money(f.totalRemaining);
       document.getElementById("kpiCommissionDue").innerText = money(f.totalCommissionDue);
-      const netSalesEl = document.getElementById("kpiNetSales"); if(netSalesEl) netSalesEl.innerText = money(f.netSalesAfterCommission);
       const totalProjectCostEl = document.getElementById("kpiTotalProjectCost"); if(totalProjectCostEl) totalProjectCostEl.innerText = money(f.totalProjectCost);
       const companyPercentEl = document.getElementById("kpiCompanyPercent"); if(companyPercentEl) companyPercentEl.innerText = `${num(f.companyPercent).toFixed(2)}%`;
       const partnerPercentEl = document.getElementById("kpiPartnerPercent"); if(partnerPercentEl) partnerPercentEl.innerText = `${num(f.partnerPercentTotal).toFixed(2)}%`;
-      const companyCostShareEl = document.getElementById("kpiCompanyCostShare"); if(companyCostShareEl) companyCostShareEl.innerText = money(f.companyCostShare);
+      const investorPercentEl = document.getElementById("kpiInvestorPercent"); if(investorPercentEl) investorPercentEl.innerText = `${num(f.investorPercentTotal).toFixed(2)}%`;
+      const projectProfitPercentEl = document.getElementById("kpiProjectProfitPercent"); if(projectProfitPercentEl) projectProfitPercentEl.innerText = `${num(f.projectProfitPercent).toFixed(2)}%`;
       document.getElementById("kpiCommissionPaid").innerText = money(f.totalCommissionPaid);
       document.getElementById("kpiCommissionRemain").innerText = money(f.totalCommissionRemain);
-      const profitBeforeCustodyEl = document.getElementById("kpiProfitBeforeCustody"); if(profitBeforeCustodyEl) profitBeforeCustodyEl.innerText = money(f.profitBeforeCustody);
-      document.getElementById("kpiProfit").innerText = money(f.distributableProfit);
-      document.getElementById("kpiCompanyFromPartners").innerText = money(f.companyShareProfit);
-      const investorsProfitValue = (f.investorsFull || []).filter(x => !x.auto).reduce((s,x)=>s + num(x.grossShare), 0);
-      const companyAfterInvestorsValue = f.companyShareProfit - investorsProfitValue;
-      const companyNetFinalValue = companyAfterInvestorsValue + f.totalInvestorAdmin;
-      const investorsProfitEl = document.getElementById("kpiInvestorsProfit"); if(investorsProfitEl) investorsProfitEl.innerText = money(investorsProfitValue);
-      const companyAfterInvestorsEl = document.getElementById("kpiCompanyAfterInvestors"); if(companyAfterInvestorsEl) companyAfterInvestorsEl.innerText = money(companyAfterInvestorsValue);
-      document.getElementById("kpiInvestorAdmin").innerText = money(f.totalInvestorAdmin);
-      document.getElementById("kpiCompanyFinal").innerText = money(companyNetFinalValue);
-      const custodyAddedEl = document.getElementById("kpiSiteCustodyAdded"); if(custodyAddedEl) custodyAddedEl.innerText = money(f.siteCustodyAdded);
-      const custodySpentEl = document.getElementById("kpiSiteCustodySpent"); if(custodySpentEl) custodySpentEl.innerText = money(f.siteCustodySpent);
-      const custodyBalanceEl = document.getElementById("kpiSiteCustodyBalance"); if(custodyBalanceEl) custodyBalanceEl.innerText = money(f.siteCustodyBalance);
-      document.getElementById("kpiSold").innerText = f.soldUnits;
-      document.getElementById("kpiBooked").innerText = f.bookedUnits;
+      const unitsCountEl = document.getElementById("kpiUnitsCount"); if(unitsCountEl) unitsCountEl.innerText = f.totalUnits;
+      const unavailableUnitsEl = document.getElementById("kpiUnavailableUnits"); if(unavailableUnitsEl) unavailableUnitsEl.innerText = f.unavailableUnits;
       document.getElementById("kpiAvailable").innerText = f.availableUnits;
 
       renderDashboard();
@@ -6893,7 +7514,6 @@ ${party}
       renderCollectionBoard();
       renderPaymentAlerts();
       renderReport();
-      restoreMetricsPanel("projectMetricsBody","projectMetricsToggle","إخفاء المؤشرات","إظهار المؤشرات");
       refreshAdvanceNames();
       populateBankSelectOptions();
       toggleTransactionBankFields();
@@ -8791,69 +9411,122 @@ function renderSiteCustody(){
       });
     }
 
+
+    function toggleReportSection(sectionId, btn){
+      const body = document.getElementById(sectionId);
+      if(!body) return;
+      body.classList.toggle('hidden');
+      if(btn){
+        btn.textContent = body.classList.contains('hidden') ? 'إظهار' : 'طي';
+      }
+    }
+
     function renderReport(){
       const p = getProject();
       const f = projectFinancials();
       const filteredUnits = getFilteredUnits(p);
       const filteredExpenses = getFilteredExpenses(p);
 
-      const partnerLines = f.partnersFull.map(x => {
-        return `${x.name}: نسبة ${num(x.percent).toFixed(2)}% من إجمالي التكلفة | مبلغ ${money(x.costShare)} | ربح ${money(x.share)} | صرف تحت الحساب ${money(x.paidAdvance || 0)} | متبقي ${money(x.remain)}`;
-      }).join("<br>");
+      const partnerLines = f.partnersFull.length
+        ? f.partnersFull.map(x => `${x.name}: نسبة ${num(x.percent).toFixed(2)}% من إجمالي التكلفة | مبلغ ${money(x.costShare)} | ربح ${money(x.share)} | صرف تحت الحساب ${money(x.paidAdvance || 0)} | متبقي ${money(x.remain)}`)
+        : [];
 
-      const investorLines = f.investorsFull.map(x => {
-        return `${x.name}: مبلغ ${money(x.amount)} | نسبة ${num(x.ratio).toFixed(2)}% | صافي ${money(x.netShare)} | صرف تحت الحساب ${money(x.paidAdvance || 0)} | متبقي ${money(x.remain)}`;
-      }).join("<br>");
+      const investorLines = f.investorsFull.length
+        ? f.investorsFull.map(x => `${x.name}: مبلغ ${money(x.amount)} | نسبة ${num(x.ratio).toFixed(2)}% | صافي ${money(x.netShare)} | صرف تحت الحساب ${money(x.paidAdvance || 0)} | متبقي ${money(x.remain)}`)
+        : [];
 
       const marketerLines = f.marketerRows.length
-        ? f.marketerRows.map(x => `${x.name}: مستحق ${money(x.commissionDue)} | صرف ${money(x.paidAdvance)} | متبقي ${money(x.remainAfterAdvance)}`).join("<br>")
-        : "لا يوجد مسوقون";
+        ? f.marketerRows.map(x => `${x.name}: مستحق ${money(x.commissionDue)} | صرف ${money(x.paidAdvance)} | متبقي ${money(x.remainAfterAdvance)}`)
+        : [];
+
+      const companyFinalSmart = money((f.companyShareProfit - (f.investorsFull || []).filter(x=>!x.auto).reduce((s,x)=>s + num(x.grossShare), 0)) + f.totalInvestorAdmin);
 
       document.getElementById("reportBox").innerHTML = `
         <div class="report-hero">
           <div>
             <h4>${p.name}</h4>
-            <p>ملخص مالي وتشغيلي احترافي للمشروع مع عكس الفلاتر النشطة الحالية.</p>
+            <p>ملخص مالي وتشغيلي احترافي للمشروع، منظم بشكل واضح ويعكس الفلاتر النشطة الحالية بدون زحام بصري.</p>
           </div>
           <div class="report-badge">الوحدات الظاهرة: ${filteredUnits.length} | المصروفات الظاهرة: ${filteredExpenses.length}</div>
         </div>
 
-        <div class="report-grid">
-          <div class="report-card"><span class="label">إجمالي المبيعات</span><span class="value">${money(f.totalSales)}</span></div>
-          <div class="report-card"><span class="label">إجمالي التكلفة</span><span class="value">${money(f.totalProjectCost)}</span></div>
-          <div class="report-card"><span class="label">الربح القابل للتوزيع</span><span class="value">${money(f.distributableProfit)}</span></div>
-          <div class="report-card"><span class="label">صافي الشركة النهائي</span><span class="value">${money((f.companyShareProfit - (f.investorsFull || []).filter(x=>!x.auto).reduce((s,x)=>s + num(x.grossShare), 0)) + f.totalInvestorAdmin)}</span></div>
-          <div class="report-card"><span class="label">إجمالي السعي المستحق</span><span class="value">${money(f.totalCommissionDue)}</span></div>
-          <div class="report-card"><span class="label">متبقي السعي</span><span class="value">${money(f.totalCommissionRemain)}</span></div>
-          <div class="report-card"><span class="label">رصيد عهدة الموقع</span><span class="value">${money(f.siteCustodyBalance)}</span></div>
-          <div class="report-card"><span class="label">مبلغ الشركة من إجمالي التكلفة</span><span class="value">${money(f.companyCostShare)}</span></div>
+        <div class="report-top-cards">
+          <div class="report-top-card sales"><span class="label">إجمالي المبيعات</span><span class="value">${money(f.totalSales)}</span><span class="sub">كل المشاريع الحالية داخل هذا المشروع</span></div>
+          <div class="report-top-card profit"><span class="label">إجمالي الربح</span><span class="value">${money(f.distributableProfit)}</span><span class="sub">بعد خصم التكلفة والسعي</span></div>
+          <div class="report-top-card company"><span class="label">صافي الشركة</span><span class="value">${companyFinalSmart}</span><span class="sub">النتيجة النهائية للشركة</span></div>
+          <div class="report-top-card commission"><span class="label">متبقي السعي</span><span class="value">${money(f.totalCommissionRemain)}</span><span class="sub">مستحق ${money(f.totalCommissionDue)} | مصروف ${money(f.totalCommissionPaid)}</span></div>
         </div>
 
-        <div class="report-sections">
+        <div class="report-grid">
+          <div class="report-card"><span class="label">إجمالي التكلفة</span><span class="value">${money(f.totalProjectCost)}</span><span class="sub">التكلفة الأساسية + المصروفات + العهدة</span></div>
+          <div class="report-card"><span class="label">رصيد عهدة الموقع</span><span class="value">${money(f.siteCustodyBalance)}</span><span class="sub">المتبقي بعد الصرف من عهدة الموقع</span></div>
+          <div class="report-card"><span class="label">مبلغ الشركة من إجمالي التكلفة</span><span class="value">${money(f.companyCostShare)}</span><span class="sub">حسب نسبة الشركة من التكلفة</span></div>
+          <div class="report-card"><span class="label">الوحدات الحالية</span><span class="value">${f.soldUnits + f.bookedUnits + f.availableUnits}</span><span class="sub">مباع ${f.soldUnits} | محجوز ${f.bookedUnits} | متاح ${f.availableUnits}</span></div>
+        </div>
+
+        <div class="report-section-wrap">
           <div class="report-section">
-            <h5>المؤشرات الأساسية</h5>
-            <div class="report-list">
-              <div class="report-line"><strong>التكلفة الأساسية:</strong> ${money(p.cost)} | <strong>إجمالي المصروفات شامل العهدة:</strong> ${money(f.totalExpenses)}</div>
-              <div class="report-line"><strong>صافي المبيعات بعد خصم السعي:</strong> ${money(f.netSalesAfterCommission)} | <strong>السعي المصروف فعليًا:</strong> ${money(f.totalCommissionPaid)}</div>
-              <div class="report-line"><strong>الربح قبل إدراج العهدة:</strong> ${money(f.profitBeforeCustody)} | <strong>العهدة المضافة ضمن المصروفات:</strong> ${money(f.siteCustodyAdded)}</div>
-              <div class="report-line"><strong>نسبة الشركة من إجمالي التكلفة:</strong> ${num(f.companyPercent).toFixed(2)}% | <strong>نسبة الشركاء:</strong> ${num(f.partnerPercentTotal).toFixed(2)}%</div>
-              <div class="report-line"><strong>نصيب الشركة من الشركاء:</strong> ${money(f.companyShareProfit)} | <strong>إجمالي إدارة المساهمين:</strong> ${money(f.totalInvestorAdmin)}</div>
+            <div class="report-section-head">
+              <div class="report-section-titlebox">
+                <h5>المؤشرات الأساسية</h5>
+                <div class="hint">الخلاصة المالية الرئيسية للمشروع بشكل منظم وسهل القراءة</div>
+              </div>
+              <button type="button" class="report-section-toggle" onclick="toggleReportSection('reportBasicsBody', this)">طي</button>
+            </div>
+            <div class="report-section-body" id="reportBasicsBody">
+              <div class="report-list">
+                <div class="report-line"><strong>التكلفة الأساسية:</strong> ${money(p.cost)} | <strong>إجمالي المصروفات شامل العهدة:</strong> ${money(f.totalExpenses)}</div>
+                <div class="report-line"><strong>صافي المبيعات بعد خصم السعي:</strong> ${money(f.netSalesAfterCommission)} | <strong>السعي المصروف فعليًا:</strong> ${money(f.totalCommissionPaid)}</div>
+                <div class="report-line"><strong>الربح قبل إدراج العهدة:</strong> ${money(f.profitBeforeCustody)} | <strong>العهدة المضافة ضمن المصروفات:</strong> ${money(f.siteCustodyAdded)}</div>
+                <div class="report-line"><strong>نسبة الشركة من إجمالي التكلفة:</strong> ${num(f.companyPercent).toFixed(2)}% | <strong>نسبة الشركاء:</strong> ${num(f.partnerPercentTotal).toFixed(2)}%</div>
+                <div class="report-line"><strong>نصيب الشركة من الشركاء:</strong> ${money(f.companyShareProfit)} | <strong>إجمالي إدارة المساهمين:</strong> ${money(f.totalInvestorAdmin)}</div>
+              </div>
             </div>
           </div>
+        </div>
 
+        <div class="report-section-wrap">
           <div class="report-section">
-            <h5>الشركاء</h5>
-            <div class="report-list">${partnerLines ? partnerLines.split('<br>').map(line => `<div class="report-line">${line}</div>`).join('') : '<div class="report-line">لا يوجد شركاء</div>'}</div>
+            <div class="report-section-head">
+              <div class="report-section-titlebox">
+                <h5>الشركاء</h5>
+                <div class="hint">عرض مرتب لمستحقات الشركاء وحالة الصرف تحت الحساب</div>
+              </div>
+              <button type="button" class="report-section-toggle" onclick="toggleReportSection('reportPartnersBody', this)">طي</button>
+            </div>
+            <div class="report-section-body" id="reportPartnersBody">
+              <div class="report-list">${partnerLines.length ? partnerLines.map(line => `<div class="report-line">${line}</div>`).join('') : '<div class="report-line">لا يوجد شركاء</div>'}</div>
+            </div>
           </div>
+        </div>
 
+        <div class="report-section-wrap">
           <div class="report-section">
-            <h5>المساهمون</h5>
-            <div class="report-list">${investorLines ? investorLines.split('<br>').map(line => `<div class="report-line">${line}</div>`).join('') : '<div class="report-line">لا يوجد مساهمون</div>'}</div>
+            <div class="report-section-head">
+              <div class="report-section-titlebox">
+                <h5>المساهمون</h5>
+                <div class="hint">عرض صافي حقوق المساهمين والإدارة والمتبقي لكل مساهم</div>
+              </div>
+              <button type="button" class="report-section-toggle" onclick="toggleReportSection('reportInvestorsBody', this)">طي</button>
+            </div>
+            <div class="report-section-body" id="reportInvestorsBody">
+              <div class="report-list">${investorLines.length ? investorLines.map(line => `<div class="report-line">${line}</div>`).join('') : '<div class="report-line">لا يوجد مساهمون</div>'}</div>
+            </div>
           </div>
+        </div>
 
+        <div class="report-section-wrap">
           <div class="report-section">
-            <h5>المسوقون</h5>
-            <div class="report-list">${marketerLines === 'لا يوجد مسوقون' ? '<div class="report-line">لا يوجد مسوقون</div>' : marketerLines.split('<br>').map(line => `<div class="report-line">${line}</div>`).join('')}</div>
+            <div class="report-section-head">
+              <div class="report-section-titlebox">
+                <h5>المسوقون</h5>
+                <div class="hint">عرض سهل لمستحقات السعي وما تم صرفه فعليًا لكل مسوق</div>
+              </div>
+              <button type="button" class="report-section-toggle" onclick="toggleReportSection('reportMarketersBody', this)">طي</button>
+            </div>
+            <div class="report-section-body" id="reportMarketersBody">
+              <div class="report-list">${marketerLines.length ? marketerLines.map(line => `<div class="report-line">${line}</div>`).join('') : '<div class="report-line">لا يوجد مسوقون</div>'}</div>
+            </div>
           </div>
         </div>
       `;
