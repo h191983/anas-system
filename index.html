@@ -1463,9 +1463,72 @@
 .settings-action-btn.online-main{
   background:linear-gradient(180deg,#14b8a6 0%,#0f766e 55%,#115e59 100%);
 }
+.online-menu{position:relative}
+.online-menu-toggle{
+  min-width:190px;
+  justify-content:space-between;
+  padding-inline:16px;
+  background:linear-gradient(180deg,#21c7b8 0%,#0f8f83 55%,#0b6d66 100%);
+  box-shadow:0 4px 0 rgba(8,67,62,.28), 0 12px 20px rgba(15,23,42,.12);
+}
+.online-menu-toggle .btn-icon{font-size:15px}
+.online-menu-caret{font-size:12px;opacity:.95;margin-inline-start:4px}
+.online-menu-panel{
+  position:absolute;
+  top:calc(100% + 10px);
+  inset-inline-start:0;
+  min-width:250px;
+  background:linear-gradient(180deg,#ffffff 0%,#f7fbff 100%);
+  border:1px solid #d9e6f3;
+  border-radius:18px;
+  box-shadow:0 18px 40px rgba(15,23,42,.16);
+  padding:10px;
+  z-index:30;
+}
+.online-menu-panel::before{
+  content:"";
+  position:absolute;
+  top:-7px;
+  inset-inline-start:22px;
+  width:14px;
+  height:14px;
+  background:#fafdff;
+  border-top:1px solid #d9e6f3;
+  border-inline-start:1px solid #d9e6f3;
+  transform:rotate(45deg);
+}
+.online-menu-item{
+  width:100%;
+  min-width:unset;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:8px;
+  padding:12px 14px;
+  border-radius:14px;
+  background:linear-gradient(180deg,#ffffff 0%,#edf5ff 100%);
+  color:#15314d;
+  border:1px solid #d5e4f1;
+  box-shadow:none;
+  text-shadow:none;
+  margin-bottom:8px;
+  font-weight:800;
+}
+.online-menu-item:last-child{margin-bottom:0}
+.online-menu-item::before{display:none}
+.online-menu-item:hover{
+  transform:translateY(-1px);
+  background:linear-gradient(180deg,#ffffff 0%,#e3f0ff 100%);
+  box-shadow:0 10px 18px rgba(15,23,42,.08);
+}
+.online-menu-item .btn-icon{margin:0;width:20px;text-align:center;color:#1d4ed8}
+.online-menu-item.restore-item .btn-icon{color:#c2410c}
 @media (max-width:768px){
   .actions.unit-actions,.settings-top-actions{gap:6px}
   .unit-action-btn,.settings-action-btn{padding:9px 11px;font-size:12px}
+  .online-menu{width:100%}
+  .online-menu-toggle{width:100%;min-width:unset}
+  .online-menu-panel{width:100%;min-width:unset}
 }
 
 @media print{
@@ -2531,22 +2594,42 @@
               <span class="label">الوحدات</span>
               <span class="icon">🔑</span>
             </button>
-            <button type="button" class="sidebar-link" data-section="marketers" onclick="handleSidebarNav('marketers', this)">
+            <button type="button" id="sidebarMarketersToggle" class="sidebar-link has-dropdown" data-section="marketers" onclick="toggleSidebarMarketersDropdown(this)">
               <span class="label">المسوقين</span>
-              <span class="icon">👥</span>
+              <span class="sidebar-end">
+                <span class="caret">⌄</span>
+                <span class="icon">👥</span>
+              </span>
             </button>
+            <div id="sidebarMarketersDropdown" class="sidebar-submenu hidden"></div>
             <button type="button" class="sidebar-link" data-section="expenses" onclick="handleSidebarNav('expenses', this)">
               <span class="label">المصروفات</span>
               <span class="icon">🧾</span>
             </button>
-            <button type="button" class="sidebar-link" data-section="partners" onclick="handleSidebarNav('partners', this)">
+            <button type="button" id="sidebarPartnersToggle" class="sidebar-link has-dropdown" data-section="partners" onclick="toggleSidebarPartnersDropdown(this)">
               <span class="label">الشركاء</span>
-              <span class="icon">🤝</span>
+              <span class="sidebar-end">
+                <span class="caret">▾</span>
+                <span class="icon">🤝</span>
+              </span>
             </button>
-            <button type="button" class="sidebar-link" data-section="investors" onclick="handleSidebarNav('investors', this)">
+            <div id="sidebarPartnersDropdown" class="sidebar-submenu hidden"></div>
+            <button type="button" id="sidebarInvestorsToggle" class="sidebar-link has-dropdown" data-section="investors" onclick="toggleSidebarInvestorsDropdown(this)">
               <span class="label">المساهمين</span>
-              <span class="icon">👥</span>
+              <span class="sidebar-end">
+                <span class="caret">▾</span>
+                <span class="icon">👥</span>
+              </span>
             </button>
+            <div id="sidebarInvestorsDropdown" class="sidebar-submenu hidden"></div>
+            <button type="button" id="sidebarSiteCustodyToggle" class="sidebar-link has-dropdown" data-section="siteCustody" onclick="toggleSidebarSiteCustodyDropdown(this)">
+              <span class="label">عهدة الموقع</span>
+              <span class="sidebar-end">
+                <span class="caret">▾</span>
+                <span class="icon">💰</span>
+              </span>
+            </button>
+            <div id="sidebarSiteCustodyDropdown" class="sidebar-submenu hidden"></div>
             <button type="button" class="sidebar-link" data-section="collection" onclick="handleSidebarNav('collection', this)">
               <span class="label">التحصيل</span>
               <span class="icon">💼</span>
@@ -2585,11 +2668,18 @@
           <div class="actions settings-top-actions">
             <div id="cloudBadge" class="cloud-badge"><span id="cloudDot" class="cloud-dot offline"></span><span id="cloudText">أوفلاين</span></div>
             <div id="currentUserBadge" class="cloud-badge"><span class="cloud-dot online"></span><span>غير مسجل</span></div>
-            <button class="btn-teal settings-action-btn online-main" onclick="openCloudModal()"><span class="btn-icon">☁️</span><span>إعداد الأونلاين</span></button>
-            <button class="btn settings-action-btn sync-main" onclick="manualCloudSync()"><span class="btn-icon">🔄</span><span>مزامنة الآن</span></button>
-            <button class="btn-purple settings-action-btn backup-main" onclick="downloadBackup()"><span class="btn-icon">📦</span><span>نسخة احتياطية</span></button>
-            <button class="btn-purple settings-action-btn backup-main" onclick="openBackupsModal()"><span class="btn-icon">🗂</span><span>إدارة النسخ</span></button>
-            <button class="btn-orange settings-action-btn restore-main" onclick="document.getElementById('restoreFile').click()"><span class="btn-icon">↺</span><span>استرجاع</span></button>
+            <div class="online-menu" id="onlineMenuWrap">
+              <button class="btn-teal settings-action-btn online-menu-toggle" type="button" onclick="toggleOnlineMenu(event)">
+                <span class="btn-icon">☁️</span><span>إعدادات الأونلاين</span><span class="online-menu-caret">▾</span>
+              </button>
+              <div class="online-menu-panel hidden" id="onlineMenuPanel">
+                <button class="online-menu-item" type="button" onclick="openCloudModal(); closeOnlineMenu();"><span class="btn-icon">☁️</span><span>فتح إعداد الأونلاين</span></button>
+                <button class="online-menu-item" type="button" onclick="manualCloudSync(); closeOnlineMenu();"><span class="btn-icon">🔄</span><span>مزامنة الآن</span></button>
+                <button class="online-menu-item" type="button" onclick="downloadBackup(); closeOnlineMenu();"><span class="btn-icon">📦</span><span>نسخة احتياطية</span></button>
+                <button class="online-menu-item" type="button" onclick="openBackupsModal(); closeOnlineMenu();"><span class="btn-icon">🗂</span><span>إدارة النسخ</span></button>
+                <button class="online-menu-item restore-item" type="button" onclick="document.getElementById('restoreFile').click(); closeOnlineMenu();"><span class="btn-icon">↺</span><span>استرجاع</span></button>
+              </div>
+            </div>
             <input id="restoreFile" type="file" accept=".json" class="hidden" onchange="restoreBackup(event)" />
             <button id="biometricSetupBtn" class="btn-teal" onclick="setupBiometricForCurrentUser()">تفعيل البصمة</button>
             <button class="btn-gray" onclick="logout()">خروج</button>
@@ -3049,6 +3139,7 @@
         </div>
 
         <div id="marketersTab" class="card tab-panel hidden">
+          <div id="globalMarketerReportWrap" class="card" style="margin-bottom:14px;display:none"></div>
           <div class="section-title">
             <div>
               <h3>المسوقون والسعي</h3>
@@ -3137,6 +3228,7 @@
         </div>
 
         <div id="partnersTab" class="card tab-panel hidden">
+          <div id="globalPartnerReportWrap" class="card" style="margin-bottom:14px;display:none"></div>
           <div class="section-title">
             <div>
               <h3>الشركاء</h3>
@@ -3195,6 +3287,7 @@
         </div>
 
         <div id="investorsTab" class="card tab-panel hidden">
+          <div id="globalInvestorReportWrap" class="card" style="margin-bottom:14px;display:none"></div>
           <div class="section-title">
             <div>
               <h3>المساهمون داخل الشركة</h3>
@@ -3454,6 +3547,7 @@
         </div>
 
         <div id="siteCustodyTab" class="card tab-panel hidden">
+          <div id="globalSiteCustodyReportWrap" class="card" style="margin-bottom:14px;display:none"></div>
           <div class="section-title">
             <div>
               <h3>عهدة الموقع</h3>
@@ -4058,6 +4152,7 @@
           expensesTab: "expenses",
           partnersTab: "partners",
           investorsTab: "investors",
+          siteCustodyTab: "siteCustody",
           collectionTab: "collection",
           paymentAlertsTab: "paymentAlerts",
           reportTab: "reports"
@@ -4139,6 +4234,14 @@
         }, 40);
         return;
       }
+      if(section === "investors"){
+        toggleSidebarInvestorsDropdown();
+        return;
+      }
+      if(section === "siteCustody"){
+        toggleSidebarSiteCustodyDropdown();
+        return;
+      }
       if(section === "backups"){
         backToProjects();
         setTimeout(() => {
@@ -4158,6 +4261,7 @@
         expenses: "expensesTab",
         partners: "partnersTab",
         investors: "investorsTab",
+        siteCustody: "siteCustodyTab",
         collection: "collectionTab",
         paymentAlerts: "paymentAlertsTab",
         reports: "reportTab"
@@ -4213,15 +4317,178 @@
       `).join('');
     }
 
+    function getAllMarketerNames(){
+      const names = [];
+      const seen = new Set();
+      (appData.projects || []).forEach(project => {
+        const financials = calcProjectFinancials(project);
+        (financials.marketerRows || []).forEach(row => {
+          const name = String(row?.name || '').trim();
+          if(!name) return;
+          const key = name.toLowerCase();
+          if(seen.has(key)) return;
+          seen.add(key);
+          names.push(name);
+        });
+      });
+      return names.sort((a,b) => a.localeCompare(b, 'ar'));
+    }
+
+    function renderSidebarMarketersDropdown(){
+      const box = document.getElementById("sidebarMarketersDropdown");
+      if(!box) return;
+      const names = getAllMarketerNames();
+      if(!names.length){
+        box.innerHTML = '<button type="button" class="sidebar-subitem empty">لا يوجد مسوقون بعد</button>';
+        return;
+      }
+      box.innerHTML = names.map(name => `
+        <button type="button" class="sidebar-subitem" onclick="openGlobalMarketerReportFromSidebar('${escapeQuotes(name)}')">
+          <span class="name">${escapeHtml(name)}</span>
+          <span class="mini">👥</span>
+        </button>
+      `).join('');
+    }
+
+    function getAllInvestorNames(){
+      const names = [];
+      const seen = new Set();
+      (appData.projects || []).forEach(project => {
+        (project.investors || []).forEach(inv => {
+          const name = String(inv?.name || '').trim();
+          if(!name || name === 'الشركة') return;
+          const key = name.toLowerCase();
+          if(seen.has(key)) return;
+          seen.add(key);
+          names.push(name);
+        });
+      });
+      return names.sort((a,b) => a.localeCompare(b, 'ar'));
+    }
+
+    function renderSidebarInvestorsDropdown(){
+      const box = document.getElementById("sidebarInvestorsDropdown");
+      if(!box) return;
+      const names = getAllInvestorNames();
+      if(!names.length){
+        box.innerHTML = '<button type="button" class="sidebar-subitem empty">لا يوجد مساهمون بعد</button>';
+        return;
+      }
+      box.innerHTML = names.map(name => `
+        <button type="button" class="sidebar-subitem" onclick="openGlobalInvestorReportFromSidebar('${escapeQuotes(name)}')">
+          <span class="name">${escapeHtml(name)}</span>
+          <span class="mini">👤</span>
+        </button>
+      `).join('');
+    }
+
+    function toggleSidebarMarketersDropdown(btn=null){
+      const dropdown = document.getElementById("sidebarMarketersDropdown");
+      const toggle = btn || document.getElementById("sidebarMarketersToggle");
+      if(!dropdown || !toggle) return;
+      closeSidebarProjectsDropdown();
+      closeSidebarPartnersDropdown();
+      closeSidebarInvestorsDropdown();
+      closeSidebarSiteCustodyDropdown();
+      closeSidebarSiteCustodyDropdown();
+      renderSidebarMarketersDropdown();
+      const willOpen = dropdown.classList.contains("hidden");
+      dropdown.classList.toggle("hidden", !willOpen);
+      toggle.classList.toggle("open", willOpen);
+      updateSidebarActive("marketers");
+    }
+
+    function closeSidebarMarketersDropdown(){
+      const dropdown = document.getElementById("sidebarMarketersDropdown");
+      const toggle = document.getElementById("sidebarMarketersToggle");
+      if(dropdown) dropdown.classList.add("hidden");
+      if(toggle) toggle.classList.remove("open");
+    }
+
     function toggleSidebarProjectsDropdown(btn=null){
       const dropdown = document.getElementById("sidebarProjectsDropdown");
       const toggle = btn || document.getElementById("sidebarProjectsToggle");
       if(!dropdown || !toggle) return;
+      closeSidebarInvestorsDropdown();
+      closeSidebarPartnersDropdown();
+      closeSidebarSiteCustodyDropdown();
+      closeSidebarMarketersDropdown();
+      closeSidebarSiteCustodyDropdown();
       renderSidebarProjectsDropdown();
       const willOpen = dropdown.classList.contains("hidden");
       dropdown.classList.toggle("hidden", !willOpen);
       toggle.classList.toggle("open", willOpen);
       updateSidebarActive("projects");
+    }
+
+    function getAllPartnerNames(){
+      const names = [];
+      const seen = new Set();
+      (appData.projects || []).forEach(project => {
+        (project.partners || []).forEach(partner => {
+          const name = String(partner?.name || '').trim();
+          if(!name || name === 'الشركة') return;
+          const key = name.toLowerCase();
+          if(seen.has(key)) return;
+          seen.add(key);
+          names.push(name);
+        });
+      });
+      return names.sort((a,b) => a.localeCompare(b, 'ar'));
+    }
+
+    function renderSidebarPartnersDropdown(){
+      const box = document.getElementById("sidebarPartnersDropdown");
+      if(!box) return;
+      const names = getAllPartnerNames();
+      if(!names.length){
+        box.innerHTML = '<button type="button" class="sidebar-subitem empty">لا يوجد شركاء بعد</button>';
+        return;
+      }
+      box.innerHTML = names.map(name => `
+        <button type="button" class="sidebar-subitem" onclick="openGlobalPartnerReportFromSidebar('${escapeQuotes(name)}')">
+          <span class="name">${escapeHtml(name)}</span>
+          <span class="mini">🤝</span>
+        </button>
+      `).join('');
+    }
+
+    function toggleSidebarPartnersDropdown(btn=null){
+      const dropdown = document.getElementById("sidebarPartnersDropdown");
+      const toggle = btn || document.getElementById("sidebarPartnersToggle");
+      if(!dropdown || !toggle) return;
+      closeSidebarProjectsDropdown();
+      closeSidebarInvestorsDropdown();
+      closeSidebarSiteCustodyDropdown();
+      closeSidebarMarketersDropdown();
+      closeSidebarSiteCustodyDropdown();
+      renderSidebarPartnersDropdown();
+      const willOpen = dropdown.classList.contains("hidden");
+      dropdown.classList.toggle("hidden", !willOpen);
+      toggle.classList.toggle("open", willOpen);
+      updateSidebarActive("partners");
+    }
+
+    function closeSidebarPartnersDropdown(){
+      const dropdown = document.getElementById("sidebarPartnersDropdown");
+      const toggle = document.getElementById("sidebarPartnersToggle");
+      if(dropdown) dropdown.classList.add("hidden");
+      if(toggle) toggle.classList.remove("open");
+    }
+
+    function toggleSidebarInvestorsDropdown(btn=null){
+      const dropdown = document.getElementById("sidebarInvestorsDropdown");
+      const toggle = btn || document.getElementById("sidebarInvestorsToggle");
+      if(!dropdown || !toggle) return;
+      closeSidebarProjectsDropdown();
+      closeSidebarPartnersDropdown();
+      closeSidebarMarketersDropdown();
+      closeSidebarSiteCustodyDropdown();
+      renderSidebarInvestorsDropdown();
+      const willOpen = dropdown.classList.contains("hidden");
+      dropdown.classList.toggle("hidden", !willOpen);
+      toggle.classList.toggle("open", willOpen);
+      updateSidebarActive("investors");
     }
 
     function closeSidebarProjectsDropdown(){
@@ -4231,10 +4498,862 @@
       if(toggle) toggle.classList.remove("open");
     }
 
+    function closeSidebarInvestorsDropdown(){
+      const dropdown = document.getElementById("sidebarInvestorsDropdown");
+      const toggle = document.getElementById("sidebarInvestorsToggle");
+      if(dropdown) dropdown.classList.add("hidden");
+      if(toggle) toggle.classList.remove("open");
+    }
+
+    function getAllSiteCustodyProjects(){
+      return (appData.projects || [])
+        .filter(project => String(project?.name || '').trim())
+        .map(project => ({
+          id: String(project.id || ''),
+          name: String(project.name || '').trim(),
+          count: Array.isArray(project.siteCustody) ? project.siteCustody.length : 0
+        }))
+        .sort((a,b) => String(a.name).localeCompare(String(b.name), 'ar'));
+    }
+
+    function renderSidebarSiteCustodyDropdown(){
+      const box = document.getElementById("sidebarSiteCustodyDropdown");
+      if(!box) return;
+      const projects = getAllSiteCustodyProjects();
+      if(!projects.length){
+        box.innerHTML = '<button type="button" class="sidebar-subitem empty">لا توجد مشاريع بعد</button>';
+        return;
+      }
+      box.innerHTML = projects.map(project => `
+        <button type="button" class="sidebar-subitem" onclick="openGlobalSiteCustodyReportFromSidebar('${escapeQuotes(project.id)}')">
+          <span class="name">${escapeHtml(`عهدة موقع ${project.name}`)}</span>
+          <span class="mini">💰</span>
+        </button>
+      `).join('');
+    }
+
+    function toggleSidebarSiteCustodyDropdown(btn=null){
+      const dropdown = document.getElementById("sidebarSiteCustodyDropdown");
+      const toggle = btn || document.getElementById("sidebarSiteCustodyToggle");
+      if(!dropdown || !toggle) return;
+      closeSidebarProjectsDropdown();
+      closeSidebarPartnersDropdown();
+      closeSidebarInvestorsDropdown();
+      closeSidebarMarketersDropdown();
+      renderSidebarSiteCustodyDropdown();
+      const willOpen = dropdown.classList.contains("hidden");
+      dropdown.classList.toggle("hidden", !willOpen);
+      toggle.classList.toggle("open", willOpen);
+      updateSidebarActive("siteCustody");
+    }
+
+    function closeSidebarSiteCustodyDropdown(){
+      const dropdown = document.getElementById("sidebarSiteCustodyDropdown");
+      const toggle = document.getElementById("sidebarSiteCustodyToggle");
+      if(dropdown) dropdown.classList.add("hidden");
+      if(toggle) toggle.classList.remove("open");
+    }
+
     function openProjectFromSidebarMenu(projectId){
       closeSidebarProjectsDropdown();
+      closeSidebarPartnersDropdown();
+      closeSidebarMarketersDropdown();
       openProject(projectId);
       setTimeout(() => updateSidebarActive("projects"), 50);
+    }
+
+
+    function buildGlobalMarketerReportData(name){
+      const targetName = String(name || '').trim();
+      const normalized = targetName.toLowerCase();
+      const summary = {
+        name: targetName,
+        units: 0,
+        commissionDue: 0,
+        paid: 0,
+        remain: 0,
+        phone: '',
+        projects: [],
+        unitsRows: [],
+        advances: []
+      };
+      (appData.projects || []).forEach(project => {
+        const financials = calcProjectFinancials(project);
+        const row = (financials.marketerRows || []).find(x => String(x.name || '').trim().toLowerCase() === normalized);
+        const projectUnits = (project.units || []).filter(u => String(u.marketer || '').trim().toLowerCase() === normalized);
+        if(!row && !projectUnits.length) return;
+        const paid = num((row && row.paidAdvance) || 0);
+        const commissionDue = num((row && row.commissionDue) || 0);
+        const remain = num((row && row.remainAfterAdvance) || 0);
+        const phone = String((row && row.phone) || '').trim();
+        if(phone && !summary.phone) summary.phone = phone;
+        summary.units += num((row && row.units) || projectUnits.length);
+        summary.commissionDue += commissionDue;
+        summary.paid += paid;
+        summary.remain += remain;
+        summary.projects.push({
+          projectId: project.id,
+          projectName: project.name || '-',
+          units: num((row && row.units) || projectUnits.length),
+          commissionDue,
+          paid,
+          remain,
+          phone: phone || '-'
+        });
+        projectUnits.forEach(unit => {
+          summary.unitsRows.push({
+            projectName: project.name || '-',
+            unitNumber: unit.number || '-',
+            building: unit.building || '-',
+            floor: unit.floor || '-',
+            client: unit.client || '-',
+            status: unit.status || '-',
+            finalPrice: num(unit.finalPrice || unit.price || 0),
+            commission: num(unit.commission || 0),
+            paid: num(unit.paid || 0),
+            remaining: num(unit.remaining || 0)
+          });
+        });
+        (project.advances || []).filter(a => String(a.type || '') === 'marketer' && String(a.name || '').trim().toLowerCase() === normalized).forEach(a => {
+          summary.advances.push({
+            projectName: project.name || '-',
+            date: a.date || '-',
+            amount: num(a.amount),
+            method: a.method || '-',
+            bank: a.bank || '-',
+            note: a.note || '-'
+          });
+        });
+      });
+      summary.projects.sort((a,b) => String(a.projectName).localeCompare(String(b.projectName), 'ar'));
+      summary.unitsRows.sort((a,b) => String(a.projectName).localeCompare(String(b.projectName), 'ar') || String(a.unitNumber).localeCompare(String(b.unitNumber), 'ar'));
+      summary.advances.sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')));
+      return summary;
+    }
+
+    function renderGlobalMarketerReport(name){
+      const wrap = document.getElementById('globalMarketerReportWrap');
+      if(!wrap) return;
+      const data = buildGlobalMarketerReportData(name);
+      if(!data.name || (!data.projects.length && !data.unitsRows.length)){
+        wrap.style.display = 'none';
+        wrap.innerHTML = '';
+        return;
+      }
+      const projectRows = data.projects.length ? data.projects.map(row => `
+        <tr>
+          <td>${escapeHtml(row.projectName)}</td>
+          <td>${num(row.units)}</td>
+          <td>${money(row.commissionDue)}</td>
+          <td>${money(row.paid)}</td>
+          <td>${money(row.remain)}</td>
+          <td>${escapeHtml(row.phone)}</td>
+        </tr>
+      `).join('') : '<tr><td colspan="6">لا توجد بيانات مشاريع لهذا المسوق</td></tr>';
+      const unitRows = data.unitsRows.length ? data.unitsRows.map(row => `
+        <tr>
+          <td>${escapeHtml(row.projectName)}</td>
+          <td>${escapeHtml(row.unitNumber)}</td>
+          <td>${escapeHtml(row.building)}</td>
+          <td>${escapeHtml(row.floor)}</td>
+          <td>${escapeHtml(row.client)}</td>
+          <td>${escapeHtml(row.status)}</td>
+          <td>${money(row.finalPrice)}</td>
+          <td>${money(row.commission)}</td>
+          <td>${money(row.paid)}</td>
+          <td>${money(row.remaining)}</td>
+        </tr>
+      `).join('') : '<tr><td colspan="10">لا توجد شقق مرتبطة بهذا المسوق</td></tr>';
+      const advanceRows = data.advances.length ? data.advances.map(row => `
+        <tr>
+          <td>${escapeHtml(row.projectName)}</td>
+          <td>${escapeHtml(row.date)}</td>
+          <td>${money(row.amount)}</td>
+          <td>${escapeHtml(row.method)}</td>
+          <td>${escapeHtml(row.bank || '-')}</td>
+          <td>${escapeHtml(row.note || '-')}</td>
+        </tr>
+      `).join('') : '<tr><td colspan="6">لا توجد دفعات سعي مسجلة لهذا المسوق</td></tr>';
+      wrap.style.display = 'block';
+      wrap.innerHTML = `
+        <div class="section-title">
+          <div>
+            <h3>تقرير المسوق: ${escapeHtml(data.name)}</h3>
+            <div class="section-kicker">تقرير شامل من كل المشاريع والشقق المرتبطة بهذا المسوق</div>
+          </div>
+          <div class="actions no-print">
+            <button class="btn-link" type="button" onclick="openEntityStatementModal('marketer','${escapeQuotes(data.name)}')">كشف حساب</button>
+            <button class="btn-teal" type="button" onclick="printMarketerReport('${escapeQuotes(data.name)}')">طباعة السعي</button>
+          </div>
+        </div>
+        <div class="dashboard-grid" style="margin-top:12px">
+          <div class="dashboard-card"><div class="dashboard-label">عدد الوحدات</div><div class="dashboard-value">${num(data.units)}</div></div>
+          <div class="dashboard-card success"><div class="dashboard-label">إجمالي السعي المستحق</div><div class="dashboard-value">${money(data.commissionDue)}</div></div>
+          <div class="dashboard-card"><div class="dashboard-label">المدفوع</div><div class="dashboard-value">${money(data.paid)}</div></div>
+          <div class="dashboard-card danger"><div class="dashboard-label">المتبقي</div><div class="dashboard-value">${money(data.remain)}</div></div>
+          <div class="dashboard-card warn"><div class="dashboard-label">الجوال</div><div class="dashboard-value">${escapeHtml(data.phone || '-')}</div></div>
+        </div>
+        <div class="table-scroll" style="margin-top:14px">
+          <table>
+            <thead>
+              <tr>
+                <th>المشروع</th>
+                <th>عدد الوحدات</th>
+                <th>السعي المستحق</th>
+                <th>المدفوع</th>
+                <th>المتبقي</th>
+                <th>الجوال</th>
+              </tr>
+            </thead>
+            <tbody>${projectRows}</tbody>
+          </table>
+        </div>
+        <div class="table-scroll" style="margin-top:14px">
+          <table>
+            <thead>
+              <tr>
+                <th>المشروع</th>
+                <th>رقم الشقة</th>
+                <th>المبنى</th>
+                <th>الدور</th>
+                <th>العميل</th>
+                <th>الحالة</th>
+                <th>السعر النهائي</th>
+                <th>السعي</th>
+                <th>المحصل</th>
+                <th>المتبقي</th>
+              </tr>
+            </thead>
+            <tbody>${unitRows}</tbody>
+          </table>
+        </div>
+        <div class="table-scroll" style="margin-top:14px">
+          <table>
+            <thead>
+              <tr>
+                <th>المشروع</th>
+                <th>التاريخ</th>
+                <th>المبلغ</th>
+                <th>الطريقة</th>
+                <th>البنك</th>
+                <th>ملاحظة</th>
+              </tr>
+            </thead>
+            <tbody>${advanceRows}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function openGlobalMarketerReportFromSidebar(name){
+      const marketerName = String(name || '').trim();
+      if(!marketerName) return;
+      closeSidebarMarketersDropdown();
+      closeSidebarProjectsDropdown();
+      closeSidebarPartnersDropdown();
+      closeSidebarInvestorsDropdown();
+      const project = (appData.projects || []).find(p => {
+        const f = calcProjectFinancials(p);
+        return (f.marketerRows || []).some(x => String(x.name || '').trim() === marketerName);
+      }) || (appData.projects || [])[0];
+      if(project && project.id){
+        openProject(project.id, false);
+        const tabButton = document.querySelector(`.tab[onclick*="marketersTab"]`);
+        if(tabButton) showTab('marketersTab', tabButton);
+        renderGlobalMarketerReport(marketerName);
+        updateSidebarActive('marketers');
+        document.getElementById('globalMarketerReportWrap')?.scrollIntoView({behavior:'smooth', block:'start'});
+      }
+    }
+
+    function buildGlobalPartnerReportData(name){
+      const targetName = String(name || '').trim();
+      const normalized = targetName.toLowerCase();
+      const summary = {
+        name: targetName,
+        costShare: 0,
+        grossProfit: 0,
+        adminValue: 0,
+        netShare: 0,
+        paid: 0,
+        remain: 0,
+        projects: [],
+        advances: []
+      };
+      (appData.projects || []).forEach(project => {
+        const financials = calcProjectFinancials(project);
+        const row = (financials.partnersFull || []).find(x => !x.auto && String(x.name || '').trim().toLowerCase() === normalized);
+        if(!row) return;
+        const projectAdvances = (project.advances || []).filter(a => String(a.type || '') === 'partner' && String(a.name || '').trim().toLowerCase() === normalized);
+        const paid = num(row.paidAdvance || 0);
+        const remain = num(row.totalRemain ?? row.remain ?? row.netShare);
+        summary.costShare += num(row.costShare);
+        summary.grossProfit += num(row.grossShare);
+        summary.adminValue += num(row.adminValue);
+        summary.netShare += num(row.netShare);
+        summary.paid += paid;
+        summary.remain += remain;
+        summary.projects.push({
+          projectId: project.id,
+          projectName: project.name || '-',
+          percent: num(row.percent),
+          costShare: num(row.costShare),
+          grossShare: num(row.grossShare),
+          adminValue: num(row.adminValue),
+          netShare: num(row.netShare),
+          totalEntitlement: num(row.totalEntitlement || (num(row.costShare) + num(row.netShare))),
+          paid,
+          remain,
+          date: row.date || '-'
+        });
+        projectAdvances.forEach(a => {
+          summary.advances.push({
+            projectName: project.name || '-',
+            date: a.date || '-',
+            amount: num(a.amount),
+            method: a.method || '-',
+            bank: a.bank || '-',
+            note: a.note || '-'
+          });
+        });
+      });
+      summary.projects.sort((a,b) => String(a.projectName).localeCompare(String(b.projectName), 'ar'));
+      summary.advances.sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')));
+      return summary;
+    }
+
+    function renderGlobalPartnerReport(name){
+      const wrap = document.getElementById('globalPartnerReportWrap');
+      if(!wrap) return;
+      const data = buildGlobalPartnerReportData(name);
+      if(!data.name || !data.projects.length){
+        wrap.style.display = 'none';
+        wrap.innerHTML = '';
+        return;
+      }
+      const projectRows = data.projects.map(row => `
+        <tr>
+          <td>${escapeHtml(row.projectName)}</td>
+          <td>${num(row.percent).toFixed(2)}%</td>
+          <td>${money(row.costShare)}</td>
+          <td>${money(row.grossShare)}</td>
+          <td>${money(row.adminValue)}</td>
+          <td>${money(row.netShare)}</td>
+          <td>${money(row.paid)}</td>
+          <td>${money(row.remain)}</td>
+        </tr>
+      `).join('');
+      const advanceRows = data.advances.length ? data.advances.map(row => `
+        <tr>
+          <td>${escapeHtml(row.projectName)}</td>
+          <td>${escapeHtml(row.date)}</td>
+          <td>${money(row.amount)}</td>
+          <td>${escapeHtml(row.method)}</td>
+          <td>${escapeHtml(row.bank || '-')}</td>
+          <td>${escapeHtml(row.note || '-')}</td>
+        </tr>
+      `).join('') : '<tr><td colspan="6">لا توجد دفعات مسجلة لهذا الشريك</td></tr>';
+
+      wrap.style.display = 'block';
+      wrap.innerHTML = `
+        <div class="section-title">
+          <div>
+            <h3>تقرير الشريك: ${escapeHtml(data.name)}</h3>
+            <div class="section-kicker">تقرير شامل من كل المشاريع المرتبطة بهذا الشريك</div>
+          </div>
+          <div class="actions no-print">
+            <button class="btn-link" type="button" onclick="openEntityStatementModal('partner','${escapeQuotes(data.name)}')">كشف حساب</button>
+            <button class="btn-teal" type="button" onclick="printGlobalPartnerReport('${escapeQuotes(data.name)}')">طباعة</button>
+          </div>
+        </div>
+        <div class="dashboard-grid" style="margin-top:12px">
+          <div class="dashboard-card"><div class="dashboard-label">إجمالي رأس المال</div><div class="dashboard-value">${money(data.costShare)}</div></div>
+          <div class="dashboard-card success"><div class="dashboard-label">نصيب الربح</div><div class="dashboard-value">${money(data.grossProfit)}</div></div>
+          <div class="dashboard-card warn"><div class="dashboard-label">خصم الإدارة</div><div class="dashboard-value">${money(data.adminValue)}</div></div>
+          <div class="dashboard-card"><div class="dashboard-label">المدفوع</div><div class="dashboard-value">${money(data.paid)}</div></div>
+          <div class="dashboard-card danger"><div class="dashboard-label">المتبقي</div><div class="dashboard-value">${money(data.remain)}</div></div>
+        </div>
+        <div class="table-scroll" style="margin-top:14px">
+          <table>
+            <thead>
+              <tr>
+                <th>المشروع</th>
+                <th>النسبة</th>
+                <th>رأس المال</th>
+                <th>نصيب الربح</th>
+                <th>خصم الإدارة</th>
+                <th>الصافي</th>
+                <th>المدفوع</th>
+                <th>المتبقي</th>
+              </tr>
+            </thead>
+            <tbody>${projectRows}</tbody>
+          </table>
+        </div>
+        <div class="section-title" style="margin-top:16px">
+          <div>
+            <h4 style="margin:0">كشف العمليات</h4>
+            <div class="section-kicker">جميع الدفعات المسجلة لهذا الشريك من كل المشاريع</div>
+          </div>
+        </div>
+        <div class="table-scroll" style="margin-top:8px">
+          <table>
+            <thead>
+              <tr>
+                <th>المشروع</th>
+                <th>التاريخ</th>
+                <th>المبلغ</th>
+                <th>الطريقة</th>
+                <th>البنك</th>
+                <th>الملاحظة</th>
+              </tr>
+            </thead>
+            <tbody>${advanceRows}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function openGlobalPartnerReportFromSidebar(name){
+      const partnerName = String(name || '').trim();
+      if(!partnerName) return;
+      closeSidebarPartnersDropdown();
+      closeSidebarProjectsDropdown();
+      closeSidebarInvestorsDropdown();
+      const pid = getSidebarProjectId() || String((appData.projects || [])[0]?.id || '');
+      if(!pid){
+        alert('لا يوجد مشروع متاح لفتح شاشة الشركاء.');
+        return;
+      }
+      openProject(pid, true);
+      setTimeout(() => {
+        const tabButton = document.querySelector(`.tab[onclick*="partnersTab"]`);
+        if(tabButton) showTab('partnersTab', tabButton);
+        renderGlobalPartnerReport(partnerName);
+        updateSidebarActive('partners');
+        document.getElementById('globalPartnerReportWrap')?.scrollIntoView({behavior:'smooth', block:'start'});
+      }, 40);
+    }
+
+    function printGlobalPartnerReport(name){
+      const data = buildGlobalPartnerReportData(name);
+      if(!data.name || !data.projects.length) return;
+      const projectRows = data.projects.map(row => `
+        <tr>
+          <td>${escapeHtml(row.projectName)}</td>
+          <td>${num(row.percent).toFixed(2)}%</td>
+          <td>${money(row.costShare)}</td>
+          <td>${money(row.grossShare)}</td>
+          <td>${money(row.adminValue)}</td>
+          <td>${money(row.netShare)}</td>
+          <td>${money(row.paid)}</td>
+          <td>${money(row.remain)}</td>
+        </tr>
+      `).join('');
+      const advanceRows = data.advances.length ? data.advances.map(row => `
+        <tr>
+          <td>${escapeHtml(row.projectName)}</td>
+          <td>${escapeHtml(row.date)}</td>
+          <td>${money(row.amount)}</td>
+          <td>${escapeHtml(row.method)}</td>
+          <td>${escapeHtml(row.bank || '-')}</td>
+          <td>${escapeHtml(row.note || '-')}</td>
+        </tr>
+      `).join('') : '<tr><td colspan="6">لا توجد دفعات مسجلة لهذا الشريك</td></tr>';
+      const win = window.open('', '_blank');
+      if(!win) return;
+      win.document.write(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>تقرير الشريك</title><style>body{font-family:Tahoma,Arial,sans-serif;padding:18px;direction:rtl}table{width:100%;border-collapse:collapse;margin-top:12px}th,td{border:1px solid #999;padding:6px;text-align:center}h2,h3,h4{margin:0 0 10px 0}.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:14px 0}.box{border:1px solid #ccc;border-radius:10px;padding:10px}.muted{color:#555;font-size:12px}</style></head><body><h2>تقرير الشريك: ${escapeHtml(data.name)}</h2><div class="muted">تقرير شامل من كل المشاريع</div><div class="grid"><div class="box"><strong>إجمالي رأس المال</strong><div>${money(data.costShare)}</div></div><div class="box"><strong>نصيب الربح</strong><div>${money(data.grossProfit)}</div></div><div class="box"><strong>خصم الإدارة</strong><div>${money(data.adminValue)}</div></div><div class="box"><strong>المدفوع</strong><div>${money(data.paid)}</div></div><div class="box"><strong>المتبقي</strong><div>${money(data.remain)}</div></div></div><h3>تفاصيل المشاريع</h3><table><thead><tr><th>المشروع</th><th>النسبة</th><th>رأس المال</th><th>نصيب الربح</th><th>خصم الإدارة</th><th>الصافي</th><th>المدفوع</th><th>المتبقي</th></tr></thead><tbody>${projectRows}</tbody></table><h3 style="margin-top:16px">كشف العمليات</h3><table><thead><tr><th>المشروع</th><th>التاريخ</th><th>المبلغ</th><th>الطريقة</th><th>البنك</th><th>الملاحظة</th></tr></thead><tbody>${advanceRows}</tbody></table></body></html>`);
+      win.document.close();
+      win.focus();
+      setTimeout(() => win.print(), 250);
+    }
+
+    function buildGlobalInvestorReportData(name){
+      const targetName = String(name || '').trim();
+      const normalized = targetName.toLowerCase();
+      const summary = {
+        name: targetName,
+        capital: 0,
+        grossProfit: 0,
+        adminValue: 0,
+        netShare: 0,
+        paid: 0,
+        remain: 0,
+        projects: [],
+        advances: []
+      };
+      (appData.projects || []).forEach(project => {
+        const financials = calcProjectFinancials(project);
+        const row = (financials.investorsFull || []).find(x => !x.auto && String(x.name || '').trim().toLowerCase() === normalized);
+        if(!row) return;
+        const projectAdvances = (project.advances || []).filter(a => String(a.type || '') === 'investor' && String(a.name || '').trim().toLowerCase() === normalized);
+        const paid = num(row.paidAdvance || 0);
+        const remain = num(row.totalRemain ?? row.remain ?? row.netShare);
+        summary.capital += num(row.amount);
+        summary.grossProfit += num(row.grossShare);
+        summary.adminValue += num(row.adminValue);
+        summary.netShare += num(row.netShare);
+        summary.paid += paid;
+        summary.remain += remain;
+        summary.projects.push({
+          projectId: project.id,
+          projectName: project.name || '-',
+          amount: num(row.amount),
+          ratio: num(row.ratio),
+          grossShare: num(row.grossShare),
+          adminValue: num(row.adminValue),
+          netShare: num(row.netShare),
+          totalEntitlement: num(row.totalEntitlement || (num(row.amount) + num(row.netShare))),
+          paid,
+          remain,
+          date: row.date || '-'
+        });
+        projectAdvances.forEach(a => {
+          summary.advances.push({
+            projectName: project.name || '-',
+            date: a.date || '-',
+            amount: num(a.amount),
+            method: a.method || '-',
+            bank: a.bank || '-',
+            note: a.note || '-'
+          });
+        });
+      });
+      summary.projects.sort((a,b) => String(a.projectName).localeCompare(String(b.projectName), 'ar'));
+      summary.advances.sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')));
+      return summary;
+    }
+
+    function renderGlobalInvestorReport(name){
+      const wrap = document.getElementById('globalInvestorReportWrap');
+      if(!wrap) return;
+      const data = buildGlobalInvestorReportData(name);
+      if(!data.name || !data.projects.length){
+        wrap.style.display = 'none';
+        wrap.innerHTML = '';
+        return;
+      }
+      const projectRows = data.projects.map(row => `
+        <tr>
+          <td>${escapeHtml(row.projectName)}</td>
+          <td>${money(row.amount)}</td>
+          <td>${num(row.ratio).toFixed(2)}%</td>
+          <td>${money(row.grossShare)}</td>
+          <td>${money(row.adminValue)}</td>
+          <td>${money(row.netShare)}</td>
+          <td>${money(row.paid)}</td>
+          <td>${money(row.remain)}</td>
+        </tr>
+      `).join('');
+      const advanceRows = data.advances.length ? data.advances.map(row => `
+        <tr>
+          <td>${escapeHtml(row.projectName)}</td>
+          <td>${escapeHtml(row.date)}</td>
+          <td>${money(row.amount)}</td>
+          <td>${escapeHtml(row.method)}</td>
+          <td>${escapeHtml(row.bank || '-')}</td>
+          <td>${escapeHtml(row.note || '-')}</td>
+        </tr>
+      `).join('') : '<tr><td colspan="6">لا توجد دفعات مسجلة لهذا المساهم</td></tr>';
+
+      wrap.style.display = 'block';
+      wrap.innerHTML = `
+        <div class="section-title">
+          <div>
+            <h3>تقرير المساهم: ${escapeHtml(data.name)}</h3>
+            <div class="section-kicker">تقرير شامل من كل المشاريع المرتبطة بهذا المساهم</div>
+          </div>
+          <div class="actions no-print">
+            <button class="btn-link" type="button" onclick="openEntityStatementModal('investor','${escapeQuotes(data.name)}')">كشف حساب</button>
+            <button class="btn-teal" type="button" onclick="printGlobalInvestorReport('${escapeQuotes(data.name)}')">طباعة</button>
+          </div>
+        </div>
+        <div class="dashboard-grid" style="margin-top:12px">
+          <div class="dashboard-card"><div class="dashboard-label">رأس المال</div><div class="dashboard-value">${money(data.capital)}</div></div>
+          <div class="dashboard-card success"><div class="dashboard-label">نصيب الربح</div><div class="dashboard-value">${money(data.grossProfit)}</div></div>
+          <div class="dashboard-card warn"><div class="dashboard-label">خصم الإدارة</div><div class="dashboard-value">${money(data.adminValue)}</div></div>
+          <div class="dashboard-card"><div class="dashboard-label">المدفوع</div><div class="dashboard-value">${money(data.paid)}</div></div>
+          <div class="dashboard-card danger"><div class="dashboard-label">المتبقي</div><div class="dashboard-value">${money(data.remain)}</div></div>
+        </div>
+        <div class="table-scroll" style="margin-top:14px">
+          <table>
+            <thead>
+              <tr>
+                <th>المشروع</th>
+                <th>رأس المال</th>
+                <th>نسبة المشاركة</th>
+                <th>نصيب الربح</th>
+                <th>خصم الإدارة</th>
+                <th>الصافي</th>
+                <th>المدفوع</th>
+                <th>المتبقي</th>
+              </tr>
+            </thead>
+            <tbody>${projectRows}</tbody>
+          </table>
+        </div>
+        <div class="section-title" style="margin-top:16px">
+          <div>
+            <h4 style="margin:0">كشف العمليات</h4>
+            <div class="section-kicker">جميع الدفعات المسجلة لهذا المساهم من كل المشاريع</div>
+          </div>
+        </div>
+        <div class="table-scroll" style="margin-top:8px">
+          <table>
+            <thead>
+              <tr>
+                <th>المشروع</th>
+                <th>التاريخ</th>
+                <th>المبلغ</th>
+                <th>الطريقة</th>
+                <th>البنك</th>
+                <th>الملاحظة</th>
+              </tr>
+            </thead>
+            <tbody>${advanceRows}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function openGlobalInvestorReportFromSidebar(name){
+      const investorName = String(name || '').trim();
+      if(!investorName) return;
+      closeSidebarInvestorsDropdown();
+      closeSidebarPartnersDropdown();
+      const pid = getSidebarProjectId() || String((appData.projects || [])[0]?.id || '');
+      if(!pid){
+        alert('لا يوجد مشروع متاح لفتح شاشة المساهمين.');
+        return;
+      }
+      openProject(pid, true);
+      setTimeout(() => {
+        const tabButton = document.querySelector(`.tab[onclick*="investorsTab"]`);
+        if(tabButton) showTab('investorsTab', tabButton);
+        renderGlobalInvestorReport(investorName);
+        updateSidebarActive('investors');
+        document.getElementById('globalInvestorReportWrap')?.scrollIntoView({behavior:'smooth', block:'start'});
+      }, 40);
+    }
+
+    function buildGlobalSiteCustodyReportData(projectId){
+      const project = (appData.projects || []).find(p => String(p.id) === String(projectId));
+      if(!project) return null;
+      const financials = calcProjectFinancials(project);
+      const rows = (project.siteCustody || []).slice().sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')));
+      return {
+        id: String(project.id || ''),
+        projectName: String(project.name || '-').trim() || '-',
+        added: num(financials.siteCustodyAdded),
+        spent: num(financials.siteCustodySpent),
+        balance: num(financials.siteCustodyBalance),
+        count: rows.length,
+        rows: rows.map(row => ({
+          date: row.date || '-',
+          type: row.type === 'add' ? 'إضافة للعهدة' : 'صرف من العهدة',
+          amount: num(row.amount),
+          method: row.method === 'bank' ? 'بنك' : 'نقدًا',
+          bank: row.bank || '-',
+          note: row.note || '-',
+          effect: row.type === 'add' ? 'يخصم قبل التوزيع' : 'يخصم من رصيد العهدة'
+        }))
+      };
+    }
+
+    function renderGlobalSiteCustodyReport(projectId){
+      const wrap = document.getElementById('globalSiteCustodyReportWrap');
+      if(!wrap) return;
+      const data = buildGlobalSiteCustodyReportData(projectId);
+      if(!data){
+        wrap.style.display = 'none';
+        wrap.innerHTML = '';
+        return;
+      }
+      const rowsHtml = data.rows.length ? data.rows.map(row => `
+        <tr>
+          <td>${escapeHtml(row.date)}</td>
+          <td>${escapeHtml(row.type)}</td>
+          <td>${money(row.amount)}</td>
+          <td>${escapeHtml(row.method)}</td>
+          <td>${escapeHtml(row.bank)}</td>
+          <td>${escapeHtml(row.note)}</td>
+          <td>${escapeHtml(row.effect)}</td>
+        </tr>
+      `).join('') : '<tr><td colspan="7">لا توجد حركات عهدة مسجلة لهذا الموقع</td></tr>';
+
+      wrap.style.display = 'block';
+      wrap.innerHTML = `
+        <div class="section-title">
+          <div>
+            <h3>تقرير عهدة موقع: ${escapeHtml(data.projectName)}</h3>
+            <div class="section-kicker">عرض شامل لعهدة الموقع داخل الصفحة نفسها</div>
+          </div>
+          <div class="actions no-print">
+            <button class="btn-link" type="button" onclick="printGlobalSiteCustodyReport('${escapeQuotes(data.id)}')">كشف حساب</button>
+            <button class="btn-teal" type="button" onclick="printGlobalSiteCustodyReport('${escapeQuotes(data.id)}')">طباعة</button>
+          </div>
+        </div>
+        <div class="dashboard-grid" style="margin-top:12px">
+          <div class="dashboard-card"><div class="dashboard-label">الرصيد الحالي</div><div class="dashboard-value">${money(data.balance)}</div></div>
+          <div class="dashboard-card success"><div class="dashboard-label">إجمالي الإضافات</div><div class="dashboard-value">${money(data.added)}</div></div>
+          <div class="dashboard-card warn"><div class="dashboard-label">إجمالي المصروفات</div><div class="dashboard-value">${money(data.spent)}</div></div>
+          <div class="dashboard-card"><div class="dashboard-label">عدد الحركات</div><div class="dashboard-value">${data.count}</div></div>
+        </div>
+        <div class="section-title" style="margin-top:16px">
+          <div>
+            <h4 style="margin:0">كشف العمليات</h4>
+            <div class="section-kicker">جميع حركات عهدة الموقع لهذا المشروع</div>
+          </div>
+        </div>
+        <div class="table-scroll" style="margin-top:8px">
+          <table>
+            <thead>
+              <tr>
+                <th>التاريخ</th>
+                <th>النوع</th>
+                <th>المبلغ</th>
+                <th>طريقة الحركة</th>
+                <th>البنك</th>
+                <th>البيان</th>
+                <th>الأثر</th>
+              </tr>
+            </thead>
+            <tbody>${rowsHtml}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function openGlobalSiteCustodyReportFromSidebar(projectId){
+      const pid = String(projectId || '').trim();
+      if(!pid) return;
+      closeSidebarSiteCustodyDropdown();
+      closeSidebarProjectsDropdown();
+      closeSidebarMarketersDropdown();
+      closeSidebarPartnersDropdown();
+      closeSidebarInvestorsDropdown();
+      const project = (appData.projects || []).find(p => String(p.id) === pid);
+      if(!project){
+        alert('لا يوجد مشروع متاح لفتح عهدة الموقع.');
+        return;
+      }
+      openProject(pid, true);
+      setTimeout(() => {
+        const tabButton = document.querySelector(`.tab[onclick*="siteCustodyTab"]`);
+        if(tabButton) showTab('siteCustodyTab', tabButton);
+        renderGlobalSiteCustodyReport(pid);
+        updateSidebarActive('siteCustody');
+        document.getElementById('globalSiteCustodyReportWrap')?.scrollIntoView({behavior:'smooth', block:'start'});
+      }, 40);
+    }
+
+    function printGlobalSiteCustodyReport(projectId){
+      const data = buildGlobalSiteCustodyReportData(projectId);
+      if(!data) return;
+      const bodyRows = data.rows.length ? data.rows.map(row => `
+        <tr>
+          <td>${escapeHtml(row.date)}</td>
+          <td>${escapeHtml(row.type)}</td>
+          <td>${money(row.amount)}</td>
+          <td>${escapeHtml(row.method)}</td>
+          <td>${escapeHtml(row.bank)}</td>
+          <td>${escapeHtml(row.note)}</td>
+          <td>${escapeHtml(row.effect)}</td>
+        </tr>
+      `).join('') : '<tr><td colspan="7">لا توجد حركات عهدة مسجلة لهذا الموقع</td></tr>';
+      const win = window.open('', '_blank');
+      if(!win) return;
+      win.document.write(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>تقرير عهدة الموقع</title><style>body{font-family:Tahoma,Arial,sans-serif;padding:18px;direction:rtl}table{width:100%;border-collapse:collapse;margin-top:12px}th,td{border:1px solid #999;padding:6px;text-align:center}h2,h3{margin:0 0 10px 0}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}.box{border:1px solid #ccc;border-radius:10px;padding:10px}.muted{color:#555;font-size:12px}</style></head><body><h2>تقرير عهدة موقع: ${escapeHtml(data.projectName)}</h2><div class="muted">تاريخ الطباعة: ${escapeHtml(todayText())}</div><div class="grid"><div class="box"><strong>الرصيد الحالي</strong><div>${money(data.balance)}</div></div><div class="box"><strong>إجمالي الإضافات</strong><div>${money(data.added)}</div></div><div class="box"><strong>إجمالي المصروفات</strong><div>${money(data.spent)}</div></div><div class="box"><strong>عدد الحركات</strong><div>${data.count}</div></div></div><h3>كشف العمليات</h3><table><thead><tr><th>التاريخ</th><th>النوع</th><th>المبلغ</th><th>طريقة الحركة</th><th>البنك</th><th>البيان</th><th>الأثر</th></tr></thead><tbody>${bodyRows}</tbody></table></body></html>`);
+      win.document.close();
+      win.focus();
+      setTimeout(() => win.print(), 250);
+    }
+
+    function printGlobalInvestorReport(name){
+      const data = buildGlobalInvestorReportData(name);
+      if(!data.name || !data.projects.length) return;
+      const projectRows = data.projects.map(row => `
+        <tr>
+          <td>${escapeHtml(row.projectName)}</td>
+          <td>${money(row.amount)}</td>
+          <td>${num(row.ratio).toFixed(2)}%</td>
+          <td>${money(row.grossShare)}</td>
+          <td>${money(row.adminValue)}</td>
+          <td>${money(row.netShare)}</td>
+          <td>${money(row.paid)}</td>
+          <td>${money(row.remain)}</td>
+        </tr>
+      `).join('');
+      const advanceRows = data.advances.length ? data.advances.map(row => `
+        <tr>
+          <td>${escapeHtml(row.projectName)}</td>
+          <td>${escapeHtml(row.date)}</td>
+          <td>${money(row.amount)}</td>
+          <td>${escapeHtml(row.method)}</td>
+          <td>${escapeHtml(row.bank || '-')}</td>
+          <td>${escapeHtml(row.note || '-')}</td>
+        </tr>
+      `).join('') : '<tr><td colspan="6">لا توجد دفعات مسجلة لهذا المساهم</td></tr>';
+      const html = `
+        <div class="report-title">
+          <div>
+            <h2>تقرير مساهم شامل</h2>
+            <div class="report-sub">عرض كامل للمساهم عبر كل المشاريع المرتبط بها</div>
+          </div>
+        </div>
+        <div class="meta-grid">
+          ${printMetaCard('اسم المساهم', escapeHtml(data.name))}
+          ${printMetaCard('عدد المشاريع', String(data.projects.length))}
+        </div>
+        <div class="summary-grid">
+          ${printSummaryCard('رأس المال', money(data.capital))}
+          ${printSummaryCard('نصيب الربح', money(data.grossProfit))}
+          ${printSummaryCard('خصم الإدارة', money(data.adminValue))}
+          ${printSummaryCard('المدفوع', money(data.paid))}
+          ${printSummaryCard('المتبقي', money(data.remain))}
+        </div>
+        <div class="section">
+          <div class="section-header">
+            <h3>تفاصيل المشاريع</h3>
+            <div class="section-note">كل مشروع يظهر بنسبة المشاركة والأرباح والمدفوع والمتبقي</div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>المشروع</th>
+                <th>رأس المال</th>
+                <th>نسبة المشاركة</th>
+                <th>نصيب الربح</th>
+                <th>خصم الإدارة</th>
+                <th>الصافي</th>
+                <th>المدفوع</th>
+                <th>المتبقي</th>
+              </tr>
+            </thead>
+            <tbody>${projectRows}</tbody>
+          </table>
+        </div>
+        <div class="section">
+          <div class="section-header">
+            <h3>كشف العمليات</h3>
+            <div class="section-note">الدفعات المسجلة لهذا المساهم من كل المشاريع</div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>المشروع</th>
+                <th>التاريخ</th>
+                <th>المبلغ</th>
+                <th>الطريقة</th>
+                <th>البنك</th>
+                <th>الملاحظة</th>
+              </tr>
+            </thead>
+            <tbody>${advanceRows}</tbody>
+          </table>
+        </div>
+      `;
+      openPrintWindow(`تقرير مساهم - ${data.name}`, html);
     }
 
     function canAccess(action){
@@ -6159,6 +7278,8 @@ let globalSettingsState = {
       box.innerHTML = "";
       renderMainDashboard();
       renderSidebarProjectsDropdown();
+      renderSidebarPartnersDropdown();
+      renderSidebarInvestorsDropdown();
       applyHomeSummaryCollapse();
 
       const filterEl = document.getElementById("projectArchiveFilter");
@@ -8000,6 +9121,8 @@ ${party}
       populateBankSelectOptions();
       toggleTransactionBankFields();
       applyMobileTableWrappers();
+      renderSidebarPartnersDropdown();
+      renderSidebarInvestorsDropdown();
 
       saveApp();
       applyRolePermissions();
@@ -11525,6 +12648,18 @@ function renderSiteCustody(){
       URL.revokeObjectURL(url);
     }
 
+    function toggleOnlineMenu(event){
+      event.stopPropagation();
+      const panel = document.getElementById('onlineMenuPanel');
+      if(!panel) return;
+      panel.classList.toggle('hidden');
+    }
+
+    function closeOnlineMenu(){
+      const panel = document.getElementById('onlineMenuPanel');
+      if(panel) panel.classList.add('hidden');
+    }
+
     function restoreBackup(event){
       const file = event.target.files[0];
       if(!file) return;
@@ -11800,6 +12935,19 @@ function closeAlertCenterSafe(){
 
 setInterval(refreshAlertBellSafe, 1200);
 document.addEventListener('DOMContentLoaded', function(){ refreshAlertBellSafe(); enhanceMeaningfulIcons(); applyProjectSummaryCardIcons(); });
+
+    document.addEventListener('click', function(event){
+      const wrap = document.getElementById('onlineMenuWrap');
+      if(wrap && !wrap.contains(event.target)) closeOnlineMenu();
+
+      const investorsWrap = document.getElementById('sidebarInvestorsToggle');
+      const investorsDropdown = document.getElementById('sidebarInvestorsDropdown');
+      if(investorsWrap && investorsDropdown && !investorsWrap.contains(event.target) && !investorsDropdown.contains(event.target)) closeSidebarInvestorsDropdown();
+
+      const projectsWrap = document.getElementById('sidebarProjectsToggle');
+      const projectsDropdown = document.getElementById('sidebarProjectsDropdown');
+      if(projectsWrap && projectsDropdown && !projectsWrap.contains(event.target) && !projectsDropdown.contains(event.target)) closeSidebarProjectsDropdown();
+    });
 </script>
 
 </body>
