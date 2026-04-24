@@ -1346,6 +1346,71 @@
     }
 
     
+/* ===== Expense approval filter ===== */
+.expense-approval-filter{
+  grid-column:1 / -1;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  align-items:stretch;
+  padding:10px;
+  border-radius:18px;
+  background:linear-gradient(135deg,#ffffff 0%,#eef6ff 100%);
+  border:1px solid #dbe7f3;
+}
+.expense-approval-chip{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:10px 12px;
+  border-radius:18px;
+  border:1px solid #cbd5e1;
+  background:#fff;
+  color:#334155;
+  font-size:12px;
+  font-weight:900;
+  min-width:0;
+  min-height:44px;
+  line-height:1.45;
+  text-align:center;
+  box-shadow:0 8px 16px rgba(15,23,42,.05);
+}
+.expense-approval-chip.approved{background:#ecfdf5;border-color:#86efac;color:#166534}
+.expense-approval-chip.pending{background:#fff7ed;border-color:#fdba74;color:#9a3412}
+.expense-approval-chip.total{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}
+@media (max-width:768px){
+  .expense-approval-filter{grid-template-columns:1fr;gap:8px;padding:8px}
+  .expense-approval-chip{min-height:40px;padding:9px 10px}
+}
+
+
+/* ===== Expenses: 3 independent tables ===== */
+.expense-type-tabs{
+  display:flex;gap:8px;flex-wrap:wrap;margin:14px 0;
+}
+.expense-type-tab{
+  min-width:auto;padding:10px 16px;border-radius:999px;
+  background:linear-gradient(180deg,#ffffff 0%,#edf5ff 100%);
+  border:1px solid #cfe0f1;color:#24486a;font-weight:800;
+  box-shadow:0 6px 14px rgba(15,23,42,.06);
+}
+.expense-type-tab.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.expense-form-panel{
+  padding:14px;border-radius:20px;background:linear-gradient(135deg,#f8fbff 0%,#eef6ff 100%);
+  border:1px solid #dbe7f3;margin:12px 0;
+}
+.expense-section-card{
+  border:1px solid #dbe7f3;border-radius:20px;padding:14px;margin-top:14px;
+  background:linear-gradient(180deg,#ffffff 0%,#fbfdff 100%);
+  box-shadow:0 12px 24px rgba(15,23,42,.05);
+}
+.expense-section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.expense-type-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;font-size:12px;font-weight:900;border:1px solid #dbe7f3;background:#f8fafc;color:#334155}
+.expense-type-badge.general{background:#f1f5f9;color:#334155;border-color:#cbd5e1}
+.expense-type-badge.payment{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+.expense-type-badge.supplier{background:#ecfdf5;color:#047857;border-color:#86efac}
+
     @media (max-width:768px){
       .tabs{padding:10px;border-radius:18px}
       .tab{padding:10px 12px;font-size:13px}
@@ -3051,6 +3116,178 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
 #taxRefundPayoutBank.hidden{display:none !important}
 #taxRefundPayoutBank:not(.hidden){display:block !important;width:100% !important}
 
+
+/* ===== Tax refund approval rows ===== */
+tr.tax-approved-row{
+  background:#ecfdf5 !important;
+  box-shadow:inset 0 0 0 9999px rgba(34,197,94,.08);
+}
+.tax-approval-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:4px 9px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+  background:#dcfce7;
+  color:#166534;
+  border:1px solid #86efac;
+}
+.tax-pending-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:4px 9px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+  background:#fff7ed;
+  color:#9a3412;
+  border:1px solid #fdba74;
+}
+
+
+/* ===== AbuFaris sources polish ===== */
+.abu-faris-source-panel{
+  box-shadow:none !important;
+  border:1px solid #dbe7f3 !important;
+  background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%) !important;
+}
+.abu-faris-source-panel summary{
+  cursor:pointer;
+  font-weight:900;
+  padding:10px 6px;
+  color:#0f2236;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.abu-faris-source-panel summary::after{
+  content:"⌄";
+  font-size:18px;
+  color:#2563eb;
+}
+.abu-faris-source-panel[open] summary::after{
+  transform:rotate(180deg);
+}
+.abu-faris-mini-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:10px;
+  margin:12px 0 10px;
+}
+.abu-faris-mini-card{
+  padding:12px;
+  border-radius:18px;
+  background:linear-gradient(180deg,#ffffff 0%,#eef6ff 100%);
+  border:1px solid #dbe7f3;
+  box-shadow:0 10px 20px rgba(15,23,42,.06);
+}
+.abu-faris-mini-card .mini-title{
+  font-size:12px;
+  color:#64748b;
+  font-weight:900;
+  margin-bottom:6px;
+}
+.abu-faris-mini-card .mini-value{
+  font-size:20px;
+  font-weight:900;
+  color:#0f172a;
+}
+#abuFarisSourcesBody tr.auto-row{
+  background:#f1f5f9 !important;
+}
+#abuFarisSourcesBody tr:hover{
+  background:#eef6ff !important;
+}
+
+
+/* ===== Management treasury polish ===== */
+#abuFarisTab details > summary{
+  list-style:none;
+}
+#abuFarisTab details > summary::-webkit-details-marker{display:none}
+#abuFarisTab details > summary{
+  border-radius:16px;
+  background:linear-gradient(180deg,#ffffff 0%,#eef6ff 100%);
+  border:1px solid #dbe7f3;
+}
+#abuFarisTab details[open] > summary{
+  background:linear-gradient(180deg,#f8fbff 0%,#eaf4ff 100%);
+}
+
+
+
+/* ===== Suppliers & Agreements summaries ===== */
+.agreement-summary-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:12px;
+  margin:14px 0;
+}
+.agreement-summary-card{
+  border:1px solid #dbe7f3;
+  border-radius:20px;
+  padding:14px 16px;
+  background:linear-gradient(180deg,#ffffff 0%,#f6fbff 100%);
+  box-shadow:0 12px 26px rgba(15,23,42,.06);
+  position:relative;
+  overflow:hidden;
+}
+.agreement-summary-card::before{
+  content:"";
+  position:absolute;
+  inset:0 0 auto 0;
+  height:4px;
+  background:linear-gradient(90deg,#1f4f7a,#60a5fa);
+}
+.agreement-summary-card .label{font-size:12px;color:#64748b;margin-bottom:6px;font-weight:800}
+.agreement-summary-card .value{font-size:20px;font-weight:900;color:#0f172a;line-height:1.5}
+.agreement-summary-card.good::before{background:linear-gradient(90deg,#047857,#34d399)}
+.agreement-summary-card.warn::before{background:linear-gradient(90deg,#c2410c,#fb923c)}
+.agreement-summary-card.danger::before{background:linear-gradient(90deg,#991b1b,#ef4444)}
+.agreement-amount-input{
+  max-width:170px;
+  text-align:center;
+  direction:ltr;
+  font-weight:900;
+}
+.agreement-status-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:94px;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+  border:1px solid #dbe7f3;
+}
+.agreement-status-badge.ok{background:#dcfce7;color:#166534;border-color:#86efac}
+.agreement-status-badge.warn{background:#fff7ed;color:#9a3412;border-color:#fdba74}
+.agreement-status-badge.over{background:#fee2e2;color:#991b1b;border-color:#fca5a5}
+.agreement-progress{
+  height:10px;
+  background:#e5e7eb;
+  border-radius:999px;
+  overflow:hidden;
+  min-width:110px;
+}
+.agreement-progress span{
+  display:block;
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#2563eb,#60a5fa);
+  border-radius:999px;
+}
+.agreement-progress span.warn{background:linear-gradient(90deg,#f59e0b,#fb923c)}
+.agreement-progress span.over{background:linear-gradient(90deg,#dc2626,#ef4444)}
+@media (max-width:768px){
+  .agreement-amount-input{max-width:100%;width:100%}
+}
+
 </style>
 </head>
 <body>
@@ -3121,10 +3358,7 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
               </span>
             </button>
             <div id="sidebarProjectsDropdown" class="sidebar-submenu hidden"></div>
-            <button type="button" class="sidebar-link" data-section="units" onclick="handleSidebarNav('units', this)">
-              <span class="label">الوحدات</span>
-              <span class="icon">🔑</span>
-            </button>
+            
             <button type="button" id="sidebarMarketersToggle" class="sidebar-link has-dropdown" data-section="marketers" onclick="toggleSidebarMarketersDropdown(this)">
               <span class="label">المسوقين</span>
               <span class="sidebar-end">
@@ -3133,10 +3367,7 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
               </span>
             </button>
             <div id="sidebarMarketersDropdown" class="sidebar-submenu hidden"></div>
-            <button type="button" class="sidebar-link" data-section="expenses" onclick="handleSidebarNav('expenses', this)">
-              <span class="label">المصروفات</span>
-              <span class="icon">🧾</span>
-            </button>
+            
             <button type="button" id="sidebarPartnersToggle" class="sidebar-link has-dropdown" data-section="partners" onclick="toggleSidebarPartnersDropdown(this)">
               <span class="label">الشركاء</span>
               <span class="sidebar-end">
@@ -3169,18 +3400,9 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
               <span class="label">خزنة الإدارة العامة</span>
               <span class="icon">🏛️</span>
             </button>
-            <button type="button" class="sidebar-link" data-section="collection" onclick="handleSidebarNav('collection', this)">
-              <span class="label">التحصيل</span>
-              <span class="icon">💼</span>
-            </button>
-            <button type="button" class="sidebar-link" data-section="paymentAlerts" onclick="handleSidebarNav('paymentAlerts', this)">
-              <span class="label">تنبيه الدفعات</span>
-              <span class="icon">🔔</span>
-            </button>
-            <button type="button" class="sidebar-link" data-section="reports" onclick="handleSidebarNav('reports', this)">
-              <span class="label">التقارير</span>
-              <span class="icon">📊</span>
-            </button>
+            
+            
+            
             <button type="button" class="sidebar-link" data-section="backups" onclick="handleSidebarNav('backups', this)">
               <span class="label">النسخ الاحتياطي</span>
               <span class="icon">☁️</span>
@@ -3346,7 +3568,7 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
                   <th>المبلغ</th>
                   <th>الطريقة</th>
                   <th>البنك</th>
-                  <th>البيان</th>
+                  <th>التفصيل</th>
                   <th class="no-print">إجراء</th>
                 </tr>
               </thead>
@@ -3422,7 +3644,7 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
                   <th>المبلغ</th>
                   <th>الطريقة</th>
                   <th>البنك</th>
-                  <th>البيان</th>
+                  <th>التفصيل</th>
                   <th class="no-print">إجراء</th>
                 </tr>
               </thead>
@@ -3535,6 +3757,38 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
               <table>
                 <thead><tr><th>اسم البنك</th><th>ملاحظات</th><th class="no-print">إجراء</th></tr></thead>
                 <tbody id="globalBanksBody"></tbody>
+              </table>
+            </div>
+
+            <div class="card" style="box-shadow:none;border:1px solid #e5e7eb">
+              <h4>قائمة دفعات المصروفات</h4>
+              <div class="grid grid-3 no-print">
+                <input id="globalExpensePaymentName" placeholder="مثال: دفعة عظم / كهرباء / سباكة" />
+                <input id="globalExpensePaymentNotes" placeholder="ملاحظات" />
+                <div class="actions">
+                  <button id="globalExpensePaymentSaveBtn" class="btn-green" onclick="saveGlobalListItem('expensePayments')">إضافة بند دفعة</button>
+                  <button id="globalExpensePaymentCancelBtn" class="btn-gray hidden" onclick="resetGlobalForm('expensePayments')">إلغاء</button>
+                </div>
+              </div>
+              <table>
+                <thead><tr><th>بند الدفعة</th><th>ملاحظات</th><th class="no-print">إجراء</th></tr></thead>
+                <tbody id="globalExpensePaymentsBody"></tbody>
+              </table>
+            </div>
+
+            <div class="card" style="box-shadow:none;border:1px solid #e5e7eb">
+              <h4>قائمة الموردين</h4>
+              <div class="grid grid-3 no-print">
+                <input id="globalSupplierName" placeholder="اسم المورد" />
+                <input id="globalSupplierNotes" placeholder="ملاحظات" />
+                <div class="actions">
+                  <button id="globalSupplierSaveBtn" class="btn-green" onclick="saveGlobalListItem('suppliers')">إضافة مورد</button>
+                  <button id="globalSupplierCancelBtn" class="btn-gray hidden" onclick="resetGlobalForm('suppliers')">إلغاء</button>
+                </div>
+              </div>
+              <table>
+                <thead><tr><th>اسم المورد</th><th>ملاحظات</th><th class="no-print">إجراء</th></tr></thead>
+                <tbody id="globalSuppliersBody"></tbody>
               </table>
             </div>
 
@@ -3762,12 +4016,14 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
           <button class="tab active" onclick="showTab('unitsTab', this)">الوحدات</button>
           <button class="tab" onclick="showTab('marketersTab', this)">المسوقون</button>
           <button class="tab" onclick="showTab('expensesTab', this)">المصروفات</button>
+          <button class="tab" onclick="showTab('suppliersSummaryTab', this)">الموردين</button>
+          <button class="tab" onclick="showTab('agreementsTab', this)">الاتفاقيات</button>
           <button class="tab" onclick="showTab('partnersTab', this)">الشركاء</button>
+          <button class="tab" onclick="showTab('partnerCostTab', this)">المطلوب من الشريك من التكلفة</button>
           <button class="tab" onclick="showTab('investorsTab', this)">المساهمون</button>
           <button class="tab" onclick="showTab('adminTab', this)">الإدارة</button>
-          <button class="tab" onclick="showTab('abuFarisTab', this)">أبوفارس</button>
+          <button class="tab" onclick="showTab('abuFarisTab', this)">خزنة الإدارة</button>
           <button class="tab" onclick="showTab('companyTreasuryTab', this)">خزنة الشركة</button>
-          <button class="tab" onclick="showTab('managementTreasuryTab', this)">خزنة الإدارة</button>
           <button class="tab" onclick="showTab('taxRefundTab', this)">الاسترداد الضريبي</button>
           <button class="tab" onclick="showTab('advancesTab', this)">الدفعات تحت الحساب</button>
           <button class="tab" onclick="showTab('siteCustodyTab', this)">عهدة الموقع</button>
@@ -3909,53 +4165,190 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
           <div class="section-title">
             <div>
               <h3>المصروفات</h3>
-              <div class="section-kicker">فلترة حسب التصنيف أو البيان أو التاريخ</div>
+              <div class="section-kicker">3 جداول مستقلة: مصروفات عامة، دفعات، موردين. الدفعات والموردين من قوائم الإعدادات.</div>
             </div>
             <div class="actions no-print">
               <span class="mini-stat" id="expensesFilterCount">0 حركة</span>
               <button class="btn-teal" onclick="printExpensesReport()">طباعة تقرير المصروفات</button>
             </div>
           </div>
+
+          <div class="expense-type-tabs no-print">
+            <button type="button" id="expenseTypeTabGeneral" class="expense-type-tab active" onclick="setExpenseType('general')">مصروفات عامة</button>
+            <button type="button" id="expenseTypeTabPayment" class="expense-type-tab" onclick="setExpenseType('payment')">دفعات</button>
+            <button type="button" id="expenseTypeTabSupplier" class="expense-type-tab" onclick="setExpenseType('supplier')">الموردين</button>
+          </div>
+
+          <div class="expense-form-panel no-print">
+            <div class="grid grid-4">
+              <input class="lockable-input" id="expenseDate" type="date" />
+              <select class="lockable-input" id="expenseType" onchange="syncExpenseTypeForm()">
+                <option value="general">مصروفات عامة</option>
+                <option value="payment">دفعات</option>
+                <option value="supplier">الموردين</option>
+              </select>
+              <input class="lockable-input" id="expenseCategory" placeholder="تصنيف المصروف العام" />
+              <select class="lockable-input hidden" id="expensePaymentSelect"></select>
+              <select class="lockable-input hidden" id="expenseSupplierSelect"></select>
+            </div>
+            <div class="grid grid-4" style="margin-top:12px">
+              <input class="lockable-input" id="expenseDesc" placeholder="البيان / الملاحظة" />
+              <input class="lockable-input" id="expenseAmount" type="number" placeholder="المبلغ (يسمح بالسالب)" />
+              <select class="lockable-input" id="expenseMethod" onchange="toggleTransactionBankFields()">
+                <option value="cash">نقدًا</option>
+                <option value="bank">بنك</option>
+              </select>
+              <select class="lockable-input hidden" id="expenseBank"></select>
+            </div>
+            <div class="actions" style="margin-top:12px;justify-content:flex-end">
+              <button class="btn-orange" onclick="addExpense()">إضافة مصروف</button>
+            </div>
+          </div>
+
           <div class="filter-bar no-print">
-            <input id="expenseSearch" placeholder="بحث في التصنيف أو البيان" oninput="renderExpenses()" />
-            <input id="expenseCategoryFilter" placeholder="فلترة بالتصنيف" oninput="renderExpenses()" />
+            <input id="expenseSearch" placeholder="بحث في النوع أو التصنيف أو البيان" oninput="renderExpenses()" />
+            <select id="expenseTypeFilter" onchange="renderExpenses()">
+              <option value="">كل الأنواع</option>
+              <option value="general">مصروفات عامة</option>
+              <option value="payment">دفعات</option>
+              <option value="supplier">الموردين</option>
+            </select>
+            <select id="expenseApprovalFilter" onchange="renderExpenses()">
+              <option value="">كل حالات الاعتماد</option>
+              <option value="approved">المعتمد فقط</option>
+              <option value="pending">غير المعتمد فقط</option>
+            </select>
+            <input id="expenseCategoryFilter" placeholder="فلترة بالتصنيف / الجهة" oninput="renderExpenses()" />
             <input id="expenseDateFrom" type="date" onchange="renderExpenses()" />
             <input id="expenseDateTo" type="date" onchange="renderExpenses()" />
             <div class="filter-actions">
               <button class="btn-gray" onclick="resetExpenseFilters()">تصفير الفلاتر</button>
             </div>
-          </div>
-          <div class="grid grid-4 no-print">
-            <input class="lockable-input" id="expenseDate" type="date" />
-            <input class="lockable-input" id="expenseCategory" placeholder="التصنيف" />
-            <input class="lockable-input" id="expenseDesc" placeholder="البيان" />
-            <input class="lockable-input" id="expenseAmount" type="number" placeholder="المبلغ (يسمح بالسالب)" />
-          </div>
-          <div class="grid grid-3 no-print" style="margin-top:12px">
-            <select class="lockable-input" id="expenseMethod" onchange="toggleTransactionBankFields()">
-              <option value="cash">نقدًا</option>
-              <option value="bank">بنك</option>
-            </select>
-            <select class="lockable-input hidden" id="expenseBank"></select>
-            <div style="display:flex;align-items:end">
-              <button class="btn-orange" onclick="addExpense()" style="width:100%">إضافة مصروف</button>
+            <div class="expense-approval-filter">
+              <span class="expense-approval-chip total" id="expenseApprovalAllCount">الكل: 0</span>
+              <span class="expense-approval-chip approved" id="expenseApprovalApprovedCount">معتمد: 0</span>
+              <span class="expense-approval-chip pending" id="expenseApprovalPendingCount">غير معتمد: 0</span>
             </div>
           </div>
 
-          <table>
-            <thead>
-              <tr>
-                <th>التاريخ</th>
-                <th>التصنيف</th>
-                <th>البيان</th>
-                <th>المبلغ</th>
-                <th>طريقة الحركة</th>
-                <th>البنك</th>
-                <th class="no-print">إجراء</th>
-              </tr>
-            </thead>
-            <tbody id="expensesBody"></tbody>
-          </table>
+          <div class="expense-section-card">
+            <div class="expense-section-head">
+              <h4 style="margin:0">مصروفات عامة</h4>
+              <span class="expense-type-badge general" id="expenseGeneralTotal">0</span>
+            </div>
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>التاريخ</th><th>النوع</th><th>التفصيل</th><th>المبلغ</th><th>طريقة الحركة</th><th>البنك</th><th>حالة الاعتماد</th><th class="no-print">اعتماد</th><th class="no-print">إجراء</th></tr></thead>
+                <tbody id="expensesGeneralBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="expense-section-card">
+            <div class="expense-section-head">
+              <h4 style="margin:0">الدفعات</h4>
+              <span class="expense-type-badge payment" id="expensePaymentTotal">0</span>
+            </div>
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>التاريخ</th><th>بند الدفعة</th><th>التفصيل</th><th>المبلغ</th><th>طريقة الحركة</th><th>البنك</th><th>حالة الاعتماد</th><th class="no-print">اعتماد</th><th class="no-print">إجراء</th></tr></thead>
+                <tbody id="expensesPaymentBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="expense-section-card">
+            <div class="expense-section-head">
+              <h4 style="margin:0">الموردين</h4>
+              <span class="expense-type-badge supplier" id="expenseSupplierTotal">0</span>
+            </div>
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>التاريخ</th><th>اسم المورد</th><th>التفصيل</th><th>المبلغ</th><th>طريقة الحركة</th><th>البنك</th><th>حالة الاعتماد</th><th class="no-print">اعتماد</th><th class="no-print">إجراء</th></tr></thead>
+                <tbody id="expensesSupplierBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="suppliersSummaryTab" class="card tab-panel hidden">
+          <div class="section-title">
+            <div>
+              <h3>الموردين</h3>
+              <div class="section-kicker">ملخص مستقل لكل مورد من مصروفات نوع الموردين داخل المشروع.</div>
+            </div>
+            <div class="actions no-print">
+              <span class="mini-stat" id="suppliersSummaryCount">0 مورد</span>
+            </div>
+          </div>
+          <div class="agreement-summary-grid">
+            <div class="agreement-summary-card"><div class="label">إجمالي الموردين</div><div class="value" id="suppliersTotalAmount">0 ر.س</div></div>
+            <div class="agreement-summary-card good"><div class="label">عدد الموردين</div><div class="value" id="suppliersTotalCount">0</div></div>
+            <div class="agreement-summary-card warn"><div class="label">عدد حركات الموردين</div><div class="value" id="suppliersRowsCount">0</div></div>
+            <div class="agreement-summary-card danger"><div class="label">غير معتمد</div><div class="value" id="suppliersPendingTotal">0 ر.س</div></div>
+          </div>
+          <div class="filter-bar no-print">
+            <input id="supplierSummarySearch" placeholder="بحث باسم المورد أو البيان" oninput="renderSuppliersSummary()" />
+            <select id="supplierSummaryApprovalFilter" onchange="renderSuppliersSummary()">
+              <option value="">كل حالات الاعتماد</option>
+              <option value="approved">المعتمد فقط</option>
+              <option value="pending">غير المعتمد فقط</option>
+            </select>
+            <select id="supplierSummarySort" onchange="renderSuppliersSummary()">
+              <option value="amount_desc">الأعلى صرفًا</option>
+              <option value="amount_asc">الأقل صرفًا</option>
+              <option value="name">ترتيب أبجدي</option>
+              <option value="date_desc">الأحدث حركة</option>
+            </select>
+            <button class="btn-teal" type="button" onclick="printSuppliersSummaryReport()">طباعة تقرير الموردين</button>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>#</th><th>اسم المورد</th><th>إجمالي المصروف عليه</th><th>عدد الحركات</th><th>آخر تاريخ</th><th>آخر بيان</th></tr></thead>
+              <tbody id="suppliersSummaryBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="agreementsTab" class="card tab-panel hidden">
+          <div class="section-title">
+            <div>
+              <h3>الاتفاقيات</h3>
+              <div class="section-kicker">جدول رقابي يجلب بنود الدفعات من المصروفات، مع إدخال المبلغ المتفق عليه يدويًا وحساب المنصرف والمتبقي تلقائيًا.</div>
+            </div>
+            <div class="actions no-print">
+              <span class="mini-stat" id="agreementsRowsCount">0 اتفاقية</span>
+            </div>
+          </div>
+          <div class="agreement-summary-grid">
+            <div class="agreement-summary-card"><div class="label">إجمالي المتفق عليه</div><div class="value" id="agreementsTotalAgreed">0 ر.س</div></div>
+            <div class="agreement-summary-card warn"><div class="label">إجمالي المنصرف</div><div class="value" id="agreementsTotalSpent">0 ر.س</div></div>
+            <div class="agreement-summary-card good"><div class="label">إجمالي المتبقي</div><div class="value" id="agreementsTotalRemain">0 ر.س</div></div>
+            <div class="agreement-summary-card danger"><div class="label">تجاوزات الاتفاقيات</div><div class="value" id="agreementsTotalOver">0 ر.س</div></div>
+          </div>
+          <div class="filter-bar no-print">
+            <input id="agreementSearch" placeholder="بحث باسم الاتفاقية" oninput="renderAgreementsTab()" />
+            <select id="agreementStatusFilter" onchange="renderAgreementsTab()">
+              <option value="">كل الاتفاقيات</option>
+              <option value="remaining">متبقي</option>
+              <option value="completed">مكتمل</option>
+              <option value="over">متجاوز</option>
+              <option value="needs_amount">بدون مبلغ متفق عليه</option>
+            </select>
+            <select id="agreementSort" onchange="renderAgreementsTab()">
+              <option value="remain_desc">الأكبر متبقيًا</option>
+              <option value="spent_desc">الأعلى صرفًا</option>
+              <option value="over_desc">الأكبر تجاوزًا</option>
+              <option value="name">ترتيب أبجدي</option>
+            </select>
+            <button class="btn-teal" type="button" onclick="printAgreementsReport()">طباعة تقرير الاتفاقيات</button>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>#</th><th>بند الاتفاقية</th><th class="no-print">المبلغ المتفق عليه</th><th>المبلغ المتفق عليه</th><th>المنصرف عليه</th><th>المتبقي</th><th>نسبة الصرف</th><th>الحالة</th><th>عدد الحركات</th></tr></thead>
+              <tbody id="agreementsBody"></tbody>
+            </table>
+          </div>
         </div>
 
         <div id="partnersTab" class="card tab-panel hidden">
@@ -4015,6 +4408,84 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
             </thead>
             <tbody id="partnersBody"></tbody>
           </table>
+        </div>
+
+
+        <div id="partnerCostTab" class="card tab-panel hidden">
+          <div class="section-title">
+            <div>
+              <h3>المطلوب من الشريك من التكلفة</h3>
+              <div class="section-kicker">توزيع تكلفة المشروع على الشركاء حسب النسبة، مع تسجيل الدفعات الواردة ودفعات تحت الحساب لكل شريك.</div>
+            </div>
+            <div class="actions no-print">
+              <span class="mini-stat" id="partnerCostRowsCount">0 شريك</span>
+              <button class="btn-teal" type="button" onclick="printPartnerCostReport()">طباعة التقرير</button>
+            </div>
+          </div>
+
+          <div class="dashboard-grid" style="margin-top:12px">
+            <div class="dashboard-card"><div class="dashboard-label">إجمالي المطلوب من الشركاء</div><div class="dashboard-value" id="partnerCostRequiredTotal">0 ر.س</div></div>
+            <div class="dashboard-card warn"><div class="dashboard-label">دفعات تحت الحساب</div><div class="dashboard-value" id="partnerCostUnderTotal">0 ر.س</div></div>
+            <div class="dashboard-card success"><div class="dashboard-label">إجمالي الدفعات الواردة</div><div class="dashboard-value" id="partnerCostPaidTotal">0 ر.س</div></div>
+            <div class="dashboard-card danger"><div class="dashboard-label">الصافي المطلوب / الزائد</div><div class="dashboard-value" id="partnerCostNetTotal">0 ر.س</div></div>
+          </div>
+
+          <div class="filter-bar no-print">
+            <input id="partnerCostSearch" placeholder="بحث باسم الشريك" oninput="renderPartnerCostTab()" />
+            <select id="partnerCostStatusFilter" onchange="renderPartnerCostTab()">
+              <option value="">كل الحالات</option>
+              <option value="due">عليه مبلغ</option>
+              <option value="clear">مسدد</option>
+              <option value="credit">له رصيد زائد</option>
+            </select>
+            <select id="partnerCostSort" onchange="renderPartnerCostTab()">
+              <option value="due_desc">الأكبر مطلوبًا</option>
+              <option value="paid_desc">الأعلى سدادًا</option>
+              <option value="percent_desc">الأعلى نسبة</option>
+              <option value="name">ترتيب أبجدي</option>
+            </select>
+            <button class="btn-gray" type="button" onclick="resetPartnerCostFilters()">تصفير الفلاتر</button>
+          </div>
+
+          <div class="card no-print" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:14px">
+            <h4>تسجيل دفعة واردة من شريك لسداد التكلفة</h4>
+            <div class="grid grid-4">
+              <select id="partnerCostPaymentName"></select>
+              <input id="partnerCostPaymentAmount" type="number" placeholder="المبلغ الواصل" />
+              <input id="partnerCostPaymentDate" type="date" />
+              <input id="partnerCostPaymentMethod" placeholder="طريقة السداد / البنك" />
+              <input id="partnerCostPaymentNote" placeholder="ملاحظة" style="grid-column:1 / -1" />
+            </div>
+            <div style="margin-top:12px"><button class="btn-green" type="button" onclick="addPartnerCostPayment()">إضافة الدفعة</button></div>
+          </div>
+
+          <div class="note"><strong>المعادلة:</strong> المطلوب النهائي = نصيب الشريك من إجمالي التكلفة + دفعة تحت الحساب - الدفعات الواردة منه.</div>
+
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>الشريك</th>
+                  <th>النسبة</th>
+                  <th>نصيبه من إجمالي التكلفة</th>
+                  <th class="no-print">دفعة تحت الحساب</th>
+                  <th>دفعة تحت الحساب</th>
+                  <th>الدفعات الواردة</th>
+                  <th>الصافي</th>
+                  <th>الحالة</th>
+                  <th>عدد الدفعات</th>
+                </tr>
+              </thead>
+              <tbody id="partnerCostBody"></tbody>
+            </table>
+          </div>
+
+          <div class="table-scroll" style="margin-top:14px">
+            <table>
+              <thead><tr><th>الشريك</th><th>التاريخ</th><th>المبلغ</th><th>طريقة السداد</th><th>ملاحظة</th><th class="no-print">إجراء</th></tr></thead>
+              <tbody id="partnerCostPaymentsBody"></tbody>
+            </table>
+          </div>
         </div>
 
         <div id="investorsTab" class="card tab-panel hidden">
@@ -4158,7 +4629,7 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
                 <th>مستحق الغامدي</th>
                 <th>طريقة الحركة</th>
                 <th>البنك</th>
-                <th>البيان</th>
+                <th>التفصيل</th>
                 <th class="no-print">إجراء</th>
               </tr>
             </thead>
@@ -4225,7 +4696,7 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
                   <th>المبلغ</th>
                   <th>طريقة الحركة</th>
                   <th>البنك</th>
-                  <th>البيان</th>
+                  <th>التفصيل</th>
                   <th class="no-print">إجراء</th>
                 </tr>
               </thead>
@@ -4238,23 +4709,76 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
         <div id="abuFarisTab" class="card tab-panel hidden">
           <div class="section-title">
             <div>
-              <h3>صفحة أبوفارس</h3>
-              <div class="section-kicker">ملخص مركّز لكل ما يخص الإدارة الخاصة بأبوفارس الغامدي داخل المشروع الحالي</div>
+              <h3>خزنة الإدارة</h3>
+              <div class="section-kicker">ملخص مركّز لخزنة الإدارة الخاصة بأبوفارس الغامدي داخل المشروع الحالي</div>
             </div>
             <div class="actions no-print">
               <span class="mini-stat" id="abuFarisSourcesCount">0 مصدر</span>
-              <button class="btn-teal" onclick="printAbuFarisSummary()">طباعة صفحة أبوفارس</button>
+              <button class="btn-teal" onclick="printAbuFarisSummary()">تقرير خزنة الإدارة</button>
             </div>
           </div>
 
-          <div class="grid grid-4">
-            <div class="kpi"><div class="kpi-title">إجمالي نصيب أبوفارس</div><div class="kpi-value" id="abuFarisTotalDue">0</div></div>
-            <div class="kpi"><div class="kpi-title">تم صرفه لأبوفارس</div><div class="kpi-value" id="abuFarisTotalPaid">0</div></div>
-            <div class="kpi"><div class="kpi-title">المتبقي لأبوفارس</div><div class="kpi-value" id="abuFarisTotalRemain">0</div></div>
-            <div class="kpi"><div class="kpi-title">إدارة الشركة الخاصة</div><div class="kpi-value" id="abuFarisCompanyAdminOnly">0</div></div>
-          </div>
+          <details open class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-bottom:12px">
+            <summary style="cursor:pointer;font-weight:900;padding:8px 4px">الملخص التنفيذي المجمّع لأبوفارس</summary>
+            <div class="grid grid-4" style="margin-top:10px">
+              <div class="kpi"><div class="kpi-title">إجمالي المستحق الكلي</div><div class="kpi-value" id="abuFarisGrandDue">0</div></div>
+              <div class="kpi"><div class="kpi-title">إجمالي المصروف الكلي</div><div class="kpi-value" id="abuFarisGrandPaid">0</div></div>
+              <div class="kpi"><div class="kpi-title">المتبقي الكلي</div><div class="kpi-value" id="abuFarisGrandRemain">0</div></div>
+              <div class="kpi"><div class="kpi-title">عدد مصادر الاستحقاق</div><div class="kpi-value" id="abuFarisGrandSources">0</div></div>
+            </div>
+          </details>
+
+          <details open class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-bottom:12px">
+            <summary style="cursor:pointer;font-weight:900;padding:8px 4px">تفصيل الإدارة الخاصة</summary>
+            <div class="grid grid-4" style="margin-top:10px">
+              <div class="kpi"><div class="kpi-title">إجمالي نصيب أبوفارس</div><div class="kpi-value" id="abuFarisTotalDue">0</div></div>
+              <div class="kpi"><div class="kpi-title">تم صرفه لأبوفارس</div><div class="kpi-value" id="abuFarisTotalPaid">0</div></div>
+              <div class="kpi"><div class="kpi-title">المتبقي لأبوفارس</div><div class="kpi-value" id="abuFarisTotalRemain">0</div></div>
+              <div class="kpi"><div class="kpi-title">إدارة الشركة الخاصة</div><div class="kpi-value" id="abuFarisCompanyAdminOnly">0</div></div>
+            </div>
+          </details>
+
+
+          <details open class="card abu-faris-source-panel" style="margin-top:14px">
+            <summary>
+              <span>مصادر استحقاق أبوفارس</span>
+              <span class="mini-stat" id="abuFarisSourcesMiniCount">0 مصدر</span>
+            </summary>
+            <div class="section-kicker">تفصيل كل مصدر دخل للإدارة وما آل إلى أبوفارس منه</div>
+
+            <div class="abu-faris-mini-grid">
+              <div class="abu-faris-mini-card">
+                <div class="mini-title">عدد مصادر الإدارة</div>
+                <div class="mini-value" id="abuFarisAdminSourcesCount">0</div>
+              </div>
+              <div class="abu-faris-mini-card">
+                <div class="mini-title">إجمالي قيمة الإدارة</div>
+                <div class="mini-value" id="abuFarisAdminSourcesAmount">0</div>
+              </div>
+              <div class="abu-faris-mini-card">
+                <div class="mini-title">إجمالي نصيب أبوفارس</div>
+                <div class="mini-value" id="abuFarisAdminSourcesDue">0</div>
+              </div>
+            </div>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>المصدر</th>
+                  <th>الاسم</th>
+                  <th>النوع</th>
+                  <th>التاريخ</th>
+                  <th>قيمة الإدارة</th>
+                  <th>نصيب أبوفارس</th>
+                  <th>التفصيل</th>
+                </tr>
+              </thead>
+              <tbody id="abuFarisSourcesBody"></tbody>
+            </table>
+          </details>
 
           <div id="abuFarisAlertsBox" class="alert-list" style="margin-top:12px"></div>
+
 
           <div class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:14px">
             <div class="section-title">
@@ -4277,28 +4801,36 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
             </table>
           </div>
 
-          <div class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:14px">
-            <div class="section-title">
+          <details open class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:14px">
+            <summary style="cursor:pointer;font-weight:900;padding:8px 4px">الاسترداد الضريبي لأبوفارس</summary>
+            <div class="section-title" style="margin-top:8px">
               <div>
-                <h4 style="margin:0">مصادر استحقاق أبوفارس</h4>
-                <div class="section-kicker">تفصيل كل مصدر دخل للإدارة وما آل إلى أبوفارس منه</div>
+                <h4 style="margin:0">الاسترداد الضريبي لأبوفارس</h4>
+                <div class="section-kicker">نصيبه من بند الإدارة 25٪ في الاسترداد الضريبي، مستقل عن نصيبه من الإدارة العامة</div>
               </div>
             </div>
+
+            <div class="grid grid-3">
+              <div class="kpi"><div class="kpi-title">إجمالي استرداد أبوفارس</div><div class="kpi-value" id="abuFarisTaxRefundDue">0</div></div>
+              <div class="kpi"><div class="kpi-title">تم صرفه من الاسترداد</div><div class="kpi-value" id="abuFarisTaxRefundPaid">0</div></div>
+              <div class="kpi"><div class="kpi-title">متبقي الاسترداد</div><div class="kpi-value" id="abuFarisTaxRefundRemain">0</div></div>
+            </div>
+
             <table>
               <thead>
                 <tr>
-                  <th>المصدر</th>
-                  <th>الاسم</th>
-                  <th>النوع</th>
-                  <th>التاريخ</th>
-                  <th>قيمة الإدارة</th>
-                  <th>نصيب أبوفارس</th>
-                  <th>البيان</th>
+                  <th>الفترة</th>
+                  <th>تاريخ الاستلام</th>
+                  <th>مبلغ الاسترداد</th>
+                  <th>نصيب أبوفارس من الإدارة 25٪</th>
+                  <th>المصروف</th>
+                  <th>المتبقي</th>
+                  <th>حالة الوارد</th>
                 </tr>
               </thead>
-              <tbody id="abuFarisSourcesBody"></tbody>
+              <tbody id="abuFarisTaxRefundBody"></tbody>
             </table>
-          </div>
+          </details>
 
           <div class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:14px">
             <div class="section-title">
@@ -4314,12 +4846,38 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
                   <th>المبلغ</th>
                   <th>طريقة الصرف</th>
                   <th>البنك</th>
-                  <th>البيان</th>
+                  <th>التفصيل</th>
                 </tr>
               </thead>
               <tbody id="abuFarisPayoutsBody"></tbody>
             </table>
           </div>
+
+          <details open class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:14px">
+            <summary style="cursor:pointer;font-weight:900;padding:8px 4px">صرف مباشر من خزنة الإدارة</summary>
+            <div class="section-kicker">صرف مرتبط بمصدر الاستحقاق: الإدارة أو الاسترداد الضريبي داخل نفس المشروع</div>
+            <div class="grid grid-4" style="margin-top:10px">
+              <select id="abuFarisDirectSource">
+                <option value="admin">صرف من الإدارة</option>
+                <option value="tax">صرف من الاسترداد الضريبي</option>
+              </select>
+              <input id="abuFarisDirectAmount" type="number" step="0.01" placeholder="المبلغ" />
+              <select id="abuFarisDirectMethod">
+                <option value="cash">نقدًا</option>
+                <option value="bank">بنك</option>
+              </select>
+              <input id="abuFarisDirectBank" placeholder="اسم البنك (اختياري)" list="bankMasterNames" />
+            </div>
+            <div class="grid grid-2" style="margin-top:10px">
+              <input id="abuFarisDirectDate" type="date" />
+              <input id="abuFarisDirectNote" placeholder="بيان الحركة" />
+            </div>
+            <div class="actions" style="margin-top:10px">
+              <button class="btn-green" onclick="payAbuFarisDirect()">صرف الآن</button>
+              <button class="btn-gray" onclick="settleAbuFarisDirect()">تصفية المتبقي</button>
+            </div>
+          </details>
+
         </div>
 
 
@@ -4360,7 +4918,7 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
               </div>
             </div>
             <table>
-              <thead><tr><th>التاريخ</th><th>المبلغ</th><th>الطريقة</th><th>البنك</th><th>البيان</th><th class="no-print">إجراء</th></tr></thead>
+              <thead><tr><th>التاريخ</th><th>المبلغ</th><th>الطريقة</th><th>البنك</th><th>التفصيل</th><th class="no-print">إجراء</th></tr></thead>
               <tbody id="companyTreasuryPayoutsBody"></tbody>
             </table>
           </div>
@@ -4403,10 +4961,11 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
               </div>
             </div>
             <table>
-              <thead><tr><th>التاريخ</th><th>المبلغ</th><th>الطريقة</th><th>البنك</th><th>البيان</th><th class="no-print">إجراء</th></tr></thead>
+              <thead><tr><th>التاريخ</th><th>المبلغ</th><th>الطريقة</th><th>البنك</th><th>التفصيل</th><th class="no-print">إجراء</th></tr></thead>
               <tbody id="managementTreasuryPayoutsBody"></tbody>
             </table>
           </div>
+
         </div>
 
         <div id="taxRefundTab" class="card tab-panel hidden">
@@ -4460,7 +5019,9 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
                   <th>مبلغ التوزيع 50٪</th>
                   <th>إجمالي نصيب الشركة</th>
                   <th>ملاحظات</th>
+                  <th>الحالة</th>
                   <th class="no-print">تفصيل</th>
+                  <th class="no-print">اعتماد</th>
                   <th class="no-print">حذف</th>
                 </tr>
               </thead>
@@ -4560,7 +5121,9 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
                   <th>المبلغ</th>
                   <th>الطريقة</th>
                   <th>البنك</th>
-                  <th>البيان</th>
+                  <th>التفصيل</th>
+                  <th>الحالة</th>
+                  <th class="no-print">اعتماد</th>
                   <th class="no-print">حذف</th>
                 </tr>
               </thead>
@@ -4676,7 +5239,7 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
                 <th>المبلغ</th>
                 <th>طريقة الحركة</th>
                 <th>البنك</th>
-                <th>البيان</th>
+                <th>التفصيل</th>
                 <th>الأثر</th>
                 <th class="no-print">إجراء</th>
               </tr>
@@ -5217,7 +5780,10 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
           unitsTab: "units",
           marketersTab: "marketers",
           expensesTab: "expenses",
+          suppliersSummaryTab: "suppliers",
+          agreementsTab: "agreements",
           partnersTab: "partners",
+          partnerCostTab: "partners",
           investorsTab: "investors",
           siteCustodyTab: "siteCustody",
           companyTreasuryTab: "companyTreasury",
@@ -6351,7 +6917,7 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
                 <th>المبلغ</th>
                 <th>طريقة الحركة</th>
                 <th>البنك</th>
-                <th>البيان</th>
+                <th>التفصيل</th>
                 <th>الأثر</th>
               </tr>
             </thead>
@@ -6442,7 +7008,7 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
   background:rgba(255,255,255,.14) !important;
 }
 
-</style></head><body><h2>تقرير عهدة موقع: ${escapeHtml(data.projectName)}</h2><div class="muted">تاريخ الطباعة: ${escapeHtml(todayText())}</div><div class="grid"><div class="box"><strong>الرصيد الحالي</strong><div>${money(data.balance)}</div></div><div class="box"><strong>إجمالي الإضافات</strong><div>${money(data.added)}</div></div><div class="box"><strong>إجمالي المصروفات</strong><div>${money(data.spent)}</div></div><div class="box"><strong>عدد الحركات</strong><div>${data.count}</div></div></div><h3>كشف العمليات</h3><table><thead><tr><th>التاريخ</th><th>النوع</th><th>المبلغ</th><th>طريقة الحركة</th><th>البنك</th><th>البيان</th><th>الأثر</th></tr></thead><tbody>${bodyRows}</tbody></table></body></html>`);
+</style></head><body><h2>تقرير عهدة موقع: ${escapeHtml(data.projectName)}</h2><div class="muted">تاريخ الطباعة: ${escapeHtml(todayText())}</div><div class="grid"><div class="box"><strong>الرصيد الحالي</strong><div>${money(data.balance)}</div></div><div class="box"><strong>إجمالي الإضافات</strong><div>${money(data.added)}</div></div><div class="box"><strong>إجمالي المصروفات</strong><div>${money(data.spent)}</div></div><div class="box"><strong>عدد الحركات</strong><div>${data.count}</div></div></div><h3>كشف العمليات</h3><table><thead><tr><th>التاريخ</th><th>النوع</th><th>المبلغ</th><th>طريقة الحركة</th><th>البنك</th><th>التفصيل</th><th>الأثر</th></tr></thead><tbody>${bodyRows}</tbody></table></body></html>`);
       win.document.close();
       win.focus();
       setTimeout(() => win.print(), 250);
@@ -6819,7 +7385,7 @@ body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
       }
     }
 
-    let appData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"projects":[],"masterLists":{"partners":[],"marketers":[],"investors":[],"banks":[],"taxPeriods":[]}}');
+    let appData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"projects":[],"masterLists":{"partners":[],"marketers":[],"investors":[],"banks":[],"taxPeriods":[],"expensePayments":[],"suppliers":[]}}');
     let currentProjectId = null;
     let lastOpenedProjectId = null;
     let bookingUnitIndex = null;
@@ -6856,7 +7422,9 @@ let globalSettingsState = {
       marketersEditId: null,
       investorsEditId: null,
       banksEditId: null,
-      taxPeriodsEditId: null
+      taxPeriodsEditId: null,
+      expensePaymentsEditId: null,
+      suppliersEditId: null
     };
 
     function generateListId(prefix){
@@ -6867,7 +7435,7 @@ let globalSettingsState = {
       if(!appData || typeof appData !== "object") appData = {projects:[]};
       if(!Array.isArray(appData.projects)) appData.projects = [];
       if(!appData.masterLists || typeof appData.masterLists !== "object") appData.masterLists = {};
-      ["partners","marketers","investors","banks","taxPeriods"].forEach(key => {
+      ["partners","marketers","investors","banks","taxPeriods","expensePayments","suppliers"].forEach(key => {
         if(!Array.isArray(appData.masterLists[key])) appData.masterLists[key] = [];
       });
       if(!appData.generalTreasuryPayouts || typeof appData.generalTreasuryPayouts !== "object") appData.generalTreasuryPayouts = {company:[], admin:[]};
@@ -6901,6 +7469,16 @@ let globalSettingsState = {
         name: String(item.name || "").trim(),
         notes: String(item.notes || "").trim()
       })).filter(item => item.name);
+      appData.masterLists.expensePayments = appData.masterLists.expensePayments.map(item => ({
+        id: item.id || generateListId("expensePayment"),
+        name: String(item.name || "").trim(),
+        notes: String(item.notes || "").trim()
+      })).filter(item => item.name);
+      appData.masterLists.suppliers = appData.masterLists.suppliers.map(item => ({
+        id: item.id || generateListId("supplier"),
+        name: String(item.name || "").trim(),
+        notes: String(item.notes || "").trim()
+      })).filter(item => item.name);
     }
 
     function getMasterList(type){
@@ -6926,6 +7504,20 @@ let globalSettingsState = {
       updateDatalistOptions("marketerMasterNames", getMasterList("marketers"), item => item.name);
       updateDatalistOptions("bankMasterNames", getMasterList("banks"), item => item.name);
       updateDatalistOptions("taxPeriodMasterNames", getMasterList("taxPeriods"), item => item.name);
+      populateExpenseSelectOptions();
+    }
+
+    function populateSimpleSelect(id, items, placeholder){
+      const el = document.getElementById(id);
+      if(!el) return;
+      const old = el.value;
+      el.innerHTML = `<option value="">${escapeHtml(placeholder)}</option>` + (items || []).map(item => `<option value="${escapeHtml(item.name || "")}">${escapeHtml(item.name || "")}</option>`).join("");
+      if(old) el.value = old;
+    }
+
+    function populateExpenseSelectOptions(){
+      populateSimpleSelect("expensePaymentSelect", getMasterList("expensePayments"), "اختر بند الدفعة");
+      populateSimpleSelect("expenseSupplierSelect", getMasterList("suppliers"), "اختر المورد");
     }
 
     function populateBankSelectOptions(){
@@ -7029,6 +7621,24 @@ let globalSettingsState = {
         if(notes) notes.value = "";
         if(btn) btn.textContent = "إضافة بنك";
         if(cancel) cancel.classList.add("hidden");
+      } else if(type === "expensePayments"){
+        const name = document.getElementById("globalExpensePaymentName");
+        const notes = document.getElementById("globalExpensePaymentNotes");
+        const btn = document.getElementById("globalExpensePaymentSaveBtn");
+        const cancel = document.getElementById("globalExpensePaymentCancelBtn");
+        if(name) name.value = "";
+        if(notes) notes.value = "";
+        if(btn) btn.textContent = "إضافة بند دفعة";
+        if(cancel) cancel.classList.add("hidden");
+      } else if(type === "suppliers"){
+        const name = document.getElementById("globalSupplierName");
+        const notes = document.getElementById("globalSupplierNotes");
+        const btn = document.getElementById("globalSupplierSaveBtn");
+        const cancel = document.getElementById("globalSupplierCancelBtn");
+        if(name) name.value = "";
+        if(notes) notes.value = "";
+        if(btn) btn.textContent = "إضافة مورد";
+        if(cancel) cancel.classList.add("hidden");
       } else if(type === "taxPeriods"){
         const name = document.getElementById("globalTaxPeriodName");
         const notes = document.getElementById("globalTaxPeriodNotes");
@@ -7097,6 +7707,21 @@ let globalSettingsState = {
         }else{
           list.unshift({id: generateListId("bank"), name, notes});
         }
+      } else if(type === "expensePayments" || type === "suppliers"){
+        const isPayment = type === "expensePayments";
+        const nameEl = document.getElementById(isPayment ? "globalExpensePaymentName" : "globalSupplierName");
+        const notesEl = document.getElementById(isPayment ? "globalExpensePaymentNotes" : "globalSupplierNotes");
+        const name = (nameEl ? nameEl.value : "").trim();
+        const notes = (notesEl ? notesEl.value : "").trim();
+        if(!name) return alert(isPayment ? "اكتب بند الدفعة" : "اكتب اسم المورد");
+        const dup = list.find(item => item.name.trim().toLowerCase() === name.toLowerCase() && item.id !== globalSettingsState[stateKey]);
+        if(dup) return alert(isPayment ? "بند الدفعة موجود بالفعل" : "اسم المورد موجود بالفعل");
+        if(globalSettingsState[stateKey]){
+          const item = list.find(x => x.id === globalSettingsState[stateKey]);
+          if(item){ item.name = name; item.notes = notes; }
+        }else{
+          list.unshift({id: generateListId(isPayment ? "expensePayment" : "supplier"), name, notes});
+        }
       } else if(type === "taxPeriods"){
         const name = document.getElementById("globalTaxPeriodName").value.trim();
         const notes = document.getElementById("globalTaxPeriodNotes").value.trim();
@@ -7114,6 +7739,7 @@ let globalSettingsState = {
       renderGlobalSettings();
       populateGlobalSelectors();
       populateBankSelectOptions();
+      populateExpenseSelectOptions();
       toggleTransactionBankFields();
       resetGlobalForm(type);
     }
@@ -7146,6 +7772,16 @@ let globalSettingsState = {
         document.getElementById("globalBankNotes").value = item.notes || "";
         document.getElementById("globalBankSaveBtn").textContent = "حفظ تعديل البنك";
         document.getElementById("globalBankCancelBtn").classList.remove("hidden");
+      } else if(type === "expensePayments"){
+        document.getElementById("globalExpensePaymentName").value = item.name || "";
+        document.getElementById("globalExpensePaymentNotes").value = item.notes || "";
+        document.getElementById("globalExpensePaymentSaveBtn").textContent = "حفظ تعديل بند الدفعة";
+        document.getElementById("globalExpensePaymentCancelBtn").classList.remove("hidden");
+      } else if(type === "suppliers"){
+        document.getElementById("globalSupplierName").value = item.name || "";
+        document.getElementById("globalSupplierNotes").value = item.notes || "";
+        document.getElementById("globalSupplierSaveBtn").textContent = "حفظ تعديل المورد";
+        document.getElementById("globalSupplierCancelBtn").classList.remove("hidden");
       } else if(type === "taxPeriods"){
         document.getElementById("globalTaxPeriodName").value = item.name || "";
         document.getElementById("globalTaxPeriodNotes").value = item.notes || "";
@@ -7164,6 +7800,7 @@ let globalSettingsState = {
       renderGlobalSettings();
       populateGlobalSelectors();
       populateBankSelectOptions();
+      populateExpenseSelectOptions();
       toggleTransactionBankFields();
       resetGlobalForm(type);
     }
@@ -7243,6 +7880,40 @@ let globalSettingsState = {
         `).join("") : '<tr><td colspan="3">لا توجد بنوك بعد</td></tr>';
       }
 
+      const expensePaymentBody = document.getElementById("globalExpensePaymentsBody");
+      if(expensePaymentBody){
+        const items = getMasterList("expensePayments");
+        expensePaymentBody.innerHTML = items.length ? items.map(item => `
+          <tr>
+            <td>${escapeHtml(item.name)}</td>
+            <td>${escapeHtml(item.notes || "-")}</td>
+            <td class="no-print">
+              <div class="actions">
+                <button class="btn-orange" onclick="editGlobalListItem('expensePayments','${item.id}')">تعديل</button>
+                <button type="button" class="btn-red" onclick="deleteGlobalListItem('expensePayments','${item.id}')">حذف</button>
+              </div>
+            </td>
+          </tr>
+        `).join("") : '<tr><td colspan="3">لا توجد بنود دفعات بعد</td></tr>';
+      }
+
+      const supplierBody = document.getElementById("globalSuppliersBody");
+      if(supplierBody){
+        const items = getMasterList("suppliers");
+        supplierBody.innerHTML = items.length ? items.map(item => `
+          <tr>
+            <td>${escapeHtml(item.name)}</td>
+            <td>${escapeHtml(item.notes || "-")}</td>
+            <td class="no-print">
+              <div class="actions">
+                <button class="btn-orange" onclick="editGlobalListItem('suppliers','${item.id}')">تعديل</button>
+                <button type="button" class="btn-red" onclick="deleteGlobalListItem('suppliers','${item.id}')">حذف</button>
+              </div>
+            </td>
+          </tr>
+        `).join("") : '<tr><td colspan="3">لا يوجد موردون بعد</td></tr>';
+      }
+
       const taxPeriodBody = document.getElementById("globalTaxPeriodsBody");
       if(taxPeriodBody){
         const items = getMasterList("taxPeriods");
@@ -7265,6 +7936,7 @@ let globalSettingsState = {
 
 
     ensureMasterLists();
+    setTimeout(() => { populateExpenseSelectOptions(); syncExpenseTypeForm(); }, 0);
 
     function loadSystemSettings(){
       const defaults = {
@@ -7915,6 +8587,13 @@ let globalSettingsState = {
     function ensureArrays(project){
       if(!project.units) project.units = [];
       if(!project.expenses) project.expenses = [];
+      if(!project.expenseAgreements || typeof project.expenseAgreements !== "object" || Array.isArray(project.expenseAgreements)) project.expenseAgreements = {};
+      (project.expenses || []).forEach(exp => {
+        if(typeof exp.approved === "undefined") exp.approved = false;
+        if(!exp.approvedBy) exp.approvedBy = "";
+        if(!exp.approvedAt) exp.approvedAt = "";
+      });
+
       if(!project.partners) project.partners = [];
       if(!project.investors) project.investors = [];
       if(!project.advances) project.advances = [];
@@ -8169,6 +8848,7 @@ let globalSettingsState = {
         archivedAt: "",
         units: [],
         expenses: [],
+        expenseAgreements: {},
         partners: [],
         investors: [],
         advances: [],
@@ -8510,6 +9190,7 @@ let globalSettingsState = {
       const costPercent = Math.max(0, Math.min(100, (costValue / maxCompare) * 100));
       const projectProfitPercent = num(f.projectProfitPercent);
       const profitPercent = Math.max(0, Math.min(100, Math.abs(projectProfitPercent)));
+      const profitLiquidClass = projectProfitPercent < 0 ? "red" : "green";
       const formatFill = (v) => {
         const n = Number(v) || 0;
         if(n <= 0) return '0%';
@@ -8562,7 +9243,7 @@ let globalSettingsState = {
           <div class="cylinder-item">
             <div class="cylinder-figure">
               <div class="cylinder-shell">
-              <div class="cylinder-liquid green" data-target-height="${formatFill(profitPercent)}">
+              <div class="cylinder-liquid ${profitLiquidClass}" data-target-height="${formatFill(profitPercent)}">
                 <div class="cylinder-liquid-top"></div>
                 <div class="cylinder-wave"></div>
                 <div class="cylinder-wave wave-2"></div>
@@ -8841,7 +9522,7 @@ let globalSettingsState = {
           const d = calcTaxRefundDistribution(p, refund);
           const companyRow = d.investorRows.find(x => x.name === "الشركة");
           return `
-            <tr>
+            <tr class="${refund.approved ? 'tax-approved-row' : ''}">
               <td>${escapeHtml(refund.period || "-")}</td>
               <td>${escapeHtml(refund.date || "-")}</td>
               <td>${money(d.amount)}</td>
@@ -8850,11 +9531,13 @@ let globalSettingsState = {
               <td>${money(d.investorPool)}</td>
               <td>${money(companyRow ? companyRow.total : d.companyFixed)}</td>
               <td>${escapeHtml(refund.note || "-")}</td>
+              <td>${refund.approved ? '<span class="tax-approval-badge">معتمد</span><div class="tiny-muted">' + escapeHtml((refund.approvedBy || 'المدير') + ' | ' + (refund.approvedAt || '-')) + '</div>' : '<span class="tax-pending-badge">غير معتمد</span>'}</td>
               <td class="no-print"><button class="btn-link" onclick="showTaxRefundDetails(${i})">عرض</button></td>
+              <td class="no-print"><button class="btn-green" onclick="approveTaxRefund(${i})">${refund.approved ? 'إلغاء الاعتماد' : 'اعتماد'}</button></td>
               <td class="no-print"><button class="btn-red" onclick="deleteTaxRefund(${i})">حذف</button></td>
             </tr>
           `;
-        }).join("") : '<tr><td colspan="10">لا توجد فترات استرداد مسجلة</td></tr>';
+        }).join("") : '<tr><td colspan="12">لا توجد فترات استرداد مسجلة</td></tr>';
       }
 
       if(list.length && selectedTaxRefundIndex >= list.length) selectedTaxRefundIndex = 0;
@@ -8909,7 +9592,7 @@ let globalSettingsState = {
       const note = (document.getElementById("taxRefundNote")?.value || "").trim();
       if(!period) return alert("اكتب فترة الاسترداد مثل: الربع الأول 2025");
       if(amount <= 0) return alert("اكتب مبلغ استرداد صحيح");
-      p.taxRefunds.unshift({period, amount, date, note, payouts:[]});
+      p.taxRefunds.unshift({period, amount, date, note, approved:false, payouts:[]});
       addMovement("استرداد ضريبي", period, amount, note || "تسجيل استرداد ضريبي", date);
       ["taxRefundPeriod","taxRefundAmount","taxRefundDate","taxRefundNote"].forEach(id => {
         const el = document.getElementById(id);
@@ -9020,7 +9703,7 @@ let globalSettingsState = {
       if(amount > remain && (amount - remain) <= moneyTolerance()) amount = remain;
       if(amount > remain) return alert(`المبلغ أكبر من المتبقي للطرف. المتبقي: ${money(remain)}`);
       if(method === "bank" && !bank) return alert("اختر البنك");
-      refund.payouts.unshift({key, name:row.name, role:row.role, amount, date, method, bank, note});
+      refund.payouts.unshift({key, name:row.name, role:row.role, amount, date, method, bank, note, approved:false});
       addMovement("صرف استرداد ضريبي", `${refund.period || "-"} - ${row.name}`, -amount, `${method === "bank" ? "بنك" : "نقدًا"}${bank ? " - " + bank : ""}${note ? " | " + note : ""}`, date);
       ["taxRefundPayoutAmount","taxRefundPayoutDate","taxRefundPayoutNote","taxRefundPayoutBank"].forEach(id => {
         const el = document.getElementById(id);
@@ -9113,6 +9796,16 @@ let globalSettingsState = {
       amountEl?.focus();
     }
 
+
+    function taxRefundCumulativeTolerance(){
+      return 2; // سماحية آمنة لفروقات الهللات والتقريب التراكمي بين الفترات
+    }
+
+    function normalizeTaxRefundSettlement(value){
+      const v = roundMoney2(value);
+      return Math.abs(v) <= taxRefundCumulativeTolerance() ? 0 : v;
+    }
+
     function addTaxRefundCumulativePayout(key, amountArg=null){
       if(!requireProjectOpen("صرف تراكمي للاسترداد الضريبي")) return;
       const p = getProject();
@@ -9130,9 +9823,13 @@ let globalSettingsState = {
       const note = (document.getElementById("taxRefundPayoutNote")?.value || "").trim();
 
       if(amount <= 0) return alert("اكتب مبلغ صرف صحيح");
-      if(amount > totalRemain && (amount - totalRemain) <= moneyTolerance()) amount = totalRemain;
-      if(amount > totalRemain) return alert(`المبلغ أكبر من المتبقي التراكمي للطرف. المتبقي: ${money(totalRemain)}`);
       if(method === "bank" && !bank) return alert("اختر البنك");
+
+      // منع خطأ فروقات الهللات في الجدول التراكمي:
+      // لو المبلغ المدخل أكبر من المتبقي لأي سبب تقريب، نصرف المتاح الفعلي فقط.
+      if(amount > totalRemain){
+        amount = totalRemain;
+      }
 
       let remainingToAllocate = amount;
       let insertedCount = 0;
@@ -9160,13 +9857,15 @@ let globalSettingsState = {
             date,
             method,
             bank,
-            note: note || "صرف تراكمي من الاسترداد الضريبي"
+            note: note || "صرف تراكمي من الاسترداد الضريبي",
+            approved:false
           });
           remainingToAllocate = roundMoney2(remainingToAllocate - part);
           insertedCount++;
         }
       });
 
+      remainingToAllocate = normalizeTaxRefundSettlement(remainingToAllocate);
       if(insertedCount === 0) return alert("لا يوجد متبقي مفتوح لهذا الطرف داخل الفترات");
 
       addMovement("صرف تراكمي استرداد ضريبي", summary.name || "-", -amount, `${method === "bank" ? "بنك" : "نقدًا"}${bank ? " - " + bank : ""}${note ? " | " + note : ""}`, date);
@@ -9180,14 +9879,19 @@ let globalSettingsState = {
       pendingCumulativeTaxRefundKey = "";
       toggleTaxRefundPayoutBank();
       renderProject();
-      setTimeout(() => renderTaxRefundTab(), 0);
+      setTimeout(() => {
+        if(typeof renderTaxRefundTab === "function") renderTaxRefundTab();
+        if(document.getElementById("abuFarisTab") && !document.getElementById("abuFarisTab").classList.contains("hidden") && typeof renderAbuFarisTab === "function"){
+          renderAbuFarisTab();
+        }
+      }, 0);
     }
 
     function settleTaxRefundCumulative(key){
       const summary = calcTaxRefundCumulativeSummary().find(x => x.key === key);
       if(!summary) return;
       prepareTaxRefundCumulativePayout(key);
-      addTaxRefundCumulativePayout(key, summary.remain);
+      addTaxRefundCumulativePayout(key, roundMoney2(summary.remain));
     }
 
     function renderTaxRefundSummaryBody(){
@@ -9219,7 +9923,7 @@ let globalSettingsState = {
       });
       rows.sort((a,b) => String(b.pay.date || '').localeCompare(String(a.pay.date || '')));
       body.innerHTML = rows.length ? rows.map(row => `
-        <tr>
+        <tr class="${row.pay.approved ? 'tax-approved-row' : ''}">
           <td>${escapeHtml(row.refund.period || "-")}</td>
           <td>${escapeHtml(row.pay.date || "-")}</td>
           <td>${escapeHtml(row.pay.name || "-")}</td>
@@ -9227,9 +9931,11 @@ let globalSettingsState = {
           <td>${row.pay.method === "bank" ? "بنك" : "نقدًا"}</td>
           <td>${escapeHtml(row.pay.bank || "-")}</td>
           <td>${escapeHtml(row.pay.note || "-")}</td>
+          <td>${row.pay.approved ? '<span class="tax-approval-badge">معتمد</span><div class="tiny-muted">' + escapeHtml((row.pay.approvedBy || 'المدير') + ' | ' + (row.pay.approvedAt || '-')) + '</div>' : '<span class="tax-pending-badge">غير معتمد</span>'}</td>
+          <td class="no-print"><button class="btn-green" onclick="approveTaxRefundPayout(${row.refundIndex}, ${row.payIndex})">${row.pay.approved ? 'إلغاء الاعتماد' : 'اعتماد'}</button></td>
           <td class="no-print"><button class="btn-red" onclick="deleteTaxRefundPayout(${row.refundIndex}, ${row.payIndex})">حذف</button></td>
         </tr>
-      `).join("") : '<tr><td colspan="8">لا توجد حركات صرف</td></tr>';
+      `).join("") : '<tr><td colspan="10">لا توجد حركات صرف</td></tr>';
     }
 
     function deleteTaxRefundPayout(refundIndex, payIndex){
@@ -9238,7 +9944,8 @@ let globalSettingsState = {
       const refund = (p.taxRefunds || [])[refundIndex];
       if(!refund || !Array.isArray(refund.payouts) || !refund.payouts[payIndex]) return;
       const row = refund.payouts[payIndex];
-      if(!confirmSecureDelete("حذف صرف استرداد ضريبي", "هل تريد حذف حركة الصرف؟")) return;
+      const msg = row.approved ? "هذه الحركة معتمدة. يلزم الكود السري للحذف. هل تريد المتابعة؟" : "هل تريد حذف حركة الصرف؟";
+      if(!confirmSecureDelete("حذف صرف استرداد ضريبي", msg)) return;
       refund.payouts.splice(payIndex, 1);
       addMovement("حذف صرف استرداد ضريبي", `${refund.period || "-"} - ${row.name || "-"}`, num(row.amount), row.note || "تم حذف حركة الصرف", todayText());
       renderProject();
@@ -9284,11 +9991,66 @@ let globalSettingsState = {
           ${printSummaryCard("المتبقي", money(s.remain))}
         </div>
         <table>
-          <thead><tr><th>الفترة</th><th>التاريخ</th><th>المبلغ</th><th>الطريقة</th><th>البنك</th><th>البيان</th></tr></thead>
+          <thead><tr><th>الفترة</th><th>التاريخ</th><th>المبلغ</th><th>الطريقة</th><th>البنك</th><th>التفصيل</th></tr></thead>
           <tbody>${movementRows}</tbody>
         </table>
       `;
       openPrintWindow("كشف استرداد ضريبي", html);
+    }
+
+
+
+    function getApprovalActor(){
+      try{
+        const user = (window.currentUser && (currentUser.name || currentUser.username || currentUser.user || currentUser.id)) || "";
+        if(String(user).trim()) return String(user).trim();
+      }catch(e){}
+      try{
+        const u = localStorage.getItem("loggedUserName") || localStorage.getItem("currentUserName") || "";
+        if(String(u).trim()) return String(u).trim();
+      }catch(e){}
+      return "المدير";
+    }
+
+    function approveTaxRefund(index){
+      const p = getProject();
+      if(!p) return;
+      ensureArrays(p);
+      const refund = p.taxRefunds[index];
+      if(!refund) return;
+      refund.approved = !refund.approved;
+      if(refund.approved){
+        refund.approvedBy = getApprovalActor();
+        refund.approvedAt = todayText();
+      }else{
+        refund.approvedBy = "";
+        refund.approvedAt = "";
+      }
+      addMovement(refund.approved ? "اعتماد استرداد ضريبي" : "إلغاء اعتماد استرداد ضريبي", refund.period || "-", num(refund.amount), refund.note || "-", todayText());
+      saveApp("approve_tax_refund");
+      renderProject();
+      setTimeout(() => renderTaxRefundTab(), 0);
+    }
+
+    function approveTaxRefundPayout(refundIndex, payIndex){
+      const p = getProject();
+      if(!p) return;
+      ensureArrays(p);
+      const refund = (p.taxRefunds || [])[refundIndex];
+      if(!refund || !Array.isArray(refund.payouts) || !refund.payouts[payIndex]) return;
+      const pay = refund.payouts[payIndex];
+      pay.approved = !pay.approved;
+      if(pay.approved){
+        pay.approvedBy = getApprovalActor();
+        pay.approvedAt = todayText();
+      }else{
+        pay.approvedBy = "";
+        pay.approvedAt = "";
+      }
+      addMovement(pay.approved ? "اعتماد صرف استرداد ضريبي" : "إلغاء اعتماد صرف استرداد ضريبي", `${refund.period || "-"} - ${pay.name || "-"}`, num(pay.amount), pay.note || "-", todayText());
+      saveApp("approve_tax_refund_payout");
+      renderProject();
+      setTimeout(() => renderTaxRefundTab(), 0);
     }
 
     function deleteTaxRefund(index){
@@ -9297,7 +10059,8 @@ let globalSettingsState = {
       ensureArrays(p);
       const row = p.taxRefunds[index];
       if(!row) return;
-      if(!confirmSecureDelete("حذف استرداد ضريبي", "هل تريد حذف فترة الاسترداد الضريبي؟")) return;
+      const msg = row.approved ? "هذه الفترة معتمدة. يلزم الكود السري للحذف. هل تريد المتابعة؟" : "هل تريد حذف فترة الاسترداد الضريبي؟";
+      if(!confirmSecureDelete("حذف استرداد ضريبي", msg)) return;
       p.taxRefunds.splice(index, 1);
       addMovement("حذف استرداد ضريبي", row.period || "-", -num(row.amount), row.note || "تم حذف الاسترداد", todayText());
       selectedTaxRefundIndex = 0;
@@ -9750,17 +10513,65 @@ let globalSettingsState = {
       updateSidebarActive("home");
     }
 
+    // ===== Smart lazy tab loading: render only the visible tab =====
+    let activeProjectTabId = "unitsTab";
+    const lazyRenderedTabs = {};
+
+    function safeRun(fnName){
+      try{
+        const fn = window[fnName] || (typeof globalThis !== "undefined" ? globalThis[fnName] : null);
+        if(typeof fn === "function") fn();
+      }catch(err){
+        console.warn("Lazy tab render failed:", fnName, err);
+      }
+    }
+
+    function clearLazyRenderedTabs(){
+      Object.keys(lazyRenderedTabs).forEach(k => delete lazyRenderedTabs[k]);
+    }
+
+    function renderLazyProjectTab(id, force=false){
+      if(!id) id = activeProjectTabId || "unitsTab";
+      if(!force && lazyRenderedTabs[id]) return;
+
+      if(id === "unitsTab") safeRun("renderUnits");
+      else if(id === "marketersTab"){ safeRun("renderMarketerFilter"); safeRun("renderMarketers"); }
+      else if(id === "expensesTab") safeRun("renderExpenses");
+      else if(id === "suppliersSummaryTab") safeRun("renderSuppliersSummary");
+      else if(id === "agreementsTab") safeRun("renderAgreementsTab");
+      else if(id === "partnersTab") safeRun("renderPartners");
+      else if(id === "partnerCostTab") safeRun("renderPartnerCostTab");
+      else if(id === "investorsTab") safeRun("renderInvestors");
+      else if(id === "advancesTab"){ safeRun("refreshAdvanceNames"); safeRun("renderAdvances"); }
+      else if(id === "siteCustodyTab") safeRun("renderSiteCustody");
+      else if(id === "adminTab") safeRun("renderAdminTab");
+      else if(id === "abuFarisTab") safeRun("renderAbuFarisTab");
+      else if(id === "companyTreasuryTab") safeRun("renderCompanyTreasuryTab");
+      else if(id === "managementTreasuryTab") safeRun("renderManagementTreasuryTab");
+      else if(id === "movementsTab") safeRun("renderMovements");
+      else if(id === "collectionTab") safeRun("renderCollectionBoard");
+      else if(id === "paymentAlertsTab") safeRun("renderPaymentAlerts");
+      else if(id === "alertsTab") safeRun("renderAlertsAndIssues");
+      else if(id === "reportTab") safeRun("renderReport");
+      else if(id === "taxRefundTab") safeRun("renderTaxRefundTab");
+
+      lazyRenderedTabs[id] = true;
+      setTimeout(() => { safeRun("applyMobileTableWrappers"); }, 0);
+    }
+
+    function refreshActiveLazyTab(){
+      if(activeProjectTabId) renderLazyProjectTab(activeProjectTabId, true);
+    }
+
     function showTab(id, btn){
+      const panel = document.getElementById(id);
+      if(!panel) return;
+      activeProjectTabId = id;
       document.querySelectorAll(".tab-panel").forEach(x => x.classList.add("hidden"));
-      document.getElementById(id).classList.remove("hidden");
+      panel.classList.remove("hidden");
       document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
-      btn.classList.add("active");
-      if(id === "advancesTab") refreshAdvanceNames();
-      if(id === "collectionTab") renderCollectionBoard();
-      if(id === "abuFarisTab") renderAbuFarisTab();
-      if(id === "taxRefundTab") renderTaxRefundTab();
-      if(id === "companyTreasuryTab") renderCompanyTreasuryTab();
-      if(id === "managementTreasuryTab") renderManagementTreasuryTab();
+      if(btn) btn.classList.add("active");
+      renderLazyProjectTab(id, false);
       updateSidebarActive();
     }
 
@@ -9899,6 +10710,223 @@ let globalSettingsState = {
         spent,
         balance: added - spent
       };
+    }
+
+
+    function ensurePartnerCostArrays(project){
+      if(!project) return;
+      if(!Array.isArray(project.partnerCostPayments)) project.partnerCostPayments = [];
+      if(!Array.isArray(project.partners)) project.partners = [];
+      (project.partners || []).forEach(partner => {
+        if(typeof partner.costUnderAccount === 'undefined') partner.costUnderAccount = 0;
+      });
+      (project.partnerCostPayments || []).forEach((p, i) => {
+        if(!p.id) p.id = 'pcp_' + Date.now() + '_' + i + '_' + Math.random().toString(36).slice(2,7);
+      });
+    }
+
+    function normalizePartnerCostName(value){
+      return String(value || '').trim().replace(/\s+/g, ' ').toLowerCase();
+    }
+
+    function getPartnerCostTotalCost(project = getProject()){
+      if(!project) return 0;
+      // نستخدم نفس رقم إجمالي التكلفة الظاهر في لوحة المشروع حتى لا يحصل فرق محاسبي.
+      try{
+        if(typeof calcProjectFinancials === 'function'){
+          const f = calcProjectFinancials(project);
+          if(f && Number.isFinite(Number(f.totalProjectCost))) return num(f.totalProjectCost);
+        }
+      }catch(err){
+        console.warn('partner cost total fallback', err);
+      }
+      const expenses = (project.expenses || []).reduce((s,e) => s + num(e.amount), 0);
+      const custodyAdded = (project.siteCustody || []).filter(x => x.type === 'add').reduce((s,x) => s + num(x.amount), 0);
+      return num(project.cost) + expenses + custodyAdded;
+    }
+
+    function getPartnerCostRows(project = getProject()){
+      if(!project) return [];
+      ensurePartnerCostArrays(project);
+      const totalProjectCost = getPartnerCostTotalCost(project);
+      const payments = project.partnerCostPayments || [];
+      return (project.partners || []).map((partner, partnerIndex) => {
+        const name = String(partner.name || '').trim();
+        const key = normalizePartnerCostName(name);
+        const percent = num(partner.percent);
+        const costShare = totalProjectCost * (percent / 100);
+        const underAccount = num(partner.costUnderAccount || 0);
+        const partnerPayments = payments.filter(p => normalizePartnerCostName(p.name) === key);
+        const paid = partnerPayments.reduce((s,p) => s + num(p.amount), 0);
+        const paymentsCount = partnerPayments.length;
+        const netDue = costShare + underAccount - paid;
+        let status = 'عليه مبلغ';
+        let statusClass = 'booked';
+        if(Math.abs(netDue) < 0.01){ status = 'مسدد'; statusClass = 'available'; }
+        else if(netDue < 0){ status = 'له رصيد زائد'; statusClass = 'sold'; }
+        return {
+          name,
+          percent,
+          costShare,
+          underAccount,
+          paid,
+          paymentsCount,
+          netDue,
+          status,
+          statusClass,
+          partnerIndex,
+          date: partner.date || '-'
+        };
+      }).filter(r => r.name);
+    }
+
+    function refreshPartnerCostPaymentNames(){
+      const sel = document.getElementById('partnerCostPaymentName');
+      if(!sel) return;
+      const project = getProject();
+      ensurePartnerCostArrays(project);
+      const current = sel.value;
+      const names = ((project && project.partners) || []).map(p => String(p.name || '').trim()).filter(Boolean);
+      sel.innerHTML = names.length ? '<option value="">اختر الشريك</option>' + names.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join('') : '<option value="">لا يوجد شركاء</option>';
+      if(current && names.includes(current)) sel.value = current;
+    }
+
+    function renderPartnerCostTab(){
+      const project = getProject();
+      if(!project) return;
+      ensurePartnerCostArrays(project);
+      refreshPartnerCostPaymentNames();
+      let rows = getPartnerCostRows(project);
+      const search = (document.getElementById('partnerCostSearch')?.value || '').trim().toLowerCase();
+      const status = document.getElementById('partnerCostStatusFilter')?.value || '';
+      const sort = document.getElementById('partnerCostSort')?.value || 'due_desc';
+      if(search) rows = rows.filter(r => String(r.name || '').toLowerCase().includes(search));
+      if(status === 'due') rows = rows.filter(r => r.netDue > 0.01);
+      if(status === 'clear') rows = rows.filter(r => Math.abs(r.netDue) < 0.01);
+      if(status === 'credit') rows = rows.filter(r => r.netDue < -0.01);
+      rows.sort((a,b) => {
+        if(sort === 'paid_desc') return num(b.paid) - num(a.paid);
+        if(sort === 'percent_desc') return num(b.percent) - num(a.percent);
+        if(sort === 'name') return String(a.name || '').localeCompare(String(b.name || ''), 'ar');
+        return num(b.netDue) - num(a.netDue);
+      });
+      const allRows = getPartnerCostRows(project);
+      const requiredTotal = allRows.reduce((s,r) => s + num(r.costShare), 0);
+      const underTotal = allRows.reduce((s,r) => s + num(r.underAccount), 0);
+      const paidTotal = allRows.reduce((s,r) => s + num(r.paid), 0);
+      const netTotal = allRows.reduce((s,r) => s + num(r.netDue), 0);
+      setText('partnerCostRowsCount', `${rows.length} شريك`);
+      setText('partnerCostRequiredTotal', money(requiredTotal));
+      setText('partnerCostUnderTotal', money(underTotal));
+      setText('partnerCostPaidTotal', money(paidTotal));
+      setText('partnerCostNetTotal', money(netTotal));
+      const body = document.getElementById('partnerCostBody');
+      if(body){
+        body.innerHTML = rows.length ? rows.map(r => `
+          <tr>
+            <td>${escapeHtml(r.name)}</td>
+            <td>${num(r.percent).toFixed(2)}%</td>
+            <td>${money(r.costShare)}</td>
+            <td class="no-print"><input type="number" value="${num(r.underAccount)}" style="width:150px" onchange="updatePartnerCostUnderAccountByIndex(${r.partnerIndex}, this.value)" /></td>
+            <td>${money(r.underAccount)}</td>
+            <td>${money(r.paid)}</td>
+            <td style="font-weight:900;color:${r.netDue < -0.01 ? '#166534' : (r.netDue > 0.01 ? '#991b1b' : '#1d4ed8')}">${money(Math.abs(r.netDue))} ${r.netDue < -0.01 ? 'له' : (r.netDue > 0.01 ? 'عليه' : '')}</td>
+            <td><span class="badge ${r.statusClass}">${escapeHtml(r.status)}</span></td>
+            <td>${num(r.paymentsCount)}</td>
+          </tr>
+        `).join('') : '<tr><td colspan="9">لا توجد بيانات مطابقة. تأكد من إضافة شركاء بنسبة داخل تبويبة الشركاء.</td></tr>';
+      }
+      renderPartnerCostPaymentsTable(project);
+    }
+
+    function renderPartnerCostPaymentsTable(project = getProject()){
+      const body = document.getElementById('partnerCostPaymentsBody');
+      if(!body || !project) return;
+      ensurePartnerCostArrays(project);
+      const rows = [...(project.partnerCostPayments || [])].sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')) || String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
+      body.innerHTML = rows.length ? rows.map((p) => {
+        const realIndex = (project.partnerCostPayments || []).findIndex(x => String(x.id || '') === String(p.id || ''));
+        return `<tr>
+          <td>${escapeHtml(p.name)}</td>
+          <td>${escapeHtml(p.date || '-')}</td>
+          <td>${money(p.amount)}</td>
+          <td>${escapeHtml(p.method || '-')}</td>
+          <td>${escapeHtml(p.note || '-')}</td>
+          <td class="no-print"><button class="btn-red" type="button" onclick="deletePartnerCostPayment(${realIndex})">حذف</button></td>
+        </tr>`;
+      }).join('') : '<tr><td colspan="6">لا توجد دفعات واردة مسجلة</td></tr>';
+    }
+
+    function updatePartnerCostUnderAccountByIndex(index, value){
+      const project = getProject();
+      if(!project) return;
+      ensurePartnerCostArrays(project);
+      const partner = (project.partners || [])[Number(index)];
+      if(!partner) return;
+      partner.costUnderAccount = num(value);
+      saveApp('partner-cost-under-account');
+      renderPartnerCostTab();
+      if(typeof renderPartners === 'function') renderPartners();
+    }
+
+    function updatePartnerCostUnderAccount(name, value){
+      const project = getProject();
+      if(!project) return;
+      ensurePartnerCostArrays(project);
+      const key = normalizePartnerCostName(name);
+      const index = (project.partners || []).findIndex(p => normalizePartnerCostName(p.name) === key);
+      updatePartnerCostUnderAccountByIndex(index, value);
+    }
+
+    function addPartnerCostPayment(){
+      const project = getProject();
+      if(!project) return;
+      ensurePartnerCostArrays(project);
+      const name = document.getElementById('partnerCostPaymentName')?.value || '';
+      const amount = num(document.getElementById('partnerCostPaymentAmount')?.value || 0);
+      const date = document.getElementById('partnerCostPaymentDate')?.value || new Date().toISOString().slice(0,10);
+      const method = document.getElementById('partnerCostPaymentMethod')?.value || '';
+      const note = document.getElementById('partnerCostPaymentNote')?.value || '';
+      if(!name){ alert('اختر اسم الشريك'); return; }
+      if(amount <= 0){ alert('اكتب مبلغ صحيح'); return; }
+      const exists = (project.partners || []).some(p => normalizePartnerCostName(p.name) === normalizePartnerCostName(name));
+      if(!exists){ alert('الشريك غير موجود في تبويبة الشركاء'); return; }
+      project.partnerCostPayments.push({
+        id: 'pcp_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
+        name: String(name).trim(),
+        amount,
+        date,
+        method,
+        note,
+        createdAt: Date.now()
+      });
+      ['partnerCostPaymentAmount','partnerCostPaymentMethod','partnerCostPaymentNote'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+      saveApp('partner-cost-payment');
+      renderPartnerCostTab();
+      if(typeof renderPartners === 'function') renderPartners();
+      alert('تم تسجيل دفعة الشريك وتحديث الجدول');
+    }
+
+    function deletePartnerCostPayment(index){
+      const project = getProject();
+      if(!project || !Array.isArray(project.partnerCostPayments)) return;
+      if(index < 0 || index >= project.partnerCostPayments.length) return;
+      if(!confirm('حذف دفعة الشريك؟')) return;
+      project.partnerCostPayments.splice(index, 1);
+      saveApp('delete-partner-cost-payment');
+      renderPartnerCostTab();
+    }
+
+    function resetPartnerCostFilters(){
+      ['partnerCostSearch','partnerCostStatusFilter'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+      const sort = document.getElementById('partnerCostSort');
+      if(sort) sort.value = 'due_desc';
+      renderPartnerCostTab();
+    }
+
+    function printPartnerCostReport(){
+      renderPartnerCostTab();
+      window.print();
     }
 
     function calcProjectFinancials(project){
@@ -10062,6 +11090,8 @@ let globalSettingsState = {
       const unitFloor = (document.getElementById("unitFloorFilter") ? document.getElementById("unitFloorFilter").value.trim() : "");
       const expenseSearch = (document.getElementById("expenseSearch") ? document.getElementById("expenseSearch").value.trim() : "");
       const expenseCategory = (document.getElementById("expenseCategoryFilter") ? document.getElementById("expenseCategoryFilter").value.trim() : "");
+      const expenseType = (document.getElementById("expenseTypeFilter") ? document.getElementById("expenseTypeFilter").value : "");
+      const expenseApproval = (document.getElementById("expenseApprovalFilter") ? document.getElementById("expenseApprovalFilter").value : "");
       const expenseDateFrom = (document.getElementById("expenseDateFrom") ? document.getElementById("expenseDateFrom").value : "");
       const expenseDateTo = (document.getElementById("expenseDateTo") ? document.getElementById("expenseDateTo").value : "");
 
@@ -10071,6 +11101,8 @@ let globalSettingsState = {
       if(unitBuilding) parts.push(`مبنى: ${unitBuilding}`);
       if(unitFloor) parts.push(`دور: ${unitFloor}`);
       if(expenseSearch) parts.push(`بحث المصروفات: ${expenseSearch}`);
+      if(expenseType) parts.push(`نوع المصروف: ${expenseTypeLabel(expenseType)}`);
+      if(expenseApproval) parts.push(`اعتماد المصروفات: ${expenseApproval === "approved" ? "المعتمد فقط" : "غير المعتمد فقط"}`);
       if(expenseCategory) parts.push(`تصنيف المصروف: ${expenseCategory}`);
       if(expenseDateFrom) parts.push(`من تاريخ: ${expenseDateFrom}`);
       if(expenseDateTo) parts.push(`إلى تاريخ: ${expenseDateTo}`);
@@ -10119,10 +11151,16 @@ let globalSettingsState = {
     function getFilteredExpenses(project = getProject()){
       const search = (document.getElementById("expenseSearch") ? document.getElementById("expenseSearch").value.trim() : "").toLowerCase() || "";
       const categoryFilter = (document.getElementById("expenseCategoryFilter") ? document.getElementById("expenseCategoryFilter").value.trim() : "").toLowerCase() || "";
+      const typeFilter = (document.getElementById("expenseTypeFilter") ? document.getElementById("expenseTypeFilter").value : "") || "";
+      const approvalFilter = (document.getElementById("expenseApprovalFilter") ? document.getElementById("expenseApprovalFilter").value : "") || "";
       const dateFrom = (document.getElementById("expenseDateFrom") ? document.getElementById("expenseDateFrom").value : "") || "";
       const dateTo = (document.getElementById("expenseDateTo") ? document.getElementById("expenseDateTo").value : "") || "";
       return [...(project.expenses || [])].filter(e => {
-        if(search && ![e.category,e.description,e.date].join(' ').toLowerCase().includes(search)) return false;
+        const eType = getExpenseEntryType(e);
+        if(typeFilter && eType !== typeFilter) return false;
+        if(approvalFilter === "approved" && !e.approved) return false;
+        if(approvalFilter === "pending" && !!e.approved) return false;
+        if(search && ![expenseTypeLabel(eType),e.category,e.description,e.date,(e.approved ? "معتمد" : "غير معتمد")].join(' ').toLowerCase().includes(search)) return false;
         if(categoryFilter && !containsText(e.category, categoryFilter)) return false;
         if(dateFrom && String(e.date || '') < dateFrom) return false;
         if(dateTo && String(e.date || '') > dateTo) return false;
@@ -10170,7 +11208,7 @@ let globalSettingsState = {
     }
 
     function resetExpenseFilters(){
-      ["expenseSearch","expenseCategoryFilter","expenseDateFrom","expenseDateTo"].forEach(id => {
+      ["expenseSearch","expenseTypeFilter","expenseApprovalFilter","expenseCategoryFilter","expenseDateFrom","expenseDateTo"].forEach(id => {
         const el = document.getElementById(id);
         if(el) el.value = "";
       });
@@ -11025,7 +12063,7 @@ ${party}
       let headers = '';
       let bodyRows = '';
       if(data.section === 'units'){
-        headers = '<tr><th>الحالة</th><th>الشقة</th><th>المبنى</th><th>العميل</th><th>المسوق</th><th>البيان</th><th>تاريخ الاستحقاق</th><th>المطلوب</th><th>المحصل</th><th>المتبقي</th></tr>';
+        headers = '<tr><th>الحالة</th><th>الشقة</th><th>المبنى</th><th>العميل</th><th>المسوق</th><th>التفصيل</th><th>تاريخ الاستحقاق</th><th>المطلوب</th><th>المحصل</th><th>المتبقي</th></tr>';
         bodyRows = rows.map(r => `<tr><td>${escapeHtml(r.statusText)}</td><td>${escapeHtml(r.unitNumber)}</td><td>${escapeHtml(r.building)}</td><td>${escapeHtml(r.client)}</td><td>${escapeHtml(r.marketer)}</td><td>${escapeHtml(r.label)}</td><td>${escapeHtml(r.dueDate)}</td><td>${money(r.dueAmount)}</td><td>${money(r.paidAmount)}</td><td>${money(r.remain)}</td></tr>`).join('');
       }else{
         headers = '<tr><th>الفئة</th><th>الاسم</th><th>التفصيل</th><th>الحالة</th><th>إجمالي المستحق</th><th>تم صرفه / تحصيله</th><th>المتبقي</th></tr>';
@@ -11415,7 +12453,7 @@ ${party}
 
     function enhanceMeaningfulIcons(){
       const tabMap = {
-        'الوحدات':'◫','المسوقون':'⌁','المصروفات':'◔','الشركاء':'◈','المساهمون':'◎','الإدارة':'◉','أبوفارس':'◍','الدفعات تحت الحساب':'↺','عهدة الموقع':'◌','دفتر الحركة':'≣','لوحة التحصيل':'▤','تنبيه الدفعات':'◬','ملخص المشروع':'◆'
+        'الوحدات':'◫','المسوقون':'⌁','المصروفات':'◔','الموردين':'▧','الاتفاقيات':'▣','الشركاء':'◈','المساهمون':'◎','الإدارة':'◉','أبوفارس':'◍','الدفعات تحت الحساب':'↺','عهدة الموقع':'◌','دفتر الحركة':'≣','لوحة التحصيل':'▤','تنبيه الدفعات':'◬','ملخص المشروع':'◆'
       };
       document.querySelectorAll('.tabs .tab').forEach(btn => {
         const key = (btn.dataset.baseLabel || btn.textContent || '').replace(/\s+/g,' ').trim();
@@ -11452,6 +12490,161 @@ ${party}
       });
     }
 
+
+
+    function collectExpenseCategorySummary(expenseType){
+      const p = getProject();
+      if(!p) return [];
+      ensureArrays(p);
+      const map = new Map();
+      (p.expenses || []).forEach(e => {
+        if(getExpenseEntryType(e) !== expenseType) return;
+        const name = String(e.category || '').trim();
+        if(!name) return;
+        if(!map.has(name)) map.set(name, {name, amount:0, approvedAmount:0, pendingAmount:0, count:0, approvedCount:0, pendingCount:0, lastDate:'', lastDesc:''});
+        const item = map.get(name);
+        const amount = num(e.amount);
+        item.amount += amount;
+        item.count += 1;
+        if(e.approved){ item.approvedAmount += amount; item.approvedCount += 1; }
+        else { item.pendingAmount += amount; item.pendingCount += 1; }
+        if(String(e.date || '') >= String(item.lastDate || '')){
+          item.lastDate = e.date || '';
+          item.lastDesc = e.description || '';
+        }
+      });
+      return Array.from(map.values()).sort((a,b) => String(a.name).localeCompare(String(b.name), 'ar'));
+    }
+
+    function getSuppliersSummaryRows(){
+      let rows = collectExpenseCategorySummary('supplier');
+      const search = String(document.getElementById('supplierSummarySearch')?.value || '').trim().toLowerCase();
+      const approval = document.getElementById('supplierSummaryApprovalFilter')?.value || '';
+      const sort = document.getElementById('supplierSummarySort')?.value || 'amount_desc';
+      if(search){
+        rows = rows.filter(r => `${r.name} ${r.lastDesc}`.toLowerCase().includes(search));
+      }
+      if(approval === 'approved') rows = rows.filter(r => num(r.approvedAmount) > 0);
+      if(approval === 'pending') rows = rows.filter(r => num(r.pendingAmount) > 0);
+      rows.sort((a,b) => {
+        if(sort === 'amount_asc') return num(a.amount) - num(b.amount);
+        if(sort === 'name') return String(a.name).localeCompare(String(b.name),'ar');
+        if(sort === 'date_desc') return String(b.lastDate || '').localeCompare(String(a.lastDate || ''));
+        return num(b.amount) - num(a.amount);
+      });
+      return rows;
+    }
+
+    function renderSuppliersSummary(){
+      const rows = getSuppliersSummaryRows();
+      const allRows = collectExpenseCategorySummary('supplier');
+      const body = document.getElementById('suppliersSummaryBody');
+      const total = rows.reduce((s,r)=>s+num(r.amount),0);
+      const movements = rows.reduce((s,r)=>s+num(r.count),0);
+      const pending = rows.reduce((s,r)=>s+num(r.pendingAmount),0);
+      const setText = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+      setText('suppliersSummaryCount', `${rows.length} من ${allRows.length} مورد`);
+      setText('suppliersTotalAmount', money(total));
+      setText('suppliersTotalCount', rows.length);
+      setText('suppliersRowsCount', movements);
+      setText('suppliersPendingTotal', money(pending));
+      if(!body) return;
+      body.innerHTML = rows.length ? rows.map((r,idx) => `
+        <tr>
+          <td>${idx + 1}</td>
+          <td><strong>${escapeHtml(r.name)}</strong></td>
+          <td>${money(r.amount)}<div class="small">معتمد: ${money(r.approvedAmount)} | غير معتمد: ${money(r.pendingAmount)}</div></td>
+          <td>${r.count}<div class="small">معتمد ${r.approvedCount} / غير معتمد ${r.pendingCount}</div></td>
+          <td>${escapeHtml(r.lastDate || '-')}</td>
+          <td>${escapeHtml(r.lastDesc || '-')}</td>
+        </tr>
+      `).join('') : '<tr><td colspan="6">لا توجد نتائج حسب الفلتر الحالي.</td></tr>';
+    }
+
+    function getAgreementNames(){
+      const names = new Set();
+      getMasterList('expensePayments').forEach(item => { if(item.name) names.add(String(item.name).trim()); });
+      collectExpenseCategorySummary('payment').forEach(item => { if(item.name) names.add(String(item.name).trim()); });
+      return Array.from(names).filter(Boolean).sort((a,b)=>String(a).localeCompare(String(b),'ar'));
+    }
+
+    function agreementKey(name){
+      return String(name || '').trim();
+    }
+
+    function setAgreementAmount(name, value){
+      const p = getProject();
+      if(!p) return;
+      ensureArrays(p);
+      const key = agreementKey(name);
+      if(!key) return;
+      p.expenseAgreements[key] = num(value);
+      saveApp('set_agreement_amount');
+      renderAgreementsTab();
+    }
+
+    function getAgreementsRowsForView(){
+      const p = getProject();
+      if(!p) return {rows:[], totals:{totalAgreed:0,totalSpent:0,totalRemain:0,totalOver:0}, allCount:0};
+      ensureArrays(p);
+      const spentMap = new Map(collectExpenseCategorySummary('payment').map(item => [item.name, item]));
+      const names = getAgreementNames();
+      const search = String(document.getElementById('agreementSearch')?.value || '').trim().toLowerCase();
+      const statusFilter = document.getElementById('agreementStatusFilter')?.value || '';
+      const sort = document.getElementById('agreementSort')?.value || 'remain_desc';
+      let rows = names.map((name) => {
+        const spentItem = spentMap.get(name) || {amount:0,count:0};
+        const agreed = num(p.expenseAgreements[agreementKey(name)]);
+        const spent = num(spentItem.amount);
+        const remain = agreed - spent;
+        const percent = agreed > 0 ? Math.min(999, (spent / agreed) * 100) : 0;
+        const over = Math.max(0, spent - agreed);
+        const status = agreed <= 0 ? 'needs_amount' : remain < 0 ? 'over' : remain === 0 ? 'completed' : 'remaining';
+        return {name, agreed, spent, remain, percent, over, count: spentItem.count || 0, status};
+      });
+      if(search) rows = rows.filter(r => String(r.name || '').toLowerCase().includes(search));
+      if(statusFilter) rows = rows.filter(r => r.status === statusFilter);
+      rows.sort((a,b) => {
+        if(sort === 'spent_desc') return num(b.spent) - num(a.spent);
+        if(sort === 'over_desc') return num(b.over) - num(a.over);
+        if(sort === 'name') return String(a.name).localeCompare(String(b.name),'ar');
+        return num(b.remain) - num(a.remain);
+      });
+      const totals = rows.reduce((acc,r)=>{
+        acc.totalAgreed += num(r.agreed); acc.totalSpent += num(r.spent); acc.totalRemain += num(r.remain); acc.totalOver += num(r.over); return acc;
+      },{totalAgreed:0,totalSpent:0,totalRemain:0,totalOver:0});
+      return {rows, totals, allCount:names.length};
+    }
+
+    function renderAgreementsTab(){
+      const body = document.getElementById('agreementsBody');
+      if(!body) return;
+      const {rows, totals, allCount} = getAgreementsRowsForView();
+      body.innerHTML = rows.length ? rows.map((r, idx) => {
+        const statusClass = r.status === 'needs_amount' ? 'warn' : r.status === 'over' ? 'over' : r.status === 'completed' ? 'ok' : 'warn';
+        const statusText = r.status === 'needs_amount' ? 'أدخل المتفق عليه' : r.status === 'over' ? 'تجاوز' : r.status === 'completed' ? 'مكتمل' : 'متبقي';
+        const barClass = r.status === 'over' ? 'over' : r.percent >= 80 ? 'warn' : '';
+        return `
+          <tr>
+            <td>${idx + 1}</td>
+            <td><strong>${escapeHtml(r.name)}</strong></td>
+            <td class="no-print"><input class="agreement-amount-input lockable-input" type="number" value="${r.agreed || ''}" placeholder="المتفق عليه" onchange="setAgreementAmount('${escapeHtml(escapeQuotes(r.name))}', this.value)" /></td>
+            <td>${money(r.agreed)}</td>
+            <td>${money(r.spent)}</td>
+            <td>${money(r.remain)}</td>
+            <td><div class="agreement-progress"><span class="${barClass}" style="width:${Math.min(100, Math.max(0, r.percent)).toFixed(2)}%"></span></div><div class="small">${r.percent.toFixed(2)}%</div></td>
+            <td><span class="agreement-status-badge ${statusClass}">${statusText}</span></td>
+            <td>${r.count || 0}</td>
+          </tr>
+        `;
+      }).join('') : '<tr><td colspan="9">لا توجد نتائج حسب الفلتر الحالي.</td></tr>';
+      const setText = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+      setText('agreementsRowsCount', `${rows.length} من ${allCount} اتفاقية`);
+      setText('agreementsTotalAgreed', money(totals.totalAgreed));
+      setText('agreementsTotalSpent', money(totals.totalSpent));
+      setText('agreementsTotalRemain', money(totals.totalRemain));
+      setText('agreementsTotalOver', money(totals.totalOver));
+    }
 
     function renderProject(){
       const p = getProject();
@@ -11498,28 +12691,14 @@ ${party}
 
       applyProjectSummaryCardIcons();
       enhanceMeaningfulIcons();
+      // Render only lightweight project header/dashboard items now. Heavy tab tables/reports load on tab open.
       renderDashboard();
       renderProjectCharts();
       renderAlertsAndIssues();
-      renderMarketerFilter();
-      renderUnits();
-      renderMarketers();
-      renderExpenses();
-      renderPartners();
-      renderInvestors();
-      renderAdvances();
-      renderSiteCustody();
-      renderAdminTab();
-      renderCompanyTreasuryTab();
-      renderManagementTreasuryTab();
-      renderMovements();
-      renderCollectionBoard();
-      renderPaymentAlerts();
-      renderReport();
-      refreshAdvanceNames();
+      clearLazyRenderedTabs();
+      renderLazyProjectTab(activeProjectTabId || "unitsTab", true);
       populateBankSelectOptions();
       toggleTransactionBankFields();
-      applyMobileTableWrappers();
       renderSidebarPartnersDropdown();
       renderSidebarInvestorsDropdown();
 
@@ -12065,6 +13244,55 @@ ${party}
       });
     }
 
+    let currentExpenseType = "general";
+
+    function expenseTypeLabel(type){
+      if(type === "payment") return "دفعات";
+      if(type === "supplier") return "الموردين";
+      return "مصروفات عامة";
+    }
+
+    function normalizeExpenseType(type){
+      return ["general","payment","supplier"].includes(type) ? type : "general";
+    }
+
+    function getExpenseEntryType(e){
+      return normalizeExpenseType(e && e.expenseType ? e.expenseType : "general");
+    }
+
+    function setExpenseType(type){
+      currentExpenseType = normalizeExpenseType(type);
+      const typeEl = document.getElementById("expenseType");
+      if(typeEl) typeEl.value = currentExpenseType;
+      syncExpenseTypeForm();
+    }
+
+    function syncExpenseTypeForm(){
+      const typeEl = document.getElementById("expenseType");
+      currentExpenseType = normalizeExpenseType(typeEl ? typeEl.value : currentExpenseType);
+      if(typeEl) typeEl.value = currentExpenseType;
+      ["General","Payment","Supplier"].forEach(name => {
+        const btn = document.getElementById("expenseTypeTab" + name);
+        if(btn) btn.classList.remove("active");
+      });
+      const activeBtn = document.getElementById(currentExpenseType === "payment" ? "expenseTypeTabPayment" : currentExpenseType === "supplier" ? "expenseTypeTabSupplier" : "expenseTypeTabGeneral");
+      if(activeBtn) activeBtn.classList.add("active");
+
+      const general = document.getElementById("expenseCategory");
+      const payment = document.getElementById("expensePaymentSelect");
+      const supplier = document.getElementById("expenseSupplierSelect");
+      if(general) general.classList.toggle("hidden", currentExpenseType !== "general");
+      if(payment) payment.classList.toggle("hidden", currentExpenseType !== "payment");
+      if(supplier) supplier.classList.toggle("hidden", currentExpenseType !== "supplier");
+    }
+
+    function getExpenseCategoryFromForm(){
+      const type = normalizeExpenseType(document.getElementById("expenseType") ? document.getElementById("expenseType").value : currentExpenseType);
+      if(type === "payment") return (document.getElementById("expensePaymentSelect") ? document.getElementById("expensePaymentSelect").value : "").trim();
+      if(type === "supplier") return (document.getElementById("expenseSupplierSelect") ? document.getElementById("expenseSupplierSelect").value : "").trim();
+      return (document.getElementById("expenseCategory") ? document.getElementById("expenseCategory").value : "").trim();
+    }
+
     function addExpense(){
       if(!requirePermission("addExpense", "هذه الصلاحية غير متاحة لك")) return;
 
@@ -12072,14 +13300,15 @@ ${party}
       const p = getProject();
 
       const date = document.getElementById("expenseDate").value || todayText();
-      const category = document.getElementById("expenseCategory").value.trim();
+      const expenseType = normalizeExpenseType(document.getElementById("expenseType") ? document.getElementById("expenseType").value : currentExpenseType);
+      const category = getExpenseCategoryFromForm();
       const description = document.getElementById("expenseDesc").value.trim();
       const amount = num(document.getElementById("expenseAmount").value);
       const method = document.getElementById("expenseMethod") ? document.getElementById("expenseMethod").value : "cash";
       const bank = method === "bank" ? ((document.getElementById("expenseBank") ? document.getElementById("expenseBank").value : "") || "").trim() : "";
 
       if(!category || !description || Number.isNaN(amount) || amount === 0){
-        alert("اكمل بيانات المصروف، ويُسمح بالمبلغ السالب أو الموجب بشرط ألا يكون صفرًا");
+        alert(expenseType === "payment" ? "اختر بند الدفعة واكتب البيان والمبلغ" : expenseType === "supplier" ? "اختر المورد واكتب البيان والمبلغ" : "اكمل بيانات المصروف، ويُسمح بالمبلغ السالب أو الموجب بشرط ألا يكون صفرًا");
         return;
       }
       if(method === "bank" && !bank){
@@ -12087,50 +13316,100 @@ ${party}
         return;
       }
 
-      p.expenses.push({ date, category, description, amount, method, bank });
-      addMovement("إضافة مصروف", `${category} - ${description}`, amount, `${method === "bank" ? "بنك" : "نقدًا"}${bank ? " - " + bank : ""}`, date);
+      p.expenses.push({ date, expenseType, type: expenseTypeLabel(expenseType), category, description, amount, method, bank, approved:false, approvedBy:"", approvedAt:"" });
+      addMovement("إضافة مصروف", `${expenseTypeLabel(expenseType)} - ${category} - ${description}`, amount, `${method === "bank" ? "بنك" : "نقدًا"}${bank ? " - " + bank : ""}`, date);
 
-      ["expenseDate","expenseCategory","expenseDesc","expenseAmount","expenseBank"].forEach(id => { const el = document.getElementById(id); if(el) el.value = ""; });
+      ["expenseDate","expenseCategory","expensePaymentSelect","expenseSupplierSelect","expenseDesc","expenseAmount","expenseBank"].forEach(id => { const el = document.getElementById(id); if(el) el.value = ""; });
       const methodEl = document.getElementById("expenseMethod"); if(methodEl) methodEl.value = "cash";
       toggleTransactionBankFields();
 
       renderProject();
     }
 
+    function buildExpenseRow(e, i){
+      const approved = !!e.approved;
+      const approvalInfo = approved
+        ? '<span class="tax-approval-badge">معتمد</span><div class="tiny-muted">' + escapeHtml((e.approvedBy || 'المدير') + ' | ' + (e.approvedAt || '-')) + '</div>'
+        : '<span class="tax-pending-badge">غير معتمد</span>';
+      return `
+        <tr class="${approved ? 'tax-approved-row' : ''}">
+          <td>${escapeHtml(e.date || "")}</td>
+          <td>${escapeHtml(e.category || "-")}</td>
+          <td>${escapeHtml(e.description || "-")}</td>
+          <td>${money(e.amount)}</td>
+          <td>${(e.method || "cash") === "bank" ? "بنك" : "نقدًا"}</td>
+          <td>${escapeHtml(e.bank || "-")}</td>
+          <td>${approvalInfo}</td>
+          <td class="no-print"><button class="btn-green" onclick="approveExpense(${i})">${approved ? 'إلغاء الاعتماد' : 'اعتماد'}</button></td>
+          <td class="no-print"><div class="actions"><button class="btn-orange" onclick="editExpense(${i})">تعديل</button><button type="button" class="btn-red" onclick="deleteExpense(${i})">حذف</button></div></td>
+        </tr>
+      `;
+    }
+
+    function updateExpenseApprovalFilterCounts(project = getProject()){
+      const all = [...((project && project.expenses) || [])];
+      const typeFilter = (document.getElementById("expenseTypeFilter") ? document.getElementById("expenseTypeFilter").value : "") || "";
+      const search = (document.getElementById("expenseSearch") ? document.getElementById("expenseSearch").value.trim() : "").toLowerCase() || "";
+      const categoryFilter = (document.getElementById("expenseCategoryFilter") ? document.getElementById("expenseCategoryFilter").value.trim() : "").toLowerCase() || "";
+      const dateFrom = (document.getElementById("expenseDateFrom") ? document.getElementById("expenseDateFrom").value : "") || "";
+      const dateTo = (document.getElementById("expenseDateTo") ? document.getElementById("expenseDateTo").value : "") || "";
+
+      const baseRows = all.filter(e => {
+        const eType = getExpenseEntryType(e);
+        if(typeFilter && eType !== typeFilter) return false;
+        if(search && ![expenseTypeLabel(eType),e.category,e.description,e.date,(e.approved ? "معتمد" : "غير معتمد")].join(' ').toLowerCase().includes(search)) return false;
+        if(categoryFilter && !containsText(e.category, categoryFilter)) return false;
+        if(dateFrom && String(e.date || '') < dateFrom) return false;
+        if(dateTo && String(e.date || '') > dateTo) return false;
+        return true;
+      });
+
+      const approvedRows = baseRows.filter(e => !!e.approved);
+      const pendingRows = baseRows.filter(e => !e.approved);
+      const allBox = document.getElementById("expenseApprovalAllCount");
+      const approvedBox = document.getElementById("expenseApprovalApprovedCount");
+      const pendingBox = document.getElementById("expenseApprovalPendingCount");
+      if(allBox) allBox.textContent = `الكل: ${baseRows.length} | ${money(baseRows.reduce((a,e)=>a+num(e.amount),0))}`;
+      if(approvedBox) approvedBox.textContent = `معتمد: ${approvedRows.length} | ${money(approvedRows.reduce((a,e)=>a+num(e.amount),0))}`;
+      if(pendingBox) pendingBox.textContent = `غير معتمد: ${pendingRows.length} | ${money(pendingRows.reduce((a,e)=>a+num(e.amount),0))}`;
+    }
+
     function renderExpenses(){
       const p = getProject();
-      const body = document.getElementById("expensesBody");
       const rows = getFilteredExpenses(p);
+      updateExpenseApprovalFilterCounts(p);
       const countBox = document.getElementById("expensesFilterCount");
       if(countBox) countBox.textContent = `${rows.length} حركة`;
-      body.innerHTML = "";
 
-      if(!rows.length){
-        body.innerHTML = '<tr><td colspan="7">لا توجد مصروفات مطابقة للفلاتر الحالية</td></tr>';
-        renderFilterSummaryNote();
-        return;
-      }
+      const groups = { general: [], payment: [], supplier: [] };
+      rows.forEach(e => groups[getExpenseEntryType(e)].push(e));
 
-      rows.forEach((e) => {
-        const i = p.expenses.indexOf(e);
-        body.innerHTML += `
-          <tr>
-            <td>${e.date}</td>
-            <td>${e.category}</td>
-            <td>${e.description}</td>
-            <td>${money(e.amount)}</td>
-            <td>${(e.method || "cash") === "bank" ? "بنك" : "نقدًا"}</td>
-            <td>${escapeHtml(e.bank || "-")}</td>
-            <td class="no-print"><div class="actions"><button class="btn-orange" onclick="editExpense(${i})">تعديل</button><button type="button" class="btn-red" onclick="deleteExpense(${i})">حذف</button></div></td>
-          </tr>
-        `;
+      const map = {
+        general: { body:"expensesGeneralBody", total:"expenseGeneralTotal", empty:"لا توجد مصروفات عامة مطابقة" },
+        payment: { body:"expensesPaymentBody", total:"expensePaymentTotal", empty:"لا توجد دفعات مطابقة" },
+        supplier: { body:"expensesSupplierBody", total:"expenseSupplierTotal", empty:"لا توجد موردين مطابقين" }
+      };
+
+      Object.keys(map).forEach(type => {
+        const cfg = map[type];
+        const body = document.getElementById(cfg.body);
+        const total = document.getElementById(cfg.total);
+        const list = groups[type] || [];
+        if(total) total.textContent = `${list.length} حركة | ${money(list.reduce((a,e)=>a+num(e.amount),0))}`;
+        if(!body) return;
+        body.innerHTML = list.length
+          ? list.map(e => buildExpenseRow(e, p.expenses.indexOf(e))).join("")
+          : `<tr><td colspan="9">${cfg.empty}</td></tr>`;
       });
+
+      renderFilterSummaryNote();
     }
 
     function deleteExpense(i){
       if(!requireProjectOpen("حذف المصروف")) return;
-      if(!confirmSecureDelete("حذف المصروف", "هل تريد حذف المصروف؟")) return;
       const e = getProject().expenses[i];
+      const msg = e && e.approved ? "هذا المصروف معتمد. يلزم الكود السري للحذف. هل تريد المتابعة؟" : "هل تريد حذف المصروف؟";
+      if(!confirmSecureDelete("حذف المصروف", msg)) return;
       addMovement("حذف مصروف", `${e.category} - ${e.description}`, e.amount, "تم حذف المصروف", todayText());
       getProject().expenses.splice(i,1);
       renderProject();
@@ -12165,6 +13444,25 @@ ${party}
       renderProjects();
     }
 
+    function approveExpense(i){
+      const p = getProject();
+      if(!p) return;
+      ensureArrays(p);
+      const e = (p.expenses || [])[i];
+      if(!e) return;
+      e.approved = !e.approved;
+      if(e.approved){
+        e.approvedBy = getApprovalActor();
+        e.approvedAt = todayText();
+      }else{
+        e.approvedBy = "";
+        e.approvedAt = "";
+      }
+      addMovement(e.approved ? "اعتماد بند مصروف" : "إلغاء اعتماد بند مصروف", `${expenseTypeLabel(getExpenseEntryType(e))} - ${e.category || "-"}`, num(e.amount), e.description || "-", todayText());
+      saveApp("approve_expense");
+      renderProject();
+    }
+
     function editExpense(i){
       if(!requireProjectOpen("تعديل المصروف")) return;
       const p = getProject();
@@ -12173,7 +13471,10 @@ ${party}
 
       const date = prompt("تاريخ المصروف", e.date || todayText());
       if(date === null) return;
-      const category = prompt("تصنيف المصروف", e.category || "");
+      const typeText = prompt("نوع المصروف: general للمصروف العام، payment للدفعات، supplier للموردين", getExpenseEntryType(e));
+      if(typeText === null) return;
+      const expenseType = normalizeExpenseType(typeText);
+      const category = prompt(expenseType === "payment" ? "بند الدفعة" : expenseType === "supplier" ? "اسم المورد" : "تصنيف المصروف", e.category || "");
       if(category === null) return;
       const description = prompt("بيان المصروف", e.description || "");
       if(description === null) return;
@@ -12189,9 +13490,16 @@ ${party}
       const oldAmount = num(e.amount);
       p.expenses[i] = {
         date: String(date).trim() || e.date,
+        expenseType,
+        type: expenseTypeLabel(expenseType),
         category: String(category).trim(),
         description: String(description).trim(),
-        amount
+        amount,
+        method: e.method || "cash",
+        bank: e.bank || "",
+        approved: !!e.approved,
+        approvedBy: e.approvedBy || "",
+        approvedAt: e.approvedAt || ""
       };
 
       addMovement("تعديل مصروف", `${p.expenses[i].category} - ${p.expenses[i].description}`, amount - oldAmount, "تم تعديل المصروف", p.expenses[i].date);
@@ -12996,7 +14304,7 @@ function addPartner(){
           ${rows ? `
             <table>
               <thead>
-                <tr><th>التاريخ</th><th>المبلغ</th><th>الطريقة</th><th>البنك</th><th>البيان</th></tr>
+                <tr><th>التاريخ</th><th>المبلغ</th><th>الطريقة</th><th>البنك</th><th>التفصيل</th></tr>
               </thead>
               <tbody>${rows}</tbody>
             </table>
@@ -13056,14 +14364,14 @@ function addPartner(){
             <h3>مصادر الإدارة</h3>
             <div class="section-note">الحركات المطابقة للفلاتر الحالية</div>
           </div>
-          ${sourceRows ? `<table><thead><tr><th>المصدر</th><th>الاسم</th><th>النوع</th><th>المبلغ</th><th>مستحق الشركة</th><th>مستحق الغامدي</th><th>التاريخ</th><th>البيان</th></tr></thead><tbody>${sourceRows}</tbody></table>` : '<div class="empty-box">لا توجد مصادر إدارة مطابقة للفلاتر الحالية.</div>'}
+          ${sourceRows ? `<table><thead><tr><th>المصدر</th><th>الاسم</th><th>النوع</th><th>المبلغ</th><th>مستحق الشركة</th><th>مستحق الغامدي</th><th>التاريخ</th><th>التفصيل</th></tr></thead><tbody>${sourceRows}</tbody></table>` : '<div class="empty-box">لا توجد مصادر إدارة مطابقة للفلاتر الحالية.</div>'}
         </div>
         <div class="section">
           <div class="section-header">
             <h3>الصرف المطابق للفلاتر</h3>
             <div class="section-note">الشركة: ${money(filteredCompanyPaid)} | الغامدي: ${money(filteredAbuPaid)}</div>
           </div>
-          ${payoutRows ? `<table><thead><tr><th>التاريخ</th><th>الطرف</th><th>المبلغ</th><th>الطريقة</th><th>البنك</th><th>البيان</th></tr></thead><tbody>${payoutRows}</tbody></table>` : '<div class="empty-box">لا توجد عمليات صرف مطابقة للفلاتر الحالية.</div>'}
+          ${payoutRows ? `<table><thead><tr><th>التاريخ</th><th>الطرف</th><th>المبلغ</th><th>الطريقة</th><th>البنك</th><th>التفصيل</th></tr></thead><tbody>${payoutRows}</tbody></table>` : '<div class="empty-box">لا توجد عمليات صرف مطابقة للفلاتر الحالية.</div>'}
         </div>
       `;
       openPrintWindow(`تقرير الإدارة الشهري - ${titleSuffix}`, html);
@@ -13129,7 +14437,7 @@ function addPartner(){
           </div>
           ${sourceRows ? `
             <table>
-              <thead><tr><th>المصدر</th><th>الاسم</th><th>النوع</th><th>المبلغ</th><th>مستحق الشركة</th><th>مستحق الغامدي</th><th>التاريخ</th><th>البيان</th></tr></thead>
+              <thead><tr><th>المصدر</th><th>الاسم</th><th>النوع</th><th>المبلغ</th><th>مستحق الشركة</th><th>مستحق الغامدي</th><th>التاريخ</th><th>التفصيل</th></tr></thead>
               <tbody>${sourceRows}</tbody>
             </table>
           ` : '<div class="empty-box">لا توجد حركات إدارة حتى الآن.</div>'}
@@ -13141,7 +14449,7 @@ function addPartner(){
           </div>
           ${payoutRows ? `
             <table>
-              <thead><tr><th>التاريخ</th><th>الطرف</th><th>المبلغ</th><th>الطريقة</th><th>البنك</th><th>البيان</th></tr></thead>
+              <thead><tr><th>التاريخ</th><th>الطرف</th><th>المبلغ</th><th>الطريقة</th><th>البنك</th><th>التفصيل</th></tr></thead>
               <tbody>${payoutRows}</tbody>
             </table>
           ` : '<div class="empty-box">لا توجد عمليات صرف إدارة حتى الآن.</div>'}
@@ -13277,9 +14585,119 @@ function addPartner(){
     }
 
 
+
+    function calcAbuFarisTaxRefund(project){
+      ensureArrays(project);
+      const rows = [];
+      let due = 0;
+      let paid = 0;
+      (project.taxRefunds || []).forEach(refund => {
+        if(!Array.isArray(refund.payouts)) refund.payouts = [];
+        const d = calcTaxRefundDistribution(project, refund);
+        const adminRow = d.adminRow || (d.allRows || []).find(x => x.name === "الإدارة");
+        const rowDue = num(adminRow ? adminRow.total : d.adminShare);
+        const rowPaid = (refund.payouts || [])
+          .filter(pay => (pay.key || taxRefundRecipientKey(pay.name, pay.role)) === (adminRow ? adminRow.key : taxRefundRecipientKey("الإدارة","نصيب ثابت 25٪")))
+          .reduce((s,pay) => s + num(pay.amount), 0);
+        const rowRemain = normalizeMoneySettlement(rowDue - rowPaid);
+        due += rowDue;
+        paid += rowPaid;
+        rows.push({
+          period: refund.period || "-",
+          date: refund.date || "-",
+          amount: num(refund.amount),
+          due: rowDue,
+          paid: rowPaid,
+          remain: rowRemain,
+          approved: !!refund.approved,
+          approvedBy: refund.approvedBy || "",
+          approvedAt: refund.approvedAt || ""
+        });
+      });
+      return {
+        due: roundMoney2(due),
+        paid: roundMoney2(paid),
+        remain: normalizeMoneySettlement(due - paid),
+        rows
+      };
+    }
+
+
+    function payAbuFarisDirect(amountArg=null){
+      const p = getProject();
+      if(!p) return;
+      ensureArrays(p);
+
+      const source = document.getElementById("abuFarisDirectSource")?.value || "admin";
+      let amount = amountArg === null ? roundMoney2(document.getElementById("abuFarisDirectAmount")?.value) : roundMoney2(amountArg);
+      const method = document.getElementById("abuFarisDirectMethod")?.value || "cash";
+      const bank = (document.getElementById("abuFarisDirectBank")?.value || "").trim();
+      const date = document.getElementById("abuFarisDirectDate")?.value || todayText();
+      const note = (document.getElementById("abuFarisDirectNote")?.value || "").trim();
+
+      if(amount <= 0) return alert("اكتب مبلغ صحيح");
+
+      if(source === "admin"){
+        const { d } = getAdminFilteredData(p);
+        let remain = roundMoney2(d.abuFarisRemain);
+        if(remain <= 0) return alert("لا يوجد متبقي لأبوفارس من الإدارة");
+        if(amount > remain) amount = remain;
+
+        p.adminPayouts = p.adminPayouts || [];
+        p.adminPayouts.unshift({
+          target:"abuFaris",
+          amount,
+          date,
+          method,
+          bank,
+          note: note || "صرف مباشر من خزنة الإدارة"
+        });
+
+        addMovement("صرف مباشر أبوفارس", "الإدارة", -amount, note || "خزنة الإدارة", date);
+      }else{
+        const key = taxRefundRecipientKey("الإدارة","نصيب ثابت 25٪");
+        ["abuFarisDirectAmount","abuFarisDirectNote","abuFarisDirectBank"].forEach(id => {
+          const el = document.getElementById(id);
+          if(el) el.value = "";
+        });
+        addTaxRefundCumulativePayout(key, amount);
+        return;
+      }
+
+      ["abuFarisDirectAmount","abuFarisDirectNote","abuFarisDirectBank"].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.value = "";
+      });
+
+      renderProject();
+      setTimeout(() => {
+        if(typeof renderAbuFarisTab === "function") renderAbuFarisTab();
+        const tab = document.getElementById("abuFarisTab");
+        if(tab) tab.classList.remove("hidden");
+      }, 0);
+    }
+
+    function settleAbuFarisDirect(){
+      const p = getProject();
+      if(!p) return;
+      const source = document.getElementById("abuFarisDirectSource")?.value || "admin";
+      if(source === "admin"){
+        const { d } = getAdminFilteredData(p);
+        if(num(d.abuFarisRemain) <= 0) return alert("لا يوجد متبقي من الإدارة");
+        payAbuFarisDirect(d.abuFarisRemain);
+      }else{
+        const tax = calcAbuFarisTaxRefund(p);
+        if(num(tax.remain) <= 0) return alert("لا يوجد متبقي من الاسترداد");
+        const key = taxRefundRecipientKey("الإدارة","نصيب ثابت 25٪");
+        addTaxRefundCumulativePayout(key, tax.remain);
+      }
+    }
+
     function renderAbuFarisTab(){
       const p = getProject();
       if(!p) return;
+      const directDate = document.getElementById("abuFarisDirectDate");
+      if(directDate && !directDate.value) directDate.value = todayText();
       p.adminEntries = p.adminEntries || [];
       const { d, rows, payouts } = getAdminFilteredData(p);
       const sourceRows = rows.filter(row => num(row.abuFarisDue) > 0);
@@ -13295,8 +14713,39 @@ function addPartner(){
       setMoney("abuFarisTotalRemain", d.abuFarisRemain);
       setMoney("abuFarisCompanyAdminOnly", d.manualCompanyAdmin);
 
+      const taxRefundAbu = calcAbuFarisTaxRefund(p);
+
+      const grandDue = roundMoney2(num(d.abuFarisShare) + num(taxRefundAbu.due));
+      const grandPaid = roundMoney2(num(d.abuFarisPaid) + num(taxRefundAbu.paid));
+      const grandRemain = normalizeMoneySettlement(grandDue - grandPaid);
+      const grandSources = (sourceRows.length || 0) + (taxRefundAbu.rows.length || 0);
+
+      setMoney("abuFarisGrandDue", grandDue);
+      setMoney("abuFarisGrandPaid", grandPaid);
+      setMoney("abuFarisGrandRemain", grandRemain);
+      const grandSourcesEl = document.getElementById("abuFarisGrandSources");
+      if(grandSourcesEl) grandSourcesEl.innerText = grandSources;
+      setMoney("abuFarisTaxRefundDue", taxRefundAbu.due);
+      setMoney("abuFarisTaxRefundPaid", taxRefundAbu.paid);
+      setMoney("abuFarisTaxRefundRemain", taxRefundAbu.remain);
+
+      const abuTaxBody = document.getElementById("abuFarisTaxRefundBody");
+      if(abuTaxBody){
+        abuTaxBody.innerHTML = taxRefundAbu.rows.length ? taxRefundAbu.rows.map(row => `
+          <tr class="${row.approved ? 'tax-approved-row' : ''}">
+            <td>${escapeHtml(row.period)}</td>
+            <td>${escapeHtml(row.date)}</td>
+            <td>${money(row.amount)}</td>
+            <td>${money(row.due)}</td>
+            <td>${money(row.paid)}</td>
+            <td>${money(row.remain)}</td>
+            <td>${row.approved ? '<span class="tax-approval-badge">معتمد</span><div class="tiny-muted">' + escapeHtml((row.approvedBy || 'المدير') + ' | ' + (row.approvedAt || '-')) + '</div>' : '<span class="tax-pending-badge">غير معتمد</span>'}</td>
+          </tr>
+        `).join('') : '<tr><td colspan="7">لا توجد استردادات ضريبية مسجلة</td></tr>';
+      }
+
       const countEl = document.getElementById("abuFarisSourcesCount");
-      if(countEl) countEl.innerText = `${sourceRows.length} مصدر / ${abuPayouts.length} صرف`;
+      if(countEl) countEl.innerText = `${(sourceRows.length + taxRefundAbu.rows.length)} مصدر / ${(abuPayouts.length + num(taxRefundAbu.paid>0?1:0))} صرف`;
 
       const alertsBox = document.getElementById("abuFarisAlertsBox");
       if(alertsBox){
@@ -13324,6 +14773,17 @@ function addPartner(){
           </tr>
         `;
       }
+
+      const adminSourcesCountEl = document.getElementById("abuFarisAdminSourcesCount");
+      const adminSourcesAmountEl = document.getElementById("abuFarisAdminSourcesAmount");
+      const adminSourcesDueEl = document.getElementById("abuFarisAdminSourcesDue");
+      const sourcesMiniCountEl = document.getElementById("abuFarisSourcesMiniCount");
+      const adminSourcesAmount = sourceRows.reduce((s,row) => s + num(row.amount), 0);
+      const adminSourcesDue = sourceRows.reduce((s,row) => s + num(row.abuFarisDue), 0);
+      if(adminSourcesCountEl) adminSourcesCountEl.innerText = sourceRows.length;
+      if(adminSourcesAmountEl) adminSourcesAmountEl.innerText = money(adminSourcesAmount);
+      if(adminSourcesDueEl) adminSourcesDueEl.innerText = money(adminSourcesDue);
+      if(sourcesMiniCountEl) sourcesMiniCountEl.innerText = `${sourceRows.length} مصدر`;
 
       const sourcesBody = document.getElementById("abuFarisSourcesBody");
       if(sourcesBody){
@@ -13387,15 +14847,39 @@ function addPartner(){
         </tr>
       `).join('');
 
+      const taxRefundAbu = calcAbuFarisTaxRefund(p);
+      const taxRefundRows = taxRefundAbu.rows.map(row => `
+        <tr>
+          <td>${escapeHtml(row.period)}</td>
+          <td>${escapeHtml(row.date)}</td>
+          <td>${money(row.amount)}</td>
+          <td>${money(row.due)}</td>
+          <td>${money(row.paid)}</td>
+          <td>${money(row.remain)}</td>
+          <td>${row.approved ? 'معتمد' : 'غير معتمد'}</td>
+        </tr>
+      `).join('');
+
+      const grandDue = roundMoney2(num(d.abuFarisShare) + num(taxRefundAbu.due));
+      const grandPaid = roundMoney2(num(d.abuFarisPaid) + num(taxRefundAbu.paid));
+      const grandRemain = normalizeMoneySettlement(grandDue - grandPaid);
+      const grandSources = rows.filter(row => num(row.abuFarisDue) > 0).length + taxRefundAbu.rows.length;
+
       const html = `
         <div class="print-brand">${window.APP_LOGO ? `<img src="${window.APP_LOGO}" alt="logo" />` : ""}</div>
-        <h2 style="margin:0 0 12px 0">صفحة أبوفارس - ${escapeHtml(p.name || "")}</h2>
-        <div class="note">ملخص مركّز لكل ما يخص الإدارة الخاصة بأبوفارس الغامدي</div>
+        <h2 style="margin:0 0 12px 0">تقرير خزنة الإدارة - ${escapeHtml(p.name || "")}</h2>
+        <div class="note">ملخص مركّز لخزنة الإدارة الخاصة بالمشروع، ويشمل الإدارة والاسترداد الضريبي</div>
         <div class="grid grid-4" style="margin-top:14px">
-          ${printSummaryCard("إجمالي نصيب أبوفارس", money(d.abuFarisShare))}
-          ${printSummaryCard("تم صرفه", money(d.abuFarisPaid))}
-          ${printSummaryCard("المتبقي", money(d.abuFarisRemain))}
-          ${printSummaryCard("إدارة الشركة الخاصة", money(d.manualCompanyAdmin))}
+          ${printSummaryCard("إجمالي المستحق الكلي", money(grandDue))}
+          ${printSummaryCard("إجمالي المصروف الكلي", money(grandPaid))}
+          ${printSummaryCard("المتبقي الكلي", money(grandRemain))}
+          ${printSummaryCard("عدد مصادر الاستحقاق", grandSources)}
+        </div>
+        <div class="grid grid-4" style="margin-top:14px">
+          ${printSummaryCard("إجمالي الإدارة", money(d.abuFarisShare))}
+          ${printSummaryCard("مصروف الإدارة", money(d.abuFarisPaid))}
+          ${printSummaryCard("متبقي الإدارة", money(d.abuFarisRemain))}
+          ${printSummaryCard("إجمالي الاسترداد", money(taxRefundAbu.due))}
         </div>
         <div class="section" style="margin-top:16px">
           <div class="section-header"><h3>ملخص التصفية</h3></div>
@@ -13405,15 +14889,24 @@ function addPartner(){
           </table>
         </div>
         <div class="section" style="margin-top:16px">
+          <div class="section-header"><h3>الاسترداد الضريبي لأبوفارس</h3></div>
+          <div class="summary-grid">
+            ${printSummaryCard("إجمالي استرداد أبوفارس", money(taxRefundAbu.due))}
+            ${printSummaryCard("تم صرفه من الاسترداد", money(taxRefundAbu.paid))}
+            ${printSummaryCard("متبقي الاسترداد", money(taxRefundAbu.remain))}
+          </div>
+          ${taxRefundRows ? `<table><thead><tr><th>الفترة</th><th>التاريخ</th><th>مبلغ الاسترداد</th><th>نصيب أبوفارس</th><th>المصروف</th><th>المتبقي</th><th>الحالة</th></tr></thead><tbody>${taxRefundRows}</tbody></table>` : '<div class="empty-box">لا توجد استردادات ضريبية لأبوفارس.</div>'}
+        </div>
+        <div class="section" style="margin-top:16px">
           <div class="section-header"><h3>مصادر استحقاق أبوفارس</h3></div>
-          ${sourceRows ? `<table><thead><tr><th>المصدر</th><th>الاسم</th><th>النوع</th><th>التاريخ</th><th>قيمة الإدارة</th><th>نصيب أبوفارس</th><th>البيان</th></tr></thead><tbody>${sourceRows}</tbody></table>` : '<div class="empty-box">لا توجد مصادر حالية تخص أبوفارس.</div>'}
+          ${sourceRows ? `<table><thead><tr><th>المصدر</th><th>الاسم</th><th>النوع</th><th>التاريخ</th><th>قيمة الإدارة</th><th>نصيب أبوفارس</th><th>التفصيل</th></tr></thead><tbody>${sourceRows}</tbody></table>` : '<div class="empty-box">لا توجد مصادر حالية تخص أبوفارس.</div>'}
         </div>
         <div class="section" style="margin-top:16px">
           <div class="section-header"><h3>سجل صرف أبوفارس</h3></div>
-          ${payoutRows ? `<table><thead><tr><th>التاريخ</th><th>المبلغ</th><th>طريقة الصرف</th><th>البنك</th><th>البيان</th></tr></thead><tbody>${payoutRows}</tbody></table>` : '<div class="empty-box">لا توجد عمليات صرف لأبوفارس.</div>'}
+          ${payoutRows ? `<table><thead><tr><th>التاريخ</th><th>المبلغ</th><th>طريقة الصرف</th><th>البنك</th><th>التفصيل</th></tr></thead><tbody>${payoutRows}</tbody></table>` : '<div class="empty-box">لا توجد عمليات صرف لأبوفارس.</div>'}
         </div>
       `;
-      openPrintWindow("صفحة أبوفارس", html);
+      openPrintWindow("تقرير خزنة الإدارة", html);
     }
 
 
@@ -13777,7 +15270,7 @@ function renderSiteCustody(){
               --soft:#eef2f7;
             }
             *{box-sizing:border-box}
-            body{font-family:Tahoma,Arial,sans-serif;direction:rtl;margin:0;padding:24px;background:#f6f8fb;color:var(--text)}
+            body{font-family:Tahoma,Arial,sans-serif;direction:rtl;margin:0;padding:88px 24px 24px;background:#f6f8fb;color:var(--text)}
             .sheet{max-width:1120px;margin:0 auto;background:#fff;border:1px solid var(--border);border-radius:20px;overflow:hidden}
             .topbar{height:8px;background:linear-gradient(90deg,var(--accent),var(--primary))}
             .content{padding:24px}
@@ -13831,6 +15324,43 @@ function renderSiteCustody(){
             .totals-box .value{font-size:20px;font-weight:700;color:var(--primary)}
             .footer-note{margin-top:18px;padding-top:12px;border-top:1px solid var(--soft);font-size:11px;color:#667085;text-align:center}
             .empty-box{padding:18px;border:1px dashed var(--border);border-radius:14px;background:#fcfdff;color:var(--muted);text-align:center}
+            .report-toolbar{
+              position:fixed;
+              top:14px;
+              left:50%;
+              transform:translateX(-50%);
+              z-index:9999;
+              display:flex;
+              justify-content:center;
+              align-items:center;
+              gap:10px;
+              padding:10px 12px;
+              margin:0;
+              background:rgba(246,248,251,.97);
+              border:1px solid var(--border);
+              border-radius:18px;
+              backdrop-filter:blur(10px);
+              box-shadow:0 14px 30px rgba(15,23,42,.14);
+            }
+            .report-toolbar button{
+              border:0;
+              border-radius:14px;
+              padding:10px 16px;
+              font-family:Tahoma,Arial,sans-serif;
+              font-weight:800;
+              cursor:pointer;
+              color:#fff;
+              background:linear-gradient(180deg,#14b8a6 0%,#0f766e 55%,#115e59 100%);
+              box-shadow:0 8px 18px rgba(15,23,42,.12);
+            }
+            .report-toolbar button.print-btn{
+              background:linear-gradient(180deg,#3b82f6 0%,#2563eb 55%,#1d4ed8 100%);
+            }
+            @media print{
+              .report-toolbar{display:none !important}
+              body{padding:0;background:#fff}
+              .sheet{border:0;border-radius:0}
+            }
         
     .dashboard-grid{
       display:grid;
@@ -14195,6 +15725,10 @@ body.app-theme-ready[data-app-theme="silverlight"]{--theme-main:#aeb8c6;--theme-
 </style>
         </head>
         <body>
+          <div class="report-toolbar">
+            <button type="button" class="print-btn" onclick="window.print()">🖨️ طباعة</button>
+            <button type="button" class="html-btn" onclick="downloadCurrentReportHtml()">⬇️ تحميل HTML</button>
+          </div>
           <div class="sheet">
             <div class="topbar"></div>
             <div class="content">
@@ -14216,6 +15750,46 @@ body.app-theme-ready[data-app-theme="silverlight"]{--theme-main:#aeb8c6;--theme-
             </div>
           </div>
           <script>
+            function safeReportFileName(ext){
+              var title = document.title || 'report';
+              return title.replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, '-').slice(0, 80) + (ext || '.html');
+            }
+
+            function downloadCurrentReportHtml(){
+              try{
+                var toolbar = document.querySelector('.report-toolbar');
+                var oldDisplay = toolbar ? toolbar.style.display : '';
+                if(toolbar) toolbar.style.display = 'none';
+
+                var html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+
+                if(toolbar) toolbar.style.display = oldDisplay;
+
+                html = html
+                  .replace(/<div class="report-toolbar"[\s\S]*?<\/div>/, '')
+                  .replace(/window\.onload\s*=\s*function\s*\(\)\s*{\s*window\.print\(\);\s*};?/g, '');
+
+                var blob = new Blob([html], {type:'text/html;charset=utf-8'});
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = safeReportFileName('.html');
+                a.rel = 'noopener';
+                a.style.position = 'fixed';
+                a.style.left = '-9999px';
+                a.style.top = '-9999px';
+                document.body.appendChild(a);
+                a.click();
+
+                setTimeout(function(){
+                  try{ document.body.removeChild(a); }catch(_e){}
+                  try{ URL.revokeObjectURL(url); }catch(_e){}
+                }, 1200);
+              }catch(e){
+                alert('تعذر تحميل التقرير HTML: ' + (e && e.message ? e.message : e));
+              }
+            }
+
             window.onload = function(){ window.print(); };
           <\/script>
         </body>
@@ -14402,7 +15976,7 @@ body.app-theme-ready[data-app-theme="silverlight"]{--theme-main:#aeb8c6;--theme-
               <th>التاريخ</th>
               <th>النوع</th>
               <th>المبلغ</th>
-              <th>البيان</th>
+              <th>التفصيل</th>
               <th>الأثر</th>
             </tr>
           </thead>
@@ -15018,26 +16592,33 @@ body.app-theme-ready[data-app-theme="silverlight"]{--theme-main:#aeb8c6;--theme-
     function printExpensesReport(){
       const p = getProject();
       const rowsData = p.expenses || [];
-      const rows = rowsData.map(e => `
+      const rows = rowsData.map(e => {
+        const eType = getExpenseEntryType(e);
+        const detail = [e.category, e.description].filter(Boolean).join(' - ') || '-';
+        return `
         <tr>
           <td>${escapeHtml(e.date || '-')}</td>
-          <td>${escapeHtml(e.category || '-')}</td>
-          <td>${escapeHtml(e.description || '-')}</td>
+          <td>${escapeHtml(expenseTypeLabel(eType))}</td>
+          <td>${escapeHtml(detail)}</td>
           <td>${money(e.amount)}</td>
-        </tr>
-      `).join("");
+          <td>${e.approved ? 'معتمد' : 'غير معتمد'}</td>
+        </tr>`;
+      }).join("");
 
       const total = rowsData.reduce((sum, e) => sum + num(e.amount), 0);
+      const approvedTotal = rowsData.filter(e => !!e.approved).reduce((sum, e) => sum + num(e.amount), 0);
+      const pendingTotal = rowsData.filter(e => !e.approved).reduce((sum, e) => sum + num(e.amount), 0);
 
-      const grouped = {};
+      const typeOrder = ['general','payment','supplier'];
+      const grouped = {general:0, payment:0, supplier:0};
       rowsData.forEach(e => {
-        const key = e.category || 'غير مصنف';
+        const key = getExpenseEntryType(e);
         grouped[key] = (grouped[key] || 0) + num(e.amount);
       });
-      const catRows = Object.entries(grouped).map(([cat,val]) => `
+      const catRows = typeOrder.map(type => `
         <tr>
-          <td>${escapeHtml(cat)}</td>
-          <td>${money(val)}</td>
+          <td>${escapeHtml(expenseTypeLabel(type))}</td>
+          <td>${money(grouped[type] || 0)}</td>
         </tr>
       `).join("");
 
@@ -15045,7 +16626,7 @@ body.app-theme-ready[data-app-theme="silverlight"]{--theme-main:#aeb8c6;--theme-
         <div class="report-title">
           <div>
             <h2>تقرير المصروفات</h2>
-            <div class="report-sub">عرض كامل للمصروفات مع إجمالي المشروع والتجميع حسب التصنيف</div>
+            <div class="report-sub">عرض كامل للمصروفات مع إجمالي المشروع والتجميع حسب النوع الرئيسي</div>
           </div>
         </div>
 
@@ -15056,24 +16637,26 @@ body.app-theme-ready[data-app-theme="silverlight"]{--theme-main:#aeb8c6;--theme-
 
         <div class="summary-grid">
           ${printSummaryCard("إجمالي المصروفات", money(total))}
+          ${printSummaryCard("المعتمد", money(approvedTotal))}
+          ${printSummaryCard("غير المعتمد", money(pendingTotal))}
         </div>
 
         <div class="section">
           <div class="section-header">
-            <h3>المصروفات حسب التصنيف</h3>
-            <div class="section-note">تجميع تلقائي للمبالغ حسب نوع المصروف</div>
+            <h3>المصروفات حسب النوع</h3>
+            <div class="section-note">تجميع تلقائي للمبالغ حسب الأنواع الثلاثة</div>
           </div>
           ${catRows ? `
             <table>
               <thead>
                 <tr>
-                  <th>التصنيف</th>
+                  <th>النوع</th>
                   <th>الإجمالي</th>
                 </tr>
               </thead>
               <tbody>${catRows}</tbody>
             </table>
-          ` : `<div class="empty-box">لا توجد تصنيفات مصروفات حتى الآن.</div>`}
+          ` : `<div class="empty-box">لا توجد مصروفات حتى الآن.</div>`}
         </div>
 
         <div class="section">
@@ -15086,9 +16669,10 @@ body.app-theme-ready[data-app-theme="silverlight"]{--theme-main:#aeb8c6;--theme-
               <thead>
                 <tr>
                   <th>التاريخ</th>
-                  <th>التصنيف</th>
-                  <th>البيان</th>
+                  <th>النوع</th>
+                  <th>التفصيل</th>
                   <th>المبلغ</th>
+                  <th>حالة الاعتماد</th>
                 </tr>
               </thead>
               <tbody>${rows}</tbody>
@@ -15097,6 +16681,52 @@ body.app-theme-ready[data-app-theme="silverlight"]{--theme-main:#aeb8c6;--theme-
         </div>
       `;
       openPrintWindow(`تقرير المصروفات - ${p.name}`, html);
+    }
+
+
+    function printSuppliersSummaryReport(){
+      const p = getProject();
+      if(!p) return;
+      const rowsData = getSuppliersSummaryRows();
+      const total = rowsData.reduce((s,r)=>s+num(r.amount),0);
+      const approved = rowsData.reduce((s,r)=>s+num(r.approvedAmount),0);
+      const pending = rowsData.reduce((s,r)=>s+num(r.pendingAmount),0);
+      const rows = rowsData.map((r,idx)=>`
+        <tr>
+          <td>${idx + 1}</td>
+          <td>${escapeHtml(r.name)}</td>
+          <td>${money(r.amount)}</td>
+          <td>${money(r.approvedAmount)}</td>
+          <td>${money(r.pendingAmount)}</td>
+          <td>${r.count}</td>
+          <td>${escapeHtml(r.lastDate || '-')}</td>
+          <td>${escapeHtml(r.lastDesc || '-')}</td>
+        </tr>
+      `).join('');
+      const html = `
+        <div class="report-title"><div><h2>تقرير الموردين</h2><div class="report-sub">تقرير حسب الفلتر الحالي داخل تبويبة الموردين</div></div></div>
+        <div class="meta-grid">${printMetaCard('المشروع', escapeHtml(p.name || '-'))}${printMetaCard('عدد الموردين', String(rowsData.length))}</div>
+        <div class="summary-grid">${printSummaryCard('إجمالي المصروف', money(total))}${printSummaryCard('المعتمد', money(approved))}${printSummaryCard('غير المعتمد', money(pending))}</div>
+        <div class="section"><div class="section-header"><h3>تفاصيل الموردين</h3><div class="section-note">إجمالي كل مورد وحالة الاعتماد</div></div>
+        ${rows ? `<table><thead><tr><th>#</th><th>المورد</th><th>الإجمالي</th><th>المعتمد</th><th>غير المعتمد</th><th>عدد الحركات</th><th>آخر تاريخ</th><th>آخر بيان</th></tr></thead><tbody>${rows}</tbody></table>` : `<div class="empty-box">لا توجد نتائج.</div>`}</div>`;
+      openPrintWindow(`تقرير الموردين - ${p.name}`, html);
+    }
+
+    function printAgreementsReport(){
+      const p = getProject();
+      if(!p) return;
+      const {rows: rowsData, totals} = getAgreementsRowsForView();
+      const rows = rowsData.map((r,idx)=>{
+        const statusText = r.status === 'needs_amount' ? 'بدون مبلغ متفق عليه' : r.status === 'over' ? 'متجاوز' : r.status === 'completed' ? 'مكتمل' : 'متبقي';
+        return `<tr><td>${idx + 1}</td><td>${escapeHtml(r.name)}</td><td>${money(r.agreed)}</td><td>${money(r.spent)}</td><td>${money(r.remain)}</td><td>${r.percent.toFixed(2)}%</td><td>${statusText}</td><td>${r.count}</td></tr>`;
+      }).join('');
+      const html = `
+        <div class="report-title"><div><h2>تقرير الاتفاقيات</h2><div class="report-sub">تقرير حسب الفلتر الحالي داخل تبويبة الاتفاقيات</div></div></div>
+        <div class="meta-grid">${printMetaCard('المشروع', escapeHtml(p.name || '-'))}${printMetaCard('عدد الاتفاقيات', String(rowsData.length))}</div>
+        <div class="summary-grid">${printSummaryCard('إجمالي المتفق عليه', money(totals.totalAgreed))}${printSummaryCard('إجمالي المنصرف', money(totals.totalSpent))}${printSummaryCard('إجمالي المتبقي', money(totals.totalRemain))}${printSummaryCard('التجاوزات', money(totals.totalOver))}</div>
+        <div class="section"><div class="section-header"><h3>تفاصيل الاتفاقيات</h3><div class="section-note">المتفق عليه والمنصرف والمتبقي لكل بند</div></div>
+        ${rows ? `<table><thead><tr><th>#</th><th>بند الاتفاقية</th><th>المتفق عليه</th><th>المنصرف</th><th>المتبقي</th><th>النسبة</th><th>الحالة</th><th>عدد الحركات</th></tr></thead><tbody>${rows}</tbody></table>` : `<div class="empty-box">لا توجد نتائج.</div>`}</div>`;
+      openPrintWindow(`تقرير الاتفاقيات - ${p.name}`, html);
     }
 
 
@@ -15713,3 +17343,27 @@ document.addEventListener('DOMContentLoaded', function(){ refreshAlertBellSafe()
 
 </body>
 </html>
+
+<script>
+/* ===== Partner cost tab robust override - fixed working ===== */
+(function(){
+  function pcNum(v){ if(typeof window.num === 'function') return window.num(v); const n=Number(String(v ?? '').replace(/,/g,'')); return Number.isFinite(n)?n:0; }
+  function pcMoney(v){ if(typeof window.money === 'function') return window.money(v); return pcNum(v).toLocaleString('ar-SA',{maximumFractionDigits:2})+' ر.س'; }
+  function pcEscape(v){ if(typeof window.escapeHtml === 'function') return window.escapeHtml(v); return String(v ?? '').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+  function pcKey(v){ return String(v||'').trim().replace(/\s+/g,' ').toLowerCase(); }
+  function pcProject(){ return (typeof window.getProject === 'function') ? window.getProject() : null; }
+  function pcSave(reason){ if(typeof window.saveApp === 'function') window.saveApp(reason||'partner-cost'); }
+  function pcEnsure(p){ if(!p)return; if(!Array.isArray(p.partners)) p.partners=[]; if(!Array.isArray(p.partnerCostPayments)) p.partnerCostPayments=[]; p.partners.forEach(x=>{ if(typeof x.costUnderAccount==='undefined') x.costUnderAccount=0; }); p.partnerCostPayments.forEach((x,i)=>{ if(!x.id) x.id='pcp_'+Date.now()+'_'+i+'_'+Math.random().toString(36).slice(2,8); }); }
+  function pcTotalCost(p){ try{ if(typeof window.calcProjectFinancials==='function'){ const f=window.calcProjectFinancials(p); if(f && Number.isFinite(Number(f.totalProjectCost))) return pcNum(f.totalProjectCost); } }catch(e){} const expenses=(p.expenses||[]).reduce((s,e)=>s+pcNum(e.amount),0); const custody=(p.siteCustody||[]).filter(x=>x.type==='add').reduce((s,x)=>s+pcNum(x.amount),0); return pcNum(p.cost)+expenses+custody; }
+  function pcBasePartners(p){ pcEnsure(p); try{ if(typeof window.calcProjectFinancials==='function'){ const f=window.calcProjectFinancials(p); if(f && Array.isArray(f.partnersFull)){ return f.partnersFull.filter(x=>!x.auto && pcKey(x.name)).map(x=>({name:String(x.name||'').trim(),percent:pcNum(x.percent),costShare:pcNum(x.costShare),date:x.date||'-',partnerIndex:(p.partners||[]).findIndex(pp=>pcKey(pp.name)===pcKey(x.name) && pcNum(pp.percent)===pcNum(x.percent))})); } } }catch(e){} const total=pcTotalCost(p); return (p.partners||[]).map((x,i)=>({name:String(x.name||'').trim(),percent:pcNum(x.percent),costShare:total*pcNum(x.percent)/100,date:x.date||'-',partnerIndex:i})).filter(x=>x.name); }
+  function pcRows(p){ pcEnsure(p); const pays=p.partnerCostPayments||[]; return pcBasePartners(p).map(row=>{ let idx=Number(row.partnerIndex); if(idx<0 || !Number.isFinite(idx)) idx=(p.partners||[]).findIndex(pp=>pcKey(pp.name)===pcKey(row.name)); const partner=(p.partners||[])[idx]||{}; const under=pcNum(partner.costUnderAccount); const paidList=pays.filter(x=>pcKey(x.partnerName||x.name)===pcKey(row.name)); const paid=paidList.reduce((s,x)=>s+pcNum(x.amount),0); const net=pcNum(row.costShare)+under-paid; return {...row,partnerIndex:idx,underAccount:under,paid,paymentsCount:paidList.length,netDue:net,status:Math.abs(net)<.01?'مسدد':(net<0?'له رصيد زائد':'عليه مبلغ'),statusClass:Math.abs(net)<.01?'available':(net<0?'sold':'booked')}; }).filter(x=>x.name); }
+  window.refreshPartnerCostPaymentNames=function(){ const sel=document.getElementById('partnerCostPaymentName'); if(!sel)return; const p=pcProject(); if(!p)return; pcEnsure(p); const current=sel.value; const names=pcBasePartners(p).map(x=>x.name).filter(Boolean); sel.innerHTML=names.length?'<option value="">اختر الشريك</option>'+names.map(n=>`<option value="${pcEscape(n)}">${pcEscape(n)}</option>`).join(''):'<option value="">لا يوجد شركاء داخل المشروع</option>'; if(current && names.includes(current)) sel.value=current; };
+  window.renderPartnerCostPaymentsTable=function(p){ p=p||pcProject(); const body=document.getElementById('partnerCostPaymentsBody'); if(!body||!p)return; pcEnsure(p); const rows=[...(p.partnerCostPayments||[])].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||pcNum(b.createdAt)-pcNum(a.createdAt)); body.innerHTML=rows.length?rows.map(x=>{ const realIndex=(p.partnerCostPayments||[]).findIndex(y=>String(y.id||'')===String(x.id||'')); return `<tr><td>${pcEscape(x.partnerName||x.name)}</td><td>${pcEscape(x.date||'-')}</td><td>${pcMoney(x.amount)}</td><td>${pcEscape(x.method||'-')}</td><td>${pcEscape(x.note||'-')}</td><td class="no-print"><button class="btn-red" type="button" onclick="deletePartnerCostPayment(${realIndex})">حذف</button></td></tr>`; }).join(''):'<tr><td colspan="6">لا توجد دفعات واردة مسجلة</td></tr>'; };
+  window.renderPartnerCostTab=function(){ const p=pcProject(); if(!p)return; pcEnsure(p); window.refreshPartnerCostPaymentNames(); let rows=pcRows(p); const search=String(document.getElementById('partnerCostSearch')?.value||'').trim().toLowerCase(); const status=document.getElementById('partnerCostStatusFilter')?.value||''; const sort=document.getElementById('partnerCostSort')?.value||'due_desc'; if(search) rows=rows.filter(r=>pcKey(r.name).includes(pcKey(search))); if(status==='due') rows=rows.filter(r=>r.netDue>.01); if(status==='clear') rows=rows.filter(r=>Math.abs(r.netDue)<.01); if(status==='credit') rows=rows.filter(r=>r.netDue<-.01); rows.sort((a,b)=>sort==='paid_desc'?pcNum(b.paid)-pcNum(a.paid):sort==='percent_desc'?pcNum(b.percent)-pcNum(a.percent):sort==='name'?String(a.name).localeCompare(String(b.name),'ar'):pcNum(b.netDue)-pcNum(a.netDue)); const all=pcRows(p); const set=(id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; }; set('partnerCostRowsCount',rows.length+' شريك'); set('partnerCostRequiredTotal',pcMoney(all.reduce((s,r)=>s+pcNum(r.costShare),0))); set('partnerCostUnderTotal',pcMoney(all.reduce((s,r)=>s+pcNum(r.underAccount),0))); set('partnerCostPaidTotal',pcMoney(all.reduce((s,r)=>s+pcNum(r.paid),0))); set('partnerCostNetTotal',pcMoney(all.reduce((s,r)=>s+pcNum(r.netDue),0))); const body=document.getElementById('partnerCostBody'); if(body){ body.innerHTML=rows.length?rows.map(r=>`<tr><td><strong>${pcEscape(r.name)}</strong></td><td>${pcNum(r.percent).toFixed(2)}%</td><td>${pcMoney(r.costShare)}</td><td class="no-print"><input type="number" value="${pcNum(r.underAccount)}" style="width:150px" onchange="updatePartnerCostUnderAccountByIndex(${r.partnerIndex}, this.value)" /></td><td>${pcMoney(r.underAccount)}</td><td>${pcMoney(r.paid)}</td><td style="font-weight:900;color:${r.netDue<-.01?'#166534':(r.netDue>.01?'#991b1b':'#1d4ed8')}">${pcMoney(Math.abs(r.netDue))} ${r.netDue<-.01?'له':(r.netDue>.01?'عليه':'')}</td><td><span class="badge ${r.statusClass}">${pcEscape(r.status)}</span></td><td>${pcNum(r.paymentsCount)}</td></tr>`).join(''):'<tr><td colspan="9">لا توجد بيانات. أضف شركاء بنسبة من تبويبة الشركاء أولاً.</td></tr>'; } window.renderPartnerCostPaymentsTable(p); };
+  window.updatePartnerCostUnderAccountByIndex=function(index,value){ const p=pcProject(); if(!p)return; pcEnsure(p); const partner=(p.partners||[])[Number(index)]; if(!partner){ alert('تعذر تحديد الشريك. افتح تبويبة الشركاء وتأكد من وجوده.'); return; } partner.costUnderAccount=pcNum(value); pcSave('partner-cost-under-account'); window.renderPartnerCostTab(); if(typeof window.renderPartners==='function') window.renderPartners(); };
+  window.addPartnerCostPayment=function(){ const p=pcProject(); if(!p)return; pcEnsure(p); const name=String(document.getElementById('partnerCostPaymentName')?.value||'').trim(); const amount=pcNum(document.getElementById('partnerCostPaymentAmount')?.value||0); const date=document.getElementById('partnerCostPaymentDate')?.value||new Date().toISOString().slice(0,10); const method=String(document.getElementById('partnerCostPaymentMethod')?.value||'').trim(); const note=String(document.getElementById('partnerCostPaymentNote')?.value||'').trim(); if(!name){ alert('اختر اسم الشريك'); return; } if(amount<=0){ alert('اكتب مبلغ صحيح'); return; } const exists=pcBasePartners(p).some(x=>pcKey(x.name)===pcKey(name)); if(!exists){ alert('الشريك غير موجود داخل هذا المشروع'); return; } p.partnerCostPayments.push({id:'pcp_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),name,partnerName:name,amount,date,method,note,createdAt:Date.now()}); ['partnerCostPaymentAmount','partnerCostPaymentMethod','partnerCostPaymentNote'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';}); pcSave('partner-cost-payment'); window.renderPartnerCostTab(); if(typeof window.renderPartners==='function') window.renderPartners(); alert('تم تسجيل الدفعة وظهرت في الجدول'); };
+  window.deletePartnerCostPayment=function(index){ const p=pcProject(); if(!p)return; pcEnsure(p); if(index<0||index>=p.partnerCostPayments.length)return; if(!confirm('حذف دفعة الشريك؟'))return; p.partnerCostPayments.splice(index,1); pcSave('delete-partner-cost-payment'); window.renderPartnerCostTab(); };
+  window.resetPartnerCostFilters=function(){ ['partnerCostSearch','partnerCostStatusFilter'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';}); const sort=document.getElementById('partnerCostSort'); if(sort) sort.value='due_desc'; window.renderPartnerCostTab(); };
+  window.printPartnerCostReport=function(){ window.renderPartnerCostTab(); window.print(); };
+})();
+</script>
