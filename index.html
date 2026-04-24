@@ -1531,6 +1531,188 @@
   .online-menu-panel{width:100%;min-width:unset}
 }
 
+
+
+/* ===== Safe app theme switcher (after login only) ===== */
+.header-tools{display:flex;align-items:center;gap:10px;position:relative;z-index:2}
+.theme-switcher{position:relative}
+.header-tools{display:flex;align-items:center}
+.theme-switcher-toggle{
+  min-width:auto;
+  padding:10px 14px;
+  border-radius:14px;
+  background:linear-gradient(180deg,#ffffff 0%,#eef4fb 100%);
+  color:#15314d;
+  border:1px solid rgba(255,255,255,.28);
+  box-shadow:0 4px 0 rgba(148,163,184,.55), 0 10px 18px rgba(15,23,42,.12);
+}
+.theme-switcher-menu{
+  position:absolute;
+  top:calc(100% + 10px);
+  inset-inline-end:0;
+  min-width:220px;
+  background:linear-gradient(180deg,#ffffff 0%,#f7fbff 100%);
+  border:1px solid #d9e6f3;
+  border-radius:18px;
+  box-shadow:0 18px 40px rgba(15,23,42,.16);
+  padding:10px;
+}
+.theme-switcher-menu::before{
+  content:"";
+  position:absolute;
+  top:-7px;
+  inset-inline-end:20px;
+  width:14px;
+  height:14px;
+  background:#fafdff;
+  border-top:1px solid #d9e6f3;
+  border-inline-start:1px solid #d9e6f3;
+  transform:rotate(45deg);
+}
+.theme-option{
+  width:100%;min-width:unset;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:11px 13px;border-radius:14px;background:linear-gradient(180deg,#ffffff 0%,#edf5ff 100%);
+  color:#15314d;border:1px solid #d5e4f1;box-shadow:none;text-shadow:none;font-weight:800;
+}
+.theme-option:last-child{margin-bottom:0}
+.theme-option::before{display:none}
+.theme-swatch{width:18px;height:18px;border-radius:999px;border:1px solid rgba(15,23,42,.15);display:inline-block;flex:0 0 auto}
+
+body.app-theme-ready{
+  --theme-main:#1f4f7a;
+  --theme-dark:#16324f;
+  --theme-light:#67a7e3;
+  --theme-soft:#eff6ff;
+  --theme-accent:#dbeafe;
+  --theme-btn:#2563eb;
+  --theme-btn-dark:#1d4ed8;
+  --theme-tab:#2c6fb1;
+}
+body.app-theme-ready .header{
+  background:linear-gradient(135deg,var(--theme-dark) 0%, var(--theme-main) 45%, var(--theme-light) 100%) !important;
+}
+body.app-theme-ready #appView .tabs,
+body.app-theme-ready #appView .tabs.no-print{
+  background:linear-gradient(135deg,var(--theme-dark) 0%, var(--theme-main) 100%) !important;
+}
+body.app-theme-ready #appView .tab.active,
+body.app-theme-ready #appView .collection-subtab.active,
+body.app-theme-ready #appView .manager-alert-tab.active,
+body.app-theme-ready #appView .dashboard-collapse-toggle.open{
+  background:linear-gradient(180deg,var(--theme-tab) 0%, var(--theme-main) 58%, var(--theme-dark) 100%) !important;
+  border-color:var(--theme-dark) !important;
+  color:#fff !important;
+}
+body.app-theme-ready #appView .tab.has-alerts{background:linear-gradient(180deg,var(--theme-main) 0%, var(--theme-dark) 100%) !important}
+body.app-theme-ready #appView .sidebar-link.active,
+body.app-theme-ready #appView .sidebar-link:hover,
+body.app-theme-ready #appView .sidebar-link.is-open{
+  background:linear-gradient(180deg,var(--theme-main) 0%, var(--theme-dark) 100%) !important;
+  border-color:color-mix(in srgb, var(--theme-light) 35%, white) !important;
+  color:#ffffff !important;
+}
+body.app-theme-ready #appView .sidebar-link.active .icon,
+body.app-theme-ready #appView .sidebar-link:hover .icon,
+body.app-theme-ready #appView .sidebar-link.is-open .icon,
+body.app-theme-ready #appView .sidebar-link.active .label,
+body.app-theme-ready #appView .sidebar-link:hover .label,
+body.app-theme-ready #appView .sidebar-link.is-open .label,
+body.app-theme-ready #appView .sidebar-link.active .caret,
+body.app-theme-ready #appView .sidebar-link:hover .caret,
+body.app-theme-ready #appView .sidebar-link.is-open .caret{color:#ffffff !important}
+body.app-theme-ready #appView .app-sidebar{
+  background:linear-gradient(180deg,var(--theme-dark) 0%, var(--theme-main) 62%, color-mix(in srgb, var(--theme-main) 76%, black) 100%) !important;
+  border-color:color-mix(in srgb, var(--theme-light) 30%, var(--theme-dark)) !important;
+  box-shadow:0 20px 44px color-mix(in srgb, var(--theme-dark) 22%, transparent) !important;
+}
+body.app-theme-ready #appView .sidebar-profile{
+  background:linear-gradient(180deg,color-mix(in srgb, var(--theme-light) 28%, white) 0%, color-mix(in srgb, var(--theme-main) 24%, white) 100%) !important;
+  border-color:color-mix(in srgb, var(--theme-light) 45%, white) !important;
+}
+body.app-theme-ready #appView .sidebar-profile-name,
+body.app-theme-ready #appView .sidebar-profile-role,
+body.app-theme-ready #appView .sidebar-quick-note{color:#ffffff !important}
+body.app-theme-ready #appView .sidebar-profile-avatar{
+  background:linear-gradient(180deg,var(--theme-light) 0%, var(--theme-main) 65%, var(--theme-dark) 100%) !important;
+  border-color:rgba(255,255,255,.24) !important;
+}
+body.app-theme-ready #appView .sidebar-link{
+  background:linear-gradient(180deg,#ffffff 0%, #eef2f7 100%) !important;
+  border-color:#d1d5db !important;
+  color:#000000 !important;
+}
+body.app-theme-ready #appView .sidebar-link .icon,
+body.app-theme-ready #appView .sidebar-link .label,
+body.app-theme-ready #appView .sidebar-link .caret{color:#000000 !important}
+body.app-theme-ready #appView .sidebar-submenu{
+  background:linear-gradient(180deg,color-mix(in srgb, var(--theme-dark) 76%, white) 0%, color-mix(in srgb, var(--theme-main) 68%, white) 100%) !important;
+  border-color:color-mix(in srgb, var(--theme-light) 18%, white) !important;
+}
+body.app-theme-ready #appView .sidebar-subitem{
+  background:linear-gradient(180deg,#ffffff 0%, #eef2f7 100%) !important;
+  border-color:#d1d5db !important;
+  color:#000000 !important;
+}
+body.app-theme-ready #appView .sidebar-subitem .name,
+body.app-theme-ready #appView .sidebar-subitem .mini{color:#000000 !important}
+body.app-theme-ready #appView .sidebar-subitem:hover{
+  background:linear-gradient(180deg,var(--theme-main) 0%, var(--theme-dark) 100%) !important;
+}
+body.app-theme-ready #appView .sidebar-subitem:hover .name,
+body.app-theme-ready #appView .sidebar-subitem:hover .mini{color:#ffffff !important}
+body.app-theme-ready #appView .sidebar-link.danger-link{
+  background:linear-gradient(180deg,color-mix(in srgb, #dc2626 48%, var(--theme-main)) 0%, color-mix(in srgb, #991b1b 70%, var(--theme-dark)) 100%) !important;
+  border-color:rgba(255,255,255,.16) !important;
+}
+body.app-theme-ready #appView .sidebar-link.danger-link .icon,
+body.app-theme-ready #appView .sidebar-link.danger-link .label{color:#fff !important}
+body.app-theme-ready #appView .card::before,
+body.app-theme-ready #appView .kpi::after,
+body.app-theme-ready #appView .dashboard-card::after,
+body.app-theme-ready #appView .modal-content::before{
+  background:linear-gradient(90deg,var(--theme-dark) 0%, var(--theme-main) 50%, var(--theme-light) 100%) !important;
+}
+body.app-theme-ready #appView .btn,
+body.app-theme-ready #appView .unit-action-btn.primary-action,
+body.app-theme-ready #appView .settings-action-btn.sync-main,
+body.app-theme-ready #appView .btn-link{
+  background:linear-gradient(180deg,var(--theme-light) 0%, var(--theme-btn) 55%, var(--theme-btn-dark) 100%) !important;
+  color:#fff !important;
+}
+body.app-theme-ready #appView .btn-green{background:linear-gradient(180deg,var(--theme-light) 0%, var(--theme-main) 55%, var(--theme-dark) 100%) !important}
+body.app-theme-ready #appView .btn-purple,
+body.app-theme-ready #appView .unit-action-btn.sell-action,
+body.app-theme-ready #appView .settings-action-btn.backup-main{background:linear-gradient(180deg,var(--theme-light) 0%, var(--theme-main) 55%, var(--theme-dark) 100%) !important}
+body.app-theme-ready #appView .btn-teal,
+body.app-theme-ready #appView .unit-action-btn.print-action,
+body.app-theme-ready #appView .settings-action-btn.online-main{background:linear-gradient(180deg,var(--theme-light) 0%, var(--theme-main) 55%, var(--theme-dark) 100%) !important}
+body.app-theme-ready #appView .btn-gray,
+body.app-theme-ready #appView .settings-action-btn.restore-main{background:linear-gradient(180deg,#cbd5e1 0%, #94a3b8 55%, #64748b 100%) !important}
+body.app-theme-ready #appView .tab,
+body.app-theme-ready #appView .collection-subtab,
+body.app-theme-ready #appView .manager-alert-tab,
+body.app-theme-ready #appView .dashboard-collapse-toggle{
+  border-color:color-mix(in srgb, var(--theme-light) 42%, white) !important;
+  color:var(--theme-dark) !important;
+}
+body.app-theme-ready #appView .kpi-title,
+body.app-theme-ready #appView .dashboard-badge,
+body.app-theme-ready #appView .mini-stat,
+body.app-theme-ready #appView .cloud-chip,
+body.app-theme-ready #appView .summary-chip.admin{color:var(--theme-main) !important}
+body.app-theme-ready[data-app-theme="blue"]{--theme-main:#1f4f7a;--theme-dark:#16324f;--theme-light:#67a7e3;--theme-soft:#eff6ff;--theme-accent:#dbeafe;--theme-btn:#2563eb;--theme-btn-dark:#1d4ed8;--theme-tab:#2c6fb1}
+body.app-theme-ready[data-app-theme="green"]{--theme-main:#16754f;--theme-dark:#0f4e36;--theme-light:#4ade80;--theme-soft:#ecfdf5;--theme-accent:#dcfce7;--theme-btn:#16a34a;--theme-btn-dark:#15803d;--theme-tab:#1f8f5f}
+body.app-theme-ready[data-app-theme="gold"]{--theme-main:#b7791f;--theme-dark:#7c4a10;--theme-light:#f6c453;--theme-soft:#fffaf0;--theme-accent:#fef3c7;--theme-btn:#d97706;--theme-btn-dark:#b45309;--theme-tab:#c78a1a}
+body.app-theme-ready[data-app-theme="purple"]{--theme-main:#6d28d9;--theme-dark:#4c1d95;--theme-light:#a78bfa;--theme-soft:#f5f3ff;--theme-accent:#ede9fe;--theme-btn:#7c3aed;--theme-btn-dark:#6d28d9;--theme-tab:#7c3aed}
+body.app-theme-ready[data-app-theme="dark"]{--theme-main:#334155;--theme-dark:#0f172a;--theme-light:#94a3b8;--theme-soft:#e2e8f0;--theme-accent:#cbd5e1;--theme-btn:#475569;--theme-btn-dark:#334155;--theme-tab:#475569}
+body.app-theme-ready[data-app-theme="silver"]{--theme-main:#7a8798;--theme-dark:#596577;--theme-light:#c7d2df;--theme-soft:#f4f7fb;--theme-accent:#e2e8f0;--theme-btn:#8a97a8;--theme-btn-dark:#6b7788;--theme-tab:#8b97a8}
+body.app-theme-ready[data-app-theme="silverlight"]{--theme-main:#aeb8c6;--theme-dark:#8f99a8;--theme-light:#e8edf4;--theme-soft:#fbfcfe;--theme-accent:#eef2f7;--theme-btn:#b8c2cf;--theme-btn-dark:#98a3b2;--theme-tab:#b3bdca}
+@media (max-width:768px){
+  .header-tools{gap:6px}
+  .theme-switcher-toggle{padding:9px 11px;font-size:12px}
+  .theme-switcher-menu{min-width:190px}
+}
+
 @media print{
       .tabs,.no-print,.modal{display:none !important}
       .card,.kpi{box-shadow:none}
@@ -1992,10 +2174,11 @@
   align-items:center;
   justify-content:space-between;
   gap:14px;
-  background:linear-gradient(180deg,rgba(255,255,255,.04) 0%,rgba(255,255,255,.02) 100%);
-  border:1px solid rgba(255,255,255,.06);
+  background:linear-gradient(180deg,#ffffff 0%,#eef2f7 100%);
+  border:1px solid #d1d5db;
   box-shadow:none;
-  color:#f8fafc;
+  color:#000000;
+  transition:background .18s ease, color .18s ease, border-color .18s ease, transform .18s ease, box-shadow .18s ease;
 }
 .sidebar-link .label{
   font-size:15px;
@@ -2009,15 +2192,31 @@
   align-items:center;
   justify-content:center;
   font-size:22px;
-  background:rgba(255,255,255,.06);
-  color:#fff;
+  background:rgba(0,0,0,.05);
+  color:#000000;
   flex:0 0 auto;
 }
+.sidebar-link:hover,
+.sidebar-link.is-open,
 .sidebar-link.active{
-  background:linear-gradient(180deg,#3b82f6 0%,#2563eb 55%,#1d4ed8 100%);
-  border-color:rgba(147,197,253,.35);
-  box-shadow:0 6px 0 rgba(30,64,175,.9), 0 18px 30px rgba(37,99,235,.28);
+  background:linear-gradient(180deg,#2c6fb1 0%,#1f4f7a 55%,#16324f 100%);
+  border-color:#15314d;
+  box-shadow:0 6px 0 rgba(16,37,56,.75), 0 18px 30px rgba(31,79,122,.22);
+  color:#ffffff;
 }
+.sidebar-link:hover .icon,
+.sidebar-link:hover .label,
+.sidebar-link:hover .caret,
+.sidebar-link.is-open .icon,
+.sidebar-link.is-open .label,
+.sidebar-link.is-open .caret,
+.sidebar-link.active .icon,
+.sidebar-link.active .label,
+.sidebar-link.active .caret{
+  color:#ffffff;
+}
+.sidebar-link:hover .icon,
+.sidebar-link.is-open .icon,
 .sidebar-link.active .icon{
   background:rgba(255,255,255,.14);
 }
@@ -2520,6 +2719,338 @@
   font-size:12px;
 }
 
+
+
+
+/* ===== Final sidebar text/hover colors ===== */
+#appView .sidebar-link,
+#appView .sidebar-link .label,
+#appView .sidebar-link .icon,
+#appView .sidebar-link .caret,
+#appView .sidebar-subitem,
+#appView .sidebar-subitem .name,
+#appView .sidebar-subitem .mini{
+  color:#000000 !important;
+}
+#appView .sidebar-link{
+  background:linear-gradient(180deg,#ffffff 0%,#eef2f7 100%) !important;
+  border:1px solid #d1d5db !important;
+}
+#appView .sidebar-link .icon{
+  background:rgba(0,0,0,.05) !important;
+}
+#appView .sidebar-link:hover,
+#appView .sidebar-link.is-open,
+#appView .sidebar-link.active{
+  background:linear-gradient(180deg,#2c6fb1 0%,#1f4f7a 55%,#16324f 100%) !important;
+  border-color:#15314d !important;
+  color:#ffffff !important;
+}
+#appView .sidebar-link:hover .label,
+#appView .sidebar-link:hover .icon,
+#appView .sidebar-link:hover .caret,
+#appView .sidebar-link.is-open .label,
+#appView .sidebar-link.is-open .icon,
+#appView .sidebar-link.is-open .caret,
+#appView .sidebar-link.active .label,
+#appView .sidebar-link.active .icon,
+#appView .sidebar-link.active .caret{
+  color:#ffffff !important;
+}
+#appView .sidebar-link:hover .icon,
+#appView .sidebar-link.is-open .icon,
+#appView .sidebar-link.active .icon{
+  background:rgba(255,255,255,.14) !important;
+}
+
+
+/* ===== Header logout button final fix ===== */
+.header-logout-btn{
+  min-width:auto !important;
+  width:52px !important;
+  height:52px !important;
+  padding:0 !important;
+  border-radius:16px !important;
+  background:linear-gradient(180deg,#ef4444 0%,#dc2626 55%,#991b1b 100%) !important;
+  border:1px solid #7f1d1d !important;
+  color:#ffffff !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  font-size:24px !important;
+  font-weight:900 !important;
+  line-height:1 !important;
+  box-shadow:0 4px 0 rgba(127,29,29,.55), 0 12px 20px rgba(15,23,42,.16) !important;
+}
+.header-logout-btn:hover{
+  background:linear-gradient(180deg,#dc2626 0%,#b91c1c 55%,#7f1d1d 100%) !important;
+  color:#ffffff !important;
+}
+.header-logout-btn:active{
+  background:linear-gradient(180deg,#b91c1c 0%,#991b1b 55%,#7f1d1d 100%) !important;
+  color:#ffffff !important;
+}
+.header-logout-btn .logout-text{display:none !important;}
+.header-logout-btn .logout-icon{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:100% !important;
+  height:100% !important;
+}
+
+
+/* final header logout rectangular red + sidebar submenu hover */
+.header-logout-btn{
+  width:74px !important;
+  height:46px !important;
+  border-radius:12px !important;
+  font-size:22px !important;
+  background:linear-gradient(180deg,#ff4d4f 0%,#dc2626 58%,#991b1b 100%) !important;
+}
+.header-logout-btn:hover{
+  background:linear-gradient(180deg,#ef4444 0%,#b91c1c 58%,#7f1d1d 100%) !important;
+}
+.sidebar-subitem,
+.sidebar-subitem .name,
+.sidebar-subitem .mini{
+  color:#000 !important;
+  font-weight:700 !important;
+}
+.sidebar-subitem{
+  background:linear-gradient(180deg,#ffffff 0%,#f3f4f6 100%) !important;
+  border:1px solid #d1d5db !important;
+  transition:all .18s ease;
+}
+.sidebar-subitem:hover{
+  background:linear-gradient(180deg,#2563eb 0%,#1d4ed8 100%) !important;
+  border-color:#1d4ed8 !important;
+  transform:translateX(-2px);
+}
+.sidebar-subitem:hover .name,
+.sidebar-subitem:hover .mini{
+  color:#fff !important;
+}
+
+
+/* ===== Direct fix: management general treasury collapse + bank select ===== */
+#managementGeneralTreasuryCollapseBody.hidden{display:none !important;}
+#managementGeneralTreasuryBank.hidden{display:none !important;}
+#managementGeneralTreasuryBank:not(.hidden){
+  display:block !important;
+  width:100% !important;
+  min-width:220px !important;
+}
+
+
+/* ===== Force visible admin bank dropdown ===== */
+#managementGeneralTreasuryBank{
+  grid-column:1 / -1;
+}
+#managementGeneralTreasuryBank:not(.hidden){
+  display:block !important;
+  width:100% !important;
+  margin-top:8px !important;
+}
+
+
+/* ===== Force visible general treasury bank dropdowns ===== */
+#companyGeneralTreasuryBank:not(.hidden),
+#managementGeneralTreasuryBank:not(.hidden){
+  display:block !important;
+  width:100% !important;
+  min-width:220px !important;
+  margin-top:8px !important;
+}
+
+
+/* ===== Company general treasury collapse ===== */
+#companyGeneralTreasuryCollapseBody.hidden{
+  display:none !important;
+}
+
+
+/* ===== Executive Home Dashboard ===== */
+.executive-home-card{
+  border:1px solid rgba(148,163,184,.28) !important;
+  background:
+    radial-gradient(circle at 92% 8%, rgba(96,165,250,.24), transparent 34%),
+    linear-gradient(180deg,#ffffff 0%,#f6fbff 100%) !important;
+  box-shadow:0 24px 60px rgba(15,23,42,.12) !important;
+}
+.executive-hero{
+  display:grid;
+  grid-template-columns:minmax(0,1.5fr) minmax(250px,.7fr);
+  gap:16px;
+  align-items:stretch;
+  padding:22px;
+  border-radius:24px;
+  background:
+    linear-gradient(135deg,rgba(15,34,54,.96) 0%,rgba(31,79,122,.94) 55%,rgba(37,99,235,.88) 100%);
+  color:#fff;
+  margin-bottom:16px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 18px 40px rgba(15,23,42,.18);
+}
+.executive-hero::after{
+  content:"";
+  position:absolute;
+  inset:-40% auto auto -12%;
+  width:260px;
+  height:260px;
+  border-radius:50%;
+  background:rgba(255,255,255,.12);
+  pointer-events:none;
+}
+.executive-kicker{
+  display:inline-flex;
+  padding:6px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.18);
+  font-size:12px;
+  font-weight:900;
+  margin-bottom:10px;
+}
+.executive-hero h2{
+  margin:0;
+  font-size:28px;
+  line-height:1.5;
+  color:#fff;
+}
+.executive-hero p{
+  margin:8px 0 0;
+  color:rgba(255,255,255,.82);
+  line-height:1.9;
+}
+.executive-hero-stats{
+  display:grid;
+  gap:10px;
+  position:relative;
+  z-index:1;
+}
+.executive-hero-stats > div{
+  padding:14px;
+  border-radius:18px;
+  background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.16);
+  backdrop-filter:blur(6px);
+}
+.executive-hero-stats strong{
+  display:block;
+  font-size:22px;
+  line-height:1.5;
+}
+.executive-hero-stats span{
+  color:rgba(255,255,255,.78);
+  font-size:12px;
+}
+.executive-home-head{
+  padding:4px 2px 12px;
+}
+.home-dashboard-grid.executive-grid{
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+}
+.executive-metric{
+  min-height:152px;
+  border-radius:24px !important;
+  padding:18px !important;
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 88% 18%, rgba(255,255,255,.9), transparent 24%),
+    linear-gradient(160deg,#ffffff 0%,#eef6ff 100%) !important;
+}
+.executive-metric::before{
+  content:attr(data-icon);
+  position:absolute;
+  top:14px;
+  inset-inline-end:14px;
+  width:44px;
+  height:44px;
+  border-radius:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(180deg,#ffffff 0%,#eaf2fb 100%);
+  border:1px solid #d8e5f2;
+  font-size:21px;
+  box-shadow:0 12px 24px rgba(15,23,42,.10);
+}
+.executive-metric .dashboard-label{
+  font-size:13px;
+  font-weight:900;
+  color:#475569;
+  padding-inline-end:54px;
+}
+.executive-metric .dashboard-value{
+  font-size:25px;
+  font-weight:900;
+  color:#0f172a;
+}
+.executive-metric .dashboard-sub{
+  color:#64748b;
+  font-size:12px;
+  line-height:1.8;
+}
+.executive-insights{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:12px;
+  margin-top:14px;
+}
+.executive-insight-card{
+  padding:16px;
+  border-radius:22px;
+  background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);
+  border:1px solid #dbe7f3;
+  box-shadow:0 14px 28px rgba(15,23,42,.07);
+}
+.executive-insight-card .insight-title{
+  font-size:12px;
+  color:#64748b;
+  margin-bottom:8px;
+  font-weight:900;
+}
+.executive-insight-card .insight-value{
+  font-size:18px;
+  color:#0f172a;
+  font-weight:900;
+  line-height:1.7;
+}
+.executive-insight-card .insight-sub{
+  font-size:12px;
+  color:#64748b;
+  line-height:1.8;
+}
+@media(max-width:900px){
+  .executive-hero{grid-template-columns:1fr;padding:16px}
+  .executive-hero h2{font-size:22px}
+}
+
+
+/* ===== Safe final: sidebar dropdown labels black by default ===== */
+body.app-theme-ready #appView .app-sidebar .sidebar-subitem,
+body.app-theme-ready #appView .app-sidebar .sidebar-subitem .name,
+body.app-theme-ready #appView .app-sidebar .sidebar-subitem .mini{
+  color:#000000 !important;
+}
+body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover,
+body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .name,
+body.app-theme-ready #appView .app-sidebar .sidebar-subitem:hover .mini{
+  color:#ffffff !important;
+}
+
+
+/* ===== Tax Refund Tab ===== */
+#taxRefundTab .kpi{min-height:120px}
+#taxRefundTab table th,#taxRefundTab table td{white-space:nowrap}
+
+
+#taxRefundPayoutBank.hidden{display:none !important}
+#taxRefundPayoutBank:not(.hidden){display:block !important;width:100% !important}
+
 </style>
 </head>
 <body>
@@ -2630,6 +3161,14 @@
               </span>
             </button>
             <div id="sidebarSiteCustodyDropdown" class="sidebar-submenu hidden"></div>
+            <button type="button" class="sidebar-link" data-section="companyGeneralTreasury" onclick="handleSidebarNav('companyGeneralTreasury', this)">
+              <span class="label">خزنة الشركة العامة</span>
+              <span class="icon">🏦</span>
+            </button>
+            <button type="button" class="sidebar-link" data-section="managementGeneralTreasury" onclick="handleSidebarNav('managementGeneralTreasury', this)">
+              <span class="label">خزنة الإدارة العامة</span>
+              <span class="icon">🏛️</span>
+            </button>
             <button type="button" class="sidebar-link" data-section="collection" onclick="handleSidebarNav('collection', this)">
               <span class="label">التحصيل</span>
               <span class="icon">💼</span>
@@ -2662,6 +3201,7 @@
       <datalist id="investorMasterNames"></datalist>
       <datalist id="marketerMasterNames"></datalist>
       <datalist id="bankMasterNames"></datalist>
+      <datalist id="taxPeriodMasterNames"></datalist>
       <div id="projectsView" class="card">
         <div class="section-title">
           <h2>المشاريع</h2>
@@ -2682,18 +3222,42 @@
             </div>
             <input id="restoreFile" type="file" accept=".json" class="hidden" onchange="restoreBackup(event)" />
             <button id="biometricSetupBtn" class="btn-teal" onclick="setupBiometricForCurrentUser()">تفعيل البصمة</button>
-            <button class="btn-gray" onclick="logout()">خروج</button>
+            <div id="headerThemeTools" class="header-tools hidden no-print">
+              <div class="theme-switcher">
+                <button type="button" class="theme-switcher-toggle" onclick="toggleThemeMenu()">🎨 لون البرنامج</button>
+                <div id="themeSwitcherMenu" class="theme-switcher-menu hidden">
+                  <button type="button" class="theme-option" onclick="setAppTheme('blue')"><span>الأزرق الرسمي</span><span class="theme-swatch" style="background:#2c6fb1"></span></button>
+                  <button type="button" class="theme-option" onclick="setAppTheme('green')"><span>الأخضر التنفيذي</span><span class="theme-swatch" style="background:#16a34a"></span></button>
+                  <button type="button" class="theme-option" onclick="setAppTheme('gold')"><span>الذهبي الفاخر</span><span class="theme-swatch" style="background:#d97706"></span></button>
+                  <button type="button" class="theme-option" onclick="setAppTheme('purple')"><span>البنفسجي</span><span class="theme-swatch" style="background:#7c3aed"></span></button>
+                  <button type="button" class="theme-option" onclick="setAppTheme('dark')"><span>الداكن الاحترافي</span><span class="theme-swatch" style="background:#334155"></span></button>
+                  <button type="button" class="theme-option" onclick="setAppTheme('silver')"><span>الفضي الملكي</span><span class="theme-swatch" style="background:#8a97a8"></span></button>
+                  <button type="button" class="theme-option" onclick="setAppTheme('silverlight')"><span>فضي فاتح</span><span class="theme-swatch" style="background:#d8dee8"></span></button>
+                </div>
+              </div>
+            </div>
+            <button class="btn-gray header-logout-btn" onclick="logout()" title="تسجيل الخروج" aria-label="تسجيل الخروج"><span class="logout-icon">⎋</span><span class="logout-text">خروج</span></button>
           </div>
         </div>
 
-        <div id="mainDashboardCard" class="card" style="box-shadow:none;border:1px solid #e5e7eb">
-          <div class="home-summary-head">
+        <div id="mainDashboardCard" class="card executive-home-card">
+          <div class="executive-hero">
+            <div>
+              <div class="executive-kicker">لوحة المدير العام</div>
+              <h2>نظرة واحدة تكشف لك كل المشاريع</h2>
+              <p>ملخص سريع للمبيعات والتحصيل والمتبقي والوحدات مع متابعة مباشرة للتنبيهات.</p>
+            </div>
+            <div class="executive-hero-stats">
+              <div><strong id="mainDashboardProjectsCount">0 مشروع</strong><span>عدد المشاريع</span></div>
+              <div><strong id="homeTodayText">اليوم</strong><span>آخر تحديث</span></div>
+            </div>
+          </div>
+          <div class="home-summary-head executive-home-head">
             <div>
               <h3 style="margin:0 0 6px 0">الإجمالي العام لكل المشاريع</h3>
               <div class="section-kicker">لوحة متابعة عامة من الصفحة الرئيسية فقط</div>
             </div>
             <div class="actions">
-              <span class="mini-stat" id="mainDashboardProjectsCount">0 مشروع</span>
               <button type="button" id="mainDashboardToggleBtn" class="home-summary-toggle" onclick="toggleMainHomeSummary()">طي الملخص</button>
             </div>
           </div>
@@ -2720,7 +3284,154 @@
           </div>
         </div>
 
-        
+        <div id="companyGeneralTreasuryView" class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:12px">
+          <div class="section-title">
+            <div>
+              <h3>خزنة الشركة العامة</h3>
+              <div class="section-kicker">تجميع مركزي لما يخص الشركة من جميع المشاريع بعد التصفية والمصروف العام</div>
+            </div>
+            <div class="actions no-print">
+              <span class="mini-stat" id="companyGeneralTreasuryProjectsCount">0 مشروع</span>
+              <button class="btn-gray" type="button" onclick="toggleCompanyGeneralTreasuryCollapse()">طي / عرض</button>
+            </div>
+          </div>
+          <div id="companyGeneralTreasuryCollapseBody">
+          <div class="grid grid-3">
+            <div class="kpi"><div class="kpi-title">إجمالي خزنة الشركة</div><div class="kpi-value" id="companyGeneralTreasuryDue">0</div></div>
+            <div class="kpi"><div class="kpi-title">مصروف عام للشركة</div><div class="kpi-value" id="companyGeneralTreasuryPaid">0</div></div>
+            <div class="kpi"><div class="kpi-title">متبقي عام للشركة</div><div class="kpi-value" id="companyGeneralTreasuryRemain">0</div></div>
+          </div>
+          <div class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:14px">
+            <div class="section-title">
+              <div>
+                <h4 style="margin:0">تفصيل المشاريع</h4>
+                <div class="section-kicker">القيم الظاهرة بعد احتساب صافي خزنة الشركة بكل مشروع</div>
+              </div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>المشروع</th>
+                  <th>خزنة الشركة</th>
+                  <th>مصروف الشركة</th>
+                  <th>متبقي الشركة</th>
+                </tr>
+              </thead>
+              <tbody id="companyGeneralTreasuryProjectsBody"></tbody>
+            </table>
+          </div>
+          <div class="card no-print" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:14px">
+            <h4>صرف من خزنة الشركة العامة</h4>
+            <div class="grid grid-4">
+              <input class="lockable-input" id="companyGeneralTreasuryAmount" type="number" placeholder="المبلغ" />
+              <input class="lockable-input" id="companyGeneralTreasuryDate" type="date" />
+              <input class="lockable-input" id="companyGeneralTreasuryNote" placeholder="بيان / ملاحظة" />
+              <select class="lockable-input" id="companyGeneralTreasuryMethod" onchange="toggleSeparatedGeneralTreasuryBankFields('company')">
+                <option value="cash">نقدًا</option>
+                <option value="bank">بنك</option>
+              </select>
+            </div>
+            <div class="grid grid-3" style="margin-top:12px">
+              <select class="lockable-input hidden" id="companyGeneralTreasuryBank"><option value="">اختر البنك</option></select>
+              <div style="display:flex;align-items:end;gap:8px;flex-wrap:wrap">
+                <button class="btn-green" onclick="addSeparatedGeneralTreasuryPayout('company')" style="width:100%">تسجيل صرف</button>
+                <button class="btn-gray" type="button" onclick="fillSeparatedGeneralTreasuryRemaining('company')">تعبئة المتبقي</button>
+                <button class="btn-orange" type="button" onclick="settleSeparatedGeneralTreasury('company')">تصفية كاملة</button>
+              </div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>التاريخ</th>
+                  <th>المبلغ</th>
+                  <th>الطريقة</th>
+                  <th>البنك</th>
+                  <th>البيان</th>
+                  <th class="no-print">إجراء</th>
+                </tr>
+              </thead>
+              <tbody id="companyGeneralTreasuryPayoutsBody"></tbody>
+            </table>
+          </div>
+        </div>
+          </div>
+
+        <div id="managementGeneralTreasuryView" class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:12px">
+          <div class="section-title">
+            <div>
+              <h3>خزنة الإدارة العامة</h3>
+              <div class="section-kicker">تجميع مركزي لما يخص الإدارة من جميع المشاريع بعد المصروف العام</div>
+            </div>
+            <div class="actions no-print">
+              <span class="mini-stat" id="managementGeneralTreasuryProjectsCount">0 مشروع</span>
+              <button class="btn-gray" type="button" onclick="toggleManagementGeneralTreasuryCollapse()">طي / عرض</button>
+            </div>
+          </div>
+          <div id="managementGeneralTreasuryCollapseBody">
+          <div class="grid grid-3">
+            <div class="kpi"><div class="kpi-title">إجمالي الإدارات</div><div class="kpi-value" id="managementGeneralTreasuryDue">0</div></div>
+            <div class="kpi"><div class="kpi-title">مصروف عام للإدارة</div><div class="kpi-value" id="managementGeneralTreasuryPaid">0</div></div>
+            <div class="kpi"><div class="kpi-title">متبقي عام للإدارة</div><div class="kpi-value" id="managementGeneralTreasuryRemain">0</div></div>
+          </div>
+          <div class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:14px">
+            <div class="section-title">
+              <div>
+                <h4 style="margin:0">تفصيل المشاريع</h4>
+                <div class="section-kicker">القيم الظاهرة تجمع صرف الإدارة داخل المشروع + صرف خزنة الإدارة العامة المرتبط بالمشروع</div>
+              </div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>المشروع</th>
+                  <th>إجمالي الإدارات</th>
+                  <th>المصروف من الإدارات</th>
+                  <th>المتبقي من الإدارات</th>
+                </tr>
+              </thead>
+              <tbody id="managementGeneralTreasuryProjectsBody"></tbody>
+            </table>
+          </div>
+          <div class="card no-print" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:14px">
+            <h4>صرف من خزنة الإدارة العامة</h4>
+            <div class="grid grid-4">
+              <input class="lockable-input" id="managementGeneralTreasuryAmount" type="number" placeholder="المبلغ" />
+              <input class="lockable-input" id="managementGeneralTreasuryDate" type="date" />
+              <select class="lockable-input" id="managementGeneralTreasuryProject">
+                <option value="">اختر المشروع</option>
+              </select>
+              <input class="lockable-input" id="managementGeneralTreasuryNote" placeholder="بيان / ملاحظة" />
+              <select class="lockable-input" id="managementGeneralTreasuryMethod" onchange="toggleSeparatedGeneralTreasuryBankFields('admin')">
+                <option value="cash">نقدًا</option>
+                <option value="bank">بنك</option>
+              </select>
+            </div>
+            <div class="grid grid-3" style="margin-top:12px">
+              <select class="lockable-input hidden" id="managementGeneralTreasuryBank"><option value="">اختر البنك</option></select>
+              <div style="display:flex;align-items:end;gap:8px;flex-wrap:wrap">
+                <button class="btn-green" onclick="addSeparatedGeneralTreasuryPayout('admin')" style="width:100%">تسجيل صرف</button>
+                <button class="btn-gray" type="button" onclick="fillSeparatedGeneralTreasuryRemaining('admin')">تعبئة المتبقي</button>
+                <button class="btn-orange" type="button" onclick="settleSeparatedGeneralTreasury('admin')">تصفية كاملة</button>
+              </div>
+            </div>
+            <table>
+                            <thead>
+                <tr>
+                  <th>التاريخ</th>
+                  <th>المشروع</th>
+                  <th>المبلغ</th>
+                  <th>الطريقة</th>
+                  <th>البنك</th>
+                  <th>البيان</th>
+                  <th class="no-print">إجراء</th>
+                </tr>
+              </thead>
+              <tbody id="managementGeneralTreasuryPayoutsBody"></tbody>
+            </table>
+          </div>
+        </div>
+          </div>
+
         <div class="filter-bar no-print" style="margin-top:12px">
           <select id="projectArchiveFilter" onchange="renderProjects()">
             <option value="active">المشاريع النشطة</option>
@@ -2824,6 +3535,22 @@
               <table>
                 <thead><tr><th>اسم البنك</th><th>ملاحظات</th><th class="no-print">إجراء</th></tr></thead>
                 <tbody id="globalBanksBody"></tbody>
+              </table>
+            </div>
+
+            <div class="card" style="box-shadow:none;border:1px solid #e5e7eb">
+              <h4>قائمة أرباع الاسترداد الضريبي</h4>
+              <div class="grid grid-3 no-print">
+                <input id="globalTaxPeriodName" placeholder="مثال: الربع الأول 2025" list="taxPeriodMasterNames" />
+                <input id="globalTaxPeriodNotes" placeholder="ملاحظات" />
+                <div class="actions">
+                  <button id="globalTaxPeriodSaveBtn" class="btn-green" onclick="saveGlobalListItem('taxPeriods')">إضافة ربع</button>
+                  <button id="globalTaxPeriodCancelBtn" class="btn-gray hidden" onclick="resetGlobalForm('taxPeriods')">إلغاء</button>
+                </div>
+              </div>
+              <table>
+                <thead><tr><th>الربع / الفترة</th><th>ملاحظات</th><th class="no-print">إجراء</th></tr></thead>
+                <tbody id="globalTaxPeriodsBody"></tbody>
               </table>
             </div>
             </div>
@@ -3038,6 +3765,10 @@
           <button class="tab" onclick="showTab('partnersTab', this)">الشركاء</button>
           <button class="tab" onclick="showTab('investorsTab', this)">المساهمون</button>
           <button class="tab" onclick="showTab('adminTab', this)">الإدارة</button>
+          <button class="tab" onclick="showTab('abuFarisTab', this)">أبوفارس</button>
+          <button class="tab" onclick="showTab('companyTreasuryTab', this)">خزنة الشركة</button>
+          <button class="tab" onclick="showTab('managementTreasuryTab', this)">خزنة الإدارة</button>
+          <button class="tab" onclick="showTab('taxRefundTab', this)">الاسترداد الضريبي</button>
           <button class="tab" onclick="showTab('advancesTab', this)">الدفعات تحت الحساب</button>
           <button class="tab" onclick="showTab('siteCustodyTab', this)">عهدة الموقع</button>
           <button class="tab" onclick="showTab('movementsTab', this)">دفتر الحركة</button>
@@ -3386,6 +4117,7 @@
           <div class="kpis">
             <div class="kpi" id="kpiPartnerAdminCard"><div class="kpi-title">إدارة الشركاء</div><div class="kpi-value" id="kpiPartnerAdminTotal">0</div></div>
             <div class="kpi"><div class="kpi-title">إدارة المساهمين</div><div class="kpi-value" id="kpiInvestorAdminTotal">0</div></div>
+            <div class="kpi"><div class="kpi-title">إدارة الشركة</div><div class="kpi-value" id="kpiCompanyAutoAdmin">0</div></div>
             <div class="kpi"><div class="kpi-title">إدارة يدوية عادية</div><div class="kpi-value" id="kpiManualRegularAdmin">0</div></div>
             <div class="kpi"><div class="kpi-title">إدارة الشركة اليدوية</div><div class="kpi-value" id="kpiManualCompanyAdmin">0</div></div>
             <div class="kpi"><div class="kpi-title">إجمالي الإدارة المحصلة</div><div class="kpi-value" id="kpiAdminCollectedTotal">0</div></div>
@@ -3498,6 +4230,341 @@
                 </tr>
               </thead>
               <tbody id="adminPayoutsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+
+        <div id="abuFarisTab" class="card tab-panel hidden">
+          <div class="section-title">
+            <div>
+              <h3>صفحة أبوفارس</h3>
+              <div class="section-kicker">ملخص مركّز لكل ما يخص الإدارة الخاصة بأبوفارس الغامدي داخل المشروع الحالي</div>
+            </div>
+            <div class="actions no-print">
+              <span class="mini-stat" id="abuFarisSourcesCount">0 مصدر</span>
+              <button class="btn-teal" onclick="printAbuFarisSummary()">طباعة صفحة أبوفارس</button>
+            </div>
+          </div>
+
+          <div class="grid grid-4">
+            <div class="kpi"><div class="kpi-title">إجمالي نصيب أبوفارس</div><div class="kpi-value" id="abuFarisTotalDue">0</div></div>
+            <div class="kpi"><div class="kpi-title">تم صرفه لأبوفارس</div><div class="kpi-value" id="abuFarisTotalPaid">0</div></div>
+            <div class="kpi"><div class="kpi-title">المتبقي لأبوفارس</div><div class="kpi-value" id="abuFarisTotalRemain">0</div></div>
+            <div class="kpi"><div class="kpi-title">إدارة الشركة الخاصة</div><div class="kpi-value" id="abuFarisCompanyAdminOnly">0</div></div>
+          </div>
+
+          <div id="abuFarisAlertsBox" class="alert-list" style="margin-top:12px"></div>
+
+          <div class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:14px">
+            <div class="section-title">
+              <div>
+                <h4 style="margin:0">ملخص سريع</h4>
+                <div class="section-kicker">نفس حسابات الإدارة ولكن بتركيز خاص على أبوفارس فقط</div>
+              </div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>الطرف</th>
+                  <th>إجمالي المستحق</th>
+                  <th>تم صرفه</th>
+                  <th>المتبقي</th>
+                  <th>الحالة</th>
+                </tr>
+              </thead>
+              <tbody id="abuFarisSettlementBody"></tbody>
+            </table>
+          </div>
+
+          <div class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:14px">
+            <div class="section-title">
+              <div>
+                <h4 style="margin:0">مصادر استحقاق أبوفارس</h4>
+                <div class="section-kicker">تفصيل كل مصدر دخل للإدارة وما آل إلى أبوفارس منه</div>
+              </div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>المصدر</th>
+                  <th>الاسم</th>
+                  <th>النوع</th>
+                  <th>التاريخ</th>
+                  <th>قيمة الإدارة</th>
+                  <th>نصيب أبوفارس</th>
+                  <th>البيان</th>
+                </tr>
+              </thead>
+              <tbody id="abuFarisSourcesBody"></tbody>
+            </table>
+          </div>
+
+          <div class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:14px">
+            <div class="section-title">
+              <div>
+                <h4 style="margin:0">سجل صرف أبوفارس</h4>
+                <div class="section-kicker">الحركات المصروفة فعلياً لأبوفارس من تبويب الإدارة</div>
+              </div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>التاريخ</th>
+                  <th>المبلغ</th>
+                  <th>طريقة الصرف</th>
+                  <th>البنك</th>
+                  <th>البيان</th>
+                </tr>
+              </thead>
+              <tbody id="abuFarisPayoutsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+
+        <div id="companyTreasuryTab" class="card tab-panel hidden">
+          <div class="section-title">
+            <div>
+              <h3>خزنة الشركة</h3>
+              <div class="section-kicker">صافي ما يخص الشركة من المشروع بعد التصفية النهائية</div>
+            </div>
+            <div class="actions no-print">
+              <button class="btn-gray" type="button" onclick="settleProjectTreasury('company')">تصفية كاملة</button>
+            </div>
+          </div>
+          <div class="note"><strong>الاحتساب:</strong> ربح الشركة بعد تصفية الشركاء والمساهمين فقط، بدون أي نصيب من الإدارة.</div>
+          <div class="grid grid-4">
+            <div class="kpi"><div class="kpi-title">ربح الشركة بعد التصفية</div><div class="kpi-value" id="companyTreasuryProjectProfit">0</div></div>
+            <div class="kpi"><div class="kpi-title">من الإدارة</div><div class="kpi-value" id="companyTreasuryInvestorAdminHalf">0</div></div>
+            <div class="kpi"><div class="kpi-title">تم صرفه</div><div class="kpi-value" id="companyTreasuryPaid">0</div></div>
+            <div class="kpi"><div class="kpi-title">المتبقي</div><div class="kpi-value" id="companyTreasuryRemain">0</div></div>
+          </div>
+          <table>
+            <thead><tr><th>البند</th><th>القيمة</th></tr></thead>
+            <tbody id="companyTreasurySourcesBody"></tbody>
+          </table>
+          <div class="card no-print" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:14px">
+            <h4>صرف من خزنة الشركة</h4>
+            <div class="grid grid-4">
+              <input class="lockable-input" id="companyTreasuryAmount" type="number" placeholder="المبلغ" />
+              <input class="lockable-input" id="companyTreasuryDate" type="date" />
+              <input class="lockable-input" id="companyTreasuryNote" placeholder="بيان / ملاحظة" />
+              <select class="lockable-input" id="companyTreasuryMethod" onchange="toggleTransactionBankFields()"><option value="cash">نقدًا</option><option value="bank">بنك</option></select>
+            </div>
+            <div class="grid grid-3" style="margin-top:12px">
+              <select class="lockable-input hidden" id="companyTreasuryBank"></select>
+              <div style="display:flex;align-items:end;gap:8px;flex-wrap:wrap">
+                <button class="btn-green" onclick="addProjectTreasuryPayout('company')" style="width:100%">تسجيل صرف</button>
+                <button class="btn-gray" type="button" onclick="fillProjectTreasuryRemaining('company')">تعبئة المتبقي</button>
+              </div>
+            </div>
+            <table>
+              <thead><tr><th>التاريخ</th><th>المبلغ</th><th>الطريقة</th><th>البنك</th><th>البيان</th><th class="no-print">إجراء</th></tr></thead>
+              <tbody id="companyTreasuryPayoutsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="managementTreasuryTab" class="card tab-panel hidden">
+          <div class="section-title">
+            <div>
+              <h3>خزنة الإدارة</h3>
+              <div class="section-kicker">نصيب الإدارة الخاص بالمشروع</div>
+            </div>
+            <div class="actions no-print">
+              <button class="btn-gray" type="button" onclick="settleProjectTreasury('admin')">تصفية كاملة</button>
+            </div>
+          </div>
+          <div class="note"><strong>الاحتساب:</strong> نصيب أبوفارس من الإدارة فقط، بدون إدارة الشركة وبدون نصيب الشركة.</div>
+          <div class="grid grid-4">
+            <div class="kpi"><div class="kpi-title">نصيب أبوفارس من الإدارة</div><div class="kpi-value" id="managementTreasuryInvestorAdminHalf">0</div></div>
+            <div class="kpi"><div class="kpi-title">100٪ من إدارة الشركة</div><div class="kpi-value" id="managementTreasuryCompanyAdmin">0</div></div>
+            <div class="kpi"><div class="kpi-title">تم صرفه</div><div class="kpi-value" id="managementTreasuryPaid">0</div></div>
+            <div class="kpi"><div class="kpi-title">المتبقي</div><div class="kpi-value" id="managementTreasuryRemain">0</div></div>
+          </div>
+          <table>
+            <thead><tr><th>البند</th><th>القيمة</th></tr></thead>
+            <tbody id="managementTreasurySourcesBody"></tbody>
+          </table>
+          <div class="card no-print" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:14px">
+            <h4>صرف من خزنة الإدارة</h4>
+            <div class="grid grid-4">
+              <input class="lockable-input" id="managementTreasuryAmount" type="number" placeholder="المبلغ" />
+              <input class="lockable-input" id="managementTreasuryDate" type="date" />
+              <input class="lockable-input" id="managementTreasuryNote" placeholder="بيان / ملاحظة" />
+              <select class="lockable-input" id="managementTreasuryMethod" onchange="toggleTransactionBankFields()"><option value="cash">نقدًا</option><option value="bank">بنك</option></select>
+            </div>
+            <div class="grid grid-3" style="margin-top:12px">
+              <select class="lockable-input hidden" id="managementTreasuryBank"></select>
+              <div style="display:flex;align-items:end;gap:8px;flex-wrap:wrap">
+                <button class="btn-green" onclick="addProjectTreasuryPayout('admin')" style="width:100%">تسجيل صرف</button>
+                <button class="btn-gray" type="button" onclick="fillProjectTreasuryRemaining('admin')">تعبئة المتبقي</button>
+              </div>
+            </div>
+            <table>
+              <thead><tr><th>التاريخ</th><th>المبلغ</th><th>الطريقة</th><th>البنك</th><th>البيان</th><th class="no-print">إجراء</th></tr></thead>
+              <tbody id="managementTreasuryPayoutsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="taxRefundTab" class="card tab-panel hidden">
+          <div class="section-title">
+            <div>
+              <h3>الاسترداد الضريبي</h3>
+              <div class="section-kicker">صندوق استرداد ضريبي بالفترات، يوزع تلقائيًا حسب مساهمي المشروع الحالي</div>
+            </div>
+            <div class="actions no-print">
+              <span class="mini-stat" id="taxRefundCount">0 فترة</span>
+              <button class="btn-teal" onclick="printTaxRefundReport()">طباعة تقرير الاسترداد</button>
+            </div>
+          </div>
+
+          <div class="note">
+            القاعدة: 25٪ للشركة كإدارة ثابتة + 25٪ للإدارة + 50٪ توزع على الشركة والمساهمين حسب نسبهم داخل المشروع.
+          </div>
+
+          <div class="grid grid-4 no-print">
+            <input class="lockable-input" id="taxRefundPeriod" placeholder="الفترة: الربع الأول 2025" list="taxPeriodMasterNames" />
+            <input class="lockable-input" id="taxRefundAmount" type="number" placeholder="مبلغ الاسترداد" />
+            <input class="lockable-input" id="taxRefundDate" type="date" />
+            <input class="lockable-input" id="taxRefundNote" placeholder="ملاحظات" />
+          </div>
+          <div class="actions no-print" style="margin-top:12px">
+            <button class="btn-green" onclick="addTaxRefund()">تسجيل الاسترداد</button>
+          </div>
+
+          <div class="grid grid-4" style="margin-top:14px">
+            <div class="kpi"><div class="kpi-title">إجمالي الاستردادات</div><div class="kpi-value" id="taxRefundTotalAmount">0</div></div>
+            <div class="kpi"><div class="kpi-title">نصيب الشركة الثابت 25٪</div><div class="kpi-value" id="taxRefundCompanyFixedTotal">0</div></div>
+            <div class="kpi"><div class="kpi-title">نصيب الإدارة 25٪</div><div class="kpi-value" id="taxRefundAdminTotal">0</div></div>
+            <div class="kpi"><div class="kpi-title">الموزع حسب المساهمين 50٪</div><div class="kpi-value" id="taxRefundInvestorPoolTotal">0</div></div>
+          </div>
+
+          <div class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:14px">
+            <div class="section-title">
+              <div>
+                <h4 style="margin:0">فترات الاسترداد</h4>
+                <div class="section-kicker">كل فترة استرداد مستقلة، مع توزيعها تلقائيًا</div>
+              </div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>الفترة</th>
+                  <th>تاريخ الاستلام</th>
+                  <th>مبلغ الاسترداد</th>
+                  <th>الشركة ثابت 25٪</th>
+                  <th>الإدارة 25٪</th>
+                  <th>مبلغ التوزيع 50٪</th>
+                  <th>إجمالي نصيب الشركة</th>
+                  <th>ملاحظات</th>
+                  <th class="no-print">تفصيل</th>
+                  <th class="no-print">حذف</th>
+                </tr>
+              </thead>
+              <tbody id="taxRefundBody"></tbody>
+            </table>
+          </div>
+
+          <div class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:14px">
+            <div class="section-title">
+              <div>
+                <h4 style="margin:0">تفصيل توزيع الفترة المحددة</h4>
+                <div class="section-kicker" id="taxRefundDetailTitle">اختر فترة من الجدول لعرض توزيعها</div>
+              </div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>الطرف</th>
+                  <th>صفته</th>
+                  <th>نسبة المساهمة</th>
+                  <th>نصيبه من 50٪</th>
+                  <th>نصيب ثابت</th>
+                  <th>الإجمالي</th>
+                  <th>مصروف</th>
+                  <th>متبقي</th>
+                  <th class="no-print">صرف</th>
+                  <th class="no-print">تصفية</th>
+                  <th class="no-print">تقرير</th>
+                </tr>
+              </thead>
+              <tbody id="taxRefundDetailsBody"></tbody>
+            </table>
+          </div>
+
+          <div class="card no-print" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:14px">
+            <div class="section-title">
+              <div>
+                <h4 style="margin:0">صرف من الاسترداد الضريبي</h4>
+                <div class="section-kicker">اختر الفترة والطرف ثم سجل الصرف على دفعات</div>
+              </div>
+            </div>
+            <div class="grid grid-4">
+              <select class="lockable-input" id="taxRefundPayoutPeriod" onchange="refreshTaxRefundPayoutRecipients()"></select>
+              <select class="lockable-input" id="taxRefundPayoutRecipient"></select>
+              <input class="lockable-input" id="taxRefundPayoutAmount" type="number" placeholder="مبلغ الصرف" />
+              <input class="lockable-input" id="taxRefundPayoutDate" type="date" />
+            </div>
+            <div class="grid grid-4" style="margin-top:12px">
+              <select class="lockable-input" id="taxRefundPayoutMethod" onchange="toggleTaxRefundPayoutBank()">
+                <option value="cash">نقدًا</option>
+                <option value="bank">بنك</option>
+              </select>
+              <select class="lockable-input hidden" id="taxRefundPayoutBank"><option value="">اختر البنك</option></select>
+              <input class="lockable-input" id="taxRefundPayoutNote" placeholder="بيان / ملاحظة" />
+              <button class="btn-green" onclick="addTaxRefundPayout()">تسجيل صرف</button>
+            </div>
+          </div>
+
+
+          <div class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:14px">
+            <div class="section-title">
+              <div>
+                <h4 style="margin:0">الجدول التراكمي للمستحقين</h4>
+                <div class="section-kicker">إجمالي ما يستحقه كل طرف من جميع فترات الاسترداد + المصروف + المتبقي، والصرف هنا يوزع تلقائيًا على الفترات المفتوحة</div>
+              </div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>الطرف</th>
+                  <th>الصفة</th>
+                  <th>إجمالي المستحق</th>
+                  <th>إجمالي المصروف</th>
+                  <th>المتبقي</th>
+                  <th class="no-print">صرف</th>
+                  <th class="no-print">تصفية</th>
+                  <th class="no-print">تقرير</th>
+                </tr>
+              </thead>
+              <tbody id="taxRefundSummaryBody"></tbody>
+            </table>
+          </div>
+
+          <div class="card" style="box-shadow:none;border:1px solid #e5e7eb;margin-top:14px">
+            <div class="section-title">
+              <div>
+                <h4 style="margin:0">حركات صرف الاسترداد الضريبي</h4>
+                <div class="section-kicker">كل دفعات الصرف المسجلة على مدار السنة أو أكثر</div>
+              </div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>الفترة</th>
+                  <th>التاريخ</th>
+                  <th>الطرف</th>
+                  <th>المبلغ</th>
+                  <th>الطريقة</th>
+                  <th>البنك</th>
+                  <th>البيان</th>
+                  <th class="no-print">حذف</th>
+                </tr>
+              </thead>
+              <tbody id="taxRefundPayoutsBody"></tbody>
             </table>
           </div>
         </div>
@@ -4153,6 +5220,8 @@
           partnersTab: "partners",
           investorsTab: "investors",
           siteCustodyTab: "siteCustody",
+          companyTreasuryTab: "companyTreasury",
+          managementTreasuryTab: "managementTreasury",
           collectionTab: "collection",
           paymentAlertsTab: "paymentAlerts",
           reportTab: "reports"
@@ -4242,6 +5311,30 @@
         toggleSidebarSiteCustodyDropdown();
         return;
       }
+      if(section === "companyGeneralTreasury"){
+        backToProjects();
+        setTimeout(() => {
+          scrollToCompanyGeneralTreasury();
+          updateSidebarActive("companyGeneralTreasury");
+        }, 40);
+        return;
+      }
+      if(section === "managementGeneralTreasury"){
+        backToProjects();
+        setTimeout(() => {
+          scrollToManagementGeneralTreasury();
+          updateSidebarActive("managementGeneralTreasury");
+        }, 40);
+        return;
+      }
+      if(section === "generalTreasury"){
+        backToProjects();
+        setTimeout(() => {
+          scrollToCompanyGeneralTreasury();
+          updateSidebarActive("companyGeneralTreasury");
+        }, 40);
+        return;
+      }
       if(section === "backups"){
         backToProjects();
         setTimeout(() => {
@@ -4262,6 +5355,8 @@
         partners: "partnersTab",
         investors: "investorsTab",
         siteCustody: "siteCustodyTab",
+        companyTreasury: "companyTreasuryTab",
+        managementTreasury: "managementTreasuryTab",
         collection: "collectionTab",
         paymentAlerts: "paymentAlertsTab",
         reports: "reportTab"
@@ -4962,7 +6057,49 @@
       `).join('') : '<tr><td colspan="6">لا توجد دفعات مسجلة لهذا الشريك</td></tr>';
       const win = window.open('', '_blank');
       if(!win) return;
-      win.document.write(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>تقرير الشريك</title><style>body{font-family:Tahoma,Arial,sans-serif;padding:18px;direction:rtl}table{width:100%;border-collapse:collapse;margin-top:12px}th,td{border:1px solid #999;padding:6px;text-align:center}h2,h3,h4{margin:0 0 10px 0}.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:14px 0}.box{border:1px solid #ccc;border-radius:10px;padding:10px}.muted{color:#555;font-size:12px}</style></head><body><h2>تقرير الشريك: ${escapeHtml(data.name)}</h2><div class="muted">تقرير شامل من كل المشاريع</div><div class="grid"><div class="box"><strong>إجمالي رأس المال</strong><div>${money(data.costShare)}</div></div><div class="box"><strong>نصيب الربح</strong><div>${money(data.grossProfit)}</div></div><div class="box"><strong>خصم الإدارة</strong><div>${money(data.adminValue)}</div></div><div class="box"><strong>المدفوع</strong><div>${money(data.paid)}</div></div><div class="box"><strong>المتبقي</strong><div>${money(data.remain)}</div></div></div><h3>تفاصيل المشاريع</h3><table><thead><tr><th>المشروع</th><th>النسبة</th><th>رأس المال</th><th>نصيب الربح</th><th>خصم الإدارة</th><th>الصافي</th><th>المدفوع</th><th>المتبقي</th></tr></thead><tbody>${projectRows}</tbody></table><h3 style="margin-top:16px">كشف العمليات</h3><table><thead><tr><th>المشروع</th><th>التاريخ</th><th>المبلغ</th><th>الطريقة</th><th>البنك</th><th>الملاحظة</th></tr></thead><tbody>${advanceRows}</tbody></table></body></html>`);
+      win.document.write(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>تقرير الشريك</title><style>body{font-family:Tahoma,Arial,sans-serif;padding:18px;direction:rtl}table{width:100%;border-collapse:collapse;margin-top:12px}th,td{border:1px solid #999;padding:6px;text-align:center}h2,h3,h4{margin:0 0 10px 0}.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:14px 0}.box{border:1px solid #ccc;border-radius:10px;padding:10px}.muted{color:#555;font-size:12px}
+/* ===== Final sidebar text/hover colors ===== */
+#appView .sidebar-link,
+#appView .sidebar-link .label,
+#appView .sidebar-link .icon,
+#appView .sidebar-link .caret,
+#appView .sidebar-subitem,
+#appView .sidebar-subitem .name,
+#appView .sidebar-subitem .mini{
+  color:#000000 !important;
+}
+#appView .sidebar-link{
+  background:linear-gradient(180deg,#ffffff 0%,#eef2f7 100%) !important;
+  border:1px solid #d1d5db !important;
+}
+#appView .sidebar-link .icon{
+  background:rgba(0,0,0,.05) !important;
+}
+#appView .sidebar-link:hover,
+#appView .sidebar-link.is-open,
+#appView .sidebar-link.active{
+  background:linear-gradient(180deg,#2c6fb1 0%,#1f4f7a 55%,#16324f 100%) !important;
+  border-color:#15314d !important;
+  color:#ffffff !important;
+}
+#appView .sidebar-link:hover .label,
+#appView .sidebar-link:hover .icon,
+#appView .sidebar-link:hover .caret,
+#appView .sidebar-link.is-open .label,
+#appView .sidebar-link.is-open .icon,
+#appView .sidebar-link.is-open .caret,
+#appView .sidebar-link.active .label,
+#appView .sidebar-link.active .icon,
+#appView .sidebar-link.active .caret{
+  color:#ffffff !important;
+}
+#appView .sidebar-link:hover .icon,
+#appView .sidebar-link.is-open .icon,
+#appView .sidebar-link.active .icon{
+  background:rgba(255,255,255,.14) !important;
+}
+
+</style></head><body><h2>تقرير الشريك: ${escapeHtml(data.name)}</h2><div class="muted">تقرير شامل من كل المشاريع</div><div class="grid"><div class="box"><strong>إجمالي رأس المال</strong><div>${money(data.costShare)}</div></div><div class="box"><strong>نصيب الربح</strong><div>${money(data.grossProfit)}</div></div><div class="box"><strong>خصم الإدارة</strong><div>${money(data.adminValue)}</div></div><div class="box"><strong>المدفوع</strong><div>${money(data.paid)}</div></div><div class="box"><strong>المتبقي</strong><div>${money(data.remain)}</div></div></div><h3>تفاصيل المشاريع</h3><table><thead><tr><th>المشروع</th><th>النسبة</th><th>رأس المال</th><th>نصيب الربح</th><th>خصم الإدارة</th><th>الصافي</th><th>المدفوع</th><th>المتبقي</th></tr></thead><tbody>${projectRows}</tbody></table><h3 style="margin-top:16px">كشف العمليات</h3><table><thead><tr><th>المشروع</th><th>التاريخ</th><th>المبلغ</th><th>الطريقة</th><th>البنك</th><th>الملاحظة</th></tr></thead><tbody>${advanceRows}</tbody></table></body></html>`);
       win.document.close();
       win.focus();
       setTimeout(() => win.print(), 250);
@@ -5263,7 +6400,49 @@
       `).join('') : '<tr><td colspan="7">لا توجد حركات عهدة مسجلة لهذا الموقع</td></tr>';
       const win = window.open('', '_blank');
       if(!win) return;
-      win.document.write(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>تقرير عهدة الموقع</title><style>body{font-family:Tahoma,Arial,sans-serif;padding:18px;direction:rtl}table{width:100%;border-collapse:collapse;margin-top:12px}th,td{border:1px solid #999;padding:6px;text-align:center}h2,h3{margin:0 0 10px 0}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}.box{border:1px solid #ccc;border-radius:10px;padding:10px}.muted{color:#555;font-size:12px}</style></head><body><h2>تقرير عهدة موقع: ${escapeHtml(data.projectName)}</h2><div class="muted">تاريخ الطباعة: ${escapeHtml(todayText())}</div><div class="grid"><div class="box"><strong>الرصيد الحالي</strong><div>${money(data.balance)}</div></div><div class="box"><strong>إجمالي الإضافات</strong><div>${money(data.added)}</div></div><div class="box"><strong>إجمالي المصروفات</strong><div>${money(data.spent)}</div></div><div class="box"><strong>عدد الحركات</strong><div>${data.count}</div></div></div><h3>كشف العمليات</h3><table><thead><tr><th>التاريخ</th><th>النوع</th><th>المبلغ</th><th>طريقة الحركة</th><th>البنك</th><th>البيان</th><th>الأثر</th></tr></thead><tbody>${bodyRows}</tbody></table></body></html>`);
+      win.document.write(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>تقرير عهدة الموقع</title><style>body{font-family:Tahoma,Arial,sans-serif;padding:18px;direction:rtl}table{width:100%;border-collapse:collapse;margin-top:12px}th,td{border:1px solid #999;padding:6px;text-align:center}h2,h3{margin:0 0 10px 0}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}.box{border:1px solid #ccc;border-radius:10px;padding:10px}.muted{color:#555;font-size:12px}
+/* ===== Final sidebar text/hover colors ===== */
+#appView .sidebar-link,
+#appView .sidebar-link .label,
+#appView .sidebar-link .icon,
+#appView .sidebar-link .caret,
+#appView .sidebar-subitem,
+#appView .sidebar-subitem .name,
+#appView .sidebar-subitem .mini{
+  color:#000000 !important;
+}
+#appView .sidebar-link{
+  background:linear-gradient(180deg,#ffffff 0%,#eef2f7 100%) !important;
+  border:1px solid #d1d5db !important;
+}
+#appView .sidebar-link .icon{
+  background:rgba(0,0,0,.05) !important;
+}
+#appView .sidebar-link:hover,
+#appView .sidebar-link.is-open,
+#appView .sidebar-link.active{
+  background:linear-gradient(180deg,#2c6fb1 0%,#1f4f7a 55%,#16324f 100%) !important;
+  border-color:#15314d !important;
+  color:#ffffff !important;
+}
+#appView .sidebar-link:hover .label,
+#appView .sidebar-link:hover .icon,
+#appView .sidebar-link:hover .caret,
+#appView .sidebar-link.is-open .label,
+#appView .sidebar-link.is-open .icon,
+#appView .sidebar-link.is-open .caret,
+#appView .sidebar-link.active .label,
+#appView .sidebar-link.active .icon,
+#appView .sidebar-link.active .caret{
+  color:#ffffff !important;
+}
+#appView .sidebar-link:hover .icon,
+#appView .sidebar-link.is-open .icon,
+#appView .sidebar-link.active .icon{
+  background:rgba(255,255,255,.14) !important;
+}
+
+</style></head><body><h2>تقرير عهدة موقع: ${escapeHtml(data.projectName)}</h2><div class="muted">تاريخ الطباعة: ${escapeHtml(todayText())}</div><div class="grid"><div class="box"><strong>الرصيد الحالي</strong><div>${money(data.balance)}</div></div><div class="box"><strong>إجمالي الإضافات</strong><div>${money(data.added)}</div></div><div class="box"><strong>إجمالي المصروفات</strong><div>${money(data.spent)}</div></div><div class="box"><strong>عدد الحركات</strong><div>${data.count}</div></div></div><h3>كشف العمليات</h3><table><thead><tr><th>التاريخ</th><th>النوع</th><th>المبلغ</th><th>طريقة الحركة</th><th>البنك</th><th>البيان</th><th>الأثر</th></tr></thead><tbody>${bodyRows}</tbody></table></body></html>`);
       win.document.close();
       win.focus();
       setTimeout(() => win.print(), 250);
@@ -5472,6 +6651,7 @@
       saveRememberedUser(user);
       document.getElementById("loginView").classList.add("hidden");
       document.getElementById("appView").classList.remove("hidden");
+      enableThemeTools();
       applySystemBranding();
       updateCurrentUserBadge();
       maybeAutoBackup();
@@ -5639,7 +6819,7 @@
       }
     }
 
-    let appData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"projects":[],"masterLists":{"partners":[],"marketers":[],"investors":[],"banks":[]}}');
+    let appData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"projects":[],"masterLists":{"partners":[],"marketers":[],"investors":[],"banks":[],"taxPeriods":[]}}');
     let currentProjectId = null;
     let lastOpenedProjectId = null;
     let bookingUnitIndex = null;
@@ -5675,7 +6855,8 @@ let globalSettingsState = {
       partnersEditId: null,
       marketersEditId: null,
       investorsEditId: null,
-      banksEditId: null
+      banksEditId: null,
+      taxPeriodsEditId: null
     };
 
     function generateListId(prefix){
@@ -5686,9 +6867,12 @@ let globalSettingsState = {
       if(!appData || typeof appData !== "object") appData = {projects:[]};
       if(!Array.isArray(appData.projects)) appData.projects = [];
       if(!appData.masterLists || typeof appData.masterLists !== "object") appData.masterLists = {};
-      ["partners","marketers","investors","banks"].forEach(key => {
+      ["partners","marketers","investors","banks","taxPeriods"].forEach(key => {
         if(!Array.isArray(appData.masterLists[key])) appData.masterLists[key] = [];
       });
+      if(!appData.generalTreasuryPayouts || typeof appData.generalTreasuryPayouts !== "object") appData.generalTreasuryPayouts = {company:[], admin:[]};
+      if(!Array.isArray(appData.generalTreasuryPayouts.company)) appData.generalTreasuryPayouts.company = [];
+      if(!Array.isArray(appData.generalTreasuryPayouts.admin)) appData.generalTreasuryPayouts.admin = [];
       appData.masterLists.partners = appData.masterLists.partners.map(item => ({
         id: item.id || generateListId("partner"),
         name: String(item.name || "").trim(),
@@ -5709,6 +6893,11 @@ let globalSettingsState = {
       })).filter(item => item.name);
       appData.masterLists.banks = appData.masterLists.banks.map(item => ({
         id: item.id || generateListId("bank"),
+        name: String(item.name || "").trim(),
+        notes: String(item.notes || "").trim()
+      })).filter(item => item.name);
+      appData.masterLists.taxPeriods = appData.masterLists.taxPeriods.map(item => ({
+        id: item.id || generateListId("taxPeriod"),
         name: String(item.name || "").trim(),
         notes: String(item.notes || "").trim()
       })).filter(item => item.name);
@@ -5736,6 +6925,7 @@ let globalSettingsState = {
       updateDatalistOptions("investorMasterNames", getMasterList("investors"), item => item.name);
       updateDatalistOptions("marketerMasterNames", getMasterList("marketers"), item => item.name);
       updateDatalistOptions("bankMasterNames", getMasterList("banks"), item => item.name);
+      updateDatalistOptions("taxPeriodMasterNames", getMasterList("taxPeriods"), item => item.name);
     }
 
     function populateBankSelectOptions(){
@@ -5743,7 +6933,7 @@ let globalSettingsState = {
       const options = [`<option value="">اختر البنك</option>`].concat(
         banks.map(item => `<option value="${escapeHtml(item.name || "")}">${escapeHtml(item.name || "")}</option>`)
       ).join("");
-      ["expenseBank","advanceBank","siteCustodyBank","adminEntryBank","adminPayoutBank"].forEach(id => {
+      ["expenseBank","advanceBank","siteCustodyBank","adminEntryBank","adminPayoutBank","companyTreasuryBank","managementTreasuryBank","generalTreasuryBank"].forEach(id => {
         const el = document.getElementById(id);
         if(el) el.innerHTML = options;
       });
@@ -5756,6 +6946,9 @@ let globalSettingsState = {
         ["siteCustodyMethod","siteCustodyBank"],
         ["adminEntryMethod","adminEntryBank"],
         ["adminPayoutMethod","adminPayoutBank"],
+        ["companyTreasuryMethod","companyTreasuryBank"],
+        ["managementTreasuryMethod","managementTreasuryBank"],
+        ["generalTreasuryMethod","generalTreasuryBank"],
         ["quickAdvanceMethod","quickAdvanceBank"]
       ];
       pairs.forEach(([methodId, bankId]) => {
@@ -5836,6 +7029,15 @@ let globalSettingsState = {
         if(notes) notes.value = "";
         if(btn) btn.textContent = "إضافة بنك";
         if(cancel) cancel.classList.add("hidden");
+      } else if(type === "taxPeriods"){
+        const name = document.getElementById("globalTaxPeriodName");
+        const notes = document.getElementById("globalTaxPeriodNotes");
+        const btn = document.getElementById("globalTaxPeriodSaveBtn");
+        const cancel = document.getElementById("globalTaxPeriodCancelBtn");
+        if(name) name.value = "";
+        if(notes) notes.value = "";
+        if(btn) btn.textContent = "إضافة ربع";
+        if(cancel) cancel.classList.add("hidden");
       }
     }
 
@@ -5895,6 +7097,18 @@ let globalSettingsState = {
         }else{
           list.unshift({id: generateListId("bank"), name, notes});
         }
+      } else if(type === "taxPeriods"){
+        const name = document.getElementById("globalTaxPeriodName").value.trim();
+        const notes = document.getElementById("globalTaxPeriodNotes").value.trim();
+        if(!name) return alert("اكتب اسم الربع أو الفترة");
+        const dup = list.find(item => item.name.trim().toLowerCase() === name.toLowerCase() && item.id !== globalSettingsState[stateKey]);
+        if(dup) return alert("هذه الفترة موجودة بالفعل");
+        if(globalSettingsState[stateKey]){
+          const item = list.find(x => x.id === globalSettingsState[stateKey]);
+          if(item){ item.name = name; item.notes = notes; }
+        }else{
+          list.unshift({id: generateListId("taxPeriod"), name, notes});
+        }
       }
       saveApp("global-settings");
       renderGlobalSettings();
@@ -5932,6 +7146,11 @@ let globalSettingsState = {
         document.getElementById("globalBankNotes").value = item.notes || "";
         document.getElementById("globalBankSaveBtn").textContent = "حفظ تعديل البنك";
         document.getElementById("globalBankCancelBtn").classList.remove("hidden");
+      } else if(type === "taxPeriods"){
+        document.getElementById("globalTaxPeriodName").value = item.name || "";
+        document.getElementById("globalTaxPeriodNotes").value = item.notes || "";
+        document.getElementById("globalTaxPeriodSaveBtn").textContent = "حفظ تعديل الربع";
+        document.getElementById("globalTaxPeriodCancelBtn").classList.remove("hidden");
       }
     }
 
@@ -6022,6 +7241,23 @@ let globalSettingsState = {
             </td>
           </tr>
         `).join("") : '<tr><td colspan="3">لا توجد بنوك بعد</td></tr>';
+      }
+
+      const taxPeriodBody = document.getElementById("globalTaxPeriodsBody");
+      if(taxPeriodBody){
+        const items = getMasterList("taxPeriods");
+        taxPeriodBody.innerHTML = items.length ? items.map(item => `
+          <tr>
+            <td>${escapeHtml(item.name)}</td>
+            <td>${escapeHtml(item.notes || "-")}</td>
+            <td class="no-print">
+              <div class="actions">
+                <button class="btn-orange" onclick="editGlobalListItem('taxPeriods','${item.id}')">تعديل</button>
+                <button type="button" class="btn-red" onclick="deleteGlobalListItem('taxPeriods','${item.id}')">حذف</button>
+              </div>
+            </td>
+          </tr>
+        `).join("") : '<tr><td colspan="3">لا توجد أرباع بعد</td></tr>';
       }
     }
 
@@ -6685,6 +7921,9 @@ let globalSettingsState = {
       if(!project.siteCustody) project.siteCustody = [];
       if(!project.adminEntries) project.adminEntries = [];
       if(!project.adminPayouts) project.adminPayouts = [];
+      if(!project.companyTreasuryPayouts) project.companyTreasuryPayouts = [];
+      if(!project.managementTreasuryPayouts) project.managementTreasuryPayouts = [];
+      if(!project.taxRefunds) project.taxRefunds = [];
       if(!project.movements) project.movements = [];
       if(typeof project.companyInvestorAdminRate === "undefined") project.companyInvestorAdminRate = 0;
       (project.units || []).forEach(unit => {
@@ -6733,8 +7972,57 @@ let globalSettingsState = {
       sessionStorage.removeItem("anasLoggedExcelPdf");
       sessionStorage.removeItem(SESSION_USER_KEY);
       clearRememberedUser();
+      disableThemeTools();
       location.reload();
     }
+
+
+    const APP_THEME_KEY = "anasProgramTheme";
+
+    function toggleThemeMenu(){
+      const menu = document.getElementById("themeSwitcherMenu");
+      if(!menu) return;
+      menu.classList.toggle("hidden");
+    }
+
+    function closeThemeMenu(){
+      const menu = document.getElementById("themeSwitcherMenu");
+      if(menu) menu.classList.add("hidden");
+    }
+
+    function applySavedAppTheme(){
+      const saved = localStorage.getItem(APP_THEME_KEY) || "blue";
+      setAppTheme(saved, false);
+    }
+
+    function setAppTheme(themeName, closeMenu = true){
+      const themes = ["blue","green","gold","purple","dark","silver","silverlight"];
+      const safeTheme = themes.includes(themeName) ? themeName : "blue";
+      document.body.classList.add("app-theme-ready");
+      document.body.setAttribute("data-app-theme", safeTheme);
+      localStorage.setItem(APP_THEME_KEY, safeTheme);
+      if(closeMenu) closeThemeMenu();
+    }
+
+    function enableThemeTools(){
+      const tools = document.getElementById("headerThemeTools");
+      if(tools) tools.classList.remove("hidden");
+      applySavedAppTheme();
+    }
+
+    function disableThemeTools(){
+      document.body.classList.remove("app-theme-ready");
+      document.body.removeAttribute("data-app-theme");
+      const tools = document.getElementById("headerThemeTools");
+      if(tools) tools.classList.add("hidden");
+      closeThemeMenu();
+    }
+
+    document.addEventListener("click", function(ev){
+      const wrap = document.getElementById("headerThemeTools");
+      if(!wrap || wrap.classList.contains("hidden")) return;
+      if(!wrap.contains(ev.target)) closeThemeMenu();
+    });
 
     function setBrandLogos(){
       ["headerLogo","loginLogo","printLogo"].forEach(id => {
@@ -6761,6 +8049,7 @@ let globalSettingsState = {
         }
         document.getElementById("loginView").classList.add("hidden");
         document.getElementById("appView").classList.remove("hidden");
+        enableThemeTools();
         updateCurrentUserBadge();
         ensureAppHistoryRoot();
         renderProjects();
@@ -6886,6 +8175,8 @@ let globalSettingsState = {
         siteCustody: [],
         adminEntries: [],
         adminPayouts: [],
+        companyTreasuryPayouts: [],
+        managementTreasuryPayouts: [],
         movements: []
       });
 
@@ -7130,25 +8421,76 @@ let globalSettingsState = {
       const container = document.getElementById("mainDashboardGrid");
       const note = document.getElementById("mainDashboardNote");
       const countEl = document.getElementById("mainDashboardProjectsCount");
+      const todayEl = document.getElementById("homeTodayText");
       if(!container) return;
       const agg = aggregateAllProjects();
       if(countEl) countEl.textContent = `${agg.projectsCount} مشروع`;
+      if(todayEl) todayEl.textContent = new Date().toLocaleDateString('ar-SA');
+
+      const availableUnits = Math.max(0, num(agg.totalUnits) - num(agg.soldUnits || 0));
+      const collectionRate = num(agg.totalSales) > 0 ? (num(agg.totalCollected) / num(agg.totalSales) * 100) : 0;
+      const remainingRate = num(agg.totalSales) > 0 ? (num(agg.totalRemaining) / num(agg.totalSales) * 100) : 0;
+
       const cards = [
-        ["إجمالي أسعار الوحدات", money(agg.totalUnitPrices), `إجمالي ${agg.totalUnits} وحدة بجميع المشاريع`, ""],
-        ["إجمالي المبيعات", money(agg.totalSales), `الوحدات المباعة فعليًا في ${agg.projectsCount} مشروع`, "success"],
-        ["إجمالي المحصل", money(agg.totalCollected), "كل المبالغ المحصلة على الوحدات", "warn"],
-        ["إجمالي المتبقي", money(agg.totalRemaining), "إجمالي المتبقي المطلوب تحصيله", "danger"]
+        {label:"إجمالي أسعار الوحدات", value:money(agg.totalUnitPrices), sub:`إجمالي ${agg.totalUnits} وحدة بجميع المشاريع`, cls:"", icon:"🏢"},
+        {label:"إجمالي المبيعات", value:money(agg.totalSales), sub:`مبيعات فعلية على مستوى ${agg.projectsCount} مشروع`, cls:"success", icon:"📈"},
+        {label:"إجمالي المحصل", value:money(agg.totalCollected), sub:`نسبة التحصيل ${collectionRate.toFixed(1)}٪`, cls:"warn", icon:"💰"},
+        {label:"إجمالي المتبقي", value:money(agg.totalRemaining), sub:`نسبة المتبقي ${remainingRate.toFixed(1)}٪`, cls:"danger", icon:"📌"},
+        {label:"الوحدات المتاحة", value:String(availableUnits), sub:"فرص بيع قائمة داخل المشاريع", cls:"", icon:"🟢"},
+        {label:"عدد المشاريع", value:String(agg.projectsCount), sub:"كل المشاريع المسجلة في النظام", cls:"success", icon:"🗂️"}
       ];
+      container.classList.add("executive-grid");
       container.innerHTML = cards.map(card => `
-        <div class="dashboard-card ${card[3] || ''}">
-          <div class="dashboard-label">${card[0]}</div>
-          <div class="dashboard-value">${card[1]}</div>
-          <div class="dashboard-sub">${card[2]}</div>
+        <div class="dashboard-card executive-metric ${card.cls || ''}" data-icon="${card.icon}">
+          <div class="dashboard-label">${card.label}</div>
+          <div class="dashboard-value">${card.value}</div>
+          <div class="dashboard-sub">${card.sub}</div>
         </div>
       `).join("");
+
+      const projects = Array.isArray(appData.projects) ? appData.projects : [];
+      let topSalesProject = {name:"لا يوجد", sales:0};
+      let topCollectionProject = {name:"لا يوجد", collected:0};
+      let highestRemainingProject = {name:"لا يوجد", remain:0};
+      projects.forEach(project => {
+        try{
+          const f = calcProjectFinancials(project);
+          const sales = num(f.totalSales);
+          const collected = num(f.totalCollected);
+          const remain = num(f.totalRemaining);
+          if(sales > topSalesProject.sales) topSalesProject = {name:project.name || "-", sales};
+          if(collected > topCollectionProject.collected) topCollectionProject = {name:project.name || "-", collected};
+          if(remain > highestRemainingProject.remain) highestRemainingProject = {name:project.name || "-", remain};
+        }catch(e){}
+      });
+
+      const oldInsights = document.getElementById("executiveHomeInsights");
+      if(oldInsights) oldInsights.remove();
+      const insights = document.createElement("div");
+      insights.id = "executiveHomeInsights";
+      insights.className = "executive-insights";
+      insights.innerHTML = `
+        <div class="executive-insight-card">
+          <div class="insight-title">أعلى مشروع مبيعًا</div>
+          <div class="insight-value">${escapeHtml(topSalesProject.name)}</div>
+          <div class="insight-sub">${money(topSalesProject.sales)}</div>
+        </div>
+        <div class="executive-insight-card">
+          <div class="insight-title">أعلى مشروع تحصيلًا</div>
+          <div class="insight-value">${escapeHtml(topCollectionProject.name)}</div>
+          <div class="insight-sub">${money(topCollectionProject.collected)}</div>
+        </div>
+        <div class="executive-insight-card">
+          <div class="insight-title">أكبر متبقي يحتاج متابعة</div>
+          <div class="insight-value">${escapeHtml(highestRemainingProject.name)}</div>
+          <div class="insight-sub">${money(highestRemainingProject.remain)}</div>
+        </div>
+      `;
+      container.insertAdjacentElement("afterend", insights);
+
       if(note){
         note.textContent = agg.projectsCount
-          ? `لوحة مختصرة ومنظمة للمتابعة السريعة | آخر تحديث: ${new Date().toLocaleString('ar-SA')}`
+          ? `لوحة مدير عام مختصرة | آخر تحديث: ${new Date().toLocaleString('ar-SA')}`
           : "أضف مشروعًا جديدًا ليظهر الملخص هنا.";
       }
       renderMainManagerAlerts();
@@ -7277,6 +8619,7 @@ let globalSettingsState = {
       const box = document.getElementById("projectsList");
       box.innerHTML = "";
       renderMainDashboard();
+      renderGeneralTreasuryView();
       renderSidebarProjectsDropdown();
       renderSidebarPartnersDropdown();
       renderSidebarInvestorsDropdown();
@@ -7346,6 +8689,1014 @@ let globalSettingsState = {
       applyRolePermissions();
     }
 
+    function normalizeNonNegative(value){
+      return Math.max(0, num(value));
+    }
+
+    function calcProjectTreasury(project){
+      ensureArrays(project);
+      const f = calcProjectFinancials(project);
+      const admin = calcAdminDistribution(project);
+      const abuFarisAdminShare = normalizeNonNegative(num(admin.abuFarisShare));
+      const companyBase = normalizeNonNegative(num(f.companyFinalProfit));
+      const managementBase = abuFarisAdminShare;
+      const companyPaid = (project.companyTreasuryPayouts || []).reduce((s,x) => s + num(x.amount), 0);
+      const managementTreasuryPaid = (project.managementTreasuryPayouts || []).reduce((s,x) => s + num(x.amount), 0);
+      const abuFarisAdminPaid = (project.adminPayouts || []).filter(x => x.target === "abuFaris").reduce((s,x) => s + num(x.amount), 0);
+      const managementPaid = managementTreasuryPaid + abuFarisAdminPaid;
+      return {
+        company: {
+          projectProfit: normalizeNonNegative(num(f.companyFinalProfit)),
+          investorAdminHalf: 0,
+          due: companyBase,
+          paid: companyPaid,
+          remain: normalizeSettlementAmount(companyBase - companyPaid),
+          payouts: project.companyTreasuryPayouts || []
+        },
+        admin: {
+          investorAdminHalf: abuFarisAdminShare,
+          companyAdminFull: 0,
+          due: managementBase,
+          paid: managementPaid,
+          remain: normalizeSettlementAmount(managementBase - managementPaid),
+          payouts: project.managementTreasuryPayouts || []
+        }
+      };
+    }
+
+    function getProjectTreasuryLabel(kind){
+      return kind === 'company' ? 'خزنة الشركة' : 'خزنة الإدارة';
+    }
+
+
+    let selectedTaxRefundIndex = 0;
+
+    function taxRefundRecipientKey(name, role){
+      return `${String(name || '').trim()}__${String(role || '').trim()}`;
+    }
+
+
+    function roundMoney2(value){
+      return Math.round((num(value) + Number.EPSILON) * 100) / 100;
+    }
+
+    function moneyTolerance(){
+      return 1; // سماحية ريال واحد لمنع فروقات الهللات والتقريب
+    }
+
+    function normalizeMoneySettlement(value){
+      const v = roundMoney2(value);
+      return Math.abs(v) <= moneyTolerance() ? 0 : v;
+    }
+
+    function calcTaxRefundDistribution(project, refund){
+      ensureArrays(project);
+      if(!Array.isArray(refund.payouts)) refund.payouts = [];
+      const amount = roundMoney2(refund?.amount);
+      const companyFixed = roundMoney2(amount * 0.25);
+      const adminShare = roundMoney2(amount * 0.25);
+      const investorPool = roundMoney2(amount * 0.50);
+      const f = calcProjectFinancials(project);
+
+      const paidByKey = {};
+      refund.payouts.forEach(p => {
+        const key = p.key || taxRefundRecipientKey(p.name, p.role);
+        paidByKey[key] = num(paidByKey[key]) + num(p.amount);
+      });
+
+      const investorRows = (f.investorsFull || []).map(row => {
+        const ratio = num(row.ratio);
+        const investorShare = roundMoney2(investorPool * (ratio / 100));
+        const fixedShare = row.name === "الشركة" ? companyFixed : 0;
+        const role = row.name === "الشركة" ? "الشركة كمساهم + ثابت" : "مساهم";
+        const total = roundMoney2(investorShare + fixedShare);
+        const key = taxRefundRecipientKey(row.name || "-", role);
+        const paid = num(paidByKey[key]);
+        return {
+          key,
+          name: row.name || "-",
+          role,
+          ratio,
+          investorShare,
+          fixedShare,
+          total,
+          paid,
+          remain: normalizeMoneySettlement(total - paid),
+          auto: !!row.auto
+        };
+      });
+
+      const adminKey = taxRefundRecipientKey("الإدارة", "نصيب ثابت 25٪");
+      const adminPaid = num(paidByKey[adminKey]);
+      const adminRow = {
+        key: adminKey,
+        name:"الإدارة",
+        role:"نصيب ثابت 25٪",
+        ratio:0,
+        investorShare:0,
+        fixedShare:adminShare,
+        total:adminShare,
+        paid:adminPaid,
+        remain:normalizeMoneySettlement(adminShare - adminPaid),
+        auto:true
+      };
+
+      return { amount, companyFixed, adminShare, investorPool, investorRows, adminRow, allRows:[adminRow, ...investorRows] };
+    }
+
+    function renderTaxRefundTab(){
+      const p = getProject();
+      if(!p) return;
+      ensureArrays(p);
+      const body = document.getElementById("taxRefundBody");
+      const detailsBody = document.getElementById("taxRefundDetailsBody");
+      const countEl = document.getElementById("taxRefundCount");
+      const list = p.taxRefunds || [];
+      if(countEl) countEl.innerText = `${list.length} فترة`;
+
+      const totals = list.reduce((acc, refund) => {
+        const d = calcTaxRefundDistribution(p, refund);
+        acc.amount += d.amount;
+        acc.companyFixed += d.companyFixed;
+        acc.adminShare += d.adminShare;
+        acc.investorPool += d.investorPool;
+        acc.paid += (refund.payouts || []).reduce((s,x)=>s + num(x.amount), 0);
+        return acc;
+      }, {amount:0, companyFixed:0, adminShare:0, investorPool:0, paid:0});
+
+      const setMoney = (id, value) => {
+        const el = document.getElementById(id);
+        if(el) el.innerText = money(value);
+      };
+      setMoney("taxRefundTotalAmount", totals.amount);
+      setMoney("taxRefundCompanyFixedTotal", totals.companyFixed);
+      setMoney("taxRefundAdminTotal", totals.adminShare);
+      setMoney("taxRefundInvestorPoolTotal", totals.investorPool);
+      refreshTaxRefundPayoutControls();
+      renderTaxRefundSummaryBody();
+      renderTaxRefundPayoutsBody();
+
+      if(body){
+        body.innerHTML = list.length ? list.map((refund, i) => {
+          const d = calcTaxRefundDistribution(p, refund);
+          const companyRow = d.investorRows.find(x => x.name === "الشركة");
+          return `
+            <tr>
+              <td>${escapeHtml(refund.period || "-")}</td>
+              <td>${escapeHtml(refund.date || "-")}</td>
+              <td>${money(d.amount)}</td>
+              <td>${money(d.companyFixed)}</td>
+              <td>${money(d.adminShare)}</td>
+              <td>${money(d.investorPool)}</td>
+              <td>${money(companyRow ? companyRow.total : d.companyFixed)}</td>
+              <td>${escapeHtml(refund.note || "-")}</td>
+              <td class="no-print"><button class="btn-link" onclick="showTaxRefundDetails(${i})">عرض</button></td>
+              <td class="no-print"><button class="btn-red" onclick="deleteTaxRefund(${i})">حذف</button></td>
+            </tr>
+          `;
+        }).join("") : '<tr><td colspan="10">لا توجد فترات استرداد مسجلة</td></tr>';
+      }
+
+      if(list.length && selectedTaxRefundIndex >= list.length) selectedTaxRefundIndex = 0;
+      if(list.length) showTaxRefundDetails(selectedTaxRefundIndex, false);
+      else if(detailsBody){
+        detailsBody.innerHTML = '<tr><td colspan="6">لا توجد فترة محددة</td></tr>';
+        const title = document.getElementById("taxRefundDetailTitle");
+        if(title) title.innerText = "اختر فترة من الجدول لعرض توزيعها";
+      }
+    }
+
+    function showTaxRefundDetails(index, rerender=false){
+      const p = getProject();
+      if(!p) return;
+      ensureArrays(p);
+      const refund = (p.taxRefunds || [])[index];
+      const body = document.getElementById("taxRefundDetailsBody");
+      if(!refund || !body) return;
+      if(!Array.isArray(refund.payouts)) refund.payouts = [];
+      selectedTaxRefundIndex = index;
+      const d = calcTaxRefundDistribution(p, refund);
+      body.innerHTML = d.allRows.map(row => `
+        <tr class="${row.name === 'الشركة' || row.name === 'الإدارة' ? 'auto-row' : ''}">
+          <td>${escapeHtml(row.name)}</td>
+          <td>${escapeHtml(row.role)}</td>
+          <td>${row.ratio ? num(row.ratio).toFixed(2) + '%' : '-'}</td>
+          <td>${money(row.investorShare)}</td>
+          <td>${money(row.fixedShare)}</td>
+          <td>${money(row.total)}</td>
+          <td>${money(row.paid)}</td>
+          <td>${money(row.remain)}</td>
+          <td class="no-print"><button class="btn-green" onclick="prepareTaxRefundPayout(${index}, '${escapeQuotes(row.key)}')">صرف</button></td>
+          <td class="no-print"><button class="btn-orange" onclick="settleTaxRefundRecipient(${index}, '${escapeQuotes(row.key)}')">تصفية</button></td>
+          <td class="no-print"><button class="btn-teal" onclick="printTaxRefundRecipientReport('${escapeQuotes(row.key)}')">تقرير</button></td>
+        </tr>
+      `).join("");
+      const title = document.getElementById("taxRefundDetailTitle");
+      if(title) title.innerText = `توزيع فترة: ${refund.period || "-"} | مبلغ الاسترداد: ${money(d.amount)}`;
+      refreshTaxRefundPayoutControls();
+      renderTaxRefundPayoutsBody();
+      if(rerender) renderTaxRefundTab();
+    }
+
+    function addTaxRefund(){
+      if(!requireProjectOpen("إضافة استرداد ضريبي")) return;
+      const p = getProject();
+      if(!p) return;
+      ensureArrays(p);
+      const period = (document.getElementById("taxRefundPeriod")?.value || "").trim();
+      const amount = num(document.getElementById("taxRefundAmount")?.value);
+      const date = document.getElementById("taxRefundDate")?.value || todayText();
+      const note = (document.getElementById("taxRefundNote")?.value || "").trim();
+      if(!period) return alert("اكتب فترة الاسترداد مثل: الربع الأول 2025");
+      if(amount <= 0) return alert("اكتب مبلغ استرداد صحيح");
+      p.taxRefunds.unshift({period, amount, date, note, payouts:[]});
+      addMovement("استرداد ضريبي", period, amount, note || "تسجيل استرداد ضريبي", date);
+      ["taxRefundPeriod","taxRefundAmount","taxRefundDate","taxRefundNote"].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.value = "";
+      });
+      selectedTaxRefundIndex = 0;
+      renderProject();
+      setTimeout(() => renderTaxRefundTab(), 0);
+    }
+
+
+    function getTaxRefundRowsForPeriod(index){
+      const p = getProject();
+      if(!p) return [];
+      const refund = (p.taxRefunds || [])[index];
+      if(!refund) return [];
+      return calcTaxRefundDistribution(p, refund).allRows || [];
+    }
+
+    function refreshTaxRefundPayoutControls(){
+      const p = getProject();
+      if(!p) return;
+      ensureArrays(p);
+      const periodEl = document.getElementById("taxRefundPayoutPeriod");
+      if(periodEl){
+        const current = periodEl.value;
+        periodEl.innerHTML = (p.taxRefunds || []).map((r,i) => `<option value="${i}">${escapeHtml(r.period || ('فترة ' + (i+1)))}</option>`).join('');
+        if(current !== "" && Number(current) < (p.taxRefunds || []).length) periodEl.value = current;
+        else periodEl.value = String(selectedTaxRefundIndex || 0);
+      }
+      refreshTaxRefundPayoutRecipients();
+      fillTaxRefundBankDropdown();
+      toggleTaxRefundPayoutBank();
+    }
+
+    function refreshTaxRefundPayoutRecipients(){
+      const periodIndex = Number(document.getElementById("taxRefundPayoutPeriod")?.value || selectedTaxRefundIndex || 0);
+      const recEl = document.getElementById("taxRefundPayoutRecipient");
+      if(!recEl) return;
+      const rows = getTaxRefundRowsForPeriod(periodIndex);
+      const current = recEl.value;
+      recEl.innerHTML = rows.map(row => `<option value="${escapeHtml(row.key)}">${escapeHtml(row.name)} - ${escapeHtml(row.role)} | متبقي ${money(row.remain)}</option>`).join('');
+      if(current && rows.some(r => r.key === current)) recEl.value = current;
+    }
+
+    function fillTaxRefundBankDropdown(){
+      const bankEl = document.getElementById("taxRefundPayoutBank");
+      if(!bankEl) return;
+      ensureMasterLists();
+      const current = bankEl.value || "";
+      const banks = ((appData.masterLists && appData.masterLists.banks) || [])
+        .map(item => typeof item === 'string' ? item : (item && item.name ? item.name : ''))
+        .map(name => String(name || '').trim())
+        .filter(Boolean);
+      bankEl.innerHTML = '<option value="">اختر البنك</option>' + banks.map(name => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join('');
+      if(current) bankEl.value = current;
+    }
+
+    function toggleTaxRefundPayoutBank(){
+      const method = document.getElementById("taxRefundPayoutMethod")?.value || "cash";
+      const bankEl = document.getElementById("taxRefundPayoutBank");
+      if(!bankEl) return;
+      bankEl.classList.toggle("hidden", method !== "bank");
+      if(method !== "bank") bankEl.value = "";
+    }
+
+    function prepareTaxRefundPayout(periodIndex, key){
+      selectedTaxRefundIndex = periodIndex;
+      const periodEl = document.getElementById("taxRefundPayoutPeriod");
+      if(periodEl) periodEl.value = String(periodIndex);
+      refreshTaxRefundPayoutRecipients();
+      const recEl = document.getElementById("taxRefundPayoutRecipient");
+      if(recEl) recEl.value = key;
+      const rows = getTaxRefundRowsForPeriod(periodIndex);
+      const row = rows.find(x => x.key === key);
+      const amountEl = document.getElementById("taxRefundPayoutAmount");
+      if(amountEl && row) amountEl.value = num(row.remain) > 0 ? roundMoney2(row.remain).toFixed(2) : "";
+      const dateEl = document.getElementById("taxRefundPayoutDate");
+      if(dateEl && !dateEl.value) dateEl.value = todayText();
+      document.getElementById("taxRefundPayoutAmount")?.focus();
+    }
+
+    function addTaxRefundPayout(){
+      const cumulativeKey = document.getElementById("taxRefundPayoutAmount")?.dataset?.cumulativeKey || pendingCumulativeTaxRefundKey || "";
+      if(cumulativeKey){
+        document.getElementById("taxRefundPayoutAmount").dataset.cumulativeKey = "";
+        return addTaxRefundCumulativePayout(cumulativeKey);
+      }
+      if(!requireProjectOpen("صرف استرداد ضريبي")) return;
+      const p = getProject();
+      if(!p) return;
+      ensureArrays(p);
+      const periodIndex = Number(document.getElementById("taxRefundPayoutPeriod")?.value || 0);
+      const refund = (p.taxRefunds || [])[periodIndex];
+      if(!refund) return alert("اختر فترة الاسترداد");
+      if(!Array.isArray(refund.payouts)) refund.payouts = [];
+      const key = document.getElementById("taxRefundPayoutRecipient")?.value || "";
+      const rows = getTaxRefundRowsForPeriod(periodIndex);
+      const row = rows.find(x => x.key === key);
+      if(!row) return alert("اختر الطرف");
+      let amount = roundMoney2(document.getElementById("taxRefundPayoutAmount")?.value);
+      const date = document.getElementById("taxRefundPayoutDate")?.value || todayText();
+      const method = document.getElementById("taxRefundPayoutMethod")?.value || "cash";
+      const bank = method === "bank" ? ((document.getElementById("taxRefundPayoutBank")?.value || "").trim()) : "";
+      const note = (document.getElementById("taxRefundPayoutNote")?.value || "").trim();
+      const remain = roundMoney2(row.remain);
+      if(amount <= 0) return alert("اكتب مبلغ صرف صحيح");
+      if(amount > remain && (amount - remain) <= moneyTolerance()) amount = remain;
+      if(amount > remain) return alert(`المبلغ أكبر من المتبقي للطرف. المتبقي: ${money(remain)}`);
+      if(method === "bank" && !bank) return alert("اختر البنك");
+      refund.payouts.unshift({key, name:row.name, role:row.role, amount, date, method, bank, note});
+      addMovement("صرف استرداد ضريبي", `${refund.period || "-"} - ${row.name}`, -amount, `${method === "bank" ? "بنك" : "نقدًا"}${bank ? " - " + bank : ""}${note ? " | " + note : ""}`, date);
+      ["taxRefundPayoutAmount","taxRefundPayoutDate","taxRefundPayoutNote","taxRefundPayoutBank"].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.value = "";
+      });
+      const methodEl = document.getElementById("taxRefundPayoutMethod");
+      if(methodEl) methodEl.value = "cash";
+      toggleTaxRefundPayoutBank();
+      selectedTaxRefundIndex = periodIndex;
+      renderProject();
+      setTimeout(() => renderTaxRefundTab(), 0);
+    }
+
+    function settleTaxRefundRecipient(periodIndex, key){
+      prepareTaxRefundPayout(periodIndex, key);
+      addTaxRefundPayout();
+    }
+
+
+    function calcTaxRefundCumulativeSummary(){
+      const p = getProject();
+      if(!p) return [];
+      const map = {};
+      (p.taxRefunds || []).forEach(refund => {
+        const d = calcTaxRefundDistribution(p, refund);
+        (d.allRows || []).forEach(row => {
+          if(!map[row.key]){
+            map[row.key] = {
+              key: row.key,
+              name: row.name,
+              role: row.role,
+              due: 0,
+              paid: 0
+            };
+          }
+          map[row.key].due += num(row.total);
+        });
+        (refund.payouts || []).forEach(pay => {
+          const key = pay.key || taxRefundRecipientKey(pay.name, pay.role);
+          if(!map[key]){
+            map[key] = {
+              key,
+              name: pay.name || "-",
+              role: pay.role || "-",
+              due: 0,
+              paid: 0
+            };
+          }
+          map[key].paid += num(pay.amount);
+        });
+      });
+
+      return Object.values(map).map(x => ({
+        ...x,
+        due: roundMoney2(x.due),
+        paid: roundMoney2(x.paid),
+        remain: normalizeMoneySettlement(x.due - x.paid)
+      })).sort((a,b) => num(b.due) - num(a.due));
+    }
+
+
+    let pendingCumulativeTaxRefundKey = "";
+
+    function prepareTaxRefundCumulativePayout(key){
+      const rows = calcTaxRefundCumulativeSummary();
+      const row = rows.find(x => x.key === key);
+      if(!row) return;
+      pendingCumulativeTaxRefundKey = key;
+
+      const periodEl = document.getElementById("taxRefundPayoutPeriod");
+      if(periodEl && periodEl.options.length){
+        periodEl.value = "0";
+      }
+      refreshTaxRefundPayoutRecipients();
+
+      const recEl = document.getElementById("taxRefundPayoutRecipient");
+      if(recEl) recEl.value = key;
+
+      const amountEl = document.getElementById("taxRefundPayoutAmount");
+      if(amountEl){
+        amountEl.value = num(row.remain) > 0 ? roundMoney2(row.remain).toFixed(2) : "";
+        amountEl.dataset.cumulativeKey = key;
+      }
+
+      const noteEl = document.getElementById("taxRefundPayoutNote");
+      if(noteEl && !noteEl.value) noteEl.value = "صرف تراكمي من الاسترداد الضريبي";
+
+      const dateEl = document.getElementById("taxRefundPayoutDate");
+      if(dateEl && !dateEl.value) dateEl.value = todayText();
+      amountEl?.focus();
+    }
+
+    function addTaxRefundCumulativePayout(key, amountArg=null){
+      if(!requireProjectOpen("صرف تراكمي للاسترداد الضريبي")) return;
+      const p = getProject();
+      if(!p) return;
+      ensureArrays(p);
+
+      const summary = calcTaxRefundCumulativeSummary().find(x => x.key === key);
+      if(!summary) return alert("تعذر تحديد الطرف في الجدول التراكمي");
+
+      let amount = amountArg === null ? roundMoney2(document.getElementById("taxRefundPayoutAmount")?.value) : roundMoney2(amountArg);
+      const totalRemain = roundMoney2(summary.remain);
+      const date = document.getElementById("taxRefundPayoutDate")?.value || todayText();
+      const method = document.getElementById("taxRefundPayoutMethod")?.value || "cash";
+      const bank = method === "bank" ? ((document.getElementById("taxRefundPayoutBank")?.value || "").trim()) : "";
+      const note = (document.getElementById("taxRefundPayoutNote")?.value || "").trim();
+
+      if(amount <= 0) return alert("اكتب مبلغ صرف صحيح");
+      if(amount > totalRemain && (amount - totalRemain) <= moneyTolerance()) amount = totalRemain;
+      if(amount > totalRemain) return alert(`المبلغ أكبر من المتبقي التراكمي للطرف. المتبقي: ${money(totalRemain)}`);
+      if(method === "bank" && !bank) return alert("اختر البنك");
+
+      let remainingToAllocate = amount;
+      let insertedCount = 0;
+
+      (p.taxRefunds || []).forEach((refund, refundIndex) => {
+        if(remainingToAllocate <= 0) return;
+        if(!Array.isArray(refund.payouts)) refund.payouts = [];
+
+        const rows = getTaxRefundRowsForPeriod(refundIndex);
+        const row = rows.find(x => x.key === key);
+        if(!row) return;
+
+        const periodRemain = roundMoney2(row.remain);
+        if(periodRemain <= 0) return;
+
+        let part = Math.min(periodRemain, remainingToAllocate);
+        part = roundMoney2(part);
+
+        if(part > 0){
+          refund.payouts.unshift({
+            key,
+            name: row.name,
+            role: row.role,
+            amount: part,
+            date,
+            method,
+            bank,
+            note: note || "صرف تراكمي من الاسترداد الضريبي"
+          });
+          remainingToAllocate = roundMoney2(remainingToAllocate - part);
+          insertedCount++;
+        }
+      });
+
+      if(insertedCount === 0) return alert("لا يوجد متبقي مفتوح لهذا الطرف داخل الفترات");
+
+      addMovement("صرف تراكمي استرداد ضريبي", summary.name || "-", -amount, `${method === "bank" ? "بنك" : "نقدًا"}${bank ? " - " + bank : ""}${note ? " | " + note : ""}`, date);
+
+      ["taxRefundPayoutAmount","taxRefundPayoutDate","taxRefundPayoutNote","taxRefundPayoutBank"].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.value = "";
+      });
+      const methodEl = document.getElementById("taxRefundPayoutMethod");
+      if(methodEl) methodEl.value = "cash";
+      pendingCumulativeTaxRefundKey = "";
+      toggleTaxRefundPayoutBank();
+      renderProject();
+      setTimeout(() => renderTaxRefundTab(), 0);
+    }
+
+    function settleTaxRefundCumulative(key){
+      const summary = calcTaxRefundCumulativeSummary().find(x => x.key === key);
+      if(!summary) return;
+      prepareTaxRefundCumulativePayout(key);
+      addTaxRefundCumulativePayout(key, summary.remain);
+    }
+
+    function renderTaxRefundSummaryBody(){
+      const body = document.getElementById("taxRefundSummaryBody");
+      if(!body) return;
+      const rows = calcTaxRefundCumulativeSummary();
+      body.innerHTML = rows.length ? rows.map(row => `
+        <tr class="${row.name === 'الشركة' || row.name === 'الإدارة' ? 'auto-row' : ''}">
+          <td>${escapeHtml(row.name)}</td>
+          <td>${escapeHtml(row.role)}</td>
+          <td>${money(row.due)}</td>
+          <td>${money(row.paid)}</td>
+          <td>${money(row.remain)}</td>
+          <td class="no-print"><button class="btn-green" onclick="prepareTaxRefundCumulativePayout('${escapeQuotes(row.key)}')">صرف</button></td>
+          <td class="no-print"><button class="btn-orange" onclick="settleTaxRefundCumulative('${escapeQuotes(row.key)}')">تصفية</button></td>
+          <td class="no-print"><button class="btn-teal" onclick="printTaxRefundRecipientReport('${escapeQuotes(row.key)}')">تقرير</button></td>
+        </tr>
+      `).join("") : '<tr><td colspan="8">لا توجد بيانات تراكمية</td></tr>';
+    }
+
+    function renderTaxRefundPayoutsBody(){
+      const p = getProject();
+      if(!p) return;
+      const body = document.getElementById("taxRefundPayoutsBody");
+      if(!body) return;
+      const rows = [];
+      (p.taxRefunds || []).forEach((refund, refundIndex) => {
+        (refund.payouts || []).forEach((pay, payIndex) => rows.push({refund, refundIndex, pay, payIndex}));
+      });
+      rows.sort((a,b) => String(b.pay.date || '').localeCompare(String(a.pay.date || '')));
+      body.innerHTML = rows.length ? rows.map(row => `
+        <tr>
+          <td>${escapeHtml(row.refund.period || "-")}</td>
+          <td>${escapeHtml(row.pay.date || "-")}</td>
+          <td>${escapeHtml(row.pay.name || "-")}</td>
+          <td>${money(row.pay.amount)}</td>
+          <td>${row.pay.method === "bank" ? "بنك" : "نقدًا"}</td>
+          <td>${escapeHtml(row.pay.bank || "-")}</td>
+          <td>${escapeHtml(row.pay.note || "-")}</td>
+          <td class="no-print"><button class="btn-red" onclick="deleteTaxRefundPayout(${row.refundIndex}, ${row.payIndex})">حذف</button></td>
+        </tr>
+      `).join("") : '<tr><td colspan="8">لا توجد حركات صرف</td></tr>';
+    }
+
+    function deleteTaxRefundPayout(refundIndex, payIndex){
+      const p = getProject();
+      if(!p) return;
+      const refund = (p.taxRefunds || [])[refundIndex];
+      if(!refund || !Array.isArray(refund.payouts) || !refund.payouts[payIndex]) return;
+      const row = refund.payouts[payIndex];
+      if(!confirmSecureDelete("حذف صرف استرداد ضريبي", "هل تريد حذف حركة الصرف؟")) return;
+      refund.payouts.splice(payIndex, 1);
+      addMovement("حذف صرف استرداد ضريبي", `${refund.period || "-"} - ${row.name || "-"}`, num(row.amount), row.note || "تم حذف حركة الصرف", todayText());
+      renderProject();
+      setTimeout(() => renderTaxRefundTab(), 0);
+    }
+
+    function getTaxRefundRecipientSummary(key){
+      const p = getProject();
+      if(!p) return null;
+      let name = "", role = "", due = 0, paid = 0;
+      const movements = [];
+      (p.taxRefunds || []).forEach((refund, refundIndex) => {
+        const d = calcTaxRefundDistribution(p, refund);
+        const row = (d.allRows || []).find(x => x.key === key);
+        if(row){
+          name = row.name;
+          role = row.role;
+          due += num(row.total);
+        }
+        (refund.payouts || []).filter(x => (x.key || taxRefundRecipientKey(x.name,x.role)) === key).forEach(x => {
+          paid += num(x.amount);
+          movements.push({...x, period:refund.period || "-", refundIndex});
+        });
+      });
+      return {name, role, due:roundMoney2(due), paid:roundMoney2(paid), remain:normalizeMoneySettlement(due - paid), movements};
+    }
+
+    function printTaxRefundRecipientReport(key){
+      const p = getProject();
+      if(!p) return;
+      const s = getTaxRefundRecipientSummary(key);
+      if(!s) return;
+      const movementRows = s.movements.length ? s.movements.map(x => `
+        <tr><td>${escapeHtml(x.period)}</td><td>${escapeHtml(x.date || "-")}</td><td>${money(x.amount)}</td><td>${x.method === "bank" ? "بنك" : "نقدًا"}</td><td>${escapeHtml(x.bank || "-")}</td><td>${escapeHtml(x.note || "-")}</td></tr>
+      `).join("") : '<tr><td colspan="6">لا توجد حركات صرف</td></tr>';
+      const html = `
+        <div class="print-brand">${window.APP_LOGO ? `<img src="${window.APP_LOGO}" alt="logo" />` : ""}</div>
+        <h2 style="margin:0 0 12px 0">كشف استرداد ضريبي - ${escapeHtml(s.name)}</h2>
+        <div class="note">المشروع: ${escapeHtml(p.name || "-")} | الصفة: ${escapeHtml(s.role || "-")}</div>
+        <div class="grid grid-3" style="margin-top:14px">
+          ${printSummaryCard("إجمالي المستحق", money(s.due))}
+          ${printSummaryCard("إجمالي المصروف", money(s.paid))}
+          ${printSummaryCard("المتبقي", money(s.remain))}
+        </div>
+        <table>
+          <thead><tr><th>الفترة</th><th>التاريخ</th><th>المبلغ</th><th>الطريقة</th><th>البنك</th><th>البيان</th></tr></thead>
+          <tbody>${movementRows}</tbody>
+        </table>
+      `;
+      openPrintWindow("كشف استرداد ضريبي", html);
+    }
+
+    function deleteTaxRefund(index){
+      const p = getProject();
+      if(!p) return;
+      ensureArrays(p);
+      const row = p.taxRefunds[index];
+      if(!row) return;
+      if(!confirmSecureDelete("حذف استرداد ضريبي", "هل تريد حذف فترة الاسترداد الضريبي؟")) return;
+      p.taxRefunds.splice(index, 1);
+      addMovement("حذف استرداد ضريبي", row.period || "-", -num(row.amount), row.note || "تم حذف الاسترداد", todayText());
+      selectedTaxRefundIndex = 0;
+      renderProject();
+      setTimeout(() => renderTaxRefundTab(), 0);
+    }
+
+    function printTaxRefundReport(){
+      const p = getProject();
+      if(!p) return;
+      ensureArrays(p);
+      const rows = (p.taxRefunds || []).map(refund => {
+        const d = calcTaxRefundDistribution(p, refund);
+        const companyRow = d.investorRows.find(x => x.name === "الشركة");
+        return `
+          <tr>
+            <td>${escapeHtml(refund.period || "-")}</td>
+            <td>${escapeHtml(refund.date || "-")}</td>
+            <td>${money(d.amount)}</td>
+            <td>${money(d.companyFixed)}</td>
+            <td>${money(d.adminShare)}</td>
+            <td>${money(d.investorPool)}</td>
+            <td>${money(companyRow ? companyRow.total : d.companyFixed)}</td>
+            <td>${escapeHtml(refund.note || "-")}</td>
+          </tr>
+        `;
+      }).join("");
+      const html = `
+        <div class="print-brand">${window.APP_LOGO ? `<img src="${window.APP_LOGO}" alt="logo" />` : ""}</div>
+        <h2 style="margin:0 0 12px 0">تقرير الاسترداد الضريبي - ${escapeHtml(p.name || "")}</h2>
+        <div class="note">القاعدة: 25٪ للشركة كإدارة ثابتة + 25٪ للإدارة + 50٪ حسب نسب المساهمين داخل المشروع.</div>
+        <table>
+          <thead>
+            <tr><th>الفترة</th><th>التاريخ</th><th>الاسترداد</th><th>الشركة ثابت</th><th>الإدارة</th><th>توزيع المساهمين</th><th>إجمالي الشركة</th><th>ملاحظات</th></tr>
+          </thead>
+          <tbody>${rows || '<tr><td colspan="8">لا توجد بيانات</td></tr>'}</tbody>
+        </table>
+      `;
+      openPrintWindow("تقرير الاسترداد الضريبي", html);
+    }
+
+
+    function renderCompanyTreasuryTab(){
+      const p = getProject();
+      if(!p) return;
+      const t = calcProjectTreasury(p).company;
+      animateMetricValue(document.getElementById('companyTreasuryProjectProfit'), t.projectProfit, 'money');
+      animateMetricValue(document.getElementById('companyTreasuryInvestorAdminHalf'), t.investorAdminHalf, 'money');
+      animateMetricValue(document.getElementById('companyTreasuryPaid'), t.paid, 'money');
+      animateMetricValue(document.getElementById('companyTreasuryRemain'), t.remain, 'money');
+      const src = document.getElementById('companyTreasurySourcesBody');
+      if(src) src.innerHTML = `
+        <tr><td>ربح الشركة بعد التصفية النهائية</td><td>${money(t.projectProfit)}</td></tr>
+        <tr><td>من الإدارة</td><td>${money(t.investorAdminHalf)}</td></tr>
+        <tr class="auto-row"><td>إجمالي خزنة الشركة</td><td>${money(t.due)}</td></tr>`;
+      const body = document.getElementById('companyTreasuryPayoutsBody');
+      if(body) body.innerHTML = t.payouts.length ? t.payouts.map((row, i) => `
+        <tr>
+          <td>${escapeHtml(row.date || '-')}</td>
+          <td>${money(row.amount)}</td>
+          <td>${row.method === 'bank' ? 'بنك' : 'نقدًا'}</td>
+          <td>${escapeHtml(row.bank || '-')}</td>
+          <td>${escapeHtml(row.note || '-')}</td>
+          <td class="no-print"><button class="btn-red" onclick="deleteProjectTreasuryPayout('company',${i})">حذف</button></td>
+        </tr>`).join('') : '<tr><td colspan="6">لا توجد حركات</td></tr>';
+    }
+
+    function renderManagementTreasuryTab(){
+      const p = getProject();
+      if(!p) return;
+      const t = calcProjectTreasury(p).admin;
+      animateMetricValue(document.getElementById('managementTreasuryInvestorAdminHalf'), t.investorAdminHalf, 'money');
+      animateMetricValue(document.getElementById('managementTreasuryCompanyAdmin'), t.companyAdminFull, 'money');
+      animateMetricValue(document.getElementById('managementTreasuryPaid'), t.paid, 'money');
+      animateMetricValue(document.getElementById('managementTreasuryRemain'), t.remain, 'money');
+      const src = document.getElementById('managementTreasurySourcesBody');
+      if(src) src.innerHTML = `
+        <tr><td>نصيب أبوفارس من الإدارة</td><td>${money(t.investorAdminHalf)}</td></tr>
+        <tr><td>100٪ من إدارة الشركة</td><td>${money(t.companyAdminFull)}</td></tr>
+        <tr class="auto-row"><td>إجمالي الإدارات</td><td>${money(t.due)}</td></tr>`;
+      const body = document.getElementById('managementTreasuryPayoutsBody');
+      if(body) body.innerHTML = t.payouts.length ? t.payouts.map((row, i) => `
+        <tr>
+          <td>${escapeHtml(row.date || '-')}</td>
+          <td>${money(row.amount)}</td>
+          <td>${row.method === 'bank' ? 'بنك' : 'نقدًا'}</td>
+          <td>${escapeHtml(row.bank || '-')}</td>
+          <td>${escapeHtml(row.note || '-')}</td>
+          <td class="no-print"><button class="btn-red" onclick="deleteProjectTreasuryPayout('admin',${i})">حذف</button></td>
+        </tr>`).join('') : '<tr><td colspan="6">لا توجد حركات</td></tr>';
+    }
+
+    function addProjectTreasuryPayout(kind){
+      if(!requireProjectOpen(`صرف ${getProjectTreasuryLabel(kind)}`)) return;
+      const p = getProject();
+      if(!p) return;
+      const prefix = kind === 'company' ? 'companyTreasury' : 'managementTreasury';
+      const amount = num(document.getElementById(prefix + 'Amount')?.value);
+      const date = document.getElementById(prefix + 'Date')?.value || todayText();
+      const note = (document.getElementById(prefix + 'Note')?.value || '').trim();
+      const method = document.getElementById(prefix + 'Method')?.value || 'cash';
+      const bank = method === 'bank' ? ((document.getElementById(prefix + 'Bank')?.value || '').trim()) : '';
+      if(amount <= 0) return alert('اكتب مبلغ صرف صحيح');
+      if(method === 'bank' && !bank) return alert('اختر البنك');
+      const remain = num(calcProjectTreasury(p)[kind].remain);
+      if(amount > remain) return alert(`المبلغ أكبر من المتبقي الحالي: ${money(remain)}`);
+      const listKey = kind === 'company' ? 'companyTreasuryPayouts' : 'managementTreasuryPayouts';
+      p[listKey].unshift({amount, date, note, method, bank});
+      addMovement('صرف خزنة', getProjectTreasuryLabel(kind), -amount, `${method === 'bank' ? 'بنك' : 'نقدًا'}${bank ? ' - ' + bank : ''}${note ? ' | ' + note : ''}`, date);
+      ['Amount','Date','Note','Bank'].forEach(s => { const el = document.getElementById(prefix + s); if(el) el.value = ''; });
+      const methodEl = document.getElementById(prefix + 'Method'); if(methodEl) methodEl.value = 'cash';
+      toggleTransactionBankFields();
+      renderProject();
+    }
+
+    function deleteProjectTreasuryPayout(kind, index){
+      const p = getProject();
+      if(!p) return;
+      const listKey = kind === 'company' ? 'companyTreasuryPayouts' : 'managementTreasuryPayouts';
+      const row = (p[listKey] || [])[index];
+      if(!row) return;
+      if(!confirmSecureDelete('حذف حركة خزنة', 'هل تريد حذف حركة الخزنة؟')) return;
+      p[listKey].splice(index, 1);
+      addMovement('حذف صرف خزنة', getProjectTreasuryLabel(kind), num(row.amount), row.note || 'تم حذف حركة صرف', todayText());
+      renderProject();
+    }
+
+    function fillProjectTreasuryRemaining(kind){
+      const p = getProject(); if(!p) return;
+      const prefix = kind === 'company' ? 'companyTreasury' : 'managementTreasury';
+      const remain = num(calcProjectTreasury(p)[kind].remain);
+      const amountEl = document.getElementById(prefix + 'Amount');
+      if(amountEl) amountEl.value = remain > 0 ? remain.toFixed(2) : '';
+    }
+
+    function settleProjectTreasury(kind){
+      const p = getProject(); if(!p) return;
+      const remain = num(calcProjectTreasury(p)[kind].remain);
+      if(remain <= 0) return alert('لا يوجد متبقي للتصفية');
+      const prefix = kind === 'company' ? 'companyTreasury' : 'managementTreasury';
+      const amountEl = document.getElementById(prefix + 'Amount');
+      if(amountEl) amountEl.value = remain.toFixed(2);
+      addProjectTreasuryPayout(kind);
+    }
+
+    function calcGeneralTreasury(){
+      ensureMasterLists();
+
+      const adminGeneralPayouts = appData.generalTreasuryPayouts.admin || [];
+      const adminPayoutByProject = {};
+      adminGeneralPayouts.forEach(x => {
+        const pid = String(x.projectId || '');
+        if(!pid) return;
+        adminPayoutByProject[pid] = num(adminPayoutByProject[pid]) + num(x.amount);
+      });
+
+      const rows = (appData.projects || []).map(project => {
+        ensureArrays(project);
+        const t = calcProjectTreasury(project);
+        const adminDue = num(t.admin.due);
+        const adminPaidInsideProject = num(t.admin.paid);
+        const adminPaidFromGeneral = num(adminPayoutByProject[String(project.id || '')]);
+        const adminPaid = adminPaidInsideProject + adminPaidFromGeneral;
+        return {
+          id: project.id,
+          name: project.name || '-',
+          companyDue: num(t.company.due),
+          companyPaid: num(t.company.paid),
+          companyRemain: num(t.company.remain),
+          adminDue,
+          adminPaid,
+          adminRemain: normalizeSettlementAmount(adminDue - adminPaid),
+          adminPaidInsideProject,
+          adminPaidFromGeneral
+        };
+      });
+
+      const companyDue = rows.reduce((s,x)=>s + num(x.companyRemain), 0);
+      const adminDue = rows.reduce((s,x)=>s + num(x.adminDue), 0);
+      const companyPaid = (appData.generalTreasuryPayouts.company || []).reduce((s,x)=>s + num(x.amount), 0);
+      const adminPaid = rows.reduce((s,x)=>s + num(x.adminPaid), 0);
+      return {
+        rows,
+        companyDue,
+        adminDue,
+        companyPaid,
+        adminPaid,
+        companyRemain: normalizeSettlementAmount(companyDue - companyPaid),
+        adminRemain: normalizeSettlementAmount(adminDue - adminPaid),
+        payouts: [...(appData.generalTreasuryPayouts.company || []).map(x => ({...x, target:'company'})), ...(appData.generalTreasuryPayouts.admin || []).map(x => ({...x, target:'admin'}))].sort((a,b) => String(b.date||'').localeCompare(String(a.date||'')))
+      };
+    }
+
+
+    function fillGeneralTreasuryBankDropdowns(){
+      ensureMasterLists();
+      const banks = ((appData.masterLists && appData.masterLists.banks) || [])
+        .map(item => typeof item === 'string' ? item : (item && item.name ? item.name : ''))
+        .map(name => String(name || '').trim())
+        .filter(Boolean);
+
+      ['companyGeneralTreasuryBank','managementGeneralTreasuryBank'].forEach(id => {
+        const el = document.getElementById(id);
+        if(!el) return;
+        const current = el.value || '';
+        el.innerHTML = '<option value="">اختر البنك</option>' + banks.map(name => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join('');
+        if(current) el.value = current;
+      });
+    }
+
+    function renderGeneralTreasuryView(){
+      fillGeneralTreasuryBankDropdowns();
+      const data = calcGeneralTreasury();
+      animateMetricValue(document.getElementById('companyGeneralTreasuryDue'), data.companyDue, 'money');
+      animateMetricValue(document.getElementById('companyGeneralTreasuryPaid'), data.companyPaid, 'money');
+      animateMetricValue(document.getElementById('companyGeneralTreasuryRemain'), data.companyRemain, 'money');
+      animateMetricValue(document.getElementById('managementGeneralTreasuryDue'), data.adminDue, 'money');
+      animateMetricValue(document.getElementById('managementGeneralTreasuryPaid'), data.adminPaid, 'money');
+      animateMetricValue(document.getElementById('managementGeneralTreasuryRemain'), data.adminRemain, 'money');
+
+      const companyCountEl = document.getElementById('companyGeneralTreasuryProjectsCount');
+      if(companyCountEl) companyCountEl.textContent = `${data.rows.length} مشروع`;
+      const managementCountEl = document.getElementById('managementGeneralTreasuryProjectsCount');
+      if(managementCountEl) managementCountEl.textContent = `${data.rows.length} مشروع`;
+
+      const adminProjectSelect = document.getElementById('managementGeneralTreasuryProject');
+      if(adminProjectSelect){
+        const currentValue = adminProjectSelect.value;
+        adminProjectSelect.innerHTML = '<option value="">اختر المشروع</option>' + (appData.projects || []).map(project => `<option value="${escapeHtml(project.id)}">${escapeHtml(project.name || '-')}</option>`).join('');
+        if(currentValue) adminProjectSelect.value = currentValue;
+      }
+
+      const companyBody = document.getElementById('companyGeneralTreasuryProjectsBody');
+      if(companyBody) companyBody.innerHTML = data.rows.length ? data.rows.map(row => `
+        <tr>
+          <td>${escapeHtml(row.name)}</td>
+          <td>${money(row.companyDue)}</td>
+          <td>${money(row.companyPaid)}</td>
+          <td>${money(row.companyRemain)}</td>
+        </tr>`).join('') : '<tr><td colspan="4">لا توجد مشاريع</td></tr>';
+
+      const managementBody = document.getElementById('managementGeneralTreasuryProjectsBody');
+      if(managementBody) managementBody.innerHTML = data.rows.length ? data.rows.map(row => `
+        <tr>
+          <td>${escapeHtml(row.name)}</td>
+          <td>${money(row.adminDue)}</td>
+          <td>${money(row.adminPaid)}</td>
+          <td>${money(row.adminRemain)}</td>
+        </tr>`).join('') : '<tr><td colspan="4">لا توجد مشاريع</td></tr>';
+
+      const companyPayoutsBody = document.getElementById('companyGeneralTreasuryPayoutsBody');
+      if(companyPayoutsBody){
+        const companyRows = data.payouts.filter(row => row.target === 'company');
+        companyPayoutsBody.innerHTML = companyRows.length ? companyRows.map((row, idx) => `
+        <tr>
+          <td>${escapeHtml(row.date || '-')}</td>
+          <td>${money(row.amount)}</td>
+          <td>${row.method === 'bank' ? 'بنك' : 'نقدًا'}</td>
+          <td>${escapeHtml(row.bank || '-')}</td>
+          <td>${escapeHtml(row.note || '-')}</td>
+          <td class="no-print"><button class="btn-red" onclick="deleteSeparatedGeneralTreasuryPayout('company', ${idx})">حذف</button></td>
+        </tr>`).join('') : '<tr><td colspan="6">لا توجد حركات</td></tr>';
+      }
+
+      const managementPayoutsBody = document.getElementById('managementGeneralTreasuryPayoutsBody');
+      if(managementPayoutsBody){
+        const adminRows = data.payouts.filter(row => row.target === 'admin');
+        managementPayoutsBody.innerHTML = adminRows.length ? adminRows.map((row, idx) => `
+        <tr>
+          <td>${escapeHtml(row.date || '-')}</td>
+          <td>${escapeHtml(row.projectName || ((appData.projects || []).find(p => String(p.id) === String(row.projectId))?.name || '-'))}</td>
+          <td>${money(row.amount)}</td>
+          <td>${row.method === 'bank' ? 'بنك' : 'نقدًا'}</td>
+          <td>${escapeHtml(row.bank || '-')}</td>
+          <td>${escapeHtml(row.note || '-')}</td>
+          <td class="no-print"><button class="btn-red" onclick="deleteSeparatedGeneralTreasuryPayout('admin', ${idx})">حذف</button></td>
+        </tr>`).join('') : '<tr><td colspan="7">لا توجد حركات</td></tr>';
+      }
+    }
+
+
+
+    function toggleCompanyGeneralTreasuryCollapse(){
+      const body = document.getElementById('companyGeneralTreasuryCollapseBody');
+      if(!body) return;
+      body.classList.toggle('hidden');
+    }
+
+    function toggleManagementGeneralTreasuryCollapse(){
+      const body = document.getElementById('managementGeneralTreasuryCollapseBody');
+      if(!body) return;
+      body.classList.toggle('hidden');
+}
+
+    function getSeparatedGeneralTreasuryPrefix(target){
+      return target === 'company' ? 'companyGeneralTreasury' : 'managementGeneralTreasury';
+    }
+
+    function toggleSeparatedGeneralTreasuryBankFields(target){
+      const prefix = getSeparatedGeneralTreasuryPrefix(target);
+      const method = document.getElementById(`${prefix}Method`)?.value || 'cash';
+      const bankEl = document.getElementById(`${prefix}Bank`);
+      if(!bankEl) return;
+      if(method === 'bank'){
+        bankEl.classList.remove('hidden');
+        bankEl.style.display = 'block';
+      } else {
+        bankEl.classList.add('hidden');
+        bankEl.style.display = 'none';
+        bankEl.value = '';
+      }
+    }
+
+    function addSeparatedGeneralTreasuryPayout(target){
+      ensureMasterLists();
+      const prefix = getSeparatedGeneralTreasuryPrefix(target);
+      const amount = num(document.getElementById(`${prefix}Amount`)?.value);
+      const date = document.getElementById(`${prefix}Date`)?.value || todayText();
+      const note = (document.getElementById(`${prefix}Note`)?.value || '').trim();
+      const method = document.getElementById(`${prefix}Method`)?.value || 'cash';
+      const bank = method === 'bank' ? ((document.getElementById(`${prefix}Bank`)?.value || '').trim()) : '';
+      const projectId = target === 'admin' ? (document.getElementById('managementGeneralTreasuryProject')?.value || '') : '';
+      const projectName = projectId ? ((appData.projects || []).find(p => String(p.id) === String(projectId))?.name || '') : '';
+      if(amount <= 0) return alert('اكتب مبلغ صرف صحيح');
+      if(target === 'admin' && !projectId) return alert('اختر المشروع المرتبط بصرف الإدارة');
+      if(method === 'bank' && !bank) return alert('اختر البنك');
+      const data = calcGeneralTreasury();
+      const remain = target === 'company' ? num(data.companyRemain) : num((data.rows || []).find(row => String(row.id) === String(projectId))?.adminRemain);
+      if(amount > remain) return alert(`المبلغ أكبر من المتبقي الحالي: ${money(remain)}`);
+      appData.generalTreasuryPayouts[target].unshift({amount, date, note, method, bank, projectId, projectName});
+      saveApp(target === 'company' ? 'company_general_treasury_payout' : 'admin_general_treasury_payout');
+      ['Amount','Date','Note','Bank'].forEach(suffix => {
+        const el = document.getElementById(`${prefix}${suffix}`);
+        if(el) el.value = '';
+      });
+      if(target === 'admin'){
+        const projectEl = document.getElementById('managementGeneralTreasuryProject');
+        if(projectEl) projectEl.value = '';
+      }
+      const methodEl = document.getElementById(`${prefix}Method`); if(methodEl) methodEl.value = 'cash';
+      toggleSeparatedGeneralTreasuryBankFields(target);
+      renderGeneralTreasuryView();
+    }
+
+    function fillSeparatedGeneralTreasuryRemaining(target){
+      const prefix = getSeparatedGeneralTreasuryPrefix(target);
+      const data = calcGeneralTreasury();
+      const remain = target === 'company' ? num(data.companyRemain) : num(data.adminRemain);
+      const el = document.getElementById(`${prefix}Amount`); if(el) el.value = remain > 0 ? remain.toFixed(2) : '';
+    }
+
+    function settleSeparatedGeneralTreasury(target){
+      fillSeparatedGeneralTreasuryRemaining(target);
+      addSeparatedGeneralTreasuryPayout(target);
+    }
+
+    function deleteSeparatedGeneralTreasuryPayout(target, displayIndex){
+      ensureMasterLists();
+      const sorted = calcGeneralTreasury().payouts.filter(x => x.target === target);
+      const row = sorted[displayIndex];
+      if(!row) return;
+      const list = appData.generalTreasuryPayouts[target] || [];
+      const idx = list.findIndex(x => String(x.date||'') === String(row.date||'') && num(x.amount) === num(row.amount) && String(x.note||'') === String(row.note||'') && String(x.projectId||'') === String(row.projectId||''));
+      if(idx < 0) return;
+      if(!confirmSecureDelete(target === 'company' ? 'حذف صرف خزنة الشركة العامة' : 'حذف صرف خزنة الإدارة العامة', 'هل تريد حذف حركة الصرف؟')) return;
+      list.splice(idx,1);
+      saveApp(target === 'company' ? 'delete_company_general_treasury_payout' : 'delete_admin_general_treasury_payout');
+      renderGeneralTreasuryView();
+    }
+
+    function addGeneralTreasuryPayout(){
+      addSeparatedGeneralTreasuryPayout((document.getElementById('generalTreasuryTarget')?.value || 'company'));
+    }
+
+    function fillGeneralTreasuryRemaining(){
+      fillSeparatedGeneralTreasuryRemaining((document.getElementById('generalTreasuryTarget')?.value || 'company'));
+    }
+
+    function settleGeneralTreasury(){
+      settleSeparatedGeneralTreasury((document.getElementById('generalTreasuryTarget')?.value || 'company'));
+    }
+
+    function deleteGeneralTreasuryPayout(target, displayIndex){
+      deleteSeparatedGeneralTreasuryPayout(target, displayIndex);
+    }
+
+    function scrollToGeneralTreasury(){
+      scrollToCompanyGeneralTreasury();
+    }
+
+    function scrollToCompanyGeneralTreasury(){
+      document.getElementById('companyGeneralTreasuryView')?.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+
+    function scrollToManagementGeneralTreasury(){
+      document.getElementById('managementGeneralTreasuryView')?.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+
+    
     function toggleArchiveProject(id=null){
       if(!requirePermission("manager", "أرشفة المشروع للمدير فقط")) return;
 
@@ -7406,6 +9757,10 @@ let globalSettingsState = {
       btn.classList.add("active");
       if(id === "advancesTab") refreshAdvanceNames();
       if(id === "collectionTab") renderCollectionBoard();
+      if(id === "abuFarisTab") renderAbuFarisTab();
+      if(id === "taxRefundTab") renderTaxRefundTab();
+      if(id === "companyTreasuryTab") renderCompanyTreasuryTab();
+      if(id === "managementTreasuryTab") renderManagementTreasuryTab();
       updateSidebarActive();
     }
 
@@ -8676,7 +11031,49 @@ ${party}
         headers = '<tr><th>الفئة</th><th>الاسم</th><th>التفصيل</th><th>الحالة</th><th>إجمالي المستحق</th><th>تم صرفه / تحصيله</th><th>المتبقي</th></tr>';
         bodyRows = rows.map(r => `<tr><td>${escapeHtml(r.category)}</td><td>${escapeHtml(r.name)}</td><td>${escapeHtml(r.detail1)}<div class="muted">${escapeHtml(r.detail2)}</div></td><td>${escapeHtml(r.statusText)}</td><td>${money(r.dueAmount)}</td><td>${money(r.paidAmount)}</td><td>${money(r.remain)}</td></tr>`).join('');
       }
-      const html = `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>لوحة التحصيل</title><style>body{font-family:Tahoma,Arial,sans-serif;padding:20px;color:#111}h2{margin:0 0 8px}table{width:100%;border-collapse:collapse;margin-top:14px;font-size:12px}th,td{border:1px solid #999;padding:6px;text-align:center}th{background:#f3f4f6}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}.card{border:1px solid #ccc;padding:10px;border-radius:8px}.muted{color:#666;font-size:12px}</style></head><body><h2>لوحة التحصيل - ${escapeHtml(p.name || '-')}</h2><div class="muted">القسم: ${escapeHtml(data.section === 'all' ? 'الكل' : data.section === 'units' ? 'الوحدات' : data.section === 'marketers' ? 'المسوقون' : data.section === 'partners' ? 'الشركاء' : 'المساهمون')}</div><div class="muted">تاريخ الطباعة: ${escapeHtml(todayText())}</div><div class="grid"><div class="card"><strong>${money(totalRequired)}</strong><div>إجمالي المستحق</div></div><div class="card"><strong>${money(totalCollected)}</strong><div>إجمالي المصروف / المحصل</div></div><div class="card"><strong>${money(totalRemaining)}</strong><div>إجمالي المتبقي</div></div><div class="card"><strong>${money(totalOverdue)}</strong><div>المحتاج متابعة / المتبقي</div></div></div><table><thead>${headers}</thead><tbody>${bodyRows || '<tr><td colspan="10">لا توجد بيانات مطابقة</td></tr>'}</tbody></table></body></html>`;
+      const html = `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>لوحة التحصيل</title><style>body{font-family:Tahoma,Arial,sans-serif;padding:20px;color:#111}h2{margin:0 0 8px}table{width:100%;border-collapse:collapse;margin-top:14px;font-size:12px}th,td{border:1px solid #999;padding:6px;text-align:center}th{background:#f3f4f6}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}.card{border:1px solid #ccc;padding:10px;border-radius:8px}.muted{color:#666;font-size:12px}
+/* ===== Final sidebar text/hover colors ===== */
+#appView .sidebar-link,
+#appView .sidebar-link .label,
+#appView .sidebar-link .icon,
+#appView .sidebar-link .caret,
+#appView .sidebar-subitem,
+#appView .sidebar-subitem .name,
+#appView .sidebar-subitem .mini{
+  color:#000000 !important;
+}
+#appView .sidebar-link{
+  background:linear-gradient(180deg,#ffffff 0%,#eef2f7 100%) !important;
+  border:1px solid #d1d5db !important;
+}
+#appView .sidebar-link .icon{
+  background:rgba(0,0,0,.05) !important;
+}
+#appView .sidebar-link:hover,
+#appView .sidebar-link.is-open,
+#appView .sidebar-link.active{
+  background:linear-gradient(180deg,#2c6fb1 0%,#1f4f7a 55%,#16324f 100%) !important;
+  border-color:#15314d !important;
+  color:#ffffff !important;
+}
+#appView .sidebar-link:hover .label,
+#appView .sidebar-link:hover .icon,
+#appView .sidebar-link:hover .caret,
+#appView .sidebar-link.is-open .label,
+#appView .sidebar-link.is-open .icon,
+#appView .sidebar-link.is-open .caret,
+#appView .sidebar-link.active .label,
+#appView .sidebar-link.active .icon,
+#appView .sidebar-link.active .caret{
+  color:#ffffff !important;
+}
+#appView .sidebar-link:hover .icon,
+#appView .sidebar-link.is-open .icon,
+#appView .sidebar-link.active .icon{
+  background:rgba(255,255,255,.14) !important;
+}
+
+</style></head><body><h2>لوحة التحصيل - ${escapeHtml(p.name || '-')}</h2><div class="muted">القسم: ${escapeHtml(data.section === 'all' ? 'الكل' : data.section === 'units' ? 'الوحدات' : data.section === 'marketers' ? 'المسوقون' : data.section === 'partners' ? 'الشركاء' : 'المساهمون')}</div><div class="muted">تاريخ الطباعة: ${escapeHtml(todayText())}</div><div class="grid"><div class="card"><strong>${money(totalRequired)}</strong><div>إجمالي المستحق</div></div><div class="card"><strong>${money(totalCollected)}</strong><div>إجمالي المصروف / المحصل</div></div><div class="card"><strong>${money(totalRemaining)}</strong><div>إجمالي المتبقي</div></div><div class="card"><strong>${money(totalOverdue)}</strong><div>المحتاج متابعة / المتبقي</div></div></div><table><thead>${headers}</thead><tbody>${bodyRows || '<tr><td colspan="10">لا توجد بيانات مطابقة</td></tr>'}</tbody></table></body></html>`;
       const win = window.open('', '_blank');
       if(!win) return;
       win.document.write(html);
@@ -9018,7 +11415,7 @@ ${party}
 
     function enhanceMeaningfulIcons(){
       const tabMap = {
-        'الوحدات':'◫','المسوقون':'⌁','المصروفات':'◔','الشركاء':'◈','المساهمون':'◎','الإدارة':'◉','الدفعات تحت الحساب':'↺','عهدة الموقع':'◌','دفتر الحركة':'≣','لوحة التحصيل':'▤','تنبيه الدفعات':'◬','ملخص المشروع':'◆'
+        'الوحدات':'◫','المسوقون':'⌁','المصروفات':'◔','الشركاء':'◈','المساهمون':'◎','الإدارة':'◉','أبوفارس':'◍','الدفعات تحت الحساب':'↺','عهدة الموقع':'◌','دفتر الحركة':'≣','لوحة التحصيل':'▤','تنبيه الدفعات':'◬','ملخص المشروع':'◆'
       };
       document.querySelectorAll('.tabs .tab').forEach(btn => {
         const key = (btn.dataset.baseLabel || btn.textContent || '').replace(/\s+/g,' ').trim();
@@ -9113,6 +11510,8 @@ ${party}
       renderAdvances();
       renderSiteCustody();
       renderAdminTab();
+      renderCompanyTreasuryTab();
+      renderManagementTreasuryTab();
       renderMovements();
       renderCollectionBoard();
       renderPaymentAlerts();
@@ -10764,6 +13163,7 @@ function addPartner(){
         partnerAdminCard.style.display = num(d.partnerAdmin) > 0 ? "" : "none";
       }
       set("kpiInvestorAdminTotal", d.investorAdmin);
+      set("kpiCompanyAutoAdmin", d.companyAutoAdmin);
       set("kpiManualRegularAdmin", d.manualRegularAdmin);
       set("kpiManualCompanyAdmin", d.manualCompanyAdmin);
       set("kpiAdminCollectedTotal", d.totalCollectedAdmin);
@@ -10875,6 +13275,147 @@ function addPartner(){
         };
       }
     }
+
+
+    function renderAbuFarisTab(){
+      const p = getProject();
+      if(!p) return;
+      p.adminEntries = p.adminEntries || [];
+      const { d, rows, payouts } = getAdminFilteredData(p);
+      const sourceRows = rows.filter(row => num(row.abuFarisDue) > 0);
+      const abuPayouts = payouts.filter(row => row.target === "abuFaris");
+
+      const setMoney = (id, val) => {
+        const el = document.getElementById(id);
+        if(el) el.innerText = money(val);
+      };
+
+      setMoney("abuFarisTotalDue", d.abuFarisShare);
+      setMoney("abuFarisTotalPaid", d.abuFarisPaid);
+      setMoney("abuFarisTotalRemain", d.abuFarisRemain);
+      setMoney("abuFarisCompanyAdminOnly", d.manualCompanyAdmin);
+
+      const countEl = document.getElementById("abuFarisSourcesCount");
+      if(countEl) countEl.innerText = `${sourceRows.length} مصدر / ${abuPayouts.length} صرف`;
+
+      const alertsBox = document.getElementById("abuFarisAlertsBox");
+      if(alertsBox){
+        const alerts = [];
+        if(num(d.abuFarisRemain) > 0) alerts.push({type:'warn', text:`متبقي لأبوفارس مبلغ ${money(d.abuFarisRemain)} من الإدارة.`});
+        if(num(d.abuFarisRemain) === 0) alerts.push({type:'success', text:'تمت تصفية أبوفارس بالكامل في الإدارة.'});
+        if(num(d.abuFarisRemain) < 0) alerts.push({type:'issue', text:`يوجد صرف زائد لأبوفارس بمبلغ ${money(Math.abs(d.abuFarisRemain))}.`});
+        if(num(d.manualCompanyAdmin) > 0) alerts.push({type:'warn', text:`يوجد ${money(d.manualCompanyAdmin)} من إدارة الشركة الخاصة داخلة بالكامل لأبوفارس.`});
+        alertsBox.innerHTML = alerts.map(item => `<div class="alert-item ${item.type === 'success' ? 'warn' : item.type}">${escapeHtml(item.text)}</div>`).join('');
+      }
+
+      const makeStatus = (remain) => remain === 0
+        ? '<span class="badge available">تمت التصفية</span>'
+        : (remain < 0 ? '<span class="badge booked">صرف زائد</span>' : '<span class="badge sold">متبقي مستحق</span>');
+
+      const settlementBody = document.getElementById("abuFarisSettlementBody");
+      if(settlementBody){
+        settlementBody.innerHTML = `
+          <tr>
+            <td>أبوفارس الغامدي</td>
+            <td>${money(d.abuFarisShare)}</td>
+            <td>${money(d.abuFarisPaid)}</td>
+            <td>${money(d.abuFarisRemain)}</td>
+            <td>${makeStatus(d.abuFarisRemain)}</td>
+          </tr>
+        `;
+      }
+
+      const sourcesBody = document.getElementById("abuFarisSourcesBody");
+      if(sourcesBody){
+        if(!sourceRows.length){
+          sourcesBody.innerHTML = '<tr><td colspan="7">لا توجد مصادر حالية تخص أبوفارس</td></tr>';
+        } else {
+          sourcesBody.innerHTML = sourceRows.map(row => `
+            <tr class="${row.auto ? 'auto-row' : ''}">
+              <td>${escapeHtml(row.source || "-")}</td>
+              <td>${escapeHtml(row.name || "-")}</td>
+              <td>${escapeHtml(row.type || "-")}</td>
+              <td>${escapeHtml(row.date || "-")}</td>
+              <td>${money(row.amount)}</td>
+              <td>${money(row.abuFarisDue)}</td>
+              <td>${escapeHtml(row.note || "-")}</td>
+            </tr>
+          `).join('');
+        }
+      }
+
+      const payoutsBody = document.getElementById("abuFarisPayoutsBody");
+      if(payoutsBody){
+        if(!abuPayouts.length){
+          payoutsBody.innerHTML = '<tr><td colspan="5">لا توجد عمليات صرف لأبوفارس حتى الآن</td></tr>';
+        } else {
+          payoutsBody.innerHTML = abuPayouts.map(row => `
+            <tr>
+              <td>${escapeHtml(row.date || "-")}</td>
+              <td>${money(row.amount)}</td>
+              <td>${row.method === "bank" ? 'بنك' : 'نقدًا'}</td>
+              <td>${escapeHtml(row.bank || "-")}</td>
+              <td>${escapeHtml(row.note || "-")}</td>
+            </tr>
+          `).join('');
+        }
+      }
+    }
+
+    function printAbuFarisSummary(){
+      const p = getProject();
+      if(!p) return;
+      const { d, rows, payouts } = getAdminFilteredData(p);
+      const sourceRows = rows.filter(row => num(row.abuFarisDue) > 0).map(row => `
+        <tr>
+          <td>${escapeHtml(row.source || "-")}</td>
+          <td>${escapeHtml(row.name || "-")}</td>
+          <td>${escapeHtml(row.type || "-")}</td>
+          <td>${escapeHtml(row.date || "-")}</td>
+          <td>${money(row.amount)}</td>
+          <td>${money(row.abuFarisDue)}</td>
+          <td>${escapeHtml(row.note || "-")}</td>
+        </tr>
+      `).join('');
+      const payoutRows = payouts.filter(row => row.target === "abuFaris").map(row => `
+        <tr>
+          <td>${escapeHtml(row.date || "-")}</td>
+          <td>${money(row.amount)}</td>
+          <td>${row.method === "bank" ? 'بنك' : 'نقدًا'}</td>
+          <td>${escapeHtml(row.bank || "-")}</td>
+          <td>${escapeHtml(row.note || "-")}</td>
+        </tr>
+      `).join('');
+
+      const html = `
+        <div class="print-brand">${window.APP_LOGO ? `<img src="${window.APP_LOGO}" alt="logo" />` : ""}</div>
+        <h2 style="margin:0 0 12px 0">صفحة أبوفارس - ${escapeHtml(p.name || "")}</h2>
+        <div class="note">ملخص مركّز لكل ما يخص الإدارة الخاصة بأبوفارس الغامدي</div>
+        <div class="grid grid-4" style="margin-top:14px">
+          ${printSummaryCard("إجمالي نصيب أبوفارس", money(d.abuFarisShare))}
+          ${printSummaryCard("تم صرفه", money(d.abuFarisPaid))}
+          ${printSummaryCard("المتبقي", money(d.abuFarisRemain))}
+          ${printSummaryCard("إدارة الشركة الخاصة", money(d.manualCompanyAdmin))}
+        </div>
+        <div class="section" style="margin-top:16px">
+          <div class="section-header"><h3>ملخص التصفية</h3></div>
+          <table>
+            <thead><tr><th>الطرف</th><th>إجمالي المستحق</th><th>تم صرفه</th><th>المتبقي</th></tr></thead>
+            <tbody><tr><td>أبوفارس الغامدي</td><td>${money(d.abuFarisShare)}</td><td>${money(d.abuFarisPaid)}</td><td>${money(d.abuFarisRemain)}</td></tr></tbody>
+          </table>
+        </div>
+        <div class="section" style="margin-top:16px">
+          <div class="section-header"><h3>مصادر استحقاق أبوفارس</h3></div>
+          ${sourceRows ? `<table><thead><tr><th>المصدر</th><th>الاسم</th><th>النوع</th><th>التاريخ</th><th>قيمة الإدارة</th><th>نصيب أبوفارس</th><th>البيان</th></tr></thead><tbody>${sourceRows}</tbody></table>` : '<div class="empty-box">لا توجد مصادر حالية تخص أبوفارس.</div>'}
+        </div>
+        <div class="section" style="margin-top:16px">
+          <div class="section-header"><h3>سجل صرف أبوفارس</h3></div>
+          ${payoutRows ? `<table><thead><tr><th>التاريخ</th><th>المبلغ</th><th>طريقة الصرف</th><th>البنك</th><th>البيان</th></tr></thead><tbody>${payoutRows}</tbody></table>` : '<div class="empty-box">لا توجد عمليات صرف لأبوفارس.</div>'}
+        </div>
+      `;
+      openPrintWindow("صفحة أبوفارس", html);
+    }
+
 
     function deleteAdminEntry(index){
       const p = getProject();
@@ -11468,12 +14009,190 @@ function renderSiteCustody(){
   .unit-action-btn,.settings-action-btn{padding:9px 11px;font-size:12px}
 }
 
+
+
+/* ===== Safe app theme switcher (after login only) ===== */
+.header-tools{display:flex;align-items:center;gap:10px;position:relative;z-index:2}
+.theme-switcher{position:relative}
+.header-tools{display:flex;align-items:center}
+.theme-switcher-toggle{
+  min-width:auto;
+  padding:10px 14px;
+  border-radius:14px;
+  background:linear-gradient(180deg,#ffffff 0%,#eef4fb 100%);
+  color:#15314d;
+  border:1px solid rgba(255,255,255,.28);
+  box-shadow:0 4px 0 rgba(148,163,184,.55), 0 10px 18px rgba(15,23,42,.12);
+}
+.theme-switcher-menu{
+  position:absolute;
+  top:calc(100% + 10px);
+  inset-inline-end:0;
+  min-width:220px;
+  background:linear-gradient(180deg,#ffffff 0%,#f7fbff 100%);
+  border:1px solid #d9e6f3;
+  border-radius:18px;
+  box-shadow:0 18px 40px rgba(15,23,42,.16);
+  padding:10px;
+}
+.theme-switcher-menu::before{
+  content:"";
+  position:absolute;
+  top:-7px;
+  inset-inline-end:20px;
+  width:14px;
+  height:14px;
+  background:#fafdff;
+  border-top:1px solid #d9e6f3;
+  border-inline-start:1px solid #d9e6f3;
+  transform:rotate(45deg);
+}
+.theme-option{
+  width:100%;min-width:unset;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:11px 13px;border-radius:14px;background:linear-gradient(180deg,#ffffff 0%,#edf5ff 100%);
+  color:#15314d;border:1px solid #d5e4f1;box-shadow:none;text-shadow:none;font-weight:800;
+}
+.theme-option:last-child{margin-bottom:0}
+.theme-option::before{display:none}
+.theme-swatch{width:18px;height:18px;border-radius:999px;border:1px solid rgba(15,23,42,.15);display:inline-block;flex:0 0 auto}
+
+body.app-theme-ready{
+  --theme-main:#1f4f7a;
+  --theme-dark:#16324f;
+  --theme-light:#67a7e3;
+  --theme-soft:#eff6ff;
+  --theme-accent:#dbeafe;
+  --theme-btn:#2563eb;
+  --theme-btn-dark:#1d4ed8;
+  --theme-tab:#2c6fb1;
+}
+body.app-theme-ready .header{
+  background:linear-gradient(135deg,var(--theme-dark) 0%, var(--theme-main) 45%, var(--theme-light) 100%) !important;
+}
+body.app-theme-ready #appView .tabs,
+body.app-theme-ready #appView .tabs.no-print{
+  background:linear-gradient(135deg,var(--theme-dark) 0%, var(--theme-main) 100%) !important;
+}
+body.app-theme-ready #appView .tab.active,
+body.app-theme-ready #appView .collection-subtab.active,
+body.app-theme-ready #appView .manager-alert-tab.active,
+body.app-theme-ready #appView .dashboard-collapse-toggle.open{
+  background:linear-gradient(180deg,var(--theme-tab) 0%, var(--theme-main) 58%, var(--theme-dark) 100%) !important;
+  border-color:var(--theme-dark) !important;
+  color:#fff !important;
+}
+body.app-theme-ready #appView .tab.has-alerts{background:linear-gradient(180deg,var(--theme-main) 0%, var(--theme-dark) 100%) !important}
+body.app-theme-ready #appView .sidebar-link.active,
+body.app-theme-ready #appView .sidebar-link:hover,
+body.app-theme-ready #appView .sidebar-link.is-open{
+  background:linear-gradient(180deg,var(--theme-main) 0%, var(--theme-dark) 100%) !important;
+  border-color:color-mix(in srgb, var(--theme-light) 35%, white) !important;
+  color:#ffffff !important;
+}
+body.app-theme-ready #appView .sidebar-link.active .icon,
+body.app-theme-ready #appView .sidebar-link:hover .icon,
+body.app-theme-ready #appView .sidebar-link.is-open .icon,
+body.app-theme-ready #appView .sidebar-link.active .label,
+body.app-theme-ready #appView .sidebar-link:hover .label,
+body.app-theme-ready #appView .sidebar-link.is-open .label,
+body.app-theme-ready #appView .sidebar-link.active .caret,
+body.app-theme-ready #appView .sidebar-link:hover .caret,
+body.app-theme-ready #appView .sidebar-link.is-open .caret{color:#ffffff !important}
+body.app-theme-ready #appView .card::before,
+body.app-theme-ready #appView .kpi::after,
+body.app-theme-ready #appView .dashboard-card::after,
+body.app-theme-ready #appView .modal-content::before{
+  background:linear-gradient(90deg,var(--theme-dark) 0%, var(--theme-main) 50%, var(--theme-light) 100%) !important;
+}
+body.app-theme-ready #appView .btn,
+body.app-theme-ready #appView .unit-action-btn.primary-action,
+body.app-theme-ready #appView .settings-action-btn.sync-main,
+body.app-theme-ready #appView .btn-link{
+  background:linear-gradient(180deg,var(--theme-light) 0%, var(--theme-btn) 55%, var(--theme-btn-dark) 100%) !important;
+  color:#fff !important;
+}
+body.app-theme-ready #appView .btn-green{background:linear-gradient(180deg,var(--theme-light) 0%, var(--theme-main) 55%, var(--theme-dark) 100%) !important}
+body.app-theme-ready #appView .btn-purple,
+body.app-theme-ready #appView .unit-action-btn.sell-action,
+body.app-theme-ready #appView .settings-action-btn.backup-main{background:linear-gradient(180deg,var(--theme-light) 0%, var(--theme-main) 55%, var(--theme-dark) 100%) !important}
+body.app-theme-ready #appView .btn-teal,
+body.app-theme-ready #appView .unit-action-btn.print-action,
+body.app-theme-ready #appView .settings-action-btn.online-main{background:linear-gradient(180deg,var(--theme-light) 0%, var(--theme-main) 55%, var(--theme-dark) 100%) !important}
+body.app-theme-ready #appView .btn-gray,
+body.app-theme-ready #appView .settings-action-btn.restore-main{background:linear-gradient(180deg,#cbd5e1 0%, #94a3b8 55%, #64748b 100%) !important}
+body.app-theme-ready #appView .tab,
+body.app-theme-ready #appView .collection-subtab,
+body.app-theme-ready #appView .manager-alert-tab,
+body.app-theme-ready #appView .dashboard-collapse-toggle{
+  border-color:color-mix(in srgb, var(--theme-light) 42%, white) !important;
+  color:var(--theme-dark) !important;
+}
+body.app-theme-ready #appView .kpi-title,
+body.app-theme-ready #appView .dashboard-badge,
+body.app-theme-ready #appView .mini-stat,
+body.app-theme-ready #appView .cloud-chip,
+body.app-theme-ready #appView .summary-chip.admin{color:var(--theme-main) !important}
+body.app-theme-ready[data-app-theme="blue"]{--theme-main:#1f4f7a;--theme-dark:#16324f;--theme-light:#67a7e3;--theme-soft:#eff6ff;--theme-accent:#dbeafe;--theme-btn:#2563eb;--theme-btn-dark:#1d4ed8;--theme-tab:#2c6fb1}
+body.app-theme-ready[data-app-theme="green"]{--theme-main:#16754f;--theme-dark:#0f4e36;--theme-light:#4ade80;--theme-soft:#ecfdf5;--theme-accent:#dcfce7;--theme-btn:#16a34a;--theme-btn-dark:#15803d;--theme-tab:#1f8f5f}
+body.app-theme-ready[data-app-theme="gold"]{--theme-main:#b7791f;--theme-dark:#7c4a10;--theme-light:#f6c453;--theme-soft:#fffaf0;--theme-accent:#fef3c7;--theme-btn:#d97706;--theme-btn-dark:#b45309;--theme-tab:#c78a1a}
+body.app-theme-ready[data-app-theme="purple"]{--theme-main:#6d28d9;--theme-dark:#4c1d95;--theme-light:#a78bfa;--theme-soft:#f5f3ff;--theme-accent:#ede9fe;--theme-btn:#7c3aed;--theme-btn-dark:#6d28d9;--theme-tab:#7c3aed}
+body.app-theme-ready[data-app-theme="dark"]{--theme-main:#334155;--theme-dark:#0f172a;--theme-light:#94a3b8;--theme-soft:#e2e8f0;--theme-accent:#cbd5e1;--theme-btn:#475569;--theme-btn-dark:#334155;--theme-tab:#475569}
+body.app-theme-ready[data-app-theme="silver"]{--theme-main:#7a8798;--theme-dark:#596577;--theme-light:#c7d2df;--theme-soft:#f4f7fb;--theme-accent:#e2e8f0;--theme-btn:#8a97a8;--theme-btn-dark:#6b7788;--theme-tab:#8b97a8}
+body.app-theme-ready[data-app-theme="silverlight"]{--theme-main:#aeb8c6;--theme-dark:#8f99a8;--theme-light:#e8edf4;--theme-soft:#fbfcfe;--theme-accent:#eef2f7;--theme-btn:#b8c2cf;--theme-btn-dark:#98a3b2;--theme-tab:#b3bdca}
+@media (max-width:768px){
+  .header-tools{gap:6px}
+  .theme-switcher-toggle{padding:9px 11px;font-size:12px}
+  .theme-switcher-menu{min-width:190px}
+}
+
 @media print{
               body{padding:0;background:#fff}
               .sheet{max-width:none;border:none;border-radius:0}
               .content{padding:16px}
             }
-          </style>
+          
+/* ===== Final sidebar text/hover colors ===== */
+#appView .sidebar-link,
+#appView .sidebar-link .label,
+#appView .sidebar-link .icon,
+#appView .sidebar-link .caret,
+#appView .sidebar-subitem,
+#appView .sidebar-subitem .name,
+#appView .sidebar-subitem .mini{
+  color:#000000 !important;
+}
+#appView .sidebar-link{
+  background:linear-gradient(180deg,#ffffff 0%,#eef2f7 100%) !important;
+  border:1px solid #d1d5db !important;
+}
+#appView .sidebar-link .icon{
+  background:rgba(0,0,0,.05) !important;
+}
+#appView .sidebar-link:hover,
+#appView .sidebar-link.is-open,
+#appView .sidebar-link.active{
+  background:linear-gradient(180deg,#2c6fb1 0%,#1f4f7a 55%,#16324f 100%) !important;
+  border-color:#15314d !important;
+  color:#ffffff !important;
+}
+#appView .sidebar-link:hover .label,
+#appView .sidebar-link:hover .icon,
+#appView .sidebar-link:hover .caret,
+#appView .sidebar-link.is-open .label,
+#appView .sidebar-link.is-open .icon,
+#appView .sidebar-link.is-open .caret,
+#appView .sidebar-link.active .label,
+#appView .sidebar-link.active .icon,
+#appView .sidebar-link.active .caret{
+  color:#ffffff !important;
+}
+#appView .sidebar-link:hover .icon,
+#appView .sidebar-link.is-open .icon,
+#appView .sidebar-link.active .icon{
+  background:rgba(255,255,255,.14) !important;
+}
+
+</style>
         </head>
         <body>
           <div class="sheet">
@@ -12623,7 +15342,49 @@ function renderSiteCustody(){
       const content = document.getElementById('entityStatementContent')?.innerHTML || '';
       const win = window.open('', '_blank');
       if(!win){ alert('اسمح بالنوافذ المنبثقة للطباعة'); return; }
-      win.document.write(`<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><title>${title}</title><style>body{font-family:Tahoma,Arial,sans-serif;padding:24px;direction:rtl}table{width:100%;border-collapse:collapse;margin-top:12px}th,td{border:1px solid #999;padding:6px;text-align:center}h2,h4{margin:0 0 12px} .small{color:#555}</style></head><body><h2>${title}</h2><div class="small">${sub}</div>${content}</body></html>`);
+      win.document.write(`<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><title>${title}</title><style>body{font-family:Tahoma,Arial,sans-serif;padding:24px;direction:rtl}table{width:100%;border-collapse:collapse;margin-top:12px}th,td{border:1px solid #999;padding:6px;text-align:center}h2,h4{margin:0 0 12px} .small{color:#555}
+/* ===== Final sidebar text/hover colors ===== */
+#appView .sidebar-link,
+#appView .sidebar-link .label,
+#appView .sidebar-link .icon,
+#appView .sidebar-link .caret,
+#appView .sidebar-subitem,
+#appView .sidebar-subitem .name,
+#appView .sidebar-subitem .mini{
+  color:#000000 !important;
+}
+#appView .sidebar-link{
+  background:linear-gradient(180deg,#ffffff 0%,#eef2f7 100%) !important;
+  border:1px solid #d1d5db !important;
+}
+#appView .sidebar-link .icon{
+  background:rgba(0,0,0,.05) !important;
+}
+#appView .sidebar-link:hover,
+#appView .sidebar-link.is-open,
+#appView .sidebar-link.active{
+  background:linear-gradient(180deg,#2c6fb1 0%,#1f4f7a 55%,#16324f 100%) !important;
+  border-color:#15314d !important;
+  color:#ffffff !important;
+}
+#appView .sidebar-link:hover .label,
+#appView .sidebar-link:hover .icon,
+#appView .sidebar-link:hover .caret,
+#appView .sidebar-link.is-open .label,
+#appView .sidebar-link.is-open .icon,
+#appView .sidebar-link.is-open .caret,
+#appView .sidebar-link.active .label,
+#appView .sidebar-link.active .icon,
+#appView .sidebar-link.active .caret{
+  color:#ffffff !important;
+}
+#appView .sidebar-link:hover .icon,
+#appView .sidebar-link.is-open .icon,
+#appView .sidebar-link.active .icon{
+  background:rgba(255,255,255,.14) !important;
+}
+
+</style></head><body><h2>${title}</h2><div class="small">${sub}</div>${content}</body></html>`);
       win.document.close();
       const closePrintWindow = () => {
         try { win.close(); } catch(err) {}
