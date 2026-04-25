@@ -3288,6 +3288,32 @@ tr.tax-approved-row{
   .agreement-amount-input{max-width:100%;width:100%}
 }
 
+
+/* ===== Partner cost row report button fix ===== */
+.partner-cost-report-cell{
+  min-width:120px !important;
+  white-space:nowrap !important;
+  text-align:center !important;
+}
+.partner-cost-report-btn{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  min-width:86px !important;
+  height:36px !important;
+  padding:8px 14px !important;
+  border-radius:14px !important;
+  background:linear-gradient(180deg,#14b8a6 0%,#0f766e 55%,#115e59 100%) !important;
+  color:#fff !important;
+  font-weight:900 !important;
+  border:1px solid rgba(255,255,255,.25) !important;
+  box-shadow:0 4px 0 rgba(15,23,42,.18),0 10px 18px rgba(15,23,42,.12) !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  position:relative !important;
+  z-index:5 !important;
+}
+
 </style>
 </head>
 <body>
@@ -4401,7 +4427,7 @@ tr.tax-approved-row{
                 <th>تم صرفه له</th>
                 <th>المتبقي له</th>
                 <th>التاريخ</th>
-                <th class="no-print">تقرير</th>
+                <th class="no-print partner-cost-report-cell">تقرير</th>
                 <th class="no-print">صرف</th>
                 <th class="no-print">إجراء</th>
               </tr>
@@ -4419,7 +4445,6 @@ tr.tax-approved-row{
             </div>
             <div class="actions no-print">
               <span class="mini-stat" id="partnerCostRowsCount">0 شريك</span>
-              <button class="btn-teal" type="button" onclick="printPartnerCostReport()">طباعة التقرير</button>
             </div>
           </div>
 
@@ -4474,6 +4499,7 @@ tr.tax-approved-row{
                   <th>الصافي</th>
                   <th>الحالة</th>
                   <th>عدد الدفعات</th>
+                  <th class="no-print">تقرير</th>
                 </tr>
               </thead>
               <tbody id="partnerCostBody"></tbody>
@@ -10833,8 +10859,9 @@ let globalSettingsState = {
             <td style="font-weight:900;color:${r.netDue < -0.01 ? '#166534' : (r.netDue > 0.01 ? '#991b1b' : '#1d4ed8')}">${money(Math.abs(r.netDue))} ${r.netDue < -0.01 ? 'له' : (r.netDue > 0.01 ? 'عليه' : '')}</td>
             <td><span class="badge ${r.statusClass}">${escapeHtml(r.status)}</span></td>
             <td>${num(r.paymentsCount)}</td>
+            <td class="no-print partner-cost-report-cell"><button class="partner-cost-report-btn" type="button" onclick="printPartnerCostSingleReportByIndex(${r.partnerIndex})">تقرير</button></td>
           </tr>
-        `).join('') : '<tr><td colspan="9">لا توجد بيانات مطابقة. تأكد من إضافة شركاء بنسبة داخل تبويبة الشركاء.</td></tr>';
+        `).join('') : '<tr><td colspan="10">لا توجد بيانات مطابقة. تأكد من إضافة شركاء بنسبة داخل تبويبة الشركاء.</td></tr>';
       }
       renderPartnerCostPaymentsTable(project);
     }
@@ -10924,9 +10951,219 @@ let globalSettingsState = {
       renderPartnerCostTab();
     }
 
+    function printPartnerCostSingleReportByIndex(partnerIndex){
+      const project = getProject();
+      if(!project) return;
+      const partner = (project.partners || [])[Number(partnerIndex)];
+      if(!partner || !partner.name){
+        alert("لم يتم العثور على الشريك");
+        return;
+      }
+      printPartnerCostSingleReport(partner.name);
+    }
+
+    function printPartnerCostSingleReport(partnerName){
+      const project = getProject();
+      if(!project) return;
+      ensurePartnerCostArrays(project);
+
+      const nameKey = normalizePartnerCostName(partnerName);
+      const row = getPartnerCostRows(project).find(r => normalizePartnerCostName(r.name) === nameKey);
+      if(!row){
+        alert("لم يتم العثور على الشريك");
+        return;
+      }
+
+      const payments = (project.partnerCostPayments || [])
+        .filter(p => normalizePartnerCostName(p.name) === nameKey)
+        .slice()
+        .sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')));
+
+      const paymentsHtml = payments.length ? payments.map(p => `
+        <tr>
+          <td>${escapeHtml(p.date || '-')}</td>
+          <td>${money(p.amount)}</td>
+          <td>${escapeHtml(p.method || '-')}</td>
+          <td>${escapeHtml(p.note || '-')}</td>
+        </tr>
+      `).join('') : '<tr><td colspan="4">لا توجد دفعات مسجلة لهذا الشريك</td></tr>';
+
+      const reportHtml = `
+        <div class="report-title">
+          <div>
+            <h2>تقرير المطلوب من الشريك من المصروفات</h2>
+            <div class="report-sub">تقرير مستقل للشريك المختار فقط.</div>
+          </div>
+        </div>
+
+        <div class="meta-grid">
+          ${printMetaCard("المشروع", escapeHtml(project.name || '-'))}
+          ${printMetaCard("اسم الشريك", escapeHtml(row.name || '-'))}
+          ${printMetaCard("النسبة", num(row.percent).toFixed(2) + "%")}
+          ${printMetaCard("تاريخ التقرير", escapeHtml(todayText()))}
+        </div>
+
+        <div class="summary-grid">
+          ${printSummaryCard("نصيبه من إجمالي التكلفة", money(row.costShare))}
+          ${printSummaryCard("دفعة تحت الحساب", money(row.underAccount))}
+          ${printSummaryCard("الدفعات الواردة", money(row.paid))}
+          ${printSummaryCard("الصافي", row.netDue < -0.01 ? money(Math.abs(row.netDue)) + " له" : (row.netDue > 0.01 ? money(row.netDue) + " عليه" : money(0)))}
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <h3>ملخص الشريك</h3>
+            <div class="section-note">المطلوب النهائي = نصيب الشريك من إجمالي التكلفة + دفعة تحت الحساب - الدفعات الواردة.</div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>الشريك</th>
+                <th>النسبة</th>
+                <th>نصيبه المطلوب</th>
+                <th>دفعة تحت الحساب</th>
+                <th>المدفوع</th>
+                <th>الصافي</th>
+                <th>الحالة</th>
+                <th>عدد الدفعات</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>${escapeHtml(row.name)}</td>
+                <td>${num(row.percent).toFixed(2)}%</td>
+                <td>${money(row.costShare)}</td>
+                <td>${money(row.underAccount)}</td>
+                <td>${money(row.paid)}</td>
+                <td>${row.netDue < -0.01 ? money(Math.abs(row.netDue)) + ' له' : (row.netDue > 0.01 ? money(row.netDue) + ' عليه' : money(0))}</td>
+                <td>${escapeHtml(row.status)}</td>
+                <td>${num(row.paymentsCount)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <h3>سجل دفعات الشريك</h3>
+            <div class="section-note">الدفعات المسجلة لهذا الشريك فقط.</div>
+          </div>
+          <table>
+            <thead><tr><th>التاريخ</th><th>المبلغ</th><th>طريقة السداد</th><th>ملاحظة</th></tr></thead>
+            <tbody>${paymentsHtml}</tbody>
+          </table>
+        </div>
+      `;
+
+      openPrintWindow(`تقرير المطلوب من الشريك - ${row.name}`, reportHtml);
+    }
+
     function printPartnerCostReport(){
-      renderPartnerCostTab();
-      window.print();
+      const project = getProject();
+      if(!project) return;
+      ensurePartnerCostArrays(project);
+
+      const rows = getPartnerCostRows(project);
+      const totalProjectCost = getPartnerCostTotalCost(project);
+      const requiredTotal = rows.reduce((s,r) => s + num(r.costShare), 0);
+      const underTotal = rows.reduce((s,r) => s + num(r.underAccount), 0);
+      const paidTotal = rows.reduce((s,r) => s + num(r.paid), 0);
+      const netTotal = rows.reduce((s,r) => s + num(r.netDue), 0);
+
+      const rowsHtml = rows.length ? rows.map(r => `
+        <tr>
+          <td>${escapeHtml(r.name)}</td>
+          <td>${num(r.percent).toFixed(2)}%</td>
+          <td>${money(r.costShare)}</td>
+          <td>${money(r.underAccount)}</td>
+          <td>${money(r.paid)}</td>
+          <td>${r.netDue < -0.01 ? money(Math.abs(r.netDue)) + ' له' : (r.netDue > 0.01 ? money(r.netDue) + ' عليه' : money(0))}</td>
+          <td>${escapeHtml(r.status)}</td>
+          <td>${num(r.paymentsCount)}</td>
+        </tr>
+      `).join('') : '<tr><td colspan="8">لا توجد بيانات شركاء</td></tr>';
+
+      const payments = (project.partnerCostPayments || []).slice().sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')));
+      const paymentsHtml = payments.length ? payments.map(row => `
+        <tr>
+          <td>${escapeHtml(row.name || '-')}</td>
+          <td>${escapeHtml(row.date || '-')}</td>
+          <td>${money(row.amount)}</td>
+          <td>${escapeHtml(row.method || '-')}</td>
+          <td>${escapeHtml(row.note || '-')}</td>
+        </tr>
+      `).join('') : '<tr><td colspan="5">لا توجد دفعات مسجلة</td></tr>';
+
+      const title = `تقرير المطلوب من الشريك من المصروفات - ${project.name || ''}`;
+      const reportHtml = `
+        <div class="report-title">
+          <div>
+            <h2>تقرير المطلوب من الشريك من المصروفات</h2>
+            <div class="report-sub">تقرير رسمي يوضح نصيب كل شريك، الدفعات المسجلة، والصافي المطلوب أو الزائد.</div>
+          </div>
+        </div>
+
+        <div class="meta-grid">
+          ${printMetaCard("المشروع", escapeHtml(project.name || '-'))}
+          ${printMetaCard("تاريخ التقرير", escapeHtml(todayText()))}
+        </div>
+
+        <div class="summary-grid">
+          ${printSummaryCard("إجمالي أساس الاحتساب", money(totalProjectCost))}
+          ${printSummaryCard("إجمالي المطلوب من الشركاء", money(requiredTotal))}
+          ${printSummaryCard("دفعات تحت الحساب", money(underTotal))}
+          ${printSummaryCard("إجمالي الدفعات الواردة", money(paidTotal))}
+        </div>
+
+        <div class="summary-grid">
+          ${printSummaryCard("الصافي المطلوب / الزائد", money(netTotal))}
+          ${printSummaryCard("عدد الشركاء", rows.length)}
+          ${printSummaryCard("عدد الدفعات", payments.length)}
+          ${printSummaryCard("حالة التقرير", netTotal > 0.01 ? "يوجد مطلوب" : (netTotal < -0.01 ? "يوجد رصيد زائد" : "مسدد"))}
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <h3>تفصيل المطلوب من كل شريك</h3>
+            <div class="section-note">النسبة × أساس الاحتساب، مع خصم الدفعات الواردة وإضافة دفعات تحت الحساب إن وجدت.</div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>الشريك</th>
+                <th>النسبة</th>
+                <th>نصيبه المطلوب</th>
+                <th>دفعات تحت الحساب</th>
+                <th>المدفوع</th>
+                <th>الصافي</th>
+                <th>الحالة</th>
+                <th>عدد الدفعات</th>
+              </tr>
+            </thead>
+            <tbody>${rowsHtml}</tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <h3>سجل دفعات الشركاء</h3>
+            <div class="section-note">كل الدفعات المسجلة في تبويب المطلوب من الشريك.</div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>الشريك</th>
+                <th>التاريخ</th>
+                <th>المبلغ</th>
+                <th>طريقة السداد</th>
+                <th>ملاحظة</th>
+              </tr>
+            </thead>
+            <tbody>${paymentsHtml}</tbody>
+          </table>
+        </div>
+      `;
+      openPrintWindow(title, reportHtml);
     }
 
     function calcProjectFinancials(project){
@@ -17341,11 +17578,8 @@ document.addEventListener('DOMContentLoaded', function(){ refreshAlertBellSafe()
     });
 </script>
 
-</body>
-</html>
-
 <script>
-/* ===== Partner cost tab robust override - fixed working ===== */
+/* ===== Partner cost tab robust override - final single partner report ===== */
 (function(){
   function pcNum(v){ if(typeof window.num === 'function') return window.num(v); const n=Number(String(v ?? '').replace(/,/g,'')); return Number.isFinite(n)?n:0; }
   function pcMoney(v){ if(typeof window.money === 'function') return window.money(v); return pcNum(v).toLocaleString('ar-SA',{maximumFractionDigits:2})+' ر.س'; }
@@ -17353,17 +17587,234 @@ document.addEventListener('DOMContentLoaded', function(){ refreshAlertBellSafe()
   function pcKey(v){ return String(v||'').trim().replace(/\s+/g,' ').toLowerCase(); }
   function pcProject(){ return (typeof window.getProject === 'function') ? window.getProject() : null; }
   function pcSave(reason){ if(typeof window.saveApp === 'function') window.saveApp(reason||'partner-cost'); }
-  function pcEnsure(p){ if(!p)return; if(!Array.isArray(p.partners)) p.partners=[]; if(!Array.isArray(p.partnerCostPayments)) p.partnerCostPayments=[]; p.partners.forEach(x=>{ if(typeof x.costUnderAccount==='undefined') x.costUnderAccount=0; }); p.partnerCostPayments.forEach((x,i)=>{ if(!x.id) x.id='pcp_'+Date.now()+'_'+i+'_'+Math.random().toString(36).slice(2,8); }); }
-  function pcTotalCost(p){ try{ if(typeof window.calcProjectFinancials==='function'){ const f=window.calcProjectFinancials(p); if(f && Number.isFinite(Number(f.totalProjectCost))) return pcNum(f.totalProjectCost); } }catch(e){} const expenses=(p.expenses||[]).reduce((s,e)=>s+pcNum(e.amount),0); const custody=(p.siteCustody||[]).filter(x=>x.type==='add').reduce((s,x)=>s+pcNum(x.amount),0); return pcNum(p.cost)+expenses+custody; }
-  function pcBasePartners(p){ pcEnsure(p); try{ if(typeof window.calcProjectFinancials==='function'){ const f=window.calcProjectFinancials(p); if(f && Array.isArray(f.partnersFull)){ return f.partnersFull.filter(x=>!x.auto && pcKey(x.name)).map(x=>({name:String(x.name||'').trim(),percent:pcNum(x.percent),costShare:pcNum(x.costShare),date:x.date||'-',partnerIndex:(p.partners||[]).findIndex(pp=>pcKey(pp.name)===pcKey(x.name) && pcNum(pp.percent)===pcNum(x.percent))})); } } }catch(e){} const total=pcTotalCost(p); return (p.partners||[]).map((x,i)=>({name:String(x.name||'').trim(),percent:pcNum(x.percent),costShare:total*pcNum(x.percent)/100,date:x.date||'-',partnerIndex:i})).filter(x=>x.name); }
-  function pcRows(p){ pcEnsure(p); const pays=p.partnerCostPayments||[]; return pcBasePartners(p).map(row=>{ let idx=Number(row.partnerIndex); if(idx<0 || !Number.isFinite(idx)) idx=(p.partners||[]).findIndex(pp=>pcKey(pp.name)===pcKey(row.name)); const partner=(p.partners||[])[idx]||{}; const under=pcNum(partner.costUnderAccount); const paidList=pays.filter(x=>pcKey(x.partnerName||x.name)===pcKey(row.name)); const paid=paidList.reduce((s,x)=>s+pcNum(x.amount),0); const net=pcNum(row.costShare)+under-paid; return {...row,partnerIndex:idx,underAccount:under,paid,paymentsCount:paidList.length,netDue:net,status:Math.abs(net)<.01?'مسدد':(net<0?'له رصيد زائد':'عليه مبلغ'),statusClass:Math.abs(net)<.01?'available':(net<0?'sold':'booked')}; }).filter(x=>x.name); }
-  window.refreshPartnerCostPaymentNames=function(){ const sel=document.getElementById('partnerCostPaymentName'); if(!sel)return; const p=pcProject(); if(!p)return; pcEnsure(p); const current=sel.value; const names=pcBasePartners(p).map(x=>x.name).filter(Boolean); sel.innerHTML=names.length?'<option value="">اختر الشريك</option>'+names.map(n=>`<option value="${pcEscape(n)}">${pcEscape(n)}</option>`).join(''):'<option value="">لا يوجد شركاء داخل المشروع</option>'; if(current && names.includes(current)) sel.value=current; };
-  window.renderPartnerCostPaymentsTable=function(p){ p=p||pcProject(); const body=document.getElementById('partnerCostPaymentsBody'); if(!body||!p)return; pcEnsure(p); const rows=[...(p.partnerCostPayments||[])].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||pcNum(b.createdAt)-pcNum(a.createdAt)); body.innerHTML=rows.length?rows.map(x=>{ const realIndex=(p.partnerCostPayments||[]).findIndex(y=>String(y.id||'')===String(x.id||'')); return `<tr><td>${pcEscape(x.partnerName||x.name)}</td><td>${pcEscape(x.date||'-')}</td><td>${pcMoney(x.amount)}</td><td>${pcEscape(x.method||'-')}</td><td>${pcEscape(x.note||'-')}</td><td class="no-print"><button class="btn-red" type="button" onclick="deletePartnerCostPayment(${realIndex})">حذف</button></td></tr>`; }).join(''):'<tr><td colspan="6">لا توجد دفعات واردة مسجلة</td></tr>'; };
-  window.renderPartnerCostTab=function(){ const p=pcProject(); if(!p)return; pcEnsure(p); window.refreshPartnerCostPaymentNames(); let rows=pcRows(p); const search=String(document.getElementById('partnerCostSearch')?.value||'').trim().toLowerCase(); const status=document.getElementById('partnerCostStatusFilter')?.value||''; const sort=document.getElementById('partnerCostSort')?.value||'due_desc'; if(search) rows=rows.filter(r=>pcKey(r.name).includes(pcKey(search))); if(status==='due') rows=rows.filter(r=>r.netDue>.01); if(status==='clear') rows=rows.filter(r=>Math.abs(r.netDue)<.01); if(status==='credit') rows=rows.filter(r=>r.netDue<-.01); rows.sort((a,b)=>sort==='paid_desc'?pcNum(b.paid)-pcNum(a.paid):sort==='percent_desc'?pcNum(b.percent)-pcNum(a.percent):sort==='name'?String(a.name).localeCompare(String(b.name),'ar'):pcNum(b.netDue)-pcNum(a.netDue)); const all=pcRows(p); const set=(id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; }; set('partnerCostRowsCount',rows.length+' شريك'); set('partnerCostRequiredTotal',pcMoney(all.reduce((s,r)=>s+pcNum(r.costShare),0))); set('partnerCostUnderTotal',pcMoney(all.reduce((s,r)=>s+pcNum(r.underAccount),0))); set('partnerCostPaidTotal',pcMoney(all.reduce((s,r)=>s+pcNum(r.paid),0))); set('partnerCostNetTotal',pcMoney(all.reduce((s,r)=>s+pcNum(r.netDue),0))); const body=document.getElementById('partnerCostBody'); if(body){ body.innerHTML=rows.length?rows.map(r=>`<tr><td><strong>${pcEscape(r.name)}</strong></td><td>${pcNum(r.percent).toFixed(2)}%</td><td>${pcMoney(r.costShare)}</td><td class="no-print"><input type="number" value="${pcNum(r.underAccount)}" style="width:150px" onchange="updatePartnerCostUnderAccountByIndex(${r.partnerIndex}, this.value)" /></td><td>${pcMoney(r.underAccount)}</td><td>${pcMoney(r.paid)}</td><td style="font-weight:900;color:${r.netDue<-.01?'#166534':(r.netDue>.01?'#991b1b':'#1d4ed8')}">${pcMoney(Math.abs(r.netDue))} ${r.netDue<-.01?'له':(r.netDue>.01?'عليه':'')}</td><td><span class="badge ${r.statusClass}">${pcEscape(r.status)}</span></td><td>${pcNum(r.paymentsCount)}</td></tr>`).join(''):'<tr><td colspan="9">لا توجد بيانات. أضف شركاء بنسبة من تبويبة الشركاء أولاً.</td></tr>'; } window.renderPartnerCostPaymentsTable(p); };
-  window.updatePartnerCostUnderAccountByIndex=function(index,value){ const p=pcProject(); if(!p)return; pcEnsure(p); const partner=(p.partners||[])[Number(index)]; if(!partner){ alert('تعذر تحديد الشريك. افتح تبويبة الشركاء وتأكد من وجوده.'); return; } partner.costUnderAccount=pcNum(value); pcSave('partner-cost-under-account'); window.renderPartnerCostTab(); if(typeof window.renderPartners==='function') window.renderPartners(); };
-  window.addPartnerCostPayment=function(){ const p=pcProject(); if(!p)return; pcEnsure(p); const name=String(document.getElementById('partnerCostPaymentName')?.value||'').trim(); const amount=pcNum(document.getElementById('partnerCostPaymentAmount')?.value||0); const date=document.getElementById('partnerCostPaymentDate')?.value||new Date().toISOString().slice(0,10); const method=String(document.getElementById('partnerCostPaymentMethod')?.value||'').trim(); const note=String(document.getElementById('partnerCostPaymentNote')?.value||'').trim(); if(!name){ alert('اختر اسم الشريك'); return; } if(amount<=0){ alert('اكتب مبلغ صحيح'); return; } const exists=pcBasePartners(p).some(x=>pcKey(x.name)===pcKey(name)); if(!exists){ alert('الشريك غير موجود داخل هذا المشروع'); return; } p.partnerCostPayments.push({id:'pcp_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),name,partnerName:name,amount,date,method,note,createdAt:Date.now()}); ['partnerCostPaymentAmount','partnerCostPaymentMethod','partnerCostPaymentNote'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';}); pcSave('partner-cost-payment'); window.renderPartnerCostTab(); if(typeof window.renderPartners==='function') window.renderPartners(); alert('تم تسجيل الدفعة وظهرت في الجدول'); };
-  window.deletePartnerCostPayment=function(index){ const p=pcProject(); if(!p)return; pcEnsure(p); if(index<0||index>=p.partnerCostPayments.length)return; if(!confirm('حذف دفعة الشريك؟'))return; p.partnerCostPayments.splice(index,1); pcSave('delete-partner-cost-payment'); window.renderPartnerCostTab(); };
-  window.resetPartnerCostFilters=function(){ ['partnerCostSearch','partnerCostStatusFilter'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';}); const sort=document.getElementById('partnerCostSort'); if(sort) sort.value='due_desc'; window.renderPartnerCostTab(); };
-  window.printPartnerCostReport=function(){ window.renderPartnerCostTab(); window.print(); };
+  function pcToday(){ return new Date().toLocaleDateString('ar-SA'); }
+  function pcEnsure(p){
+    if(!p) return;
+    if(!Array.isArray(p.partners)) p.partners=[];
+    if(!Array.isArray(p.partnerCostPayments)) p.partnerCostPayments=[];
+    p.partners.forEach(x=>{ if(typeof x.costUnderAccount==='undefined') x.costUnderAccount=0; });
+    p.partnerCostPayments.forEach((x,i)=>{ if(!x.id) x.id='pcp_'+Date.now()+'_'+i+'_'+Math.random().toString(36).slice(2,8); });
+  }
+  function pcTotalCost(p){
+    try{
+      if(typeof window.calcProjectFinancials==='function'){
+        const f=window.calcProjectFinancials(p);
+        if(f && Number.isFinite(Number(f.totalProjectCost))) return pcNum(f.totalProjectCost);
+      }
+    }catch(e){}
+    const expenses=(p.expenses||[]).reduce((s,e)=>s+pcNum(e.amount),0);
+    const custody=(p.siteCustody||[]).filter(x=>x.type==='add').reduce((s,x)=>s+pcNum(x.amount),0);
+    return pcNum(p.cost)+expenses+custody;
+  }
+  function pcBasePartners(p){
+    pcEnsure(p);
+    try{
+      if(typeof window.calcProjectFinancials==='function'){
+        const f=window.calcProjectFinancials(p);
+        if(f && Array.isArray(f.partnersFull)){
+          return f.partnersFull.filter(x=>!x.auto && pcKey(x.name)).map(x=>({
+            name:String(x.name||'').trim(),
+            percent:pcNum(x.percent),
+            costShare:pcNum(x.costShare),
+            date:x.date||'-',
+            partnerIndex:(p.partners||[]).findIndex(pp=>pcKey(pp.name)===pcKey(x.name) && pcNum(pp.percent)===pcNum(x.percent))
+          }));
+        }
+      }
+    }catch(e){}
+    const total=pcTotalCost(p);
+    return (p.partners||[]).map((x,i)=>({name:String(x.name||'').trim(),percent:pcNum(x.percent),costShare:total*pcNum(x.percent)/100,date:x.date||'-',partnerIndex:i})).filter(x=>x.name);
+  }
+  function pcRows(p){
+    pcEnsure(p);
+    const pays=p.partnerCostPayments||[];
+    return pcBasePartners(p).map(row=>{
+      let idx=Number(row.partnerIndex);
+      if(idx<0 || !Number.isFinite(idx)) idx=(p.partners||[]).findIndex(pp=>pcKey(pp.name)===pcKey(row.name));
+      const partner=(p.partners||[])[idx]||{};
+      const under=pcNum(partner.costUnderAccount);
+      const paidList=pays.filter(x=>pcKey(x.partnerName||x.name)===pcKey(row.name));
+      const paid=paidList.reduce((s,x)=>s+pcNum(x.amount),0);
+      const net=pcNum(row.costShare)+under-paid;
+      return {...row,partnerIndex:idx,underAccount:under,paid,paymentsCount:paidList.length,netDue:net,status:Math.abs(net)<.01?'مسدد':(net<0?'له رصيد زائد':'عليه مبلغ'),statusClass:Math.abs(net)<.01?'available':(net<0?'sold':'booked')};
+    }).filter(x=>x.name);
+  }
+  function pcPrintMeta(label,value){ return `<div class="kpi"><div class="kpi-title">${label}</div><div class="kpi-value">${value}</div></div>`; }
+  function pcOpenReport(title, bodyHtml){
+    if(typeof window.openPrintWindow === 'function'){
+      window.openPrintWindow(title, bodyHtml);
+      return;
+    }
+    const w=window.open('', '_blank', 'width=1100,height=800');
+    if(!w){ alert('المتصفح منع فتح التقرير. اسمح بالنوافذ المنبثقة.'); return; }
+    w.document.open();
+    w.document.write(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>${pcEscape(title)}</title><style>body{font-family:Tahoma,Arial,sans-serif;margin:24px;color:#111;direction:rtl}h2,h3{margin:0 0 10px}.report-title{border-bottom:3px solid #1f4f7a;padding-bottom:12px;margin-bottom:16px}.report-sub{color:#64748b;font-size:13px}.meta-grid,.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}.kpi{border:1px solid #dbe7f3;border-radius:14px;padding:12px;background:#f8fbff}.kpi-title{font-size:12px;color:#64748b}.kpi-value{font-weight:900;font-size:16px;margin-top:6px}.section{margin-top:18px}.section-header{display:flex;justify-content:space-between;gap:12px;align-items:end;border-bottom:1px solid #e5e7eb;margin-bottom:10px}.section-note{font-size:12px;color:#64748b}table{width:100%;border-collapse:collapse;margin-top:10px}th,td{border:1px solid #cbd5e1;padding:9px;text-align:center}th{background:#17324d;color:white}@media print{button{display:none}.kpi{break-inside:avoid}}</style></head><body>${bodyHtml}<script>window.onload=function(){setTimeout(function(){window.print()},300)}<\/script></body></html>`);
+    w.document.close();
+  }
+  function pcNetText(v){ return v < -0.01 ? pcMoney(Math.abs(v)) + ' له' : (v > 0.01 ? pcMoney(v) + ' عليه' : pcMoney(0)); }
+
+  window.refreshPartnerCostPaymentNames=function(){
+    const sel=document.getElementById('partnerCostPaymentName');
+    if(!sel) return;
+    const p=pcProject(); if(!p) return;
+    pcEnsure(p);
+    const current=sel.value;
+    const names=pcBasePartners(p).map(x=>x.name).filter(Boolean);
+    sel.innerHTML=names.length?'<option value="">اختر الشريك</option>'+names.map(n=>`<option value="${pcEscape(n)}">${pcEscape(n)}</option>`).join(''):'<option value="">لا يوجد شركاء داخل المشروع</option>';
+    if(current && names.includes(current)) sel.value=current;
+  };
+
+  window.renderPartnerCostPaymentsTable=function(p){
+    p=p||pcProject();
+    const body=document.getElementById('partnerCostPaymentsBody');
+    if(!body||!p) return;
+    pcEnsure(p);
+    const rows=[...(p.partnerCostPayments||[])].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||pcNum(b.createdAt)-pcNum(a.createdAt));
+    body.innerHTML=rows.length?rows.map(x=>{
+      const realIndex=(p.partnerCostPayments||[]).findIndex(y=>String(y.id||'')===String(x.id||''));
+      return `<tr><td>${pcEscape(x.partnerName||x.name)}</td><td>${pcEscape(x.date||'-')}</td><td>${pcMoney(x.amount)}</td><td>${pcEscape(x.method||'-')}</td><td>${pcEscape(x.note||'-')}</td><td class="no-print"><button class="btn-red" type="button" onclick="deletePartnerCostPayment(${realIndex})">حذف</button></td></tr>`;
+    }).join(''):'<tr><td colspan="6">لا توجد دفعات واردة مسجلة</td></tr>';
+  };
+
+  window.renderPartnerCostTab=function(){
+    const p=pcProject(); if(!p) return;
+    pcEnsure(p);
+    window.refreshPartnerCostPaymentNames();
+    let rows=pcRows(p);
+    const search=String(document.getElementById('partnerCostSearch')?.value||'').trim().toLowerCase();
+    const status=document.getElementById('partnerCostStatusFilter')?.value||'';
+    const sort=document.getElementById('partnerCostSort')?.value||'due_desc';
+    if(search) rows=rows.filter(r=>pcKey(r.name).includes(pcKey(search)));
+    if(status==='due') rows=rows.filter(r=>r.netDue>.01);
+    if(status==='clear') rows=rows.filter(r=>Math.abs(r.netDue)<.01);
+    if(status==='credit') rows=rows.filter(r=>r.netDue<-.01);
+    rows.sort((a,b)=>sort==='paid_desc'?pcNum(b.paid)-pcNum(a.paid):sort==='percent_desc'?pcNum(b.percent)-pcNum(a.percent):sort==='name'?String(a.name).localeCompare(String(b.name),'ar'):pcNum(b.netDue)-pcNum(a.netDue));
+    const all=pcRows(p);
+    const set=(id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
+    set('partnerCostRowsCount',rows.length+' شريك');
+    set('partnerCostRequiredTotal',pcMoney(all.reduce((s,r)=>s+pcNum(r.costShare),0)));
+    set('partnerCostUnderTotal',pcMoney(all.reduce((s,r)=>s+pcNum(r.underAccount),0)));
+    set('partnerCostPaidTotal',pcMoney(all.reduce((s,r)=>s+pcNum(r.paid),0)));
+    set('partnerCostNetTotal',pcMoney(all.reduce((s,r)=>s+pcNum(r.netDue),0)));
+    const body=document.getElementById('partnerCostBody');
+    if(body){
+      body.innerHTML=rows.length?rows.map(r=>`<tr>
+        <td><strong>${pcEscape(r.name)}</strong></td>
+        <td>${pcNum(r.percent).toFixed(2)}%</td>
+        <td>${pcMoney(r.costShare)}</td>
+        <td class="no-print"><input type="number" value="${pcNum(r.underAccount)}" style="width:150px" onchange="updatePartnerCostUnderAccountByIndex(${r.partnerIndex}, this.value)" /></td>
+        <td>${pcMoney(r.underAccount)}</td>
+        <td>${pcMoney(r.paid)}</td>
+        <td style="font-weight:900;color:${r.netDue<-.01?'#166534':(r.netDue>.01?'#991b1b':'#1d4ed8')}">${pcNetText(r.netDue)}</td>
+        <td><span class="badge ${r.statusClass}">${pcEscape(r.status)}</span></td>
+        <td>${pcNum(r.paymentsCount)}</td>
+        <td class="no-print partner-cost-report-cell"><button class="partner-cost-report-btn" type="button" onclick="printPartnerCostSingleReportByIndex(${r.partnerIndex})">تقرير</button></td>
+      </tr>`).join(''):'<tr><td colspan="10">لا توجد بيانات. أضف شركاء بنسبة من تبويبة الشركاء أولاً.</td></tr>';
+    }
+    window.renderPartnerCostPaymentsTable(p);
+  };
+
+  window.printPartnerCostSingleReportByIndex=function(index){
+    const p=pcProject(); if(!p) return;
+    pcEnsure(p);
+    const base=pcRows(p).find(r=>Number(r.partnerIndex)===Number(index));
+    if(!base){ alert('لم يتم العثور على الشريك'); return; }
+    window.printPartnerCostSingleReport(base.name);
+  };
+
+  window.printPartnerCostSingleReport=function(partnerName){
+    const p=pcProject(); if(!p) return;
+    pcEnsure(p);
+    const key=pcKey(partnerName);
+    const row=pcRows(p).find(r=>pcKey(r.name)===key);
+    if(!row){ alert('لم يتم العثور على الشريك'); return; }
+    const payments=(p.partnerCostPayments||[]).filter(x=>pcKey(x.partnerName||x.name)===key).slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||pcNum(b.createdAt)-pcNum(a.createdAt));
+    const paymentsHtml=payments.length?payments.map(x=>`<tr><td>${pcEscape(x.date||'-')}</td><td>${pcMoney(x.amount)}</td><td>${pcEscape(x.method||'-')}</td><td>${pcEscape(x.note||'-')}</td></tr>`).join(''):'<tr><td colspan="4">لا توجد دفعات مسجلة لهذا الشريك</td></tr>';
+    const reportHtml=`
+      <div class="report-title">
+        <h2>تقرير المطلوب من الشريك من التكلفة</h2>
+        <div class="report-sub">تقرير مستقل للشريك المختار فقط داخل المشروع.</div>
+      </div>
+      <div class="meta-grid">
+        ${pcPrintMeta('المشروع', pcEscape(p.name||'-'))}
+        ${pcPrintMeta('اسم الشريك', pcEscape(row.name||'-'))}
+        ${pcPrintMeta('نسبة الشريك', pcNum(row.percent).toFixed(2)+'%')}
+        ${pcPrintMeta('تاريخ التقرير', pcEscape(pcToday()))}
+      </div>
+      <div class="summary-grid">
+        ${pcPrintMeta('إجمالي تكلفة المشروع', pcMoney(pcTotalCost(p)))}
+        ${pcPrintMeta('نصيبه من إجمالي التكلفة', pcMoney(row.costShare))}
+        ${pcPrintMeta('دفعة تحت الحساب', pcMoney(row.underAccount))}
+        ${pcPrintMeta('الدفعات الواردة', pcMoney(row.paid))}
+      </div>
+      <div class="summary-grid">
+        ${pcPrintMeta('الصافي', pcNetText(row.netDue))}
+        ${pcPrintMeta('الحالة', pcEscape(row.status))}
+        ${pcPrintMeta('عدد الدفعات', pcNum(row.paymentsCount))}
+        ${pcPrintMeta('المعادلة', 'النصيب + تحت الحساب - الوارد')}
+      </div>
+      <div class="section">
+        <div class="section-header"><h3>ملخص الشريك</h3><div class="section-note">هذا التقرير يخص الشريك المختار فقط ولا يجلب باقي الشركاء.</div></div>
+        <table><thead><tr><th>الشريك</th><th>النسبة</th><th>نصيبه من التكلفة</th><th>تحت الحساب</th><th>المدفوع</th><th>الصافي</th><th>الحالة</th></tr></thead><tbody>
+          <tr><td>${pcEscape(row.name)}</td><td>${pcNum(row.percent).toFixed(2)}%</td><td>${pcMoney(row.costShare)}</td><td>${pcMoney(row.underAccount)}</td><td>${pcMoney(row.paid)}</td><td>${pcNetText(row.netDue)}</td><td>${pcEscape(row.status)}</td></tr>
+        </tbody></table>
+      </div>
+      <div class="section">
+        <div class="section-header"><h3>سجل دفعات هذا الشريك</h3><div class="section-note">الدفعات الواردة المسجلة باسم هذا الشريك فقط.</div></div>
+        <table><thead><tr><th>التاريخ</th><th>المبلغ</th><th>طريقة السداد</th><th>ملاحظة</th></tr></thead><tbody>${paymentsHtml}</tbody></table>
+      </div>`;
+    pcOpenReport('تقرير المطلوب من الشريك - '+row.name, reportHtml);
+  };
+
+  window.updatePartnerCostUnderAccountByIndex=function(index,value){
+    const p=pcProject(); if(!p) return;
+    pcEnsure(p);
+    const partner=(p.partners||[])[Number(index)];
+    if(!partner){ alert('تعذر تحديد الشريك. افتح تبويبة الشركاء وتأكد من وجوده.'); return; }
+    partner.costUnderAccount=pcNum(value);
+    pcSave('partner-cost-under-account');
+    window.renderPartnerCostTab();
+    if(typeof window.renderPartners==='function') window.renderPartners();
+  };
+
+  window.addPartnerCostPayment=function(){
+    const p=pcProject(); if(!p) return;
+    pcEnsure(p);
+    const name=String(document.getElementById('partnerCostPaymentName')?.value||'').trim();
+    const amount=pcNum(document.getElementById('partnerCostPaymentAmount')?.value||0);
+    const date=document.getElementById('partnerCostPaymentDate')?.value||new Date().toISOString().slice(0,10);
+    const method=String(document.getElementById('partnerCostPaymentMethod')?.value||'').trim();
+    const note=String(document.getElementById('partnerCostPaymentNote')?.value||'').trim();
+    if(!name){ alert('اختر اسم الشريك'); return; }
+    if(amount<=0){ alert('اكتب مبلغ صحيح'); return; }
+    const exists=pcBasePartners(p).some(x=>pcKey(x.name)===pcKey(name));
+    if(!exists){ alert('الشريك غير موجود داخل هذا المشروع'); return; }
+    p.partnerCostPayments.push({id:'pcp_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),name,partnerName:name,amount,date,method,note,createdAt:Date.now()});
+    ['partnerCostPaymentAmount','partnerCostPaymentMethod','partnerCostPaymentNote'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';});
+    pcSave('partner-cost-payment');
+    window.renderPartnerCostTab();
+    if(typeof window.renderPartners==='function') window.renderPartners();
+    alert('تم تسجيل الدفعة وظهرت في الجدول');
+  };
+
+  window.deletePartnerCostPayment=function(index){
+    const p=pcProject(); if(!p) return;
+    pcEnsure(p);
+    if(index<0||index>=p.partnerCostPayments.length) return;
+    if(!confirm('حذف دفعة الشريك؟')) return;
+    p.partnerCostPayments.splice(index,1);
+    pcSave('delete-partner-cost-payment');
+    window.renderPartnerCostTab();
+  };
+
+  window.resetPartnerCostFilters=function(){
+    ['partnerCostSearch','partnerCostStatusFilter'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';});
+    const sort=document.getElementById('partnerCostSort');
+    if(sort) sort.value='due_desc';
+    window.renderPartnerCostTab();
+  };
 })();
 </script>
+
+</body>
+</html>
