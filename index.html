@@ -5386,6 +5386,214 @@ font-weight:800;color:#fff;cursor:pointer
   }
 </style>
 
+
+<!-- v59.2 Turbo Table Performance CSS -->
+<style>
+  .anas-turbo-ready table{
+    contain:layout style;
+  }
+
+  .anas-turbo-ready tbody tr{
+    contain:layout paint;
+  }
+
+  .anas-filtering .table-scroll,
+  .anas-filtering table{
+    pointer-events:none;
+  }
+
+  .anas-filtering input,
+  .anas-filtering select,
+  .anas-filtering textarea{
+    pointer-events:auto;
+  }
+
+  @media (max-width:768px){
+    .anas-turbo-ready tbody tr:hover{
+      transform:none !important;
+      box-shadow:none !important;
+    }
+  }
+</style>
+
+
+<!-- v59.3 Turbo Heavy UI Performance CSS -->
+<style>
+  .anas-turbo-ready .chart-card,
+  .anas-turbo-ready .dashboard-card,
+  .anas-turbo-ready .kpi,
+  .anas-turbo-ready .project-item{
+    content-visibility:auto;
+    contain-intrinsic-size:180px;
+  }
+
+  .anas-ui-settling .chart-card,
+  .anas-ui-settling .dashboard-card,
+  .anas-ui-settling .kpi{
+    transition-duration:0s !important;
+  }
+
+  .anas-turbo-ready canvas{
+    contain:layout paint;
+  }
+
+  @media (max-width:768px){
+    .anas-turbo-ready .chart-wrap{
+      min-height:220px;
+    }
+  }
+</style>
+
+
+<!-- v59.4 Sidebar Fixed Width: prevent sidebar resizing on active items -->
+<style>
+  /* تثبيت عرض القائمة الجانبية ومنع تغيّر حجمها بين التبويبات */
+  .app-sidebar{
+    width:190px !important;
+    min-width:190px !important;
+    max-width:190px !important;
+    flex:0 0 190px !important;
+    overflow-x:hidden !important;
+  }
+
+  .sidebar-link{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:100% !important;
+    box-sizing:border-box !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    gap:8px !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+  }
+
+  .sidebar-link .label{
+    flex:1 1 auto !important;
+    min-width:0 !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+    white-space:nowrap !important;
+  }
+
+  .sidebar-link .icon{
+    flex:0 0 38px !important;
+    width:38px !important;
+    height:38px !important;
+    min-width:38px !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+  }
+
+  .sidebar-link .caret{
+    flex:0 0 auto !important;
+    min-width:14px !important;
+  }
+
+  .sidebar-submenu,
+  .sidebar-dropdown,
+  .sidebar-child-list{
+    width:100% !important;
+    max-width:100% !important;
+    overflow:hidden !important;
+  }
+
+  @media (max-width:768px){
+    .app-sidebar{
+      width:176px !important;
+      min-width:176px !important;
+      max-width:176px !important;
+      flex-basis:176px !important;
+    }
+
+    .sidebar-link{
+      padding-inline:10px !important;
+    }
+
+    .sidebar-link .icon{
+      flex-basis:34px !important;
+      width:34px !important;
+      height:34px !important;
+      min-width:34px !important;
+    }
+  }
+</style>
+
+
+<!-- v59.4.1 Sidebar Text Fix: show full button names without resizing -->
+<style>
+  .app-sidebar{
+    width:230px !important;
+    min-width:230px !important;
+    max-width:230px !important;
+    flex:0 0 230px !important;
+    overflow-x:hidden !important;
+  }
+
+  .sidebar-link{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:100% !important;
+    box-sizing:border-box !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:10px !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    padding-inline:14px !important;
+  }
+
+  .sidebar-link .icon{
+    flex:0 0 38px !important;
+    width:38px !important;
+    height:38px !important;
+    min-width:38px !important;
+  }
+
+  .sidebar-link .label{
+    flex:1 1 auto !important;
+    min-width:0 !important;
+    overflow:visible !important;
+    text-overflow:clip !important;
+    white-space:nowrap !important;
+    font-size:15px !important;
+  }
+
+  .sidebar-link .caret{
+    flex:0 0 14px !important;
+    width:14px !important;
+    margin-inline-start:auto !important;
+  }
+
+  @media (max-width:768px){
+    .app-sidebar{
+      width:210px !important;
+      min-width:210px !important;
+      max-width:210px !important;
+      flex-basis:210px !important;
+    }
+
+    .sidebar-link{
+      padding-inline:12px !important;
+      gap:8px !important;
+    }
+
+    .sidebar-link .label{
+      font-size:14px !important;
+    }
+
+    .sidebar-link .icon{
+      flex-basis:34px !important;
+      width:34px !important;
+      height:34px !important;
+      min-width:34px !important;
+    }
+  }
+</style>
+
 </head>
 <body>
 
@@ -21267,6 +21475,138 @@ document.addEventListener('DOMContentLoaded', function(){ refreshAlertBellSafe()
     tabs: tabCache,
     projects: projectCache
   };
+})();
+</script>
+
+
+<!-- v59.2 Turbo Mode: table/filter repaint guard -->
+<script>
+(function(){
+  "use strict";
+
+  if (window.ANAS_TURBO_TABLE_READY) return;
+  window.ANAS_TURBO_TABLE_READY = true;
+
+  function debounce(fn, delay){
+    if (window.anasSafeDebounce) return window.anasSafeDebounce(fn, delay || 180);
+    var timer = null;
+    return function(){
+      var ctx = this, args = arguments;
+      clearTimeout(timer);
+      timer = setTimeout(function(){ fn.apply(ctx, args); }, delay || 180);
+    };
+  }
+
+  function markFiltering(){
+    try{
+      if (!document.body) return;
+      document.body.classList.add("anas-filtering");
+      clearTimeout(window.__anasFilteringTimer);
+      window.__anasFilteringTimer = setTimeout(function(){
+        try{ document.body.classList.remove("anas-filtering"); }catch(error){}
+      }, 180);
+    }catch(error){}
+  }
+
+  function optimizeLargeTables(){
+    try{
+      var tables = document.querySelectorAll("table");
+      for (var i = 0; i < tables.length; i++){
+        var rows = tables[i].querySelectorAll("tbody tr").length;
+        if (rows >= 40){
+          tables[i].setAttribute("data-anas-large-table", "1");
+        }
+      }
+    }catch(error){}
+  }
+
+  function bind(){
+    try{
+      var debouncedFilter = debounce(markFiltering, 80);
+      document.addEventListener("input", function(event){
+        var t = event.target;
+        if (!t) return;
+        if (t.matches && t.matches("input,select,textarea")){
+          debouncedFilter();
+        }
+      }, true);
+
+      document.addEventListener("change", function(event){
+        var t = event.target;
+        if (!t) return;
+        if (t.matches && t.matches("input,select,textarea")){
+          debouncedFilter();
+        }
+      }, true);
+
+      var idle = window.anasSafeIdle || function(cb){ setTimeout(cb, 300); };
+      idle(optimizeLargeTables, 1200);
+      window.addEventListener("pageshow", function(){ idle(optimizeLargeTables, 900); });
+    }catch(error){}
+  }
+
+  if (document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", bind, { once:true });
+  }else{
+    bind();
+  }
+})();
+</script>
+
+
+<!-- v59.3 Turbo Mode: heavy UI settle guard -->
+<script>
+(function(){
+  "use strict";
+
+  if (window.ANAS_TURBO_HEAVY_UI_READY) return;
+  window.ANAS_TURBO_HEAVY_UI_READY = true;
+
+  function idle(callback, timeout){
+    if (window.anasSafeIdle) return window.anasSafeIdle(callback, timeout || 1000);
+    if ("requestIdleCallback" in window) return window.requestIdleCallback(callback, { timeout: timeout || 1000 });
+    return window.setTimeout(callback, 80);
+  }
+
+  function settleUI(){
+    try{
+      if (!document.body) return;
+      document.body.classList.add("anas-ui-settling");
+      clearTimeout(window.__anasUiSettlingTimer);
+      window.__anasUiSettlingTimer = setTimeout(function(){
+        try{ document.body.classList.remove("anas-ui-settling"); }catch(error){}
+      }, 180);
+    }catch(error){}
+  }
+
+  function tagHeavyBlocks(){
+    try{
+      var blocks = document.querySelectorAll(".chart-card,.dashboard-card,.kpi,.project-item,.modal-content");
+      for (var i = 0; i < blocks.length; i++){
+        blocks[i].setAttribute("data-anas-heavy-ui", "1");
+      }
+    }catch(error){}
+  }
+
+  function bind(){
+    try{
+      idle(tagHeavyBlocks, 1000);
+      window.addEventListener("pageshow", function(){
+        settleUI();
+        idle(tagHeavyBlocks, 900);
+      });
+      document.addEventListener("click", function(event){
+        var target = event.target && event.target.closest ? event.target.closest(".tab,.sidebar-link,button") : null;
+        if (target) settleUI();
+      }, true);
+    }catch(error){}
+  }
+
+  if (document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", bind, { once:true });
+  }else{
+    bind();
+  }
 })();
 </script>
 
