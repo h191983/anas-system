@@ -21,8 +21,11 @@
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.12.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  
 
 
   <style>
@@ -5594,6 +5597,720 @@ font-weight:800;color:#fff;cursor:pointer
   }
 </style>
 
+
+<!-- v60 Dashboard Pro Stage 1 -->
+<style>
+  /* تطوير الصفحة الرئيسية فقط */
+  .home-dashboard-grid,
+  .dashboard-grid{
+    gap:18px !important;
+  }
+
+  .dashboard-card,
+  .chart-card,
+  .kpi,
+  .card{
+    border-radius:24px !important;
+    border:1px solid rgba(255,255,255,.55) !important;
+    box-shadow:
+      0 14px 34px rgba(15,23,42,.08),
+      inset 0 1px 0 rgba(255,255,255,.65) !important;
+    backdrop-filter: blur(6px);
+    transition:transform .22s ease, box-shadow .22s ease;
+  }
+
+  .dashboard-card:hover,
+  .chart-card:hover,
+  .kpi:hover{
+    transform:translateY(-2px);
+    box-shadow:
+      0 18px 40px rgba(15,23,42,.12),
+      inset 0 1px 0 rgba(255,255,255,.75) !important;
+  }
+
+  .dashboard-card h3,
+  .chart-card h3,
+  .kpi-title{
+    font-size:20px !important;
+    font-weight:900 !important;
+    letter-spacing:.1px;
+    color:#0f2e4d !important;
+  }
+
+  .kpi-value,
+  .big-number,
+  .stat-value{
+    font-size:34px !important;
+    line-height:1.15 !important;
+    font-weight:900 !important;
+    color:#0a1f38 !important;
+    text-shadow:0 1px 0 rgba(255,255,255,.55);
+  }
+
+  .kpi-subtitle,
+  .muted,
+  .small-note{
+    opacity:.82;
+    font-size:13px !important;
+  }
+
+  .hero-card,
+  .welcome-card,
+  .manager-card{
+    background:
+      linear-gradient(135deg,#2d6cdf 0%, #3567d7 45%, #2748a8 100%) !important;
+    color:#fff !important;
+    border:none !important;
+    box-shadow:0 22px 44px rgba(37,99,235,.28) !important;
+  }
+
+  .hero-card h1,
+  .hero-card h2,
+  .welcome-card h1,
+  .welcome-card h2{
+    color:#fff !important;
+  }
+
+  .hero-card .muted,
+  .welcome-card .muted{
+    color:rgba(255,255,255,.92) !important;
+  }
+
+  @media (max-width:768px){
+    .kpi-value,.big-number,.stat-value{
+      font-size:28px !important;
+    }
+
+    .dashboard-card h3,
+    .chart-card h3,
+    .kpi-title{
+      font-size:18px !important;
+    }
+  }
+</style>
+
+
+<!-- v60.2 Dashboard Pro Stage 2 -->
+<style>
+  /* Dashboard Pro Stage 2: تحسين الواجهة الرئيسية والبطاقات بدون لمس الحسابات */
+
+  .home-dashboard-grid .dashboard-card,
+  .dashboard-grid .dashboard-card,
+  .home-dashboard-grid .kpi,
+  .dashboard-grid .kpi{
+    position:relative !important;
+    overflow:hidden !important;
+  }
+
+  .home-dashboard-grid .dashboard-card::before,
+  .dashboard-grid .dashboard-card::before,
+  .home-dashboard-grid .kpi::before,
+  .dashboard-grid .kpi::before{
+    content:"" !important;
+    position:absolute !important;
+    inset:0 !important;
+    background:
+      radial-gradient(circle at 18% 18%, rgba(255,255,255,.72) 0%, rgba(255,255,255,0) 30%),
+      linear-gradient(135deg, rgba(255,255,255,.42), rgba(255,255,255,0) 55%) !important;
+    pointer-events:none !important;
+    opacity:.72 !important;
+  }
+
+  .home-dashboard-grid .dashboard-card::after,
+  .dashboard-grid .dashboard-card::after,
+  .home-dashboard-grid .kpi::after,
+  .dashboard-grid .kpi::after{
+    content:"" !important;
+    position:absolute !important;
+    inset-inline-start:0 !important;
+    top:18px !important;
+    bottom:18px !important;
+    width:6px !important;
+    border-radius:999px !important;
+    background:linear-gradient(180deg,#3b82f6,#14b8a6) !important;
+    box-shadow:0 0 18px rgba(59,130,246,.28) !important;
+  }
+
+  .dashboard-label,
+  .kpi-title{
+    position:relative !important;
+    z-index:1 !important;
+    display:flex !important;
+    align-items:center !important;
+    gap:8px !important;
+  }
+
+  .dashboard-value,
+  .kpi-value{
+    position:relative !important;
+    z-index:1 !important;
+  }
+
+  .dashboard-sub,
+  .home-dashboard-note{
+    position:relative !important;
+    z-index:1 !important;
+    color:#475569 !important;
+  }
+
+  .home-charts-grid .chart-card,
+  .project-charts-grid .chart-card{
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.96), rgba(244,249,255,.96)) !important;
+  }
+
+  .chart-card h4{
+    font-size:18px !important;
+    font-weight:900 !important;
+    color:#0f2e4d !important;
+    margin-bottom:12px !important;
+  }
+
+  .section-title h2,
+  .section-title h3{
+    font-weight:900 !important;
+    color:#071f3b !important;
+  }
+
+  .section-title::after{
+    content:"" !important;
+    flex:1 1 160px !important;
+    height:1px !important;
+    background:linear-gradient(90deg, rgba(37,99,235,.25), rgba(37,99,235,0)) !important;
+    margin-inline-start:12px !important;
+  }
+
+  @media (max-width:768px){
+    .section-title::after{
+      display:none !important;
+    }
+
+    .home-dashboard-grid,
+    .dashboard-grid{
+      gap:12px !important;
+    }
+  }
+</style>
+
+
+<!-- v61 Dashboard Elite Light: premium UI without heavy runtime -->
+<style>
+  /*
+    Dashboard Elite Light
+    - بدون مكتبات جديدة
+    - بدون صور خارجية
+    - بدون JavaScript ثقيل
+    - مناسب لكثرة المشاريع
+  */
+
+  .home-dashboard-grid,
+  .dashboard-grid{
+    grid-template-columns:repeat(auto-fit,minmax(210px,1fr)) !important;
+  }
+
+  .home-dashboard-grid .dashboard-card,
+  .dashboard-grid .dashboard-card,
+  .home-dashboard-grid .kpi,
+  .dashboard-grid .kpi{
+    background:
+      linear-gradient(145deg, rgba(255,255,255,.98) 0%, rgba(239,247,255,.96) 52%, rgba(230,241,255,.94) 100%) !important;
+    border:1px solid rgba(191,219,254,.78) !important;
+    box-shadow:
+      0 12px 28px rgba(15,23,42,.075),
+      inset 0 1px 0 rgba(255,255,255,.88) !important;
+    transform:none !important;
+    will-change:auto !important;
+  }
+
+  .home-dashboard-grid .dashboard-card:hover,
+  .dashboard-grid .dashboard-card:hover,
+  .home-dashboard-grid .kpi:hover,
+  .dashboard-grid .kpi:hover{
+    transform:translateY(-1px) !important;
+    box-shadow:
+      0 15px 32px rgba(15,23,42,.10),
+      inset 0 1px 0 rgba(255,255,255,.92) !important;
+  }
+
+  .dashboard-label,
+  .kpi-title{
+    font-size:13px !important;
+    font-weight:900 !important;
+    color:#31506f !important;
+  }
+
+  .dashboard-value,
+  .kpi-value{
+    font-size:31px !important;
+    font-weight:950 !important;
+    color:#071f3b !important;
+    letter-spacing:-.4px !important;
+  }
+
+  .dashboard-sub,
+  .home-dashboard-note{
+    font-size:12px !important;
+    color:#64748b !important;
+    line-height:1.7 !important;
+  }
+
+  .home-charts-grid,
+  .project-charts-grid{
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr)) !important;
+    gap:16px !important;
+  }
+
+  .chart-card{
+    border-radius:24px !important;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.98), rgba(247,251,255,.98)) !important;
+    border:1px solid rgba(219,231,243,.95) !important;
+    box-shadow:0 12px 30px rgba(15,23,42,.07) !important;
+  }
+
+  .chart-card h4{
+    display:flex !important;
+    align-items:center !important;
+    gap:8px !important;
+  }
+
+  .chart-card h4::before{
+    content:"" !important;
+    width:10px !important;
+    height:10px !important;
+    border-radius:999px !important;
+    background:linear-gradient(135deg,#2563eb,#14b8a6) !important;
+    box-shadow:0 0 0 4px rgba(37,99,235,.09) !important;
+    flex:0 0 auto !important;
+  }
+
+  .section-title{
+    padding-bottom:4px !important;
+  }
+
+  .section-title h2,
+  .section-title h3{
+    display:flex !important;
+    align-items:center !important;
+    gap:10px !important;
+  }
+
+  .section-title h2::before,
+  .section-title h3::before{
+    content:"" !important;
+    width:13px !important;
+    height:28px !important;
+    border-radius:999px !important;
+    background:linear-gradient(180deg,#2563eb,#14b8a6) !important;
+    box-shadow:0 8px 18px rgba(37,99,235,.20) !important;
+    flex:0 0 auto !important;
+  }
+
+  .dashboard-card.success::after,
+  .kpi.success::after{
+    background:linear-gradient(180deg,#22c55e,#0f766e) !important;
+  }
+
+  .dashboard-card.warn::after,
+  .kpi.warn::after{
+    background:linear-gradient(180deg,#f59e0b,#ea580c) !important;
+  }
+
+  .dashboard-card.danger::after,
+  .kpi.danger::after{
+    background:linear-gradient(180deg,#ef4444,#b91c1c) !important;
+  }
+
+  /* تقليل الحركة تلقائيًا في الأجهزة الضعيفة أو عند تفضيل المستخدم */
+  @media (prefers-reduced-motion: reduce){
+    .dashboard-card,
+    .kpi,
+    .chart-card{
+      transition:none !important;
+      transform:none !important;
+    }
+  }
+
+  @media (max-width:768px){
+    .home-dashboard-grid,
+    .dashboard-grid{
+      grid-template-columns:1fr !important;
+      gap:12px !important;
+    }
+
+    .dashboard-value,
+    .kpi-value{
+      font-size:27px !important;
+    }
+
+    .chart-card{
+      border-radius:20px !important;
+    }
+
+    .section-title h2::before,
+    .section-title h3::before{
+      height:22px !important;
+      width:10px !important;
+    }
+  }
+</style>
+
+
+<!-- v61.1 Toggle Edge Fix: keep collapse buttons on the side -->
+<style>
+  /* إرجاع زر طي / عرض لطرف السطر كما كان */
+  .section-title{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    gap:12px !important;
+  }
+
+  .section-title .actions,
+  .section-title button,
+  .dashboard-collapsible-head .actions,
+  .dashboard-collapsible-head button,
+  .home-settings-toggle .actions,
+  .home-settings-toggle button{
+    margin-inline-start:auto !important;
+  }
+
+  .dashboard-collapsible-head{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    gap:12px !important;
+  }
+
+  .dashboard-collapsible-head > :last-child{
+    margin-inline-start:auto !important;
+  }
+
+  /* منع الخط الزخرفي من دفع الزر للمنتصف */
+  .section-title::after{
+    flex:0 0 auto !important;
+    width:0 !important;
+    display:none !important;
+  }
+
+  @media (max-width:768px){
+    .section-title,
+    .dashboard-collapsible-head{
+      align-items:flex-start !important;
+    }
+  }
+</style>
+
+
+<!-- v62 Performance + Luxury Stage 1 -->
+<style>
+  /*
+    Stage 1:
+    - سرعة مع كثرة المشاريع
+    - لمسات فخمة خفيفة
+    - بدون JS إضافي ثقيل
+  */
+
+  /* تخفيف رسم العناصر الثقيلة */
+  .dashboard-card,
+  .chart-card,
+  .kpi,
+  .card,
+  .project-item,
+  .table-scroll{
+    contain:layout paint style !important;
+  }
+
+  /* بطاقات أفخم لكن خفيفة */
+  .dashboard-card,
+  .chart-card,
+  .kpi{
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.985), rgba(244,248,255,.97)) !important;
+    border:1px solid rgba(226,232,240,.95) !important;
+    box-shadow:
+      0 10px 24px rgba(15,23,42,.06),
+      inset 0 1px 0 rgba(255,255,255,.88) !important;
+  }
+
+  /* الجداول الثقيلة */
+  table{
+    border-collapse:separate !important;
+    border-spacing:0 !important;
+  }
+
+  tbody tr{
+    contain:layout paint !important;
+  }
+
+  tbody tr:nth-child(even){
+    background:rgba(248,250,252,.72) !important;
+  }
+
+  tbody tr:hover{
+    background:rgba(219,234,254,.38) !important;
+  }
+
+  /* سكرول أنعم */
+  .table-scroll,
+  .modal,
+  .modal-content{
+    scrollbar-width:thin;
+    scrollbar-color:#94a3b8 transparent;
+  }
+
+  /* مشاريع كثيرة */
+  .project-item,
+  .project-card{
+    min-height:72px !important;
+  }
+
+  .project-item:hover,
+  .project-card:hover{
+    transform:translateY(-1px) !important;
+    box-shadow:0 10px 22px rgba(15,23,42,.08) !important;
+  }
+
+  /* لمسة فخمة للعناوين */
+  .section-title h2,
+  .section-title h3{
+    letter-spacing:.15px !important;
+    text-shadow:0 1px 0 rgba(255,255,255,.5);
+  }
+
+  /* الأجهزة الضعيفة */
+  @media (prefers-reduced-motion: reduce){
+    .dashboard-card,
+    .chart-card,
+    .kpi,
+    .project-item,
+    .project-card{
+      transition:none !important;
+      transform:none !important;
+    }
+  }
+
+  @media (max-width:768px){
+    .project-item,
+    .project-card{
+      min-height:64px !important;
+    }
+
+    .dashboard-card,
+    .chart-card,
+    .kpi{
+      box-shadow:
+        0 8px 18px rgba(15,23,42,.05),
+        inset 0 1px 0 rgba(255,255,255,.88) !important;
+    }
+  }
+</style>
+
+
+<!-- v62.2 Elite Polish Light -->
+<style>
+  /*
+    Elite Polish Light
+    - تلميع بصري خفيف
+    - بدون مكتبات
+    - بدون JavaScript إضافي
+    - مناسب لكثرة المشاريع
+  */
+
+  /* أزرار أفخم بدون ثقل */
+  button,
+  .btn,
+  .btn-green,
+  .btn-red,
+  .btn-orange,
+  .btn-gray,
+  .btn-purple,
+  .btn-teal,
+  .btn-link,
+  .btn-wa{
+    border-radius:16px !important;
+    box-shadow:
+      0 5px 0 rgba(15,23,42,.16),
+      0 12px 22px rgba(15,23,42,.10),
+      inset 0 1px 0 rgba(255,255,255,.38) !important;
+  }
+
+  button:hover,
+  .btn-link:hover,
+  .btn-wa:hover{
+    transform:translateY(-1px) !important;
+    filter:brightness(1.025) !important;
+  }
+
+  button:active,
+  .btn-link:active,
+  .btn-wa:active{
+    transform:translateY(2px) !important;
+    box-shadow:
+      0 2px 0 rgba(15,23,42,.16),
+      0 6px 12px rgba(15,23,42,.10),
+      inset 0 1px 0 rgba(255,255,255,.28) !important;
+  }
+
+  /* جداول أنظف */
+  table{
+    overflow:hidden !important;
+    border-radius:20px !important;
+  }
+
+  th{
+    background:linear-gradient(180deg,#173a5c 0%,#102b46 100%) !important;
+    color:#ffffff !important;
+    font-weight:900 !important;
+  }
+
+  td{
+    color:#1f2937 !important;
+  }
+
+  tbody tr{
+    transition:background .12s ease !important;
+  }
+
+  tbody tr:hover td{
+    color:#0f172a !important;
+  }
+
+  /* حقول إدخال أرقى */
+  input,
+  select,
+  textarea{
+    border-radius:16px !important;
+    border-color:#cfddea !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.75) !important;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus{
+    box-shadow:
+      0 0 0 4px rgba(37,99,235,.12),
+      0 8px 18px rgba(15,23,42,.06),
+      inset 0 1px 0 rgba(255,255,255,.85) !important;
+  }
+
+  /* القائمة الجانبية تبقى ثابتة وأفخم */
+  .app-sidebar{
+    box-shadow:
+      0 18px 38px rgba(15,23,42,.14),
+      inset 0 1px 0 rgba(255,255,255,.08) !important;
+  }
+
+  .sidebar-link{
+    border-radius:16px !important;
+    transition:background .15s ease, transform .15s ease, box-shadow .15s ease !important;
+  }
+
+  .sidebar-link:hover,
+  .sidebar-link.active,
+  .sidebar-link.is-open{
+    transform:translateX(-1px) !important;
+  }
+
+  /* بطاقات المشاريع */
+  .project-item{
+    border-radius:22px !important;
+    background:
+      linear-gradient(135deg, rgba(255,255,255,.98), rgba(242,248,255,.96)) !important;
+    border:1px solid rgba(219,231,243,.95) !important;
+  }
+
+  /* التنبيهات والملاحظات */
+  .note,
+  .success,
+  .danger,
+  .alert-item{
+    border-radius:16px !important;
+    box-shadow:0 8px 18px rgba(15,23,42,.045) !important;
+  }
+
+  /* الحفاظ على الخفة في الجوال */
+  @media (max-width:768px){
+    button,
+    .btn,
+    .btn-green,
+    .btn-red,
+    .btn-orange,
+    .btn-gray,
+    .btn-purple,
+    .btn-teal{
+      box-shadow:
+        0 4px 0 rgba(15,23,42,.14),
+        0 8px 14px rgba(15,23,42,.08) !important;
+    }
+
+    button:hover,
+    .btn-link:hover,
+    .btn-wa:hover{
+      transform:none !important;
+    }
+
+    table{
+      border-radius:16px !important;
+    }
+  }
+</style>
+
+
+<!-- v63 Smart Performance Pro CSS -->
+<style>
+  /*
+    v63 Smart Performance Pro
+    آخر تحسين قوي داخل الملف الواحد قبل مرحلة الفصل الحقيقي للملفات.
+    الهدف: أداء أفضل مع كثرة المشاريع بدون تغيير الحسابات أو الوظائف.
+  */
+
+  .anas-smart-ready .project-item,
+  .anas-smart-ready .card,
+  .anas-smart-ready .dashboard-card,
+  .anas-smart-ready .chart-card,
+  .anas-smart-ready .kpi,
+  .anas-smart-ready .table-scroll{
+    content-visibility:auto;
+    contain-intrinsic-size:220px;
+  }
+
+  .anas-smart-ready table{
+    contain:layout style paint;
+  }
+
+  .anas-smart-ready tbody tr{
+    contain:layout paint;
+  }
+
+  .anas-smart-busy .dashboard-card,
+  .anas-smart-busy .chart-card,
+  .anas-smart-busy .kpi,
+  .anas-smart-busy .project-item{
+    transition-duration:0s !important;
+  }
+
+  .anas-smart-ready .modal-content{
+    content-visibility:auto;
+    contain-intrinsic-size:480px;
+  }
+
+  @media (max-width:768px){
+    .anas-smart-ready .project-item,
+    .anas-smart-ready .card,
+    .anas-smart-ready .dashboard-card,
+    .anas-smart-ready .chart-card,
+    .anas-smart-ready .kpi{
+      content-visibility:visible;
+    }
+
+    .anas-smart-ready tbody tr:hover{
+      box-shadow:none !important;
+      transform:none !important;
+    }
+  }
+</style>
+
 </head>
 <body>
 
@@ -5630,8 +6347,9 @@ font-weight:800;color:#fff;cursor:pointer
         <div class="login-logo-wrap"><img class="brand-logo-lg" id="loginLogo" alt="شعار النظام" / loading="lazy" decoding="async"></div>
         <h2 style="text-align:center;margin-bottom:14px">تسجيل الدخول</h2>
         <div class="grid">
-          <input id="loginUser" placeholder="اسم المستخدم" />
+          <input id="loginUser" type="email" placeholder="البريد الإلكتروني" />
           <input id="loginPass" type="password" placeholder="كلمة المرور" />
+          <div id="loginError" style="color:#dc2626;font-size:13px;text-align:center;min-height:20px"></div>
           <button class="btn" onclick="login()">دخول</button>
           <button id="biometricLoginBtn" class="btn-teal hidden" onclick="loginWithBiometric()">دخول بالبصمة</button>
           <div class="small" id="biometricHint" style="text-align:center"></div>
@@ -6429,6 +7147,8 @@ font-weight:800;color:#fff;cursor:pointer
             </thead>
             <tbody id="unitsBody"></tbody>
           </table>
+          <!-- شريط التنقل لجدول الوحدات -->
+          <div id="unitsPaginationControls"></div>
         </div>
 
         <div id="marketersTab" class="card tab-panel hidden">
@@ -8169,11 +8889,14 @@ font-weight:800;color:#fff;cursor:pointer
           <div class="section-kicker">نسخ داخلية محفوظة تلقائيًا ويمكن الاسترجاع منها عند الحاجة</div>
         </div>
         <div class="actions">
-          <button class="btn-green" onclick="createManualBackup()">إنشاء نسخة الآن</button>
+          <button class="btn-green" onclick="createManualBackup()">💾 إنشاء نسخة الآن</button>
+          <button class="btn-teal" onclick="exportBackupToFile()">⬇️ تحميل نسخة على الجهاز</button>
+          <button class="btn-orange" onclick="document.getElementById('importBackupInput').click()">⬆️ استرجاع من ملف</button>
+          <input type="file" id="importBackupInput" accept=".json" style="display:none" onchange="importBackupFromFile(event)">
           <button class="btn-gray" onclick="closeBackupsModal()">إغلاق</button>
         </div>
       </div>
-      <div id="backupStatusBox" class="note">يتم الاحتفاظ بآخر عدة نسخ تلقائيًا.</div>
+      <div id="backupStatusBox" class="note">يتم الاحتفاظ بآخر عدة نسخ تلقائيًا — وفي Firebase أيضاً.</div>
       <div id="backupsList" class="backup-list"></div>
     </div>
   </div>
@@ -10804,6 +11527,12 @@ let globalSettingsState = {
     }
 
 
+    function saveBackups(list){
+      localStorage.setItem(BACKUPS_KEY, JSON.stringify(Array.isArray(list) ? list : []));
+      // حفظ النسخ في Firebase كمان
+      if(typeof window.saveBackupsToFirebase === "function") window.saveBackupsToFirebase(list);
+    }
+
     function loadBackups(){
       try{
         const raw = JSON.parse(localStorage.getItem(BACKUPS_KEY) || "[]");
@@ -10811,10 +11540,6 @@ let globalSettingsState = {
       }catch(e){
         return [];
       }
-    }
-
-    function saveBackups(list){
-      localStorage.setItem(BACKUPS_KEY, JSON.stringify(Array.isArray(list) ? list : []));
     }
 
     function createBackupSnapshot(label="تلقائي"){
@@ -10886,10 +11611,51 @@ let globalSettingsState = {
 
     function createManualBackup(){
       if(!requirePermission("manager", "إدارة النسخ للمدير فقط")) return;
-
       createBackupSnapshot("يدوي");
       renderBackupsList();
       alert("تم إنشاء نسخة احتياطية جديدة");
+    }
+
+    function exportBackupToFile(){
+      try{
+        const data = JSON.stringify(appData || {projects:[]}, null, 2);
+        const blob = new Blob([data], {type:"application/json"});
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement("a");
+        const date = new Date().toISOString().slice(0,10);
+        a.href     = url;
+        a.download = "anas-backup-" + date + ".json";
+        a.click();
+        URL.revokeObjectURL(url);
+        alert("✅ تم تحميل النسخة الاحتياطية على جهازك");
+      }catch(e){
+        alert("حدث خطأ أثناء التحميل");
+      }
+    }
+
+    function importBackupFromFile(event){
+      const file = event.target.files[0];
+      if(!file) return;
+      if(!confirm("سيتم استبدال جميع البيانات الحالية بالنسخة المحددة. هل أنت متأكد؟")) return;
+      const reader = new FileReader();
+      reader.onload = function(e){
+        try{
+          const imported = JSON.parse(e.target.result);
+          if(!imported || !Array.isArray(imported.projects)){
+            alert("الملف غير صحيح — تأكد إنه ملف نسخة احتياطية من نظام أنس");
+            return;
+          }
+          appData = imported;
+          saveApp("restore-from-file");
+          renderProjects();
+          closeBackupsModal();
+          alert("✅ تم استرجاع البيانات بنجاح");
+        }catch(err){
+          alert("خطأ في قراءة الملف");
+        }
+        event.target.value = "";
+      };
+      reader.readAsText(file);
     }
 
     function restoreBackupSnapshot(id){
@@ -15751,20 +16517,26 @@ ${party}
       const body = document.getElementById("unitsBody");
       body.innerHTML = "";
 
-      const units = getFilteredUnits(p);
+      const allUnits = getFilteredUnits(p);
       const countBox = document.getElementById("unitsFilterCount");
-      if(countBox) countBox.textContent = `${units.length} وحدة`;
+      if(countBox) countBox.textContent = `${allUnits.length} وحدة`;
 
-      if(!units.length){
+      if(!allUnits.length){
         body.innerHTML = '<tr><td colspan="17">لا توجد وحدات مطابقة للفلاتر الحالية</td></tr>';
+        if(document.getElementById("unitsPaginationControls"))
+          document.getElementById("unitsPaginationControls").innerHTML = "";
         renderFilterSummaryNote();
         return;
       }
 
-      units.forEach(u => {
+      // ── Pagination: نسجّل كل الوحدات ونجيب صفوف الصفحة الحالية ──
+      const pageUnits = AnasPage.init("units", allUnits);
+
+      // ── رسم صفوف الصفحة الحالية فقط ──────────────────────────
+      const rows = pageUnits.map(u => {
         const i = p.units.indexOf(u);
         const rowClass = num(u.remaining) > 0 && (u.status === "محجوزة" || u.status === "مباعة" || u.status === "تم السداد" || u.status === "تم الافراغ") ? "warn-row" : "";
-        body.innerHTML += `
+        return `
           <tr class="${rowClass}" data-unit-number="${escapeHtml(String(u.number || '').trim().toLowerCase())}" data-unit-building="${escapeHtml(String(u.building || '').trim().toLowerCase())}">
             <td class="editable" contenteditable="true" onblur="editUnitField(${i},'number',this.innerText)">${u.number}</td>
             <td class="editable" contenteditable="true" onblur="editUnitField(${i},'model',this.innerText)">${u.model || ""}</td>
@@ -15791,9 +16563,12 @@ ${party}
                 <button type="button" class="btn-red unit-action-btn delete-action" onclick="deleteUnit(${i})"><span class="btn-icon">🗑</span><span>حذف</span></button>
               </div>
             </td>
-          </tr>
-        `;
+          </tr>`;
       });
+      body.innerHTML = rows.join("");
+
+      // ── رسم شريط التنقل ────────────────────────────────────────
+      AnasPage.renderControls("units", "unitsPaginationControls", "renderUnits()");
     }
 
     function sendUnitWhatsApp(index){
@@ -21610,5 +22385,424 @@ document.addEventListener('DOMContentLoaded', function(){ refreshAlertBellSafe()
 })();
 </script>
 
+
+<!-- v63 Smart Performance Pro JS -->
+<script>
+(function(){
+  "use strict";
+
+  if (window.ANAS_SMART_PERFORMANCE_PRO_READY) return;
+  window.ANAS_SMART_PERFORMANCE_PRO_READY = true;
+
+  function idle(callback, timeout){
+    if (window.anasSafeIdle) return window.anasSafeIdle(callback, timeout || 1000);
+    if ("requestIdleCallback" in window) return window.requestIdleCallback(callback, { timeout: timeout || 1000 });
+    return window.setTimeout(callback, 80);
+  }
+
+  function debounce(callback, delay){
+    if (window.anasSafeDebounce) return window.anasSafeDebounce(callback, delay || 180);
+    var timer = null;
+    return function(){
+      var context = this;
+      var args = arguments;
+      window.clearTimeout(timer);
+      timer = window.setTimeout(function(){
+        callback.apply(context, args);
+      }, delay || 180);
+    };
+  }
+
+  function markReady(){
+    try{
+      document.documentElement.classList.add("anas-smart-ready");
+      if (document.body) document.body.classList.add("anas-smart-ready");
+    }catch(error){}
+  }
+
+  function markBusyShort(){
+    try{
+      if (!document.body) return;
+      document.body.classList.add("anas-smart-busy");
+      window.clearTimeout(window.__anasSmartBusyTimer);
+      window.__anasSmartBusyTimer = window.setTimeout(function(){
+        try{ document.body.classList.remove("anas-smart-busy"); }catch(error){}
+      }, 180);
+    }catch(error){}
+  }
+
+  function tagLargeAreas(){
+    try{
+      var tables = document.querySelectorAll("table");
+      for (var i = 0; i < tables.length; i++){
+        var rows = tables[i].querySelectorAll("tbody tr").length;
+        if (rows >= 30){
+          tables[i].setAttribute("data-anas-smart-large-table", "1");
+        }
+      }
+
+      var projects = document.querySelectorAll(".project-item,.project-card");
+      for (var j = 0; j < projects.length; j++){
+        projects[j].setAttribute("data-anas-smart-project-card", "1");
+      }
+    }catch(error){}
+  }
+
+  function initSmartPerformance(){
+    try{
+      markReady();
+
+      var smartRefresh = debounce(function(){
+        markBusyShort();
+        idle(tagLargeAreas, 900);
+      }, 140);
+
+      document.addEventListener("click", function(event){
+        var target = event.target && event.target.closest ? event.target.closest("button,.tab,.sidebar-link,.project-item,.project-card") : null;
+        if (target) smartRefresh();
+      }, true);
+
+      document.addEventListener("input", function(event){
+        var target = event.target;
+        if (target && target.matches && target.matches("input,select,textarea")){
+          smartRefresh();
+        }
+      }, true);
+
+      window.addEventListener("resize", smartRefresh, { passive:true });
+      window.addEventListener("pageshow", smartRefresh);
+
+      idle(tagLargeAreas, 1200);
+    }catch(error){}
+  }
+
+  if (document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", initSmartPerformance, { once:true });
+  }else{
+    initSmartPerformance();
+  }
+})();
+</script>
+
+<!-- ============================================================
+     نظام Pagination الموحد - v64
+     يعمل مع أي جدول في النظام بدون تعديل الكود الأصلي
+     ============================================================ -->
+<script>
+(function(){
+  "use strict";
+
+  // ── إعدادات افتراضية ──────────────────────────────────────────
+  var PAGE_SIZE_DEFAULT = 50; // عدد الصفوف في كل صفحة
+
+  // ── تخزين حالة كل جدول ────────────────────────────────────────
+  // المفتاح = tableId, القيمة = { rows, page, pageSize }
+  var _state = {};
+
+  // ── الدالة الرئيسية: تسجّل جدول وترجع الصفوف للصفحة الحالية ──
+  window.AnasPage = {
+
+    // تهيئة جدول جديد أو تحديث صفوفه
+    // tableId   : نص فريد للجدول (مثلاً "units")
+    // allRows   : مصفوفة كل الصفوف (كائنات أو أي بيانات)
+    // pageSize  : اختياري - عدد الصفوف في الصفحة
+    init: function(tableId, allRows, pageSize){
+      var size = pageSize || PAGE_SIZE_DEFAULT;
+      var prev = _state[tableId];
+      // لو البيانات اتغيرت أو أول مرة → ارجع للصفحة الأولى
+      var sameCount = prev && prev.total === allRows.length;
+      _state[tableId] = {
+        rows    : allRows,
+        total   : allRows.length,
+        page    : sameCount ? (prev.page || 1) : 1,
+        pageSize: size
+      };
+      return this.getPage(tableId);
+    },
+
+    // جلب الصفوف للصفحة الحالية
+    getPage: function(tableId){
+      var s = _state[tableId];
+      if(!s) return [];
+      var start = (s.page - 1) * s.pageSize;
+      return s.rows.slice(start, start + s.pageSize);
+    },
+
+    // الانتقال لصفحة محددة ثم تشغيل callback الرسم
+    goTo: function(tableId, page, renderFn){
+      var s = _state[tableId];
+      if(!s) return;
+      var totalPages = Math.ceil(s.total / s.pageSize);
+      s.page = Math.max(1, Math.min(page, totalPages));
+      if(typeof renderFn === "function") renderFn();
+    },
+
+    // رسم شريط التنقل وإدراجه في عنصر containerId
+    renderControls: function(tableId, containerId, renderFn){
+      var s = _state[tableId];
+      var container = document.getElementById(containerId);
+      if(!s || !container) return;
+
+      var total      = s.total;
+      var pageSize   = s.pageSize;
+      var page       = s.page;
+      var totalPages = Math.ceil(total / pageSize);
+      var start      = total === 0 ? 0 : (page - 1) * pageSize + 1;
+      var end        = Math.min(page * pageSize, total);
+
+      if(totalPages <= 1){
+        container.innerHTML = total > 0
+          ? '<div class="anas-pg-info">إجمالي: <strong>' + total + '</strong> سجل</div>'
+          : '';
+        return;
+      }
+
+      // بناء أزرار الصفحات (تظهر 5 أرقام حول الصفحة الحالية)
+      var pages = [];
+      var delta = 2;
+      var left  = Math.max(1, page - delta);
+      var right = Math.min(totalPages, page + delta);
+
+      if(left > 1){
+        pages.push(1);
+        if(left > 2) pages.push("...");
+      }
+      for(var i = left; i <= right; i++) pages.push(i);
+      if(right < totalPages){
+        if(right < totalPages - 1) pages.push("...");
+        pages.push(totalPages);
+      }
+
+      var btns = pages.map(function(p){
+        if(p === "...") return '<span class="anas-pg-ellipsis">…</span>';
+        var active = p === page ? ' anas-pg-active' : '';
+        return '<button class="anas-pg-btn' + active + '" onclick="AnasPage.goTo(\'' + tableId + '\',' + p + ',function(){' + renderFn + '})">' + p + '</button>';
+      }).join("");
+
+      var prevDisabled = page <= 1 ? ' disabled' : '';
+      var nextDisabled = page >= totalPages ? ' disabled' : '';
+
+      container.innerHTML =
+        '<div class="anas-pg-wrap">' +
+          '<div class="anas-pg-info">عرض <strong>' + start + '–' + end + '</strong> من <strong>' + total + '</strong> سجل</div>' +
+          '<div class="anas-pg-btns">' +
+            '<button class="anas-pg-btn anas-pg-nav"' + prevDisabled + ' onclick="AnasPage.goTo(\'' + tableId + '\',' + (page-1) + ',function(){' + renderFn + '})">' +
+              '&#8594; السابق' +
+            '</button>' +
+            btns +
+            '<button class="anas-pg-btn anas-pg-nav"' + nextDisabled + ' onclick="AnasPage.goTo(\'' + tableId + '\',' + (page+1) + ',function(){' + renderFn + '})">' +
+              'التالي &#8592;' +
+            '</button>' +
+          '</div>' +
+        '</div>';
+    }
+  };
+
+})();
+</script>
+
+<!-- ── CSS شريط التنقل ──────────────────────────────────────── -->
+<style>
+.anas-pg-wrap{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:10px;
+  padding:12px 4px 4px;
+  direction:rtl;
+}
+.anas-pg-info{
+  font-size:13px;
+  color:var(--muted);
+}
+.anas-pg-info strong{
+  color:var(--text);
+  font-weight:700;
+}
+.anas-pg-btns{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
+}
+.anas-pg-btn{
+  min-width:36px;
+  height:36px;
+  padding:0 10px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:#fff;
+  color:var(--text);
+  font-size:13px;
+  font-family:inherit;
+  cursor:pointer;
+  transition:all .15s;
+  font-weight:500;
+}
+.anas-pg-btn:hover:not(:disabled){
+  background:var(--primary);
+  color:#fff;
+  border-color:var(--primary);
+  transform:translateY(-1px);
+  box-shadow:0 4px 10px rgba(31,59,87,.18);
+}
+.anas-pg-btn.anas-pg-active{
+  background:var(--primary);
+  color:#fff;
+  border-color:var(--primary);
+  font-weight:700;
+  box-shadow:0 4px 10px rgba(31,59,87,.22);
+}
+.anas-pg-btn:disabled{
+  opacity:.35;
+  cursor:default;
+}
+.anas-pg-nav{
+  font-size:12px;
+  padding:0 14px;
+}
+.anas-pg-ellipsis{
+  font-size:16px;
+  color:var(--muted);
+  padding:0 4px;
+  line-height:36px;
+}
+</style>
+
 </body>
+<script>
+(function(){
+  var FB = firebase.initializeApp({
+    apiKey: "AIzaSyDwkfviTEO6P-cfChiSPsdsfA59GQlPCck",
+    authDomain: "anas-system-84a86.firebaseapp.com",
+    databaseURL: "https://anas-system-84a86-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "anas-system-84a86",
+    storageBucket: "anas-system-84a86.firebasestorage.app",
+    messagingSenderId: "651502155278",
+    appId: "1:651502155278:web:91184fab804a606ea76e5f"
+  });
+  var auth = firebase.auth();
+  var db   = firebase.database();
+  var uid  = null;
+
+  // ── نسخ احتياطية في Firebase ─────────────────────────────
+  window.saveBackupsToFirebase = async function(list){
+    if(!uid) return;
+    try{
+      // نحفظ آخر 8 نسخ في Firebase
+      var slim = (list||[]).slice(0,8).map(function(b){
+        return { id:b.id, createdAt:b.createdAt, label:b.label, payload:b.payload };
+      });
+      await db.ref("users/"+uid+"/backups").set(slim);
+    }catch(e){ console.error("Backup save error:",e); }
+  };
+
+  window.loadBackupsFromFirebase = async function(){
+    if(!uid) return;
+    try{
+      var snap = await db.ref("users/"+uid+"/backups").get();
+      if(snap.exists() && Array.isArray(snap.val())){
+        localStorage.setItem("anas_system_backups_v1", JSON.stringify(snap.val()));
+        if(typeof renderBackupsList === "function") renderBackupsList();
+      }
+    }catch(e){ console.error("Backup load error:",e); }
+  };
+
+  // ── جلب البيانات ─────────────────────────────────────────
+  async function loadData(u){
+    uid = u;
+    try{
+      var snap = await db.ref("users/"+uid+"/appData").get();
+      if(snap.exists() && snap.val() && Array.isArray(snap.val().projects)){
+        localStorage.setItem("anas_projects_excel_pdf_v2", JSON.stringify(snap.val()));
+      } else {
+        var local = JSON.parse(localStorage.getItem("anas_projects_excel_pdf_v2")||"null");
+        if(local && local.projects && local.projects.length)
+          await db.ref("users/"+uid+"/appData").set(local);
+      }
+      // جلب النسخ الاحتياطية
+      await window.loadBackupsFromFirebase();
+    }catch(e){ console.error(e); }
+  }
+
+  // ── حفظ البيانات ─────────────────────────────────────────
+  var saveT = null;
+  window.saveToFirebase = function(){
+    if(!uid) return;
+    clearTimeout(saveT);
+    saveT = setTimeout(async function(){
+      try{
+        var d = JSON.parse(localStorage.getItem("anas_projects_excel_pdf_v2")||"{}");
+        d._updatedAt = new Date().toISOString();
+        await db.ref("users/"+uid+"/appData").set(d);
+        if(typeof setCloudState==="function") setCloudState("online","متصل");
+      }catch(e){ console.error(e); }
+    }, 1500);
+  };
+
+  // ── تسجيل الدخول ─────────────────────────────────────────
+  window.login = async function(){
+    var email = (document.getElementById("loginUser")||{}).value||"";
+    var pass  = (document.getElementById("loginPass")||{}).value||"";
+    var err   = document.getElementById("loginError");
+    var btn   = document.querySelector("#loginView .btn");
+    if(!email||!pass){ if(err) err.textContent="أدخل البريد وكلمة المرور"; return; }
+    if(err) err.textContent="";
+    if(btn){ btn.textContent="جارٍ الدخول..."; btn.disabled=true; }
+    try{
+      var c = await auth.signInWithEmailAndPassword(email, pass);
+      await loadData(c.user.uid);
+      if(typeof setCloudState==="function") setCloudState("online","متصل");
+      if(typeof applyLoginSuccess==="function")
+        applyLoginSuccess({username: c.user.email, role:"manager"});
+    }catch(e){
+      var msgs = {
+        "auth/invalid-credential":"البريد أو كلمة المرور غلط",
+        "auth/wrong-password":"كلمة المرور غلط",
+        "auth/user-not-found":"المستخدم غير موجود",
+        "auth/invalid-email":"البريد غير صحيح",
+        "auth/too-many-requests":"محاولات كثيرة، انتظر قليلاً"
+      };
+      if(err) err.textContent = msgs[e.code]||"حدث خطأ، حاول مرة أخرى";
+    }finally{
+      if(btn){ btn.textContent="دخول"; btn.disabled=false; }
+    }
+  };
+
+  // ── تسجيل الخروج ─────────────────────────────────────────
+  window.logoutFirebase = async function(){
+    await auth.signOut();
+    uid = null;
+    location.reload();
+  };
+
+  // ── ربط saveApp ──────────────────────────────────────────
+  var _orig = null;
+  function patch(){
+    if(typeof window.saveApp==="function" && !window._fbPatched){
+      _orig = window.saveApp;
+      window.saveApp = function(r){ _orig.apply(this,arguments); window.saveToFirebase(); };
+      window._fbPatched = true;
+    }
+  }
+
+  // ── جلسة تلقائية ─────────────────────────────────────────
+  auth.onAuthStateChanged(async function(user){
+    if(user){
+      await loadData(user.uid);
+      patch();
+      if(typeof setCloudState==="function") setCloudState("online","متصل");
+      if(typeof applyLoginSuccess==="function")
+        applyLoginSuccess({username:user.email, role:"manager"});
+    }
+  });
+
+  // ── patch بعد تحميل الصفحة ───────────────────────────────
+  document.addEventListener("DOMContentLoaded", function(){
+    setTimeout(patch, 500);
+  });
+
+})();
+</script>
 </html>
