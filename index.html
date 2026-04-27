@@ -3,6 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#16324f">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="نظام أنس">
 
   <!-- v57.2 Safe Head Clean: browser rendering hints only, no UI/function changes -->
   <meta name="theme-color" content="#16324f" />
@@ -22802,6 +22808,11 @@ document.addEventListener('DOMContentLoaded', function(){ refreshAlertBellSafe()
   document.addEventListener("DOMContentLoaded", function(){
     setTimeout(patch, 500);
   });
+
+  // ── Service Worker للـ PWA ────────────────────────────────
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('/sw.js').catch(function(){});
+  }
 
 })();
 </script>
