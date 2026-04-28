@@ -17760,11 +17760,11 @@ function renderSiteCustody(){
 
       if(!filteredRows.length){
         body.innerHTML = '<tr><td colspan="10">لا توجد حركات مالية حتى الآن</td></tr>';
-        setText("movementsOutTotal", money(0));
-        setText("movementsInTotal", money(0));
-        setText("movementsBalanceTotal", money(0));
-        setText("movementsCountTotal", "0");
-        setText("movementRowsCount", "0 حركة");
+        const pg=document.getElementById("mvPg"); if(pg) pg.innerHTML="";
+        const _s=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+        _s("movementsOutTotal",money(0)); _s("movementsInTotal",money(0));
+        _s("movementsBalanceTotal",money(0)); _s("movementsCountTotal","0");
+        _s("movementRowsCount","0 حركة");
         return;
       }
 
@@ -17801,11 +17801,13 @@ function renderSiteCustody(){
         `;
       }).join("");
 
-      setText("movementsOutTotal", money(totalOut));
-      setText("movementsInTotal", money(totalIn));
-      setText("movementsBalanceTotal", money(totalIn - totalOut));
-      setText("movementsCountTotal", String(filteredRows.length));
-      setText("movementRowsCount", `${filteredRows.length} حركة`);
+      const _set = (id,v) => { const e=document.getElementById(id); if(e) e.textContent=v; };
+      _set("movementsOutTotal", money(totalOut));
+      _set("movementsInTotal", money(totalIn));
+      _set("movementsBalanceTotal", money(totalIn - totalOut));
+      _set("movementsCountTotal", String(filteredRows.length));
+      _set("movementRowsCount", `${filteredRows.length} حركة`);
+      if(typeof mvPaginate === "function") mvPaginate();
     }
 
 
