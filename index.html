@@ -617,7 +617,7 @@
     .dashboard-card.warn::after{background:var(--yellow)}
     .dashboard-card.danger::after{background:var(--red)}
     .dashboard-label{font-size:12px;color:var(--muted);margin-bottom:8px}
-    .dashboard-value{font-size:22px;font-weight:bold;line-height:1.4}
+    .dashboard-value{font-size:clamp(10px,1.35vw,16px);font-weight:bold;line-height:1.3;word-break:break-all;}
     .dashboard-sub{font-size:12px;color:#475569;margin-top:6px;line-height:1.8}
     .dashboard-badge{
       display:inline-flex;
@@ -2209,12 +2209,22 @@ body.app-theme-ready[data-app-theme="silverlight"]{--theme-main:#aeb8c6;--theme-
   min-width:0;
 }
 .sidebar-profile-name{
-  font-size:24px;
+  font-size:20px;
   font-weight:900;
   line-height:1.2;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
+  max-width:150px;
+}
+.sidebar-profile-email{
+  font-size:10px;
+  color:rgba(255,255,255,.5);
+  margin-top:2px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:150px;
 }
 .sidebar-profile-role{
   font-size:13px;
@@ -2889,6 +2899,139 @@ body.app-theme-ready[data-app-theme="silverlight"]{--theme-main:#aeb8c6;--theme-
 
 
 /* final header logout rectangular red + sidebar submenu hover */
+
+/* تصغير تلقائي للأرقام الكبيرة في بطاقات الإجمالي */
+.executive-metric .dashboard-value,
+.home-dashboard-grid .dashboard-value {
+  overflow-wrap:break-word;
+  word-break:break-all;
+}
+@media(max-width:1200px){
+  .executive-metric .dashboard-value{ font-size:clamp(9px,1.12vw,15px) !important; }
+}
+@media(max-width:900px){
+  .executive-metric .dashboard-value{ font-size:10px !important; }
+}
+
+/* ===== بطاقات إحصائيات الوحدات ===== */
+.unit-stat-cards{
+  display:flex;flex-wrap:wrap;gap:10px;
+  margin:14px 0 18px;
+}
+.usc-card{
+  flex:1;min-width:120px;max-width:180px;
+  background:#fff;border-radius:14px;
+  padding:14px 16px;
+  display:flex;align-items:center;gap:12px;
+  box-shadow:0 2px 10px rgba(0,0,0,.07);
+  border:1.5px solid #e5e7eb;
+  transition:transform .15s,box-shadow .15s;
+}
+.usc-card[onclick]{cursor:pointer;}
+.usc-card[onclick]:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.12);}
+.usc-icon{font-size:22px;flex-shrink:0;}
+.usc-body{flex:1;min-width:0;}
+.usc-value{font-size:22px;font-weight:800;line-height:1;color:#111;}
+.usc-label{font-size:11px;color:#6b7280;margin-top:3px;font-weight:500;}
+.usc-bar-wrap{height:4px;background:#e5e7eb;border-radius:4px;margin-top:6px;overflow:hidden;}
+.usc-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#3b82f6,#6366f1);transition:width .5s ease;}
+
+.usc-total   {border-color:#c7d2fe;background:linear-gradient(135deg,#ede9fe 0%,#fff 100%);}
+.usc-total .usc-value{color:#4f46e5;}
+.usc-sales   {border-color:#bfdbfe;background:linear-gradient(135deg,#dbeafe 0%,#fff 100%);flex:1.5;min-width:160px;}
+.usc-sales .usc-value{color:#1d4ed8;}
+.usc-available{border-color:#bbf7d0;background:linear-gradient(135deg,#dcfce7 0%,#fff 100%);}
+.usc-available .usc-value{color:#15803d;}
+.usc-reserved {border-color:#fde68a;background:linear-gradient(135deg,#fef9c3 0%,#fff 100%);}
+.usc-reserved .usc-value{color:#b45309;}
+.usc-sold     {border-color:#bfdbfe;background:linear-gradient(135deg,#dbeafe 0%,#fff 100%);}
+.usc-sold .usc-value{color:#1d4ed8;}
+.usc-paid     {border-color:#a7f3d0;background:linear-gradient(135deg,#d1fae5 0%,#fff 100%);}
+.usc-paid .usc-value{color:#065f46;}
+.usc-transferred{border-color:#e9d5ff;background:linear-gradient(135deg,#f3e8ff 0%,#fff 100%);}
+.usc-transferred .usc-value{color:#7c3aed;}
+.usc-reviewed {border-color:#fed7aa;background:linear-gradient(135deg,#ffedd5 0%,#fff 100%);}
+.usc-reviewed .usc-value{color:#c2410c;}
+@media(max-width:700px){
+  .usc-card{min-width:calc(50% - 8px);max-width:none;flex:none;}
+  .usc-sales{flex:none;width:100%;max-width:none;}
+}
+
+/* === Global Search Button === */
+.header-search-btn{
+  display:flex;align-items:center;gap:6px;
+  height:46px;padding:0 14px;
+  border-radius:12px;border:none;cursor:pointer;
+  background:linear-gradient(180deg,#2563eb 0%,#1d4ed8 100%);
+  color:#fff;font-size:14px;font-weight:600;
+  transition:background .2s,transform .1s;
+}
+.header-search-btn:hover{background:linear-gradient(180deg,#3b82f6 0%,#2563eb 100%);}
+.header-search-btn:active{transform:scale(.97);}
+.header-search-btn .search-icon{font-size:18px;}
+@media(max-width:600px){.header-search-btn .search-text{display:none;}}
+
+/* === Global Search Modal === */
+#globalSearchOverlay{
+  display:none;position:fixed;inset:0;z-index:99999;
+  background:rgba(0,0,0,.55);backdrop-filter:blur(4px);
+  align-items:flex-start;justify-content:center;padding-top:70px;
+}
+#globalSearchOverlay.open{display:flex;}
+#globalSearchModal{
+  background:#fff;border-radius:18px;width:min(680px,95vw);
+  box-shadow:0 25px 60px rgba(0,0,0,.25);overflow:hidden;
+  display:flex;flex-direction:column;max-height:75vh;
+}
+#globalSearchHeader{
+  padding:16px 18px;border-bottom:1px solid #e5e7eb;
+  display:flex;align-items:center;gap:10px;
+}
+#globalSearchInput{
+  flex:1;border:2px solid #3b82f6;border-radius:10px;
+  padding:10px 14px;font-size:16px;outline:none;
+  background:#f8faff;direction:rtl;font-family:inherit;
+}
+#globalSearchInput:focus{border-color:#2563eb;background:#fff;}
+#globalSearchClose{
+  background:none;border:none;cursor:pointer;font-size:22px;color:#6b7280;
+  padding:4px 8px;border-radius:8px;
+}
+#globalSearchClose:hover{background:#f3f4f6;color:#111;}
+#globalSearchResults{
+  overflow-y:auto;padding:10px 0;flex:1;
+}
+.gs-empty,.gs-hint{
+  text-align:center;padding:40px 20px;color:#9ca3af;font-size:15px;
+}
+.gs-section-title{
+  padding:8px 18px 4px;font-size:12px;font-weight:700;
+  color:#6b7280;text-transform:uppercase;letter-spacing:.5px;
+  border-top:1px solid #f3f4f6;margin-top:4px;
+}
+.gs-section-title:first-child{border-top:none;margin-top:0;}
+.gs-item{
+  padding:10px 18px;cursor:pointer;
+  display:flex;align-items:center;gap:12px;
+  transition:background .15s;border:none;width:100%;text-align:right;background:none;
+}
+.gs-item:hover{background:#eff6ff;}
+.gs-item-icon{font-size:20px;flex-shrink:0;width:32px;text-align:center;}
+.gs-item-body{flex:1;min-width:0;}
+.gs-item-title{font-size:14px;font-weight:600;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.gs-item-sub{font-size:12px;color:#6b7280;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.gs-item-badge{
+  font-size:11px;padding:2px 8px;border-radius:20px;
+  font-weight:600;flex-shrink:0;
+}
+.badge-project{background:#dbeafe;color:#1d4ed8;}
+.badge-unit{background:#dcfce7;color:#166534;}
+.badge-marketer{background:#fef9c3;color:#854d0e;}
+.badge-partner{background:#f3e8ff;color:#6b21a8;}
+.badge-investor{background:#ffe4e6;color:#9f1239;}
+.badge-supplier{background:#e0f2fe;color:#075985;}
+.gs-count{font-size:12px;color:#9ca3af;padding:8px 18px 2px;text-align:right;}
+
 .header-logout-btn{
   width:74px !important;
   height:46px !important;
@@ -3073,9 +3216,11 @@ body.app-theme-ready[data-app-theme="silverlight"]{--theme-main:#aeb8c6;--theme-
   padding-inline-end:54px;
 }
 .executive-metric .dashboard-value{
-  font-size:25px;
+  font-size:clamp(10px,1.65vw,18px);
   font-weight:900;
   color:#0f172a;
+  word-break:break-all;
+  line-height:1.2;
 }
 .executive-metric .dashboard-sub{
   color:#64748b;
@@ -4154,7 +4299,7 @@ font-weight:800;color:#fff;cursor:pointer
   .kpi-value,
   .big-number,
   .stat-value{
-    font-size:34px !important;
+    font-size:25px !important;
     line-height:1.15 !important;
     font-weight:900 !important;
     color:#0a1f38 !important;
@@ -4192,7 +4337,7 @@ font-weight:800;color:#fff;cursor:pointer
 
   @media (max-width:768px){
     .kpi-value,.big-number,.stat-value{
-      font-size:28px !important;
+      font-size:21px !important;
     }
 
     .dashboard-card h3,
@@ -4355,7 +4500,7 @@ font-weight:800;color:#fff;cursor:pointer
 
   .dashboard-value,
   .kpi-value{
-    font-size:31px !important;
+    font-size:23px !important;
     font-weight:950 !important;
     color:#071f3b !important;
     letter-spacing:-.4px !important;
@@ -4454,7 +4599,7 @@ font-weight:800;color:#fff;cursor:pointer
 
     .dashboard-value,
     .kpi-value{
-      font-size:27px !important;
+      font-size:20px !important;
     }
 
     .chart-card{
@@ -4878,6 +5023,7 @@ font-weight:800;color:#fff;cursor:pointer
             <div class="sidebar-profile-text">
               <div id="sidebarUserName" class="sidebar-profile-name">أبو أنس</div>
               <div id="sidebarUserRole" class="sidebar-profile-role">المدير العام</div>
+              <div id="sidebarUserEmail" class="sidebar-profile-email" style="display:none"></div>
             </div>
             <div class="sidebar-profile-avatar">👤</div>
           </div>
@@ -4981,6 +5127,9 @@ font-weight:800;color:#fff;cursor:pointer
             </div>
             <input id="restoreFile" type="file" accept=".json" class="hidden" onchange="restoreBackup(event)" />
             <button id="biometricSetupBtn" class="btn-teal" onclick="setupBiometricForCurrentUser()">تفعيل البصمة</button>
+            <button type="button" class="btn-gray header-search-btn no-print" onclick="openGlobalSearch()" title="بحث شامل" aria-label="بحث شامل" id="globalSearchBtn">
+              <span class="search-icon">🔍</span><span class="search-text">بحث</span>
+            </button>
             <div id="headerThemeTools" class="header-tools hidden no-print">
               <div class="theme-switcher">
                 <button type="button" class="theme-switcher-toggle" onclick="toggleThemeMenu()">🎨 لون البرنامج</button>
@@ -5580,6 +5729,67 @@ font-weight:800;color:#fff;cursor:pointer
             </div>
             <div class="actions no-print">
               <span class="mini-stat" id="unitsFilterCount">0 وحدة</span>
+            </div>
+          </div>
+
+          <!-- ===== بطاقات إحصائيات الوحدات ===== -->
+          <div id="unitStatCards" class="unit-stat-cards no-print">
+            <div class="usc-card usc-total">
+              <div class="usc-icon">🏢</div>
+              <div class="usc-body">
+                <div class="usc-value" id="usc-total">0</div>
+                <div class="usc-label">إجمالي الوحدات</div>
+              </div>
+            </div>
+            <div class="usc-card usc-sales">
+              <div class="usc-icon">📊</div>
+              <div class="usc-body">
+                <div class="usc-value" id="usc-salesPct">0%</div>
+                <div class="usc-label">نسبة المبيعات</div>
+                <div class="usc-bar-wrap"><div class="usc-bar-fill" id="usc-salesBar" style="width:0%"></div></div>
+              </div>
+            </div>
+            <div class="usc-card usc-available" onclick="filterUnitsByStatus('متاحة')">
+              <div class="usc-icon">🟢</div>
+              <div class="usc-body">
+                <div class="usc-value" id="usc-available">0</div>
+                <div class="usc-label">متاحة</div>
+              </div>
+            </div>
+            <div class="usc-card usc-reserved" onclick="filterUnitsByStatus('محجوزة')">
+              <div class="usc-icon">🟡</div>
+              <div class="usc-body">
+                <div class="usc-value" id="usc-reserved">0</div>
+                <div class="usc-label">محجوزة</div>
+              </div>
+            </div>
+            <div class="usc-card usc-sold" onclick="filterUnitsByStatus('مباعة')">
+              <div class="usc-icon">🔵</div>
+              <div class="usc-body">
+                <div class="usc-value" id="usc-sold">0</div>
+                <div class="usc-label">مباعة</div>
+              </div>
+            </div>
+            <div class="usc-card usc-paid" onclick="filterUnitsByStatus('تم السداد')">
+              <div class="usc-icon">✅</div>
+              <div class="usc-body">
+                <div class="usc-value" id="usc-paid">0</div>
+                <div class="usc-label">تم السداد</div>
+              </div>
+            </div>
+            <div class="usc-card usc-transferred" onclick="filterUnitsByStatus('تم الافراغ')">
+              <div class="usc-icon">📋</div>
+              <div class="usc-body">
+                <div class="usc-value" id="usc-transferred">0</div>
+                <div class="usc-label">تم الافراغ</div>
+              </div>
+            </div>
+            <div class="usc-card usc-reviewed" onclick="filterUnitsByStatus('تمت المراجعة النهائية')">
+              <div class="usc-icon">🏆</div>
+              <div class="usc-body">
+                <div class="usc-value" id="usc-reviewed">0</div>
+                <div class="usc-label">مراجعة نهائية</div>
+              </div>
             </div>
           </div>
 
@@ -7549,12 +7759,28 @@ font-weight:800;color:#fff;cursor:pointer
       updateSidebarProfile();
     }
 
+    function formatDisplayName(raw){
+      if(!raw) return "أبو أنس";
+      if(raw.includes("@")){
+        let part = raw.split("@")[0];
+        part = part.replace(/[._\-]/g, " ").trim();
+        return part.charAt(0).toUpperCase() + part.slice(1);
+      }
+      return raw;
+    }
+
     function updateSidebarProfile(){
       const u = getCurrentUser();
       const nameEl = document.getElementById("sidebarUserName");
       const roleEl = document.getElementById("sidebarUserRole");
-      if(nameEl) nameEl.textContent = u.username || "أبو أنس";
+      const emailEl = document.getElementById("sidebarUserEmail");
+      const raw = u.username || "";
+      if(nameEl) nameEl.textContent = formatDisplayName(raw);
       if(roleEl) roleEl.textContent = roleLabel(u.role || "manager") || "المدير العام";
+      if(emailEl){
+        if(raw.includes("@")){ emailEl.textContent = raw; emailEl.style.display = ""; }
+        else { emailEl.style.display = "none"; }
+      }
     }
 
     function detectCurrentSidebarSection(){
@@ -15021,6 +15247,9 @@ ${party}
       const body = document.getElementById("unitsBody");
       body.innerHTML = "";
 
+      // ── تحديث بطاقات الإحصائيات دائماً من كل الوحدات ──
+      updateUnitStatCards(p);
+
       const allUnits = getFilteredUnits(p);
       const countBox = document.getElementById("unitsFilterCount");
       if(countBox) countBox.textContent = `${allUnits.length} وحدة`;
@@ -18316,7 +18545,7 @@ function renderSiteCustody(){
     .dashboard-card.warn::after{background:var(--yellow)}
     .dashboard-card.danger::after{background:var(--red)}
     .dashboard-label{font-size:12px;color:var(--muted);margin-bottom:8px}
-    .dashboard-value{font-size:22px;font-weight:bold;line-height:1.4}
+    .dashboard-value{font-size:clamp(10px,1.35vw,16px);font-weight:bold;line-height:1.3;word-break:break-all;}
     .dashboard-sub{font-size:12px;color:#475569;margin-top:6px;line-height:1.8}
     .dashboard-badge{
       display:inline-flex;
@@ -21304,6 +21533,311 @@ document.addEventListener('DOMContentLoaded', function(){ refreshAlertBellSafe()
 }
 </style>
 
+<!-- ===== نافذة البحث الشامل ===== -->
+<div id="globalSearchOverlay" onclick="handleSearchOverlayClick(event)" role="dialog" aria-modal="true" aria-label="بحث شامل">
+  <div id="globalSearchModal">
+    <div id="globalSearchHeader">
+      <button id="globalSearchClose" onclick="closeGlobalSearch()" title="إغلاق">✕</button>
+      <input id="globalSearchInput" type="text" placeholder="ابحث في المشاريع، الوحدات، العملاء، المسوقين..." autocomplete="off" oninput="runGlobalSearch(this.value)" onkeydown="handleSearchKey(event)">
+      <span style="font-size:20px;color:#3b82f6;">🔍</span>
+    </div>
+    <div id="globalSearchResults"><div class="gs-hint">اكتب للبحث في كل البيانات...</div></div>
+  </div>
+</div>
+
+<script>
+/* ===== Global Search ===== */
+let _gsTimer = null;
+
+function openGlobalSearch(){
+  const overlay = document.getElementById('globalSearchOverlay');
+  overlay.classList.add('open');
+  setTimeout(() => document.getElementById('globalSearchInput').focus(), 80);
+}
+
+function closeGlobalSearch(){
+  document.getElementById('globalSearchOverlay').classList.remove('open');
+  document.getElementById('globalSearchInput').value = '';
+  document.getElementById('globalSearchResults').innerHTML = '<div class="gs-hint">اكتب للبحث في كل البيانات...</div>';
+}
+
+function handleSearchOverlayClick(e){
+  if(e.target === document.getElementById('globalSearchOverlay')) closeGlobalSearch();
+}
+
+function handleSearchKey(e){
+  if(e.key === 'Escape') closeGlobalSearch();
+}
+
+// keyboard shortcut: Ctrl+K or Cmd+K
+document.addEventListener('keydown', function(e){
+  if((e.ctrlKey || e.metaKey) && e.key === 'k'){
+    e.preventDefault();
+    openGlobalSearch();
+  }
+});
+
+function runGlobalSearch(q){
+  clearTimeout(_gsTimer);
+  q = (q || '').trim();
+  const resultsEl = document.getElementById('globalSearchResults');
+  if(q.length < 2){
+    resultsEl.innerHTML = '<div class="gs-hint">اكتب حرفين على الأقل للبحث...</div>';
+    return;
+  }
+  _gsTimer = setTimeout(() => {
+    const results = doSearch(q);
+    renderSearchResults(results, q);
+  }, 150);
+}
+
+function gsMatch(val, q){
+  return String(val || '').toLowerCase().includes(q.toLowerCase());
+}
+
+function doSearch(q){
+  const res = { projects:[], units:[], marketers:[], partners:[], investors:[], suppliers:[] };
+  const projects = (appData.projects || []).filter(Boolean);
+
+  // المشاريع
+  projects.forEach(p => {
+    if(gsMatch(p.name, q) || gsMatch(p.location, q) || gsMatch(p.description, q)){
+      res.projects.push({ id: p.id, name: p.name || 'بدون اسم', sub: p.location || '', unitsCount: (p.units||[]).length });
+    }
+  });
+
+  // الوحدات والعملاء
+  projects.forEach(p => {
+    (p.units || []).forEach((u, i) => {
+      if(gsMatch(u.number, q) || gsMatch(u.client, q) || gsMatch(u.building, q) || gsMatch(u.floor, q) || gsMatch(u.type, q)){
+        res.units.push({
+          projectId: p.id, projectName: p.name || 'بدون اسم',
+          number: u.number || '-', client: u.client || '-',
+          building: u.building || '', status: u.status || '', idx: i
+        });
+      }
+    });
+  });
+
+  // المسوقون (masterLists)
+  const ml = appData.masterLists || {};
+  (ml.marketers || []).forEach((m, i) => {
+    if(gsMatch(m.name, q) || gsMatch(m.phone, q) || gsMatch(m.company, q)){
+      res.marketers.push({ name: m.name || '-', phone: m.phone || '', company: m.company || '', idx: i });
+    }
+  });
+  // المسوقون داخل مشاريع
+  projects.forEach(p => {
+    (p.marketers || []).forEach((m, i) => {
+      if(gsMatch(m.name, q) || gsMatch(m.phone, q)){
+        const already = res.marketers.find(x => x.name === (m.name||'-') && x.phone === (m.phone||''));
+        if(!already) res.marketers.push({ name: m.name || '-', phone: m.phone || '', company: p.name || '', idx: i });
+      }
+    });
+  });
+
+  // الشركاء
+  (ml.partners || []).forEach((p, i) => {
+    if(gsMatch(p.name, q) || gsMatch(p.phone, q)){
+      res.partners.push({ name: p.name || '-', phone: p.phone || '', idx: i });
+    }
+  });
+
+  // المساهمون
+  (ml.investors || []).forEach((inv, i) => {
+    if(gsMatch(inv.name, q) || gsMatch(inv.phone, q)){
+      res.investors.push({ name: inv.name || '-', phone: inv.phone || '', idx: i });
+    }
+  });
+
+  // الموردون
+  (ml.suppliers || []).forEach((s, i) => {
+    if(gsMatch(s.name, q) || gsMatch(s.phone, q) || gsMatch(s.category, q)){
+      res.suppliers.push({ name: s.name || '-', phone: s.phone || '', category: s.category || '', idx: i });
+    }
+  });
+
+  return res;
+}
+
+function highlight(text, q){
+  if(!q || !text) return escapeHtml(String(text || ''));
+  const escaped = escapeHtml(String(text));
+  const qEsc = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return escaped.replace(new RegExp(qEsc, 'gi'), m => `<mark style="background:#fef08a;border-radius:3px;padding:0 2px;">${m}</mark>`);
+}
+
+function renderSearchResults(res, q){
+  const el = document.getElementById('globalSearchResults');
+  const total = res.projects.length + res.units.length + res.marketers.length + res.partners.length + res.investors.length + res.suppliers.length;
+
+  if(total === 0){
+    el.innerHTML = '<div class="gs-empty">😕 لا توجد نتائج لـ «' + escapeHtml(q) + '»</div>';
+    return;
+  }
+
+  let html = `<div class="gs-count">تم العثور على ${total} نتيجة</div>`;
+
+  if(res.projects.length){
+    html += `<div class="gs-section-title">📁 المشاريع (${res.projects.length})</div>`;
+    res.projects.forEach(p => {
+      html += `<button class="gs-item" onclick="gsOpenProject('${escapeHtml(String(p.id))}')">
+        <span class="gs-item-icon">🏗️</span>
+        <div class="gs-item-body">
+          <div class="gs-item-title">${highlight(p.name, q)}</div>
+          <div class="gs-item-sub">${highlight(p.sub, q) || 'بدون موقع'} · ${p.unitsCount} وحدة</div>
+        </div>
+        <span class="gs-item-badge badge-project">مشروع</span>
+      </button>`;
+    });
+  }
+
+  if(res.units.length){
+    html += `<div class="gs-section-title">🏠 الوحدات والعملاء (${res.units.length})</div>`;
+    res.units.slice(0,30).forEach(u => {
+      html += `<button class="gs-item" onclick="gsOpenUnit('${escapeHtml(String(u.projectId))}')">
+        <span class="gs-item-icon">🏠</span>
+        <div class="gs-item-body">
+          <div class="gs-item-title">${highlight('وحدة ' + u.number, q)} ${u.building ? '- ' + highlight(u.building, q) : ''}</div>
+          <div class="gs-item-sub">العميل: ${highlight(u.client, q)} · ${escapeHtml(u.status)} · ${escapeHtml(u.projectName)}</div>
+        </div>
+        <span class="gs-item-badge badge-unit">وحدة</span>
+      </button>`;
+    });
+    if(res.units.length > 30) html += `<div class="gs-count">... و ${res.units.length - 30} نتيجة أخرى</div>`;
+  }
+
+  if(res.marketers.length){
+    html += `<div class="gs-section-title">📣 المسوقون (${res.marketers.length})</div>`;
+    res.marketers.slice(0,20).forEach(m => {
+      html += `<button class="gs-item" onclick="gsOpenSection('marketers')">
+        <span class="gs-item-icon">📣</span>
+        <div class="gs-item-body">
+          <div class="gs-item-title">${highlight(m.name, q)}</div>
+          <div class="gs-item-sub">${m.phone ? highlight(m.phone, q) : ''} ${m.company ? '· ' + escapeHtml(m.company) : ''}</div>
+        </div>
+        <span class="gs-item-badge badge-marketer">مسوّق</span>
+      </button>`;
+    });
+  }
+
+  if(res.partners.length){
+    html += `<div class="gs-section-title">🤝 الشركاء (${res.partners.length})</div>`;
+    res.partners.slice(0,20).forEach(p => {
+      html += `<button class="gs-item" onclick="gsOpenSection('partners')">
+        <span class="gs-item-icon">🤝</span>
+        <div class="gs-item-body">
+          <div class="gs-item-title">${highlight(p.name, q)}</div>
+          <div class="gs-item-sub">${p.phone ? highlight(p.phone, q) : 'بدون جوال'}</div>
+        </div>
+        <span class="gs-item-badge badge-partner">شريك</span>
+      </button>`;
+    });
+  }
+
+  if(res.investors.length){
+    html += `<div class="gs-section-title">💼 المساهمون (${res.investors.length})</div>`;
+    res.investors.slice(0,20).forEach(inv => {
+      html += `<button class="gs-item" onclick="gsOpenSection('investors')">
+        <span class="gs-item-icon">💼</span>
+        <div class="gs-item-body">
+          <div class="gs-item-title">${highlight(inv.name, q)}</div>
+          <div class="gs-item-sub">${inv.phone ? highlight(inv.phone, q) : 'بدون جوال'}</div>
+        </div>
+        <span class="gs-item-badge badge-investor">مساهم</span>
+      </button>`;
+    });
+  }
+
+  if(res.suppliers.length){
+    html += `<div class="gs-section-title">🏭 الموردون (${res.suppliers.length})</div>`;
+    res.suppliers.slice(0,20).forEach(s => {
+      html += `<button class="gs-item" onclick="gsOpenSection('suppliers')">
+        <span class="gs-item-icon">🏭</span>
+        <div class="gs-item-body">
+          <div class="gs-item-title">${highlight(s.name, q)}</div>
+          <div class="gs-item-sub">${s.phone ? highlight(s.phone, q) : ''} ${s.category ? '· ' + escapeHtml(s.category) : ''}</div>
+        </div>
+        <span class="gs-item-badge badge-supplier">مورّد</span>
+      </button>`;
+    });
+  }
+
+  el.innerHTML = html;
+}
+
+function gsOpenProject(id){
+  closeGlobalSearch();
+  openProject(id, true);
+}
+
+function gsOpenUnit(projectId){
+  closeGlobalSearch();
+  openProject(projectId, true);
+  setTimeout(() => {
+    const btn = document.querySelector('.tab[onclick*="unitsTab"]');
+    if(btn) showTab('unitsTab', btn);
+  }, 60);
+}
+
+function gsOpenSection(section){
+  closeGlobalSearch();
+  openProjectFromSidebar(
+    section === 'marketers' ? 'marketersTab' :
+    section === 'partners' ? 'partnersTab' :
+    section === 'investors' ? 'investorsTab' :
+    section === 'suppliers' ? 'suppliersSummaryTab' : 'unitsTab',
+    section
+  );
+}
+
+/* ===== بطاقات إحصائيات الوحدات ===== */
+function updateUnitStatCards(p){
+  const units = (p && p.units) || [];
+  const total = units.length;
+
+  const counts = {
+    'متاحة': 0,
+    'محجوزة': 0,
+    'مباعة': 0,
+    'تم السداد': 0,
+    'تم الافراغ': 0,
+    'تمت المراجعة النهائية': 0,
+    'شقة العرض': 0,
+  };
+  units.forEach(u => {
+    const s = u.status || 'متاحة';
+    if(counts.hasOwnProperty(s)) counts[s]++;
+  });
+
+  // نسبة المبيعات = كل ما ليس "متاحة" أو "شقة العرض"
+  const soldCount = total - counts['متاحة'] - counts['شقة العرض'];
+  const salesPct = total > 0 ? Math.round((soldCount / total) * 100) : 0;
+
+  function set(id, val){ const el=document.getElementById(id); if(el) el.textContent=val; }
+  set('usc-total', total);
+  set('usc-salesPct', salesPct + '%');
+  set('usc-available', counts['متاحة']);
+  set('usc-reserved', counts['محجوزة']);
+  set('usc-sold', counts['مباعة']);
+  set('usc-paid', counts['تم السداد']);
+  set('usc-transferred', counts['تم الافراغ']);
+  set('usc-reviewed', counts['تمت المراجعة النهائية']);
+
+  const bar = document.getElementById('usc-salesBar');
+  if(bar) bar.style.width = salesPct + '%';
+}
+
+function filterUnitsByStatus(status){
+  const sel = document.getElementById('unitStatusFilter');
+  if(!sel) return;
+  // toggle: إذا كان مفعّلاً نلغيه
+  sel.value = sel.value === status ? '' : status;
+  renderUnits();
+  // scroll to table
+  document.getElementById('unitsTab')?.scrollIntoView({behavior:'smooth', block:'start'});
+}
+</script>
 </body>
 <script>
 (function(){
