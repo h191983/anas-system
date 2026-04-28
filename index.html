@@ -5367,7 +5367,6 @@ font-weight:800;color:#fff;cursor:pointer
               <button class="btn-teal" onclick="printProjectReport()">طباعة تقرير المشروع</button>
               <button class="btn-purple" onclick="printCompanyReport()">تقرير الشركة</button>
               <button class="btn-green" onclick="printClientReport()">📋 تقرير العملاء</button>
-              <button class="btn-green" onclick="printClientReport()">📋 تقرير العملاء</button>
             </div>
           </div>
         </div>
@@ -18025,77 +18024,137 @@ function renderSiteCustody(){
         const units = p.units || [];
         const totalUnits = units.length;
         const availableUnits = units.filter(u => !u.status || u.status === "متاحة");
-        const soldUnits = units.filter(u => ["مباعة","تم السداد","تم الافراغ"].includes(u.status));
-        const bookedUnits = units.filter(u => u.status === "محجوزة");
-        const salesPercent = totalUnits > 0 ? Math.round((soldUnits.length + bookedUnits.length) / totalUnits * 100) : 0;
+        const nonAvailableUnits = units.filter(u => u.status && u.status !== "متاحة");
+        const salesPercent = totalUnits > 0 ? Math.round(nonAvailableUnits.length / totalUnits * 100) : 0;
         const logo = (typeof appData !== "undefined" && appData.branding && appData.branding.logoDataUrl) ? appData.branding.logoDataUrl : "";
         const mapUrl = p.mapUrl || "";
         const location = p.location || p.notes || "";
 
-        const unitsRows = availableUnits.map(u => `
-          <tr>
-            <td>${u.number||"-"}</td><td>${u.model||"-"}</td><td>${u.floor||"-"}</td>
-            <td>${u.building||"-"}</td><td>${u.view||"-"}</td><td>${u.area||"-"}</td>
-            <td>${u.components||"-"}</td><td>${money(u.finalPrice||u.price)}</td>
-            <td><span style="background:#dcfce7;color:#166534;padding:3px 10px;border-radius:8px;font-size:11px">متاحة</span></td>
+        const unitsRows = availableUnits.map((u, i) => `
+          <tr style="background:${i%2===0?'#ffffff':'#f0fdf4'}">
+            <td style="font-weight:700;color:#1f3b57">${u.number||"-"}</td>
+            <td>${u.model||"-"}</td>
+            <td>${u.floor||"-"}</td>
+            <td>${u.building||"-"}</td>
+            <td>${u.view||"-"}</td>
+            <td>${u.area||"-"}</td>
+            <td>${u.components||"-"}</td>
+            <td style="font-weight:700;color:#16a34a">${money(u.finalPrice||u.price)}</td>
+            <td><span style="background:#dcfce7;color:#166534;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:700">متاحة ✓</span></td>
           </tr>`).join("");
 
         const html = `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8">
           <title>تقرير العملاء - ${p.name}</title>
           <style>
             *{margin:0;padding:0;box-sizing:border-box}
-            body{font-family:Tahoma,Arial,sans-serif;background:#f8fafc;color:#0f172a;direction:rtl}
-            .header{background:linear-gradient(135deg,#0f2236,#1f3b57);color:#fff;padding:28px 40px;display:flex;align-items:center;justify-content:space-between}
-            .header img{height:65px;object-fit:contain}
+            body{font-family:Tahoma,Arial,sans-serif;background:#f0f4f8;color:#0f172a;direction:rtl}
+            .toolbar{position:fixed;top:0;left:0;right:0;z-index:999;background:rgba(15,34,54,.95);backdrop-filter:blur(8px);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+            .toolbar-title{color:#fff;font-size:14px;font-weight:700}
+            .toolbar-btns{display:flex;gap:10px}
+            .btn-print{background:#16a34a;color:#fff;border:none;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+            .btn-close{background:#dc2626;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+            .btn-print:hover{background:#15803d}.btn-close:hover{background:#b91c1c}
+            .content{padding-top:60px}
+            .header{background:linear-gradient(135deg,#0f2236,#1f3b57);color:#fff;padding:30px 40px;display:flex;align-items:center;justify-content:space-between}
+            .header img{height:70px;object-fit:contain;border-radius:8px}
             .header-title{text-align:center;flex:1}
-            .header-title h1{font-size:24px;font-weight:900;margin-bottom:4px}
-            .header-title p{font-size:12px;opacity:.8}
-            .card{background:#fff;margin:20px 40px;border-radius:18px;padding:22px;box-shadow:0 4px 16px rgba(0,0,0,.07);border:1px solid #e2e8f0}
-            .card h2{font-size:20px;font-weight:800;color:#1f3b57;margin-bottom:14px;border-bottom:2px solid #e2e8f0;padding-bottom:8px}
-            .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
-            .stat{background:linear-gradient(135deg,#f8fbff,#eef4ff);border:1px solid #dbe7f3;border-radius:14px;padding:14px;text-align:center}
-            .stat-value{font-size:26px;font-weight:900;color:#1f3b57}
-            .stat-label{font-size:11px;color:#64748b;margin-top:3px}
-            .bar{background:#e2e8f0;border-radius:99px;height:10px;margin:8px 0;overflow:hidden}
-            .bar-fill{height:100%;background:linear-gradient(90deg,#16a34a,#4ade80);border-radius:99px}
-            table{width:100%;border-collapse:collapse;margin-top:14px}
-            th{background:#1f3b57;color:#fff;padding:9px;text-align:center;font-size:12px}
-            td{padding:8px;text-align:center;border-bottom:1px solid #f1f5f9;font-size:12px}
-            tr:nth-child(even) td{background:#f8fafc}
-            .map-btn{display:inline-block;background:#1f3b57;color:#fff;padding:9px 18px;border-radius:10px;text-decoration:none;font-size:13px;font-weight:700;margin-top:10px}
-            .footer{text-align:center;padding:18px;color:#94a3b8;font-size:11px;border-top:1px solid #e2e8f0;margin:20px 0}
-            @media print{.no-print{display:none}}
+            .header-title h1{font-size:26px;font-weight:900;margin-bottom:6px;letter-spacing:.5px}
+            .header-title p{font-size:13px;opacity:.8}
+            .card{background:#fff;margin:20px 40px;border-radius:20px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,.07);border:1px solid #e2e8f0}
+            .card h2{font-size:20px;font-weight:800;color:#1f3b57;margin-bottom:16px;border-bottom:3px solid #e2e8f0;padding-bottom:10px}
+            .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+            .stat{border-radius:16px;padding:16px;text-align:center;border:2px solid transparent}
+            .stat-total{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd}
+            .stat-available{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#86efac}
+            .stat-sold{background:linear-gradient(135deg,#fff7ed,#fed7aa);border-color:#fdba74}
+            .stat-percent{background:linear-gradient(135deg,#fdf4ff,#f3e8ff);border-color:#d8b4fe}
+            .stat-value{font-size:30px;font-weight:900}
+            .stat-total .stat-value{color:#1d4ed8}
+            .stat-available .stat-value{color:#16a34a}
+            .stat-sold .stat-value{color:#ea580c}
+            .stat-percent .stat-value{color:#7c3aed}
+            .stat-label{font-size:11px;color:#64748b;margin-top:4px;font-weight:600}
+            .bar-wrap{margin-top:12px}
+            .bar-label{font-size:12px;color:#64748b;margin-bottom:6px}
+            .bar{background:#e2e8f0;border-radius:99px;height:14px;overflow:hidden}
+            .bar-fill{height:100%;background:linear-gradient(90deg,#16a34a,#4ade80);border-radius:99px;transition:width .8s ease}
+            .bar-text{font-size:13px;color:#16a34a;font-weight:700;margin-top:6px}
+            .map-btn{display:inline-flex;align-items:center;gap:6px;background:#1f3b57;color:#fff;padding:10px 20px;border-radius:10px;text-decoration:none;font-size:13px;font-weight:700;margin-top:12px}
+            table{width:100%;border-collapse:collapse;margin-top:16px;border-radius:12px;overflow:hidden}
+            th{background:#1f3b57;color:#fff;padding:11px;text-align:center;font-size:12px;font-weight:700}
+            td{padding:10px;text-align:center;font-size:12px;border-bottom:1px solid #f1f5f9}
+            .footer-info{text-align:center;padding:16px;color:#94a3b8;font-size:11px;margin-top:10px}
+            @media print{
+              .toolbar{display:none!important}
+              .content{padding-top:0}
+              body{background:#fff}
+              .card{box-shadow:none;margin:12px 20px}
+              .header{padding:20px}
+              -webkit-print-color-adjust:exact;
+              print-color-adjust:exact
+            }
           </style></head><body>
-          <div class="header">
-            ${logo ? `<img src="${logo}" alt="شعار">` : '<div style="width:65px"></div>'}
-            <div class="header-title"><h1>نظام أنس - النسخة المطورة</h1><p>فارس الشرقية للتطوير العقاري</p></div>
-            <div style="width:65px"></div>
-          </div>
-          <div class="card">
-            <h2>🏢 ${p.name}</h2>
-            ${location ? `<p style="color:#64748b;margin-bottom:12px">📍 ${location}</p>` : ""}
-            ${mapUrl ? `<a href="${mapUrl}" target="_blank" class="map-btn no-print">📍 عرض الموقع على الخريطة</a>` : ""}
-            <div class="stats" style="margin-top:16px">
-              <div class="stat"><div class="stat-value">${totalUnits}</div><div class="stat-label">إجمالي الوحدات</div></div>
-              <div class="stat"><div class="stat-value" style="color:#16a34a">${availableUnits.length}</div><div class="stat-label">الوحدات المتاحة</div></div>
-              <div class="stat"><div class="stat-value" style="color:#d97706">${bookedUnits.length}</div><div class="stat-label">وحدات محجوزة</div></div>
-              <div class="stat"><div class="stat-value" style="color:#2563eb">${salesPercent}%</div><div class="stat-label">نسبة المبيعات</div></div>
+          <div class="toolbar no-print">
+            <div class="toolbar-title">📋 تقرير العملاء — ${p.name}</div>
+            <div class="toolbar-btns">
+              <button class="btn-print" onclick="window.print()">🖨️ طباعة PDF</button>
+              <button class="btn-close" onclick="window.close()">✕ إغلاق</button>
             </div>
-            <div style="font-size:12px;color:#64748b;margin-bottom:4px">نسبة الإنجاز البيعي</div>
-            <div class="bar"><div class="bar-fill" style="width:${salesPercent}%"></div></div>
-            <div style="font-size:12px;color:#16a34a;font-weight:700;margin-top:4px">${salesPercent}% تم البيع والحجز</div>
           </div>
-          <div class="card">
-            <h2>🏠 الوحدات المتاحة (${availableUnits.length} وحدة)</h2>
-            ${availableUnits.length ? `<table><thead><tr>
-              <th>رقم الشقة</th><th>النموذج</th><th>الدور</th><th>المبنى</th>
-              <th>الإطلالة</th><th>المساحة م²</th><th>المكونات</th><th>سعر العرض</th><th>الحالة</th>
-            </tr></thead><tbody>${unitsRows}</tbody></table>`
-            : '<p style="color:#64748b;text-align:center;padding:20px">لا توجد وحدات متاحة حالياً</p>'}
-          </div>
-          <div class="footer">
-            <button onclick="window.print()" class="no-print" style="background:#1f3b57;color:#fff;border:none;padding:10px 24px;border-radius:10px;font-size:14px;cursor:pointer;margin-bottom:10px">🖨️ طباعة التقرير</button><br>
-            نظام أنس للإدارة العقارية — ${new Date().toLocaleDateString('ar-SA')}
+          <div class="content">
+            <div class="header">
+              ${logo ? `<img src="${logo}" alt="شعار">` : '<div style="width:70px"></div>'}
+              <div class="header-title">
+                <h1>نظام أنس — النسخة المطورة</h1>
+                <p>فارس الشرقية للتطوير العقاري</p>
+              </div>
+              <div style="width:70px"></div>
+            </div>
+
+            <div class="card">
+              <h2>🏢 ${p.name}</h2>
+              ${location ? `<p style="color:#64748b;font-size:13px;margin-bottom:14px">📍 ${location}</p>` : ""}
+              ${mapUrl ? `<a href="${mapUrl}" target="_blank" class="map-btn">📍 عرض الموقع على الخريطة</a>` : ""}
+              <div class="stats" style="margin-top:${mapUrl||location?'16px':'0'}">
+                <div class="stat stat-total">
+                  <div class="stat-value">${totalUnits}</div>
+                  <div class="stat-label">🏠 إجمالي الوحدات</div>
+                </div>
+                <div class="stat stat-available">
+                  <div class="stat-value">${availableUnits.length}</div>
+                  <div class="stat-label">✅ الوحدات المتاحة</div>
+                </div>
+                <div class="stat stat-sold">
+                  <div class="stat-value">${nonAvailableUnits.length}</div>
+                  <div class="stat-label">🔒 مباعة ومحجوزة</div>
+                </div>
+                <div class="stat stat-percent">
+                  <div class="stat-value">${salesPercent}%</div>
+                  <div class="stat-label">📊 نسبة المبيعات</div>
+                </div>
+              </div>
+              <div class="bar-wrap">
+                <div class="bar-label">نسبة الإنجاز البيعي</div>
+                <div class="bar"><div class="bar-fill" style="width:${salesPercent}%"></div></div>
+                <div class="bar-text">${salesPercent}% تم البيع والحجز</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h2>🏠 الوحدات المتاحة (${availableUnits.length} وحدة)</h2>
+              ${availableUnits.length ? `
+              <table>
+                <thead><tr>
+                  <th>رقم الشقة</th><th>النموذج</th><th>الدور</th><th>المبنى</th>
+                  <th>الإطلالة</th><th>المساحة م²</th><th>المكونات</th><th>سعر العرض</th><th>الحالة</th>
+                </tr></thead>
+                <tbody>${unitsRows}</tbody>
+              </table>` : '<p style="color:#64748b;text-align:center;padding:30px;font-size:14px">لا توجد وحدات متاحة حالياً</p>'}
+            </div>
+
+            <div class="footer-info">
+              نظام أنس للإدارة العقارية — ${new Date().toLocaleDateString('ar-SA')}
+            </div>
           </div>
           </body></html>`;
 
@@ -18976,147 +19035,10 @@ body.app-theme-ready[data-app-theme="silverlight"]{--theme-main:#aeb8c6;--theme-
       openPrintWindow(`تقرير وحدة - ${u.number}`, html);
     }
 
-    function printClientReport(){
-      try{
-        const p = getProject();
-        if(!p) return alert("افتح مشروعاً أولاً");
 
-        const units = p.units || [];
-        const totalUnits = units.length;
-        const availableUnits = units.filter(u => !u.status || u.status === "متاحة");
-        const soldUnits = units.filter(u => u.status === "مباعة" || u.status === "تم السداد" || u.status === "تم الافراغ");
-        const bookedUnits = units.filter(u => u.status === "محجوزة");
-        const salesPercent = totalUnits > 0 ? Math.round((soldUnits.length + bookedUnits.length) / totalUnits * 100) : 0;
-
-        const logo = (typeof appData !== "undefined" && appData.branding && appData.branding.logoDataUrl) ? appData.branding.logoDataUrl : "";
-        const projectName = p.name || "المشروع";
-        const location = p.location || p.notes || "";
-        const mapUrl = p.mapUrl || "";
-
-        const unitsRows = availableUnits.map(u => `
-          <tr>
-            <td>${u.number || "-"}</td>
-            <td>${u.model || "-"}</td>
-            <td>${u.floor || "-"}</td>
-            <td>${u.building || "-"}</td>
-            <td>${u.view || "-"}</td>
-            <td>${u.area || "-"}</td>
-            <td>${u.components || "-"}</td>
-            <td>${money(u.finalPrice || u.price)}</td>
-            <td><span style="background:#dcfce7;color:#166534;padding:3px 10px;border-radius:8px;font-size:12px">متاحة</span></td>
-          </tr>`).join("");
-
-        const html = `
-          <!DOCTYPE html>
-          <html lang="ar" dir="rtl">
-          <head>
-            <meta charset="UTF-8">
-            <title>تقرير العملاء - ${projectName}</title>
-            <style>
-              *{margin:0;padding:0;box-sizing:border-box}
-              body{font-family:Tahoma,Arial,sans-serif;background:#f8fafc;color:#0f172a;direction:rtl}
-              .header{background:linear-gradient(135deg,#0f2236,#1f3b57);color:#fff;padding:30px 40px;display:flex;align-items:center;justify-content:space-between}
-              .header-logo{height:70px;object-fit:contain}
-              .header-title{text-align:center;flex:1}
-              .header-title h1{font-size:26px;font-weight:900;margin-bottom:6px}
-              .header-title p{font-size:13px;opacity:.8}
-              .project-card{background:#fff;margin:24px 40px;border-radius:20px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,.08);border:1px solid #e2e8f0}
-              .project-card h2{font-size:22px;font-weight:800;color:#1f3b57;margin-bottom:16px;border-bottom:2px solid #e2e8f0;padding-bottom:10px}
-              .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
-              .stat{background:linear-gradient(135deg,#f8fbff,#eef4ff);border:1px solid #dbe7f3;border-radius:14px;padding:16px;text-align:center}
-              .stat-value{font-size:28px;font-weight:900;color:#1f3b57}
-              .stat-label{font-size:12px;color:#64748b;margin-top:4px}
-              .progress-bar{background:#e2e8f0;border-radius:99px;height:12px;margin:8px 0;overflow:hidden}
-              .progress-fill{height:100%;background:linear-gradient(90deg,#16a34a,#4ade80);border-radius:99px;transition:width .5s}
-              table{width:100%;border-collapse:collapse;margin-top:16px}
-              th{background:#1f3b57;color:#fff;padding:10px;text-align:center;font-size:12px}
-              td{padding:9px;text-align:center;border-bottom:1px solid #f1f5f9;font-size:12px}
-              tr:nth-child(even) td{background:#f8fafc}
-              .map-btn{display:inline-block;background:#1f3b57;color:#fff;padding:10px 20px;border-radius:10px;text-decoration:none;font-size:13px;font-weight:700;margin-top:12px}
-              .map-btn:hover{background:#2563eb}
-              .footer{text-align:center;padding:20px;color:#94a3b8;font-size:11px;border-top:1px solid #e2e8f0;margin-top:20px}
-              @media print{.no-print{display:none}body{background:#fff}}
-            </style>
-          </head>
-          <body>
-            <div class="header">
-              ${logo ? `<img src="${logo}" class="header-logo" alt="شعار">` : '<div style="width:70px"></div>'}
-              <div class="header-title">
-                <h1>نظام أنس - النسخة المطورة</h1>
-                <p>فارس الشرقية للتطوير العقاري</p>
-              </div>
-              <div style="width:70px"></div>
-            </div>
-
-            <div class="project-card">
-              <h2>🏢 ${projectName}</h2>
-              ${location ? `<p style="color:#64748b;margin-bottom:16px">📍 ${location}</p>` : ""}
-              ${mapUrl ? `<a href="${mapUrl}" target="_blank" class="map-btn no-print">📍 عرض الموقع على الخريطة</a>` : ""}
-
-              <div class="stats-grid" style="margin-top:16px">
-                <div class="stat">
-                  <div class="stat-value">${totalUnits}</div>
-                  <div class="stat-label">إجمالي الوحدات</div>
-                </div>
-                <div class="stat">
-                  <div class="stat-value" style="color:#16a34a">${availableUnits.length}</div>
-                  <div class="stat-label">الوحدات المتاحة</div>
-                </div>
-                <div class="stat">
-                  <div class="stat-value" style="color:#d97706">${bookedUnits.length}</div>
-                  <div class="stat-label">وحدات محجوزة</div>
-                </div>
-                <div class="stat">
-                  <div class="stat-value" style="color:#2563eb">${salesPercent}%</div>
-                  <div class="stat-label">نسبة المبيعات</div>
-                </div>
-              </div>
-
-              <div>
-                <div style="font-size:13px;color:#64748b;margin-bottom:4px">نسبة الإنجاز البيعي</div>
-                <div class="progress-bar"><div class="progress-fill" style="width:${salesPercent}%"></div></div>
-                <div style="font-size:12px;color:#16a34a;font-weight:700">${salesPercent}% تم البيع والحجز</div>
-              </div>
-            </div>
-
-            <div class="project-card">
-              <h2>🏠 الوحدات المتاحة (${availableUnits.length} وحدة)</h2>
-              ${availableUnits.length ? `
-              <table>
-                <thead>
-                  <tr>
-                    <th>رقم الشقة</th>
-                    <th>النموذج</th>
-                    <th>الدور</th>
-                    <th>المبنى</th>
-                    <th>الإطلالة</th>
-                    <th>المساحة</th>
-                    <th>المكونات</th>
-                    <th>سعر العرض</th>
-                    <th>الحالة</th>
-                  </tr>
-                </thead>
-                <tbody>${unitsRows}</tbody>
-              </table>` : '<p style="color:#64748b;text-align:center;padding:20px">لا توجد وحدات متاحة حالياً</p>'}
-            </div>
-
-            <div class="footer">
-              <button onclick="window.print()" class="no-print" style="background:#1f3b57;color:#fff;border:none;padding:10px 24px;border-radius:10px;font-size:14px;cursor:pointer;margin-bottom:12px">🖨️ طباعة التقرير</button>
-              <br>
-              نظام أنس للإدارة العقارية — ${new Date().toLocaleDateString('ar-SA')}
-            </div>
-          </body>
-          </html>`;
-
-        const w = window.open("", "_blank");
-        if(!w) return alert("السماح بالنوافذ المنبثقة مطلوب");
-        w.document.write(html);
-        w.document.close();
-      }catch(e){ alert("خطأ: " + e.message); }
-    }
+    function printCompanyReport(){
       try{
       const p = getProject();
-      const f = projectFinancials();
       const investorsProfitValue = (f.investorsFull || []).filter(x => !x.auto).reduce((s,x)=>s + num(x.grossShare), 0);
       const companyAfterInvestorsValue = f.companyShareProfit - investorsProfitValue;
       const companyNetFinalValue = companyAfterInvestorsValue + f.totalInvestorAdmin;
