@@ -9195,7 +9195,7 @@ font-weight:800;color:#fff;cursor:pointer
           enabledAt: Date.now()
         }));
         updateBiometricUI();
-        alert("تم تفعيل البصمة لهذا الجهاز بنجاح.");
+        anasToast("✅ تم تفعيل البصمة","success");
       }catch(err){
         alert("تعذر تفعيل البصمة على هذا الجهاز: " + (err && err.message ? err.message : "خطأ غير معروف"));
       }
@@ -10125,7 +10125,7 @@ let globalSettingsState = {
       if(!requirePermission("manager", "إدارة النسخ للمدير فقط")) return;
       createBackupSnapshot("يدوي");
       renderBackupsList();
-      alert("تم إنشاء نسخة احتياطية جديدة");
+      anasToast("✅ تم إنشاء نسخة احتياطية","success");
     }
 
     function exportBackupToFile(){
@@ -10139,7 +10139,7 @@ let globalSettingsState = {
         a.download = "anas-backup-" + date + ".json";
         a.click();
         URL.revokeObjectURL(url);
-        alert("✅ تم تحميل النسخة الاحتياطية على جهازك");
+        anasToast("✅ تم تحميل النسخة","success");
       }catch(e){
         alert("حدث خطأ أثناء التحميل");
       }
@@ -10161,7 +10161,7 @@ let globalSettingsState = {
           saveApp("restore-from-file");
           renderProjects();
           closeBackupsModal();
-          alert("✅ تم استرجاع البيانات بنجاح");
+          anasToast("✅ تم استرجاع البيانات","success");
         }catch(err){
           alert("خطأ في قراءة الملف");
         }
@@ -10223,7 +10223,7 @@ let globalSettingsState = {
     async function ensureCloudInitialized(){ return false; }
     async function testCloudConnection(){ alert("استخدم Firebase Auth الجديد"); }
     async function manualCloudSync(){
-      if(typeof saveToFirebase==="function"){ await saveToFirebase(); alert("تمت المزامنة"); }
+      if(typeof saveToFirebase==="function"){ await saveToFirebase(); anasToast("✅ تمت المزامنة مع Firebase","success"); }
     }
     function clearCloudSettings(){ alert("غير مدعوم في النسخة الجديدة"); }
 
@@ -21314,4 +21314,24 @@ function mvPaginate(){
   pg.innerHTML='<div class="mvpg"><div class="mvpg-info">عرض <strong>'+s+'–'+e+'</strong> من <strong>'+total+'</strong> حركة</div><div class="mvpg-btns"><button class="mvpg-btn"'+(mvCur<=1?' disabled':'')+' onclick="mvCur='+(mvCur-1)+';mvPaginate()">&#8594; السابق</button>'+btns+'<button class="mvpg-btn"'+(mvCur>=pages?' disabled':'')+' onclick="mvCur='+(mvCur+1)+';mvPaginate()">التالي &#8592;</button></div></div>';
 }
 </script>
+
+<div id="anasToast" style="position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-100px);z-index:99999;min-width:260px;max-width:400px;padding:14px 24px;border-radius:16px;color:#fff;font-size:14px;font-weight:600;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.2);direction:rtl;transition:transform .35s cubic-bezier(.34,1.56,.64,1),opacity .3s;opacity:0;pointer-events:none"></div>
+<script>
+function anasToast(msg,type,dur){
+  var t=document.getElementById("anasToast");
+  if(!t) return;
+  t.style.background=({success:"#16a34a",error:"#dc2626",warning:"#d97706",info:"#1f3b57"})[type||"info"]||"#1f3b57";
+  t.textContent=msg;
+  t.style.opacity="1";
+  t.style.transform="translateX(-50%) translateY(0)";
+  t.style.pointerEvents="auto";
+  clearTimeout(window._anasToastT);
+  window._anasToastT=setTimeout(function(){
+    t.style.opacity="0";
+    t.style.transform="translateX(-50%) translateY(-100px)";
+    t.style.pointerEvents="none";
+  },dur||3000);
+}
+</script>
+
 </html>
