@@ -18089,10 +18089,14 @@ function renderSiteCustody(){
               .content{padding-top:0}
               body{background:#fff}
               .card{box-shadow:none;margin:12px 20px}
-              .header{padding:20px}
-              -webkit-print-color-adjust:exact;
-              print-color-adjust:exact
+              .header{padding:20px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+              .stat{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+              .bar-fill{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+              th{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+              tr{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+              td{-webkit-print-color-adjust:exact;print-color-adjust:exact}
             }
+            *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
           </style></head><body>
           <div class="toolbar no-print">
             <div class="toolbar-title">📋 تقرير العملاء — ${p.name}</div>
@@ -18103,7 +18107,7 @@ function renderSiteCustody(){
           </div>
           <div class="content">
             <div class="header">
-              ${logo ? `<img src="${logo}" alt="شعار">` : '<div style="width:70px"></div>'}
+              ${logo ? `<img src="${logo}" alt="شعار" crossorigin="anonymous" style="height:70px;object-fit:contain;border-radius:8px">` : '<div style="width:70px"></div>'}
               <div class="header-title">
                 <h1>نظام أنس — النسخة المطورة</h1>
                 <p>فارس الشرقية للتطوير العقاري</p>
