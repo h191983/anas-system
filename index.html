@@ -7086,6 +7086,7 @@ font-weight:800;color:#fff;cursor:pointer
               </thead>
               <tbody id="movementsBody"></tbody>
             </table>
+            <div id="mvPg"></div>
           </div>
         </div>
 
@@ -21278,5 +21279,39 @@ document.addEventListener('DOMContentLoaded', function(){ refreshAlertBellSafe()
   }
 
 })();
+</script>
+<style>
+.mvpg{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:10px 4px;direction:rtl}
+.mvpg-info{font-size:13px;color:#6b7280}.mvpg-info strong{color:#111;font-weight:700}
+.mvpg-btns{display:flex;gap:5px;flex-wrap:wrap}
+.mvpg-btn{min-width:34px;height:34px;padding:0 10px;border-radius:8px;border:1px solid #d1d5db;background:#fff;font-size:13px;font-family:inherit;cursor:pointer}
+.mvpg-btn:hover:not([disabled]){background:#1f3b57;color:#fff;border-color:#1f3b57}
+.mvpg-btn.on{background:#1f3b57;color:#fff;font-weight:700}
+.mvpg-btn[disabled]{opacity:.4;cursor:default}
+.mvpg-sep{padding:0 4px;color:#9ca3af;line-height:34px}
+</style>
+<script>
+var mvCur=1,MV_PG=50;
+function mvPaginate(){
+  var body=document.getElementById("movementsBody");
+  var pg=document.getElementById("mvPg");
+  if(!body||!pg) return;
+  var rows=Array.from(body.querySelectorAll("tr"));
+  var total=rows.length;
+  rows.forEach(function(tr){ tr.style.display=""; });
+  if(total<=MV_PG){ pg.innerHTML=""; return; }
+  var pages=Math.ceil(total/MV_PG);
+  mvCur=Math.max(1,Math.min(mvCur,pages));
+  rows.forEach(function(tr,i){
+    tr.style.display=(i>=(mvCur-1)*MV_PG&&i<mvCur*MV_PG)?"":"none";
+  });
+  var s=(mvCur-1)*MV_PG+1,e=Math.min(mvCur*MV_PG,total),btns="";
+  for(var i=1;i<=pages;i++){
+    if(i===1||i===pages||Math.abs(i-mvCur)<=2)
+      btns+='<button class="mvpg-btn'+(i===mvCur?" on":"")+('" onclick="mvCur='+i+';mvPaginate()">'+i+'</button>');
+    else if(Math.abs(i-mvCur)===3) btns+='<span class="mvpg-sep">…</span>';
+  }
+  pg.innerHTML='<div class="mvpg"><div class="mvpg-info">عرض <strong>'+s+'–'+e+'</strong> من <strong>'+total+'</strong> حركة</div><div class="mvpg-btns"><button class="mvpg-btn"'+(mvCur<=1?' disabled':'')+' onclick="mvCur='+(mvCur-1)+';mvPaginate()">&#8594; السابق</button>'+btns+'<button class="mvpg-btn"'+(mvCur>=pages?' disabled':'')+' onclick="mvCur='+(mvCur+1)+';mvPaginate()">التالي &#8592;</button></div></div>';
+}
 </script>
 </html>
