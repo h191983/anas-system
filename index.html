@@ -21998,6 +21998,7 @@ function filterUnitsByStatus(status){
   var auth = firebase.auth();
   var db   = firebase.database();
   var uid  = null;
+  var _liveListener = null; // مستمع المزامنة الحية
 
   // ── نسخ احتياطية في Firebase ─────────────────────────────
   window.saveBackupsToFirebase = async function(list){
@@ -22022,21 +22023,59 @@ function filterUnitsByStatus(status){
     }catch(e){ console.error("Backup load error:",e); }
   };
 
-  // ── جلب البيانات ─────────────────────────────────────────
+  // ── جلب البيانات مع مستمع حي للمزامنة الفورية ───────────
+  var _ignoreNextSnapshot = false; // نتجنب التحديث بعد الحفظ الخاص
+
   async function loadData(u){
     uid = u;
+
+    // إلغاء أي مستمع سابق
+    if(_liveListener){
+      db.ref("users/"+uid+"/appData").off("value", _liveListener);
+      _liveListener = null;
+    }
+
+    // أول تحميل: نتحقق إذا Firebase فاضل نرفع البيانات المحلية
     try{
       var snap = await db.ref("users/"+uid+"/appData").get();
-      if(snap.exists() && snap.val() && Array.isArray(snap.val().projects)){
-        localStorage.setItem("anas_projects_excel_pdf_v2", JSON.stringify(snap.val()));
-      } else {
+      if(!snap.exists() || !snap.val() || !Array.isArray(snap.val().projects)){
         var local = JSON.parse(localStorage.getItem("anas_projects_excel_pdf_v2")||"null");
-        if(local && local.projects && local.projects.length)
+        if(local && local.projects && local.projects.length){
+          _ignoreNextSnapshot = true;
           await db.ref("users/"+uid+"/appData").set(local);
+        }
       }
-      // جلب النسخ الاحتياطية
-      await window.loadBackupsFromFirebase();
-    }catch(e){ console.error(e); }
+    }catch(e){ console.error("loadData init error:", e); }
+
+    // ── المستمع الحي: يتفعل عند أي تغيير من أي جهاز ─────────
+    _liveListener = db.ref("users/"+uid+"/appData").on("value", function(snapshot){
+      if(_ignoreNextSnapshot){ _ignoreNextSnapshot = false; return; }
+      if(!snapshot.exists()) return;
+      var remote = snapshot.val();
+      if(!remote || !Array.isArray(remote.projects)) return;
+
+      var localRaw = localStorage.getItem("anas_projects_excel_pdf_v2");
+      var local = localRaw ? JSON.parse(localRaw) : null;
+
+      // نقارن وقت التعديل - نأخذ الأحدث فقط
+      var remoteTime = remote._updatedAt ? new Date(remote._updatedAt).getTime() : 0;
+      var localTime  = local && local._updatedAt ? new Date(local._updatedAt).getTime() : 0;
+
+      if(remoteTime > localTime){
+        localStorage.setItem("anas_projects_excel_pdf_v2", JSON.stringify(remote));
+        if(typeof appData !== "undefined"){
+          try{
+            // تحديث appData في الذاكرة وإعادة الرسم
+            Object.assign(appData, remote);
+          }catch(e){}
+        }
+        if(typeof renderProjects === "function") renderProjects();
+        if(typeof anasToast === "function") anasToast("🔄 تم تحديث البيانات من جهاز آخر", "info");
+      }
+    });
+
+    // جلب النسخ الاحتياطية
+    await window.loadBackupsFromFirebase();
   }
 
   // ── حفظ البيانات ─────────────────────────────────────────
@@ -22048,6 +22087,8 @@ function filterUnitsByStatus(status){
       try{
         var d = JSON.parse(localStorage.getItem("anas_projects_excel_pdf_v2")||"{}");
         d._updatedAt = new Date().toISOString();
+        localStorage.setItem("anas_projects_excel_pdf_v2", JSON.stringify(d));
+        _ignoreNextSnapshot = true; // تجاهل الـ snapshot الناتج عن حفظنا نحن
         await db.ref("users/"+uid+"/appData").set(d);
         if(typeof setCloudState==="function") setCloudState("online","متصل");
       }catch(e){ console.error(e); }
