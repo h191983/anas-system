@@ -21533,7 +21533,152 @@ document.addEventListener('DOMContentLoaded', function(){ refreshAlertBellSafe()
 }
 </style>
 
-<!-- ===== نافذة البحث الشامل ===== -->
+
+<!-- ===== ستايل محدّث للتابات والسايدبار ===== -->
+<style>
+/* ── حاوية التابات ── */
+.tabs, .tabs.no-print {
+  background: linear-gradient(135deg,#f0f6ff 0%,#e8f0fe 100%) !important;
+  border: 1.5px solid #c7d9f5 !important;
+  box-shadow: 0 4px 20px rgba(37,99,235,.08), inset 0 1px 0 rgba(255,255,255,.9) !important;
+  border-radius: 22px !important;
+  padding: 10px !important;
+  gap: 8px !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+/* ── زر التاب العادي ── */
+.tab {
+  background: #fff !important;
+  color: #374151 !important;
+  border: 1.5px solid #e2eaf5 !important;
+  border-radius: 14px !important;
+  padding: 9px 14px !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  box-shadow: 0 2px 8px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04) !important;
+  transition: all .2s ease !important;
+}
+.tab:hover {
+  background: linear-gradient(135deg,#eff6ff 0%,#dbeafe 100%) !important;
+  border-color: #93c5fd !important;
+  color: #1d4ed8 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 16px rgba(37,99,235,.12) !important;
+}
+
+/* ── التاب النشط ── */
+.tab.active {
+  background: linear-gradient(135deg,#2563eb 0%,#1d4ed8 60%,#1e40af 100%) !important;
+  color: #fff !important;
+  border-color: #1d4ed8 !important;
+  box-shadow: 0 6px 18px rgba(37,99,235,.30), inset 0 1px 0 rgba(255,255,255,.20) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* ── السايدبار ── */
+.app-sidebar {
+  background: linear-gradient(180deg,#f8fbff 0%,#eef4fd 50%,#e5effc 100%) !important;
+  border: 1.5px solid #c7d9f5 !important;
+  box-shadow: 0 8px 32px rgba(37,99,235,.10), inset 1px 0 0 rgba(255,255,255,.8) !important;
+  border-radius: 28px !important;
+}
+
+/* ── بروفايل السايدبار ── */
+.sidebar-profile {
+  background: linear-gradient(135deg,#1d4ed8 0%,#2563eb 50%,#3b82f6 100%) !important;
+  border-bottom: none !important;
+  border-radius: 24px 24px 0 0 !important;
+  padding: 20px 16px 18px !important;
+}
+.sidebar-profile-name { color:#fff !important; font-size:17px !important; }
+.sidebar-profile-role { color:rgba(255,255,255,.85) !important; }
+.sidebar-profile-email { color:rgba(255,255,255,.6) !important; }
+.sidebar-profile-avatar {
+  background: rgba(255,255,255,.2) !important;
+  border-color: rgba(255,255,255,.4) !important;
+  box-shadow: 0 0 0 5px rgba(255,255,255,.12) !important;
+}
+
+/* ── أزرار السايدبار ── */
+.sidebar-link {
+  background: #fff !important;
+  border: 1.5px solid #e2eaf5 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 2px 8px rgba(15,23,42,.05) !important;
+  color: #374151 !important;
+  transition: all .2s ease !important;
+  padding: 12px 14px !important;
+}
+.sidebar-link .label { color: #374151 !important; font-size:14px !important; }
+.sidebar-link .icon {
+  background: linear-gradient(135deg,#eff6ff,#dbeafe) !important;
+  color: #2563eb !important;
+  border-radius: 12px !important;
+  width: 38px !important; height: 38px !important; font-size: 19px !important;
+}
+.sidebar-link:hover,
+.sidebar-link.is-open {
+  background: linear-gradient(135deg,#eff6ff 0%,#dbeafe 100%) !important;
+  border-color: #93c5fd !important;
+  box-shadow: 0 6px 18px rgba(37,99,235,.14) !important;
+  transform: translateY(-1px) !important;
+  color: #1d4ed8 !important;
+}
+.sidebar-link:hover .label,
+.sidebar-link.is-open .label,
+.sidebar-link:hover .icon,
+.sidebar-link.is-open .icon,
+.sidebar-link:hover .caret,
+.sidebar-link.is-open .caret { color:#1d4ed8 !important; }
+.sidebar-link:hover .icon,
+.sidebar-link.is-open .icon {
+  background: linear-gradient(135deg,#dbeafe,#bfdbfe) !important;
+}
+
+/* ── التاب النشط في السايدبار ── */
+.sidebar-link.active {
+  background: linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%) !important;
+  border-color: #1d4ed8 !important;
+  box-shadow: 0 8px 20px rgba(37,99,235,.25), inset 0 1px 0 rgba(255,255,255,.18) !important;
+  transform: translateY(-1px) !important;
+}
+.sidebar-link.active .label,
+.sidebar-link.active .icon,
+.sidebar-link.active .caret { color:#fff !important; }
+.sidebar-link.active .icon { background:rgba(255,255,255,.18) !important; }
+
+/* ── عناصر السب منيو ── */
+.sidebar-subitem {
+  background: #fff !important;
+  border: 1.5px solid #e2eaf5 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 6px rgba(15,23,42,.04) !important;
+  transition: all .18s ease !important;
+}
+.sidebar-subitem:hover {
+  background: linear-gradient(135deg,#eff6ff,#dbeafe) !important;
+  border-color: #93c5fd !important;
+  transform: translateX(-2px) !important;
+}
+.sidebar-subitem .name, .sidebar-subitem .mini { color:#374151 !important; }
+.sidebar-subitem:hover .name, .sidebar-subitem:hover .mini { color:#1d4ed8 !important; }
+
+/* ── زر الخروج ── */
+.sidebar-link.danger-link {
+  background: linear-gradient(135deg,#fff1f2 0%,#fee2e2 100%) !important;
+  border-color: #fca5a5 !important;
+  box-shadow: 0 3px 10px rgba(220,38,38,.10) !important;
+  transform: none !important;
+}
+.sidebar-link.danger-link .label { color:#dc2626 !important; }
+.sidebar-link.danger-link .icon { background:rgba(220,38,38,.1) !important; color:#dc2626 !important; }
+.sidebar-link.danger-link:hover {
+  background: linear-gradient(135deg,#fee2e2,#fecaca) !important;
+  border-color: #f87171 !important;
+  box-shadow: 0 6px 16px rgba(220,38,38,.18) !important;
+}
+</style>
 <div id="globalSearchOverlay" onclick="handleSearchOverlayClick(event)" role="dialog" aria-modal="true" aria-label="بحث شامل">
   <div id="globalSearchModal">
     <div id="globalSearchHeader">
